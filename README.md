@@ -1,10 +1,10 @@
-# Beesly 🍜
+# The Last Shard 💎
 
 Hi :)
 
 ## About
 
-Three.js starter using Vite.js for the dev & Rollup.js for the build
+Gobelin's Project
 
 ## Setup
 
@@ -24,8 +24,3 @@ npm run build
 # Build for staging in the dist/ directory (with DEBUG features)
 npm run staging
 ```
-
-## Docs
-🚧 [WIP] 🚧
-
-➡️ [Beesly's doc - Notion](https://beesly.notion.site/beesly/Beesly-fb2c9133921342aabe39d92050706cb8)
