@@ -1,0 +1,39 @@
+@import './utils/_reset';
+@import './utils/_tweakpane';
+@import './utils/_breakpoints';
+@import './utils/_touch';
+@import './utils/_animations';
+@import './utils/_fonts';
+@import './utils/_var';
+@import './utils/_easings';
+
+section.canvas-container {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+
+	canvas.sketch {
+		width: 100% !important;
+		height: 100% !important;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 0;
+	}
+}
+
+div.ui {
+	width: 100vw;
+	height: 100vh;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: flex-start;
+
+	position: fixed;
+	z-index: 1;
+	bottom: 0;
+	user-select: none;
+	pointer-events: none;
+}

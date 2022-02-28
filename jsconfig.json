@@ -1,0 +1,32 @@
+{
+  "compileOnSave": false,
+  "exclude": [
+    "dist/",
+    "node_modules/",
+    "config/"
+  ],
+  "include": [
+    "node_modules/philbin-packages/**/*",
+    "src/**/*",
+    "public/**/*",
+  ],
+  "compilerOptions": {
+    "checkJs": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@js/*": ["src/js/*"],
+      "@json/*": ["src/json/*"],
+      "@scss/*": ["src/scss/*"],
+      "@utils/*": ["src/utils/*"],
+      "@workers/*": ["src/workers/*"],
+      "@src/*": ["src/*"],
+
+      "@@/*": ["*"],
+    }
+  }
+}
