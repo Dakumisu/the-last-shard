@@ -1,15 +1,15 @@
 import { OrthographicCamera, PerspectiveCamera } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-import Webgl from './Webgl';
+import { getWebgl } from './Webgl';
 
 import { store } from '@js/Tools/Store';
 import { imageAspect } from 'philbin-packages/maths';
 
 export default class Camera {
 	constructor(opt = {}) {
-		const webgl = new Webgl();
-		this.scene = webgl.scene;
+		const webgl = getWebgl();
+		this.scene = webgl.scene.instance;
 		this.canvas = webgl.canvas;
 
 		this.type = opt.type || 'Perspective';
@@ -81,7 +81,7 @@ export default class Camera {
 	/// #endif
 
 	resize() {
-		if (this.type == 'Perspective') {
+		if (this.instance instanceof PerspectiveCamera) {
 			this.instance.aspect = store.aspect.ratio;
 			this.instance.updateProjectionMatrix();
 		}
@@ -114,7 +114,7 @@ export default class Camera {
 
 	destroy() {
 		/// #if DEBUG
-		this.debugCam.orbitControls.destroy();
+		this.debugCam.orbitControls.dispose();
 		/// #endif
 	}
 }

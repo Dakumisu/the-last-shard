@@ -1,5 +1,3 @@
-import { Scene as ThreeScene } from 'three';
-
 import Raf from '@js/Tools/Raf';
 import Size from '@js/Tools/Size';
 import Keyboard from '@js/Tools/Keyboard';
@@ -8,9 +6,10 @@ import Mouse from '@js/Tools/Mouse';
 import Raycasters from '@js/Tools/Raycasters';
 import PerformanceMonitor from '@js/Tools/PerformanceMonitor';
 
+import Scene from './Scene';
 import Renderer from './Renderer';
 import Camera from './Camera';
-import World from './Components/World';
+import World from './World/World';
 
 /// #if DEBUG
 import Debug from '@js/Tools/Debug';
@@ -18,19 +17,20 @@ import Debug from '@js/Tools/Debug';
 
 let initialized = false;
 
-export default class Webgl {
+class Webgl {
 	static instance;
 
 	constructor(_canvas) {
-		if (Webgl.instance) {
-			return Webgl.instance;
-		}
 		Webgl.instance = this;
 
-		if (!_canvas) return console.error(`Missing 'canvas' property 🚫`);
+		if (!_canvas) {
+			console.error(`Missing 'canvas' property 🚫`);
+			return null;
+		}
 		this.canvas = _canvas;
 
 		this.init();
+		this.event();
 	}
 
 	init() {
@@ -42,7 +42,7 @@ export default class Webgl {
 		this.size = new Size();
 
 		this.raf = new Raf();
-		this.scene = new ThreeScene();
+		this.scene = new Scene();
 		this.camera = new Camera();
 		this.performance = new PerformanceMonitor();
 		this.renderer = new Renderer();
@@ -52,6 +52,15 @@ export default class Webgl {
 
 		this.world = new World();
 		this.raycaster = new Raycasters();
+
+		this.performance.everythingLoaded();
+		this.resize();
+
+		initialized = true;
+	}
+
+	event() {
+		if (!initialized) return;
 
 		this.keyboard.on('key', (e) => {
 			/// #if DEBUG
@@ -80,17 +89,13 @@ export default class Webgl {
 			this.update();
 			this.render();
 		});
-
-		this.performance.everythingLoaded();
-		this.resize();
-		initialized = true;
 	}
 
 	render() {
 		if (!initialized) return;
 
-		if (this.camera) this.camera.render();
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
+		if (this.camera) this.camera.render();
 		if (this.renderer) this.renderer.render();
 	}
 
@@ -101,7 +106,7 @@ export default class Webgl {
 		if (this.performance) this.performance.update(this.raf.delta);
 
 		/// #if DEBUG
-		if (this.debug) this.debug.stats.update();
+		if (this.debug.stats) this.debug.stats.update();
 		/// #endif
 	}
 
@@ -120,9 +125,20 @@ export default class Webgl {
 		this.size.destroy();
 		this.raf.destroy();
 		this.keyboard.destroy();
+		this.raycaster.destroy();
 		this.mouse.destroy();
-		this.world.destroy();
+		this.performance.destroy();
 
-		delete this;
+		this.scene.destroy();
+		this.world.destroy();
+		this.renderer.destroy();
+		this.camera.destroy();
+
+		delete Webgl.instance;
 	}
 }
+
+export const getWebgl = (canvas) => {
+	if (Webgl.instance) return Webgl.instance;
+	return new Webgl(canvas);
+};

@@ -15,7 +15,7 @@ import {
 	Vector3,
 } from 'three';
 
-import Webgl from '../Webgl';
+import { getWebgl } from '../Webgl';
 
 import { store } from '@js/Tools/Store';
 
@@ -28,8 +28,8 @@ let initialized = false;
 
 export default class PostFX {
 	constructor(renderer) {
-		const webgl = new Webgl();
-		this.rendererScene = webgl.scene;
+		const webgl = getWebgl();
+		this.rendererScene = webgl.scene.instance;
 		this.rendererCamera = webgl.camera.instance;
 
 		this.renderer = renderer;
@@ -49,7 +49,7 @@ export default class PostFX {
 
 	setEnvironnement() {
 		this.scene = new Scene();
-		this.dummyCamera = new OrthographicCamera();
+		this.dummyCamera = new OrthographicCamera(1 / -2, 1 / 2, 1 / 2, 1 / -2);
 	}
 
 	setTriangle() {
@@ -105,5 +105,9 @@ export default class PostFX {
 		this.renderer.render(this.rendererScene, this.rendererCamera);
 		this.renderer.setRenderTarget(null);
 		this.renderer.render(this.scene, this.dummyCamera);
+	}
+
+	destroy() {
+		this.target.dispose();
 	}
 }

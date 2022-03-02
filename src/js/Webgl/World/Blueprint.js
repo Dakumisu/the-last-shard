@@ -3,12 +3,11 @@ import {
 	DoubleSide,
 	Mesh,
 	PlaneGeometry,
-	ShaderMaterial,
 	Vector2,
 	Vector3,
 } from 'three';
 
-import Webgl from '@js/Webgl/Webgl';
+import { getWebgl } from '@js/Webgl/Webgl';
 
 import { store } from '@js/Tools/Store';
 
@@ -34,8 +33,8 @@ const debug = {
 
 export default class Blueprint {
 	constructor(opt = {}) {
-		const webgl = new Webgl();
-		this.scene = webgl.scene;
+		const webgl = getWebgl();
+		this.scene = webgl.scene.instance;
 
 		this.object = {};
 
@@ -105,5 +104,11 @@ export default class Blueprint {
 		if (!initialized) return;
 
 		this.object.material.uniforms.uTime.value = et;
+	}
+
+	destroy() {
+		if (!initialized) return;
+
+		initialized = false;
 	}
 }
