@@ -12,3 +12,5 @@ dom.nodes.on('load', () => {
 /// #if DEBUG
 console.log('debug mode 🔥');
 /// #endif
+
+console.log('sheesh');
