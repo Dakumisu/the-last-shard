@@ -4,7 +4,7 @@ Hi :)
 
 ## About
 
-Gobelin's Project
+Gobelins' Project
 
 ## Setup
 
