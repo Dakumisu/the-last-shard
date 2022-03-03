@@ -1,8 +1,5 @@
-import Blueprint from './Blueprint';
-import Particles from './Particles';
-import Model from './Model';
-import GeoMerge from './GeoMerge';
 import Character from './Character';
+import Ground from './Colliders/Ground';
 
 let initialized = false;
 
@@ -13,6 +10,7 @@ export default class World {
 
 	setComponent() {
 		this.character = new Character();
+		this.ground = new Ground();
 
 		initialized = true;
 	}
