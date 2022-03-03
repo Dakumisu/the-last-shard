@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import { getWebgl } from './Webgl';
 
-import { store } from '@js/Tools/Store';
+import { store } from '@tools/Store';
 import { imageAspect } from 'philbin-packages/maths';
 
 export default class Camera {
@@ -29,7 +29,7 @@ export default class Camera {
 			0.1,
 			1000,
 		);
-		this.instance.position.set(2, 3, 3);
+		this.instance.position.set(4, 5, 40);
 		this.instance.lookAt(0, 0, 0);
 		this.instance.rotation.reorder('YXZ');
 

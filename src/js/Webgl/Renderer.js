@@ -4,11 +4,11 @@ import { getWebgl } from './Webgl';
 
 import PostFX from './PostProcessing/PostProcessing';
 
-import { store } from '@js/Tools/Store';
+import { store } from '@tools/Store';
 import { clamp } from 'philbin-packages/maths';
 
 const params = {
-	clearColor: '#151515',
+	clearColor: '#06061c',
 };
 
 const resolutionList = [

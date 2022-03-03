@@ -1,10 +1,10 @@
-import Raf from '@js/Tools/Raf';
-import Size from '@js/Tools/Size';
-import Keyboard from '@js/Tools/Keyboard';
-import Device from '@js/Tools/Device';
-import Mouse from '@js/Tools/Mouse';
-import Raycasters from '@js/Tools/Raycasters';
-import PerformanceMonitor from '@js/Tools/PerformanceMonitor';
+import Raf from '@tools/Raf';
+import Size from '@tools/Size';
+import Keyboard from '@tools/Keyboard';
+import Device from '@tools/Device';
+import Mouse from '@tools/Mouse';
+import Raycasters from '@tools/Raycasters';
+import PerformanceMonitor from '@tools/PerformanceMonitor';
 
 import Scene from './Scene';
 import Renderer from './Renderer';
@@ -12,7 +12,7 @@ import Camera from './Camera';
 import World from './World/World';
 
 /// #if DEBUG
-import Debug from '@js/Tools/Debug';
+import Debug from '@tools/Debug';
 /// #endif
 
 let initialized = false;
@@ -21,13 +21,13 @@ class Webgl {
 	static instance;
 
 	constructor(_canvas) {
-		Webgl.instance = this;
-
+		console.log(_canvas);
 		if (!_canvas) {
 			console.error(`Missing 'canvas' property 🚫`);
 			return null;
 		}
 		this.canvas = _canvas;
+		Webgl.instance = this;
 
 		this.init();
 		this.event();
@@ -102,7 +102,7 @@ class Webgl {
 	update() {
 		if (!initialized) return;
 
-		if (this.raycaster) this.raycaster.update();
+		// if (this.raycaster) this.raycaster.update();
 		if (this.performance) this.performance.update(this.raf.delta);
 
 		/// #if DEBUG
