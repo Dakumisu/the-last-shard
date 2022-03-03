@@ -54,6 +54,10 @@ export default ({ mode }) => {
 		resolve: {
 			alias: [
 				{
+					find: '@game',
+					replacement: '/src/js/Game',
+				},
+				{
 					find: '@webgl',
 					replacement: '/src/js/Webgl',
 				},

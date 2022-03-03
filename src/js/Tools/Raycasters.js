@@ -61,7 +61,7 @@ export default class Raycasters extends Emitter {
 
 		initialized = false;
 
-		this.resolveName('raycast');
+		this.off('raycast');
 	}
 
 	update() {

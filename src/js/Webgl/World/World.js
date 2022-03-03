@@ -1,4 +1,4 @@
-import Character from './Character';
+import Player from './Entities/Player';
 import Ground from './Colliders/Ground';
 
 let initialized = false;
@@ -9,7 +9,7 @@ export default class World {
 	}
 
 	setComponent() {
-		this.character = new Character();
+		this.player = new Player();
 		this.ground = new Ground();
 
 		initialized = true;
@@ -18,13 +18,13 @@ export default class World {
 	resize() {
 		if (!initialized) return;
 
-		if (this.character) this.character.resize();
+		if (this.player) this.player.resize();
 	}
 
 	update(et, dt) {
 		if (!initialized) return;
 
-		if (this.character) this.character.update(et);
+		if (this.player) this.player.update(et, dt);
 	}
 
 	destroy() {

@@ -2,9 +2,11 @@ import BasePhysic from './BasePhysic';
 
 let initialized = false;
 
-const params = {};
+const params = {
+	gravity: -30,
+};
 
-export default class BaseCollider extends BasePhysic {
+export default class BaseEntity extends BasePhysic {
 	constructor() {
 		super();
 

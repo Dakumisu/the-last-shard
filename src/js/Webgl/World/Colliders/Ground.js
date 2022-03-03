@@ -6,6 +6,7 @@ import BaseCollider from '../Components/BaseCollider';
 import { store } from '@tools/Store';
 
 import sandbox from '/assets/model/sandbox.glb';
+import mergeGeometry from '@utils/webgl/mergeBufferGeometries';
 
 const twoPI = Math.PI * 2;
 
@@ -60,7 +61,7 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		this.object.geometry = await this.mergeGeometries(null, sandbox);
+		this.object.geometry = await mergeGeometry([], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
@@ -73,7 +74,7 @@ export default class Ground extends BaseCollider {
 		this.object.mesh = new Mesh(this.object.geometry, this.object.material);
 
 		/// #if DEBUG
-		const v = this.setVisualizer(this.object.mesh, 20);
+		const v = this.setVisualizer(this.object.mesh, 30);
 		this.scene.add(v);
 		/// #endif
 

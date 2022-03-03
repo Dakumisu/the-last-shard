@@ -4,17 +4,26 @@ export default class Keyboard extends Emitter {
 	constructor() {
 		super();
 
-		document.addEventListener('keydown', this.getKey.bind(this));
+		document.addEventListener('keydown', this.getKeyDown.bind(this));
+		document.addEventListener('keyup', this.getKeyUp.bind(this));
 	}
 
-	getKey(e) {
+	getKeyDown(e) {
 		const key = (e.key != ' ' ? e.key : e.code).toUpperCase();
 
-		this.emit('key', [key]);
+		this.emit('keydown', [key]);
+	}
+
+	getKeyUp(e) {
+		const key = (e.key != ' ' ? e.key : e.code).toUpperCase();
+
+		this.emit('keyup', [key]);
 	}
 
 	destroy() {
-		this.resolveName('key');
-		document.removeEventListener('keydown', this.getKey.bind(this));
+		this.off('keydown');
+		this.off('keyup');
+		document.removeEventListener('keydown', this.getKeyDown.bind(this));
+		document.removeEventListener('keyup', this.getKeyUp.bind(this));
 	}
 }

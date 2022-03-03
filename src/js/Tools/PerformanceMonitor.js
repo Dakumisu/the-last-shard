@@ -254,7 +254,7 @@ export default class PerfomanceMonitor extends Emitter {
 		if (!initialized) return;
 
 		initialized = false;
-		this.resolveName('quality');
+		this.off('quality');
 		localStorage.removeItem('quality');
 		this.quality = DEFAULT_QUALITY;
 		this.qualityStr = qualityList[this.quality];

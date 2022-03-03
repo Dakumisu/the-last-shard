@@ -19,6 +19,7 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@game/*": ["src/js/Game/*"],
       "@webgl/*": ["src/js/Webgl/*"],
       "@dom/*": ["src/js/Dom/*"],
       "@tools/*": ["src/js/Tools/*"],

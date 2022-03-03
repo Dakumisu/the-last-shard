@@ -28,9 +28,6 @@ class Webgl {
 		}
 		this.canvas = _canvas;
 		Webgl.instance = this;
-
-		this.init();
-		this.event();
 	}
 
 	init() {
@@ -61,12 +58,6 @@ class Webgl {
 
 	event() {
 		if (!initialized) return;
-
-		this.keyboard.on('key', (e) => {
-			/// #if DEBUG
-			console.log(`Key ${e} pressed 🎹`);
-			/// #endif
-		});
 
 		this.raycaster.on('raycast', (e) => {
 			/// #if DEBUG
@@ -140,5 +131,10 @@ class Webgl {
 
 export const getWebgl = (canvas) => {
 	if (Webgl.instance) return Webgl.instance;
-	return new Webgl(canvas);
+
+	const w = new Webgl(canvas);
+	w.init();
+	w.event();
+
+	return w;
 };
