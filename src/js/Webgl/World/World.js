@@ -9,10 +9,11 @@ export default class World {
 	}
 
 	setComponent() {
-		this.player = new Player();
 		this.ground = new Ground();
-
-		initialized = true;
+		setTimeout(() => {
+			this.player = new Player({ ground: this.ground.base.mesh });
+			initialized = true;
+		}, 1000);
 	}
 
 	resize() {

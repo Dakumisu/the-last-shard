@@ -9,13 +9,6 @@ const movementKey = {
 	right: 'D',
 	space: 'SPACE',
 };
-const keyPressed = {
-	forward: false,
-	left: false,
-	backward: false,
-	right: false,
-	space: false,
-};
 
 export default class Control extends Emmitter {
 	constructor() {
@@ -25,37 +18,37 @@ export default class Control extends Emmitter {
 		const keyboard = game.keyboard;
 
 		keyboard.on('keydown', (key) => {
-			console.log(`keydown ${key}`);
 			this.keyDown(key);
 		});
 		keyboard.on('keyup', (key) => {
-			console.log(`keyup ${key}`);
 			this.keyUp(key);
 		});
+
+		this.keyPressed = {
+			forward: false,
+			left: false,
+			backward: false,
+			right: false,
+			space: false,
+		};
 	}
 
 	keyDown(key) {
 		switch (key) {
 			case movementKey.forward:
-				keyPressed.forward = true;
+				this.keyPressed.forward = true;
 				break;
 			case movementKey.backward:
-				keyPressed.backward = true;
+				this.keyPressed.backward = true;
 				break;
 			case movementKey.right:
-				keyPressed.right = true;
+				this.keyPressed.right = true;
 				break;
 			case movementKey.left:
-				keyPressed.left = true;
+				this.keyPressed.left = true;
 				break;
 			case movementKey.space:
-				keyPressed.space = true;
-				// if ( playerIsOnGround ) {
-
-				// 	playerVelocity.y = 10.0;
-
-				// }
-
+				this.keyPressed.space = true;
 				break;
 		}
 	}
@@ -63,16 +56,19 @@ export default class Control extends Emmitter {
 	keyUp(key) {
 		switch (key) {
 			case movementKey.forward:
-				keyPressed.forward = false;
+				this.keyPressed.forward = false;
 				break;
 			case movementKey.backward:
-				keyPressed.backward = false;
+				this.keyPressed.backward = false;
 				break;
 			case movementKey.right:
-				keyPressed.right = false;
+				this.keyPressed.right = false;
 				break;
 			case movementKey.left:
-				keyPressed.left = false;
+				this.keyPressed.left = false;
+				break;
+			case movementKey.space:
+				this.keyPressed.space = false;
 				break;
 		}
 	}

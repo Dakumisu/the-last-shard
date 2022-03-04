@@ -5,8 +5,6 @@ import { getWebgl } from '@webgl/Webgl';
 
 let initialized = false;
 
-const params = {};
-
 export default class BasePhysic {
 	constructor() {
 		this.base = {};

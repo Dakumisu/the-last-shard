@@ -27,10 +27,6 @@ export default ({ mode }) => {
 			hmr: { port: 8080 },
 		},
 
-		json: {
-			stringify: true,
-		},
-
 		plugins: [
 			glslify(),
 			ifdefRollupPlugin(define),
@@ -38,15 +34,6 @@ export default ({ mode }) => {
 				reloadOnPartialChange: false,
 				context: content,
 			}),
-		],
-
-		transforms: [
-			{
-				test: ({ path }) => path.endsWith('.html'),
-				transform({ code }) {
-					return `export default ${JSON.stringify(code)}`;
-				},
-			},
 		],
 
 		assetsInclude: ['**/*.glb', '**/*.gltf'],
@@ -99,7 +86,7 @@ export default ({ mode }) => {
 					replacement: '/*',
 				},
 			],
-			extensions: ['.cjs', '.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
+			extensions: ['.cjs', '.mjs', '.js', '.ts', '.json'],
 		},
 
 		preprocessorOptions: {

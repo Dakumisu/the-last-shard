@@ -13,9 +13,7 @@ export default class Camera {
 		this.canvas = webgl.canvas;
 
 		this.type = opt.type || 'Perspective';
-		this.type == 'Orthographic'
-			? this.setOrthographicCamera()
-			: this.setPerspectiveCamera();
+		this.type == 'Orthographic' ? this.setOrthographicCamera() : this.setPerspectiveCamera();
 
 		/// #if DEBUG
 		this.setDebugCamera();
@@ -23,13 +21,8 @@ export default class Camera {
 	}
 
 	setPerspectiveCamera() {
-		this.instance = new PerspectiveCamera(
-			75,
-			store.aspect.ratio,
-			0.1,
-			1000,
-		);
-		this.instance.position.set(4, 5, 40);
+		this.instance = new PerspectiveCamera(75, store.aspect.ratio, 0.1, 1000);
+		this.instance.position.set(1, 2, 5);
 		this.instance.lookAt(0, 0, 0);
 		this.instance.rotation.reorder('YXZ');
 
@@ -50,11 +43,7 @@ export default class Camera {
 
 		// If you want to keep the aspect of your image
 		const aspect = 1 / 1; // Aspect of the displayed image
-		const imgAspect = imageAspect(
-			aspect,
-			store.resolution.width,
-			store.resolution.height,
-		);
+		const imgAspect = imageAspect(aspect, store.resolution.width, store.resolution.height);
 		store.aspect.a1 = imgAspect.a1;
 		store.aspect.a2 = imgAspect.a2;
 
@@ -67,10 +56,7 @@ export default class Camera {
 		this.debugCam.camera = this.instance.clone();
 		this.debugCam.camera.rotation.reorder('YXZ');
 
-		this.debugCam.orbitControls = new OrbitControls(
-			this.debugCam.camera,
-			this.canvas,
-		);
+		this.debugCam.orbitControls = new OrbitControls(this.debugCam.camera, this.canvas);
 		this.debugCam.orbitControls.enabled = this.debugCam.active;
 		this.debugCam.orbitControls.screenSpacePanning = true;
 		this.debugCam.orbitControls.enableKeys = false;
@@ -88,11 +74,7 @@ export default class Camera {
 
 		// If you want to keep the aspect of your image in a shader
 		const aspect = 1 / 1; // Aspect of the displayed image
-		const imgAspect = imageAspect(
-			aspect,
-			store.resolution.width,
-			store.resolution.height,
-		);
+		const imgAspect = imageAspect(aspect, store.resolution.width, store.resolution.height);
 		store.aspect.a1 = imgAspect.a1;
 		store.aspect.a2 = imgAspect.a2;
 
@@ -105,6 +87,10 @@ export default class Camera {
 	render() {
 		/// #if DEBUG
 		this.debugCam.orbitControls.update();
+
+		this.debugCam.orbitControls.maxPolarAngle = Math.PI / 2;
+		this.debugCam.orbitControls.minDistance = 1;
+		this.debugCam.orbitControls.maxDistance = 20;
 
 		this.instance.position.copy(this.debugCam.camera.position);
 		this.instance.quaternion.copy(this.debugCam.camera.quaternion);

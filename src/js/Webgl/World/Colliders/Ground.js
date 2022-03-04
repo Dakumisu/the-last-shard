@@ -3,10 +3,10 @@ import { Color, DoubleSide, GridHelper, Mesh, MeshNormalMaterial } from 'three';
 import { getWebgl } from '@webgl/Webgl';
 import BaseCollider from '../Components/BaseCollider';
 
+import mergeGeometry from '@utils/webgl/mergeBufferGeometries';
 import { store } from '@tools/Store';
 
 import sandbox from '/assets/model/sandbox.glb';
-import mergeGeometry from '@utils/webgl/mergeBufferGeometries';
 
 const twoPI = Math.PI * 2;
 
@@ -28,7 +28,7 @@ export default class Ground extends BaseCollider {
 		const webgl = getWebgl();
 		this.scene = webgl.scene.instance;
 
-		this.object = {};
+		this.base = {};
 
 		this.init();
 
@@ -61,24 +61,21 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		this.object.geometry = await mergeGeometry([], [sandbox]);
+		this.base.geometry = await mergeGeometry([], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
 		};
-		this.object.geometry.boundsTree = this.setPhysics(
-			this.object.geometry,
-			geoOpt,
-		);
-		this.object.material = new MeshNormalMaterial({ side: DoubleSide });
-		this.object.mesh = new Mesh(this.object.geometry, this.object.material);
+		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
+		this.base.material = new MeshNormalMaterial({ side: DoubleSide });
+		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+
+		this.scene.add(this.base.mesh);
 
 		/// #if DEBUG
-		const v = this.setVisualizer(this.object.mesh, 30);
+		const v = this.setVisualizer(this.base.mesh, 30);
 		this.scene.add(v);
 		/// #endif
-
-		this.scene.add(this.object.mesh);
 	}
 
 	resize() {
