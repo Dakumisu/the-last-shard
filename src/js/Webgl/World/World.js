@@ -13,7 +13,7 @@ export default class World {
 		setTimeout(() => {
 			this.player = new Player({ ground: this.ground.base.mesh });
 			initialized = true;
-		}, 1000);
+		}, 5000);
 	}
 
 	resize() {
