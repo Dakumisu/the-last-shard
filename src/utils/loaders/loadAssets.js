@@ -10,12 +10,14 @@ const audioLoader = new AudioLoader();
 /**
  *
  * @param {string} key
- * @returns {Promise<Texture>}
+ * @returns {Promise<Texture | null>}
  */
 export function loadTexture(key) {
 	const path = manifest.get(key);
 	if (!path) {
+		/// #if DEBUG
 		console.error('Texture key not found');
+		/// #endif
 		return;
 	}
 	return textureLoader.loadAsync(path);
@@ -24,12 +26,14 @@ export function loadTexture(key) {
 /**
  *
  * @param {string} key
- * @returns {Promise<AudioBuffer>}
+ * @returns {Promise<AudioBuffer | null>}
  */
 export function loadAudio(key) {
 	const path = manifest.get(key);
 	if (!path) {
+		/// #if DEBUG
 		console.error('Audio key not found');
+		/// #endif
 		return;
 	}
 	return audioLoader.loadAsync(path);
