@@ -1,8 +1,6 @@
-import { BufferAttribute, BufferGeometry, Matrix4, Object3D } from 'three';
-
+import loadGLTF from '@utils/loaders/loadGLTF';
 import wMergeGeo from '@workers/wMergeGeo?worker';
-
-import loadGLTF from '@utils/loader/loadGLTF';
+import { BufferAttribute, BufferGeometry, Matrix4, Object3D } from 'three';
 
 let geometries = [];
 
