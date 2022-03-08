@@ -2,6 +2,7 @@ import manifest from '@utils/manifest';
 import { AudioLoader, LoadingManager, Texture, TextureLoader } from 'three';
 
 const loadingManager = new LoadingManager();
+// TODO => decide if an asset need to be in the LoadingManager
 
 const textureLoader = new TextureLoader();
 const audioLoader = new AudioLoader();
