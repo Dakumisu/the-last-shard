@@ -1,28 +1,7 @@
-import {
-	Box3,
-	BoxHelper,
-	Color,
-	GridHelper,
-	Line3,
-	Matrix4,
-	Mesh,
-	MeshBasicMaterial,
-	MeshLambertMaterial,
-	MeshNormalMaterial,
-	MeshStandardMaterial,
-	MeshToonMaterial,
-	Vector2,
-	Vector3,
-} from 'three';
-import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-import { MeshBVH, MeshBVHVisualizer } from 'three-mesh-bvh';
-
-import { getWebgl } from '@webgl/Webgl';
 import { getGame } from '@game/Game';
-
-import { store } from '@tools/Store';
-import loadModel from '@utils/loader/loadGLTF';
-
+import { getWebgl } from '@webgl/Webgl';
+import { Box3, Line3, Matrix4, Mesh, MeshNormalMaterial, Vector3 } from 'three';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import BaseEntity from '../Components/BaseEntity';
 
 const twoPI = Math.PI * 2;
