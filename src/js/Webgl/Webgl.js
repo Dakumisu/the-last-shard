@@ -1,18 +1,17 @@
-import Raf from '@tools/Raf';
-import Size from '@tools/Size';
-import Keyboard from '@tools/Keyboard';
-import Device from '@tools/Device';
-import Mouse from '@tools/Mouse';
-import Raycasters from '@tools/Raycasters';
-import PerformanceMonitor from '@tools/PerformanceMonitor';
-
-import Scene from './Scene';
-import Renderer from './Renderer';
-import Camera from './Camera';
-import World from './World/World';
-
 /// #if DEBUG
 import Debug from '@tools/Debug';
+import Device from '@tools/Device';
+import Keyboard from '@tools/Keyboard';
+import Mouse from '@tools/Mouse';
+import PerformanceMonitor from '@tools/PerformanceMonitor';
+import Raf from '@tools/Raf';
+import Raycasters from '@tools/Raycasters';
+import Size from '@tools/Size';
+import Camera from './Camera';
+import Renderer from './Renderer';
+import Scene from './Scene';
+import World from './World/World';
+
 /// #endif
 
 let initialized = false;
