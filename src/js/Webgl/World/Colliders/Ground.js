@@ -30,7 +30,7 @@ export default class Ground extends BaseCollider {
 
 		this.base = {};
 
-		this.init();
+		// this.init();
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;

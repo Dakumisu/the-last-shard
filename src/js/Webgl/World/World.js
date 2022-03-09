@@ -8,12 +8,13 @@ export default class World {
 		this.setComponent();
 	}
 
-	setComponent() {
+	async setComponent() {
 		this.ground = new Ground();
-		setTimeout(() => {
-			this.player = new Player({ ground: this.ground.base.mesh });
-			initialized = true;
-		}, 5000);
+		await this.ground.init();
+
+		this.player = new Player({ ground: this.ground.base.mesh });
+
+		initialized = true;
 	}
 
 	resize() {

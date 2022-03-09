@@ -6,6 +6,7 @@ import {
 	Line3,
 	Matrix4,
 	Mesh,
+	BoxGeometry,
 	MeshBasicMaterial,
 	MeshLambertMaterial,
 	MeshNormalMaterial,
@@ -19,11 +20,12 @@ import { MeshBVH, MeshBVHVisualizer } from 'three-mesh-bvh';
 
 import { getWebgl } from '@webgl/Webgl';
 import { getGame } from '@game/Game';
+import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
-import loadModel from '@utils/loader/loadGLTF';
+import mergeGeometry from '@utils/webgl/mergeBufferGeometries';
 
-import BaseEntity from '../Components/BaseEntity';
+import model from '/assets/model/player.glb';
 
 const twoPI = Math.PI * 2;
 const tVec3a = new Vector3();
@@ -37,7 +39,7 @@ let initialized = false;
 
 const params = {
 	speed: 10,
-	physicsSteps: 1,
+	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
 	defaultPos: new Vector3().set(0, 3, 30),
 };
@@ -110,7 +112,13 @@ export default class Player extends BaseEntity {
 
 	setGeometry() {
 		this.base.geometry = new RoundedBoxGeometry(1.0, 2.0, 1.0, 10, 0.5);
+
 		this.base.geometry.translate(0, -0.5, 0);
+
+		this.base.capsuleInfo = {
+			radius: 1,
+			segment: new Line3(new Vector3(), new Vector3(0, -1.0, 0.0)),
+		};
 
 		const geoOpt = {
 			lazyGeneration: false,
@@ -128,11 +136,6 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.copy(params.defaultPos);
 		this.scene.add(this.base.mesh);
 
-		this.base.capsuleInfo = {
-			radius: 0.5,
-			segment: new Line3(new Vector3(), new Vector3(0, -1.0, 0.0)),
-		};
-
 		/// #if DEBUG
 		const v = this.setVisualizer(this.base.mesh, 15);
 		this.scene.add(v);
@@ -146,7 +149,10 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
 		// move the player
-		const angle = this.control.getAzimuthalAngle();
+
+		// if (state.playerOnGround) {
+		// const angle = this.control.getAzimuthalAngle();
+		const angle = this.base.mesh.rotation.y;
 		if (this.keyPressed.forward) {
 			tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, angle);
 			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
@@ -158,14 +164,25 @@ export default class Player extends BaseEntity {
 		}
 
 		if (this.keyPressed.left) {
-			tVec3a.set(-1, 0, 0).applyAxisAngle(params.upVector, angle);
-			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
+			// tVec3a.set(-1, 0, 0).applyAxisAngle(params.upVector, angle);
+			// this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
+			this.base.mesh.rotation.y += 0.015;
+			// this.base.mesh.rotation.y = this.base.mesh.rotation.y;
+			if (this.base.mesh.rotation.y > Math.PI)
+				this.base.mesh.rotation.y = this.base.mesh.rotation.y - 2 * Math.PI;
 		}
 
 		if (this.keyPressed.right) {
-			tVec3a.set(1, 0, 0).applyAxisAngle(params.upVector, angle);
-			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
+			// tVec3a.set(1, 0, 0).applyAxisAngle(params.upVector, angle);
+			// this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
+			this.base.mesh.rotation.y -= 0.015;
+			// this.base.mesh.rotation.y = this.base.mesh.rotation.y;
+			if (this.base.mesh.rotation.y < -Math.PI)
+				this.base.mesh.rotation.y = this.base.mesh.rotation.y + 2 * Math.PI;
 		}
+		// }
+
+		// console.log(this.base.mesh.rotation.y);
 
 		if (this.keyPressed.space) {
 			if (state.playerOnGround) playerVelocity.y = 10.0;
