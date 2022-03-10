@@ -6,7 +6,7 @@ const ignoreMaxed = true;
 export default class StatsJs {
 	constructor() {
 		this.stats = new Stats();
-		this.stats.showPanel(0);
+		this.stats.showPanel(3);
 
 		this.active = false;
 
