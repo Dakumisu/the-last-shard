@@ -4,7 +4,8 @@ import { store } from '@tools/Store';
 
 export default class Nodes {
 	constructor() {
-		window.addEventListener('DOMContentLoaded', this.domLoaded.bind(this));
+		this.domLoadedEventHandler = this.domLoaded.bind(this);
+		window.addEventListener('DOMContentLoaded', this.domLoadedEventHandler);
 	}
 
 	async getNodes() {
@@ -99,7 +100,7 @@ export default class Nodes {
 		delete this.domElements;
 		delete this.shadowElements;
 
-		window.removeEventListener('DOMContentLoaded');
+		window.removeEventListener('DOMContentLoaded', this.domLoadedEventHandler);
 	}
 
 	async reset() {
