@@ -36,12 +36,12 @@ export default class Player extends BaseEntity {
 	constructor(opt = {}) {
 		super();
 
+		const webgl = getWebgl();
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
 		this.debugCam = webgl.camera.debugCam.camera;
 		this.control = webgl.camera.debugCam.orbitControls;
 
-		const webgl = getWebgl();
 		this.scene = webgl.scene.instance;
 
 		this.ground = opt.ground;
