@@ -6,7 +6,7 @@ const ignoreMaxed = true;
 export default class StatsJs {
 	constructor() {
 		this.stats = new Stats();
-		this.stats.showPanel(3);
+		this.stats.showPanel(0);
 
 		this.active = false;
 
@@ -28,12 +28,8 @@ export default class StatsJs {
 	setRenderPanel(_context) {
 		this.render = {};
 		this.render.context = _context;
-		this.render.extension = this.render.context.getExtension(
-			'EXT_disjoint_timer_query_webgl2',
-		);
-		this.render.panel = this.stats.addPanel(
-			new Stats.Panel('Render (ms)', '#f8f', '#212'),
-		);
+		this.render.extension = this.render.context.getExtension('EXT_disjoint_timer_query_webgl2');
+		this.render.panel = this.stats.addPanel(new Stats.Panel('Render (ms)', '#f8f', '#212'));
 
 		const webGL2 =
 			typeof WebGL2RenderingContext !== 'undefined' &&
@@ -92,9 +88,7 @@ export default class StatsJs {
 
 		// End the query (result will be available "later")
 		if (this.queryCreated) {
-			this.render.context.endQuery(
-				this.render.extension.TIME_ELAPSED_EXT,
-			);
+			this.render.context.endQuery(this.render.extension.TIME_ELAPSED_EXT);
 		}
 	}
 
