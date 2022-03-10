@@ -1,4 +1,4 @@
-import signal from 'signal-js';
+import signal from 'philbin-packages/signal';
 
 import Device from '@tools/Device';
 import Keyboard from '@tools/Keyboard';

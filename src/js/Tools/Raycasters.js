@@ -1,4 +1,4 @@
-import signal from 'signal-js';
+import signal from 'philbin-packages/signal';
 import { Raycaster, ArrowHelper, Vector3 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';

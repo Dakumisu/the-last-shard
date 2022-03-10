@@ -1,4 +1,4 @@
-import signal from 'signal-js';
+import signal from 'philbin-packages/signal';
 
 import { getGame } from './Game';
 
