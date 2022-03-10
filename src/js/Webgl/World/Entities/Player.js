@@ -41,7 +41,6 @@ export default class Player extends BaseEntity {
 
 		const webgl = getWebgl();
 		this.scene = webgl.scene.instance;
-		this.debugCam = webgl.camera.debugCam.camera;
 		this.control = webgl.camera.debugCam.orbitControls;
 
 		this.ground = opt.ground;
@@ -51,6 +50,7 @@ export default class Player extends BaseEntity {
 		this.init();
 
 		/// #if DEBUG
+		this.debugCam = webgl.camera.debugCam.camera;
 		debug.instance = webgl.debug;
 		this.debug();
 		/// #endif
