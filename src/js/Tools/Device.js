@@ -144,8 +144,6 @@ export default class Device {
 		html.style.removeProperty('--vp-width');
 		html.removeAttribute('class');
 
-		signal.off('visibility');
-
 		document.removeEventListener('visibilitychange', this.checkVisibility.bind(this));
 	}
 }
