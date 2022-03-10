@@ -1,5 +1,5 @@
-/// #if DEBUG
-import Debug from '@tools/Debug';
+import signal from 'signal-js';
+
 import Device from '@tools/Device';
 import Keyboard from '@tools/Keyboard';
 import Mouse from '@tools/Mouse';
@@ -12,6 +12,8 @@ import Renderer from './Renderer';
 import Scene from './Scene';
 import World from './World/World';
 
+/// #if DEBUG
+import Debug from '@tools/Debug';
 /// #endif
 
 let initialized = false;
@@ -61,24 +63,20 @@ class Webgl {
 	event() {
 		if (!initialized) return;
 
-		this.raycaster.on('raycast', (e) => {
+		signal.on('raycast', (e) => {
 			/// #if DEBUG
 			// console.log('Raycast something 🔍', e);
 			/// #endif
 		});
 
-		this.device.on('visibility', (visible) => {
-			!visible ? this.raf.pause() : this.raf.play();
-		});
-
-		this.size.on('resize', () => {
+		signal.on('resize', () => {
 			this.resize();
 			/// #if DEBUG
 			console.log('Resize spotted 📐');
 			/// #endif
 		});
 
-		this.raf.on('raf', () => {
+		signal.on('raf', () => {
 			this.update();
 			this.render();
 		});
@@ -111,6 +109,7 @@ class Webgl {
 	}
 
 	destroy() {
+		signal.clear();
 		/// #if DEBUG
 		this.debug.destroy();
 		/// #endif

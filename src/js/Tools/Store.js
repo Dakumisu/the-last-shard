@@ -17,6 +17,7 @@ const store = {
 	browser: null,
 
 	views: null,
+
 	loadedAssets: {
 		models: new Map(),
 		audios: new Map(),

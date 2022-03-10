@@ -1,23 +1,18 @@
-import Emitter from './Emitter';
+import signal from 'signal-js';
 
 import { store } from './Store';
 
 const html = document.documentElement;
 const deviceList = ['desktop', 'mobile'];
 
-export default class Device extends Emitter {
+export default class Device {
 	constructor() {
-		super();
-
 		this.checkDevice();
 		this.checkBrowser();
 		this.setHtmlStyle();
 		this.getRootStyle();
 
-		document.addEventListener(
-			'visibilitychange',
-			this.checkVisibility.bind(this),
-		);
+		document.addEventListener('visibilitychange', this.checkVisibility.bind(this));
 	}
 
 	checkDevice() {
@@ -74,8 +69,7 @@ export default class Device extends Emitter {
 
 		// For other browser "name/version" is at the end of userAgent
 		else if (
-			(offsetName = agent.lastIndexOf(' ') + 1) <
-			(offsetVersion = agent.lastIndexOf('/'))
+			(offsetName = agent.lastIndexOf(' ') + 1) < (offsetVersion = agent.lastIndexOf('/'))
 		) {
 			browserName = agent.substring(offsetName, offsetVersion);
 			fullVersion = agent.substring(offsetVersion + 1);
@@ -85,10 +79,8 @@ export default class Device extends Emitter {
 		}
 
 		// trimming the fullVersion string at semicolon/space if present
-		if ((ix = fullVersion.indexOf(';')) != -1)
-			fullVersion = fullVersion.substring(0, ix);
-		if ((ix = fullVersion.indexOf(' ')) != -1)
-			fullVersion = fullVersion.substring(0, ix);
+		if ((ix = fullVersion.indexOf(';')) != -1) fullVersion = fullVersion.substring(0, ix);
+		if ((ix = fullVersion.indexOf(' ')) != -1) fullVersion = fullVersion.substring(0, ix);
 		browserMajorVersion = parseInt('' + fullVersion, 10);
 		if (isNaN(browserMajorVersion)) {
 			fullVersion = '' + parseFloat(navigator.appVersion);
@@ -125,9 +117,9 @@ export default class Device extends Emitter {
 
 		for (let i = 0; i < rootStyleName.length; i++) {
 			if (getComputedStyle(html).getPropertyValue(rootStyleName[i])) {
-				rootStyle[rootStyleName[i]] = getComputedStyle(
-					html,
-				).getPropertyValue(rootStyleName[i]);
+				rootStyle[rootStyleName[i]] = getComputedStyle(html).getPropertyValue(
+					rootStyleName[i],
+				);
 			}
 		}
 
@@ -135,7 +127,7 @@ export default class Device extends Emitter {
 	}
 
 	checkVisibility() {
-		this.emit('visibility', [!document.hidden]);
+		signal.emit('visibility', !document.hidden);
 	}
 
 	resize() {
@@ -152,11 +144,8 @@ export default class Device extends Emitter {
 		html.style.removeProperty('--vp-width');
 		html.removeAttribute('class');
 
-		this.off('visibility');
+		signal.off('visibility');
 
-		document.removeEventListener(
-			'visibilitychange',
-			this.checkVisibility.bind(this),
-		);
+		document.removeEventListener('visibilitychange', this.checkVisibility.bind(this));
 	}
 }

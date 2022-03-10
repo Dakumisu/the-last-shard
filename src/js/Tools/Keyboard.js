@@ -1,9 +1,7 @@
-import Emitter from '@tools/Emitter';
+import signal from 'signal-js';
 
-export default class Keyboard extends Emitter {
+export default class Keyboard {
 	constructor() {
-		super();
-
 		document.addEventListener('keydown', this.getKeyDown.bind(this));
 		document.addEventListener('keyup', this.getKeyUp.bind(this));
 	}
@@ -11,18 +9,16 @@ export default class Keyboard extends Emitter {
 	getKeyDown(e) {
 		const key = (e.key != ' ' ? e.key : e.code).toUpperCase();
 
-		this.emit('keydown', [key]);
+		signal.emit('keydown', key);
 	}
 
 	getKeyUp(e) {
 		const key = (e.key != ' ' ? e.key : e.code).toUpperCase();
 
-		this.emit('keyup', [key]);
+		signal.emit('keyup', key);
 	}
 
 	destroy() {
-		this.off('keydown');
-		this.off('keyup');
 		document.removeEventListener('keydown', this.getKeyDown.bind(this));
 		document.removeEventListener('keyup', this.getKeyUp.bind(this));
 	}
