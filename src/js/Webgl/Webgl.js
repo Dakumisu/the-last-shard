@@ -130,8 +130,12 @@ class Webgl {
 	}
 }
 
-export const getWebgl = (canvas) => {
-	if (Webgl.instance) return Webgl.instance;
-
+const initWebgl = (canvas) => {
 	return new Webgl(canvas);
 };
+
+const getWebgl = () => {
+	return Webgl.instance;
+};
+
+export { initWebgl, getWebgl };
