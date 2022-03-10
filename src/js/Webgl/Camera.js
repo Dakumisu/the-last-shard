@@ -15,9 +15,7 @@ export default class Camera {
 		this.type = opt.type || 'Perspective';
 		this.type == 'Orthographic' ? this.setOrthographicCamera() : this.setPerspectiveCamera();
 
-		/// #if DEBUG
 		this.setDebugCamera();
-		/// #endif
 	}
 
 	setPerspectiveCamera() {
@@ -50,7 +48,6 @@ export default class Camera {
 		this.scene.add(this.instance);
 	}
 
-	/// #if DEBUG
 	setDebugCamera() {
 		this.debugCam = {};
 		this.debugCam.camera = this.instance.clone();
@@ -64,7 +61,6 @@ export default class Camera {
 		this.debugCam.orbitControls.enableDamping = true;
 		this.debugCam.orbitControls.update();
 	}
-	/// #endif
 
 	resize() {
 		if (this.instance instanceof PerspectiveCamera) {
@@ -78,14 +74,11 @@ export default class Camera {
 		store.aspect.a1 = imgAspect.a1;
 		store.aspect.a2 = imgAspect.a2;
 
-		/// #if DEBUG
 		this.debugCam.camera.aspect = store.aspect.ratio;
 		this.debugCam.camera.updateProjectionMatrix();
-		/// #endif
 	}
 
 	render() {
-		/// #if DEBUG
 		this.debugCam.orbitControls.update();
 
 		this.debugCam.orbitControls.maxPolarAngle = Math.PI / 2;
@@ -95,12 +88,9 @@ export default class Camera {
 		this.instance.position.copy(this.debugCam.camera.position);
 		this.instance.quaternion.copy(this.debugCam.camera.quaternion);
 		this.instance.updateMatrixWorld();
-		/// #endif
 	}
 
 	destroy() {
-		/// #if DEBUG
 		this.debugCam.orbitControls.dispose();
-		/// #endif
 	}
 }
