@@ -1,14 +1,14 @@
-import Emitter from '@tools/Emitter';
+import signal from 'philbin-packages/signal';
 
 import { store } from '@tools/Store';
 
 const defaultViewList = ['home', 'exp'];
 
-export default class Views extends Emitter {
+export default class Views {
 	constructor() {
-		super();
-
 		this.setViewsList();
+
+		signal.on('updateView', (view) => this.changeView(view));
 	}
 
 	setViewsList() {
@@ -23,8 +23,7 @@ export default class Views extends Emitter {
 	}
 
 	addView(view) {
-		if (this.viewList[view])
-			return console.warn(`View '${view}' already exist ❗`);
+		if (this.viewList[view]) return console.warn(`View '${view}' already exist ❗`);
 
 		this.viewList[view] = view;
 		store.views = this.viewList;
@@ -35,8 +34,7 @@ export default class Views extends Emitter {
 	}
 
 	removeView(view) {
-		if (!this.viewList[view])
-			return console.warn(`View '${view}' doesn't exist ❗`);
+		if (!this.viewList[view]) return console.warn(`View '${view}' doesn't exist ❗`);
 
 		delete this.viewList[view];
 		store.views = this.viewList;
@@ -48,11 +46,10 @@ export default class Views extends Emitter {
 
 	changeView(view) {
 		if (!view) return console.error(`View's name required 🚫`);
-		if (!this.viewList[view])
-			return console.error(`View '${view}' doesn't exist 🚫`);
+		if (!this.viewList[view]) return console.error(`View '${view}' doesn't exist 🚫`);
 
 		this.currentView = this.viewList[view];
-		this.emit('changeView', [this.currentView]);
+		signal.emit('viewUpdated', this.currentView);
 	}
 
 	getView() {

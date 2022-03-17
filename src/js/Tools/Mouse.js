@@ -12,10 +12,7 @@ export default class Mouse {
 		const webgl = getWebgl();
 		this.camera = webgl.camera.instance;
 
-		document.addEventListener(
-			'mousemove',
-			this.getMousesPositions.bind(this),
-		);
+		document.addEventListener('mousemove', this.getMousesPositions.bind(this));
 
 		this.initMouses();
 	}
@@ -38,10 +35,7 @@ export default class Mouse {
 	getMousesPositions(e) {
 		this.dom.set(e.clientX, e.clientY);
 
-		this.frag.set(
-			this.dom.x / window.innerWidth,
-			this.dom.y / window.innerHeight,
-		);
+		this.frag.set(this.dom.x / window.innerWidth, this.dom.y / window.innerHeight);
 
 		this.scene.set(
 			(this.dom.x / window.innerWidth) * 2 - 1,
@@ -67,10 +61,7 @@ export default class Mouse {
 	}
 
 	cursorMap(mousePos, in_min, in_max, out_min, out_max) {
-		return (
-			((mousePos - in_min) * (out_max - out_min)) / (in_max - in_min) +
-			out_min
-		);
+		return ((mousePos - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 	}
 
 	viewSize(objectPos = 0) {
@@ -91,9 +82,6 @@ export default class Mouse {
 	}
 
 	destroy() {
-		document.removeEventListener(
-			'mousemove',
-			this.getMousesPositions.bind(this),
-		);
+		document.removeEventListener('mousemove', this.getMousesPositions.bind(this));
 	}
 }

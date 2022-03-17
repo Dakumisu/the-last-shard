@@ -3,11 +3,11 @@ import { Color, DoubleSide, GridHelper, Mesh, MeshNormalMaterial } from 'three';
 import { getWebgl } from '@webgl/Webgl';
 import BaseCollider from '../Components/BaseCollider';
 
-import mergeGeometry from '@utils/webgl/mergeBufferGeometries';
+import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
 
-import sandbox from '/assets/model/sandbox.glb';
-
+// import sandbox from '/assets/model/sandbox.glb';
+const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
 
 let initialized = false;

@@ -8,6 +8,9 @@ class Game {
 
 	constructor() {
 		Game.instance = this;
+
+		this.init();
+		this.event();
 	}
 
 	async init() {
@@ -33,12 +36,12 @@ class Game {
 	}
 }
 
-export const getGame = () => {
-	if (Game.instance) return Game.instance;
-
-	const g = new Game();
-	g.init();
-	g.event();
-
-	return g;
+const initGame = () => {
+	return new Game();
 };
+
+const getGame = () => {
+	return Game.instance;
+};
+
+export { initGame, getGame };

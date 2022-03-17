@@ -1,14 +1,14 @@
+import signal from 'philbin-packages/signal';
+
+import Device from '@tools/Device';
+import Keyboard from '@tools/Keyboard';
+import Mouse from '@tools/Mouse';
+import PerformanceMonitor from '@tools/PerformanceMonitor';
 import Raf from '@tools/Raf';
 import Size from '@tools/Size';
-import Keyboard from '@tools/Keyboard';
-import Device from '@tools/Device';
-import Mouse from '@tools/Mouse';
-import Raycasters from '@tools/Raycasters';
-import PerformanceMonitor from '@tools/PerformanceMonitor';
-
-import Scene from './Scene';
-import Renderer from './Renderer';
 import Camera from './Camera';
+import Renderer from './Renderer';
+import Scene from './Scene';
 import World from './World/World';
 
 /// #if DEBUG
@@ -21,7 +21,6 @@ class Webgl {
 	static instance;
 
 	constructor(_canvas) {
-		console.log(_canvas);
 		if (!_canvas) {
 			console.error(`Missing 'canvas' property 🚫`);
 			return null;
@@ -29,11 +28,11 @@ class Webgl {
 		this.canvas = _canvas;
 		Webgl.instance = this;
 
-		this.init();
+		this.beforeInit();
 		this.event();
 	}
 
-	init() {
+	beforeInit() {
 		/// #if DEBUG
 		this.debug = new Debug();
 		/// #endif
@@ -43,16 +42,24 @@ class Webgl {
 
 		this.raf = new Raf();
 		this.scene = new Scene();
+		this.keyboard = new Keyboard();
+
+		this.init();
+	}
+
+	init() {
 		this.camera = new Camera();
 		this.performance = new PerformanceMonitor();
 		this.renderer = new Renderer();
 
-		this.keyboard = new Keyboard();
 		this.mouse = new Mouse();
 
 		this.world = new World();
-		this.raycaster = new Raycasters();
 
+		this.afterInit();
+	}
+
+	afterInit() {
 		this.performance.everythingLoaded();
 		this.resize();
 
@@ -62,41 +69,29 @@ class Webgl {
 	event() {
 		if (!initialized) return;
 
-		this.raycaster.on('raycast', (e) => {
+		signal.on('raycast', (e) => {
 			/// #if DEBUG
 			// console.log('Raycast something 🔍', e);
 			/// #endif
 		});
 
-		this.device.on('visibility', (visible) => {
-			!visible ? this.raf.pause() : this.raf.play();
-		});
-
-		this.size.on('resize', () => {
+		signal.on('resize', () => {
 			this.resize();
 			/// #if DEBUG
 			console.log('Resize spotted 📐');
 			/// #endif
 		});
 
-		this.raf.on('raf', () => {
+		signal.on('raf', () => {
 			this.update();
 			this.render();
 		});
 	}
 
-	render() {
-		if (!initialized) return;
-
-		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
-		if (this.camera) this.camera.render();
-		if (this.renderer) this.renderer.render();
-	}
-
 	update() {
 		if (!initialized) return;
 
-		// if (this.raycaster) this.raycaster.update();
+		if (this.camera) this.camera.update();
 		if (this.performance) this.performance.update(this.raf.delta);
 
 		/// #if DEBUG
@@ -104,7 +99,16 @@ class Webgl {
 		/// #endif
 	}
 
+	render() {
+		if (!initialized) return;
+
+		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
+		if (this.renderer) this.renderer.render();
+	}
+
 	resize() {
+		if (!initialized) return;
+
 		if (this.renderer) this.renderer.resize();
 		if (this.camera) this.camera.resize();
 		if (this.world) this.world.resize();
@@ -112,6 +116,7 @@ class Webgl {
 	}
 
 	destroy() {
+		signal.clear();
 		/// #if DEBUG
 		this.debug.destroy();
 		/// #endif
@@ -132,8 +137,12 @@ class Webgl {
 	}
 }
 
-export const getWebgl = (canvas) => {
-	if (Webgl.instance) return Webgl.instance;
-
+const initWebgl = (canvas) => {
 	return new Webgl(canvas);
 };
+
+const getWebgl = () => {
+	return Webgl.instance;
+};
+
+export { initWebgl, getWebgl };

@@ -15,16 +15,28 @@ import {
 	Vector3,
 } from 'three';
 
-import { getWebgl } from '../Webgl';
+import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
 
-import postProcessingMaterial from './basic/material';
+import postFXMaterial from './basic/material';
 
 const tVec2 = new Vector2();
 const tVec3 = new Vector3();
 
+const params = {
+	usePostprocess: false,
+	useFxaa: true,
+};
+
 let initialized = false;
+
+/// #if DEBUG
+const debug = {
+	instance: null,
+	label: 'Post FX',
+};
+/// #endif
 
 export default class PostFX {
 	constructor(renderer) {
@@ -36,8 +48,6 @@ export default class PostFX {
 
 		this.renderer.getDrawingBufferSize(tVec2);
 
-		this.usePostprocess = false;
-
 		this.setEnvironnement();
 		this.setTriangle();
 		this.setRenderTarget();
@@ -45,7 +55,26 @@ export default class PostFX {
 		this.setPostPro();
 
 		initialized = true;
+
+		/// #if DEBUG
+		debug.instance = webgl.debug;
+		this.debug();
+		/// #endif
 	}
+
+	/// #if DEBUG
+	debug() {
+		debug.instance.setFolder(debug.label);
+		const gui = debug.instance.getFolder(debug.label);
+
+		gui.addButton({
+			title: 'Toggle Post Processing',
+		}).on('click', () => {
+			this.material.uniforms.POST_PROCESSING.value = params.usePostprocess =
+				!params.usePostprocess;
+		});
+	}
+	/// #endif
 
 	setEnvironnement() {
 		this.scene = new Scene();
@@ -57,10 +86,7 @@ export default class PostFX {
 
 		const vertices = new Float32Array([-1.0, -1.0, 3.0, -1.0, -1.0, 3.0]);
 
-		this.geometry.setAttribute(
-			'position',
-			new BufferAttribute(vertices, 2),
-		);
+		this.geometry.setAttribute('position', new BufferAttribute(vertices, 2));
 	}
 
 	setRenderTarget() {
@@ -73,13 +99,17 @@ export default class PostFX {
 
 	setMaterial() {
 		const opts = {
+			defines: {
+				FXAA: params.useFxaa,
+			},
 			uniforms: {
+				POST_PROCESSING: { value: params.usePostprocess },
 				uScene: { value: this.target.texture },
 				uResolution: { value: tVec3 },
 			},
 		};
 
-		this.material = postProcessingMaterial.get(opts);
+		this.material = postFXMaterial.get(opts);
 	}
 
 	setPostPro() {

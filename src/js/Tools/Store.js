@@ -13,10 +13,24 @@ const store = {
 	},
 
 	style: null,
-	device: null,
+
+	device: {
+		machine: null,
+		os: {
+			name: '',
+			version: null,
+		},
+	},
+
 	browser: null,
 
 	views: null,
+
+	loadedAssets: {
+		models: new Map(),
+		audios: new Map(),
+		textures: new Map(),
+	},
 };
 
 export { store };

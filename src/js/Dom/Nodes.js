@@ -1,16 +1,14 @@
-import Emitter from '@tools/Emitter';
+import signal from 'philbin-packages/signal';
 
 import { store } from '@tools/Store';
 
-export default class Nodes extends Emitter {
+export default class Nodes {
 	constructor() {
-		super();
-
 		window.addEventListener('DOMContentLoaded', async () => {
 			await this.getNodes();
 			await this.getShadowNodes();
 
-			this.emit('load');
+			signal.emit('domLoaded');
 		});
 	}
 
@@ -23,13 +21,8 @@ export default class Nodes extends Emitter {
 		await new Promise((resolve) => {
 			for (const key in this.domRef) {
 				if (this.domElements[this.domRef[key].dataset.ref])
-					this.domElements[this.domRef[key].dataset.ref].push(
-						this.domRef[key],
-					);
-				else
-					this.domElements[this.domRef[key].dataset.ref] = [
-						this.domRef[key],
-					];
+					this.domElements[this.domRef[key].dataset.ref].push(this.domRef[key]);
+				else this.domElements[this.domRef[key].dataset.ref] = [this.domRef[key]];
 			}
 
 			resolve();
@@ -43,7 +36,7 @@ export default class Nodes extends Emitter {
 				}
 			}
 
-			resolve();
+			resolve(this.domElements);
 		});
 	}
 
@@ -60,23 +53,17 @@ export default class Nodes extends Emitter {
 
 					this.shadowElements[parentName] = {};
 
-					this.shadowRef = [
-						...parent.shadowRoot.querySelectorAll('[data-ref]'),
-					];
+					this.shadowRef = [...parent.shadowRoot.querySelectorAll('[data-ref]')];
 
 					for (const key in this.shadowRef) {
-						if (
-							this.shadowElements[parentName][
-								this.shadowRef[key].dataset.ref
-							]
-						)
-							this.shadowElements[parentName][
-								this.shadowRef[key].dataset.ref
-							].push(this.shadowRef[key]);
+						if (this.shadowElements[parentName][this.shadowRef[key].dataset.ref])
+							this.shadowElements[parentName][this.shadowRef[key].dataset.ref].push(
+								this.shadowRef[key],
+							);
 						else
-							this.shadowElements[parentName][
-								this.shadowRef[key].dataset.ref
-							] = [this.shadowRef[key]];
+							this.shadowElements[parentName][this.shadowRef[key].dataset.ref] = [
+								this.shadowRef[key],
+							];
 					}
 				}
 			}
@@ -95,11 +82,11 @@ export default class Nodes extends Emitter {
 				}
 			}
 
-			resolve();
+			resolve(this.shadowElements);
 		});
 	}
 
-	delete(node) {
+	deleteNode(node) {
 		delete this.domElements[node];
 		delete this.shadowElements[node];
 	}

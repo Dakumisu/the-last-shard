@@ -2,10 +2,11 @@
 	Credits @pqml (https://github.com/pqml) 🔥
 */
 
+import signal from 'philbin-packages/signal';
+
 import { getGPUTier } from 'detect-gpu';
 
 import { getWebgl } from '@webgl/Webgl';
-import Emitter from './Emitter';
 
 import { store } from './Store';
 import { clamp, median } from 'philbin-packages/maths';
@@ -21,6 +22,8 @@ const qualityList = [
 
 let bootFrames = 60;
 
+let hasQuality = !!localStorage.getItem('quality');
+
 const MAX_PING_PONG = 2;
 const MAX_PREVAULT_PING_PONG = MAX_PING_PONG;
 const RESTART_DELAY = 300;
@@ -33,9 +36,7 @@ const LOW_THRESHOLD = 54;
 const CRITICAL_THRESHOLD = 30;
 const RESET_THRESHOLD = 50;
 
-const DEFAULT_QUALITY = localStorage.getItem('quality')
-	? JSON.parse(localStorage.getItem('quality'))
-	: 3;
+const DEFAULT_QUALITY = hasQuality ? JSON.parse(localStorage.getItem('quality')) : 3;
 
 let fpsCount = 0;
 let averageFps = 0;
@@ -63,34 +64,27 @@ const debug = {
 };
 /// #endif
 
-export default class PerfomanceMonitor extends Emitter {
+export default class PerfomanceMonitor {
 	constructor() {
-		super();
-
-		const webgl = getWebgl();
-		const device = webgl.device;
-		const size = webgl.size;
-
 		this.quality = DEFAULT_QUALITY;
 
 		this.qualityStr = qualityList[this.quality];
 		this.fps = 0;
 
-		if (!localStorage.getItem('quality')) this.getGPU();
+		if (!hasQuality) this.getGPU();
 
-		device.on('visibility', (visible) => {
+		signal.on('visibility', (visible) => {
 			if (visible) fpsHistoryIndex = 0;
 		});
 
-		size.on('resize', () => {
+		signal.on('resize', () => {
 			fpsHistoryIndex = 0;
 		});
 
-		this.udpateActive = localStorage.getItem('updateQuality')
-			? JSON.parse(localStorage.getItem('updateQuality'))
-			: true;
+		this.udpateActive = hasQuality ? JSON.parse(localStorage.getItem('updateQuality')) : true;
 
 		/// #if DEBUG
+		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		this.debug();
 		/// #endif
@@ -101,28 +95,41 @@ export default class PerfomanceMonitor extends Emitter {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addMonitor(this, 'fps', { type: 'graph' });
+		const fpsGui = gui.addFolder({
+			title: 'fps',
+			expanded: true,
+		});
+		fpsGui.addMonitor(this, 'fps', {
+			label: 'current',
+			type: 'graph',
+		});
+		fpsGui.addMonitor(this, 'fps', {
+			label: 'monitor',
+			type: 'graph',
+			view: 'graph',
+			min: 0,
+			max: 144,
+		});
 		gui.addMonitor(this, 'qualityStr', { label: 'quality' });
-
 		gui.addSeparator();
-
 		gui.addButton({
 			title: 'Hard Reset',
 		}).on('click', () => {
 			this.reset(true, RESTART_DELAY, true);
 		});
-
 		gui.addButton({
-			title: 'Toggle Update',
+			title: 'Enable Update',
 		}).on('click', () => {
-			this.udpateActive = !this.udpateActive;
+			this.udpateActive = true;
 			localStorage.setItem('updateQuality', this.udpateActive);
 		});
-
+		gui.addButton({
+			title: 'Disable Update',
+		}).on('click', () => {
+			this.udpateActive = false;
+			localStorage.setItem('updateQuality', this.udpateActive);
+		});
 		gui.addSeparator();
-
-		gui.addMonitor(this, 'udpateActive', { label: 'Update Active' });
-
 		gui.addInput(this, 'quality', {
 			label: 'Debug Quality',
 			min: 0,
@@ -132,7 +139,7 @@ export default class PerfomanceMonitor extends Emitter {
 			if (e.last) {
 				this.qualityStr = qualityList[this.quality];
 				localStorage.setItem('quality', this.quality);
-				this.emit('quality', [this.quality]);
+				signal.emit('quality', this.quality);
 			}
 		});
 	}
@@ -140,7 +147,7 @@ export default class PerfomanceMonitor extends Emitter {
 
 	everythingLoaded() {
 		initialized = true;
-		this.emit('quality', [this.quality]);
+		signal.emit('quality', this.quality);
 	}
 
 	async getGPU() {
@@ -152,7 +159,7 @@ export default class PerfomanceMonitor extends Emitter {
 		this.qualityStr = qualityList[this.quality];
 		localStorage.setItem('quality', this.quality);
 
-		this.emit('quality', [this.quality]);
+		signal.emit('quality', this.quality);
 	}
 
 	updateFps() {
@@ -166,17 +173,11 @@ export default class PerfomanceMonitor extends Emitter {
 		timer = timer % 1000;
 
 		if (!this.udpateActive) return;
-		if (!localStorage.getItem('quality')) {
-			if (
-				pingPong < MAX_PING_PONG &&
-				prevaultInfinitePingPong < MAX_PREVAULT_PING_PONG
-			) {
+		if (!hasQuality) {
+			if (pingPong < MAX_PING_PONG && prevaultInfinitePingPong < MAX_PREVAULT_PING_PONG) {
 				if (fpsHistoryIndex > fpsHistory.length) this.updateQuality();
 			}
-		} else if (
-			fpsHistoryIndex > fpsHistory.length &&
-			averageFps <= RESET_THRESHOLD
-		) {
+		} else if (fpsHistoryIndex > fpsHistory.length && averageFps <= RESET_THRESHOLD) {
 			this.updateQuality();
 			this.reset(true, RESTART_DELAY, true);
 		}
@@ -212,6 +213,7 @@ export default class PerfomanceMonitor extends Emitter {
 			bestQuality = newQuality;
 			newQuality = Math.min(prevQuality, this.quality);
 			localStorage.setItem('quality', newQuality);
+			hasQuality = true;
 		}
 
 		prevQuality = this.quality;
@@ -219,13 +221,14 @@ export default class PerfomanceMonitor extends Emitter {
 		if (prevaultInfinitePingPong >= MAX_PREVAULT_PING_PONG) {
 			this.quality = bestQuality;
 			localStorage.setItem('quality', this.quality);
+			hasQuality = true;
 		} else {
 			this.quality = newQuality;
 		}
 
 		this.qualityStr = qualityList[this.quality];
 
-		if (prevQuality != this.quality) this.emit('quality', [this.quality]);
+		if (prevQuality != this.quality) signal.emit('quality', this.quality);
 
 		if (pingPong < MAX_PING_PONG) this.reset();
 	}
@@ -237,13 +240,14 @@ export default class PerfomanceMonitor extends Emitter {
 		fpsCount = 0;
 
 		needHardReset = needHardReset || hardReset;
+		if (resetPingPong) prevaultInfinitePingPong = 0;
 		if (resetPingPong) pingPong = 0;
 		if (delay) nextDelay = delay;
 	}
 
 	hardReset() {
 		localStorage.removeItem('quality');
-		prevaultInfinitePingPong = 0;
+		hasQuality = false;
 		if (needHardReset) fpsHistoryIndex = 0;
 		delay = nextDelay || RESTART_DELAY;
 		needReset = needHardReset = false;
@@ -254,7 +258,6 @@ export default class PerfomanceMonitor extends Emitter {
 		if (!initialized) return;
 
 		initialized = false;
-		this.off('quality');
 		localStorage.removeItem('quality');
 		this.quality = DEFAULT_QUALITY;
 		this.qualityStr = qualityList[this.quality];

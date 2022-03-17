@@ -1,6 +1,6 @@
-import { getGame } from './Game';
+import signal from 'philbin-packages/signal';
 
-import Emmitter from '@tools/Emitter';
+import { getGame } from './Game';
 
 const movementKey = {
 	forward: 'Z',
@@ -10,17 +10,15 @@ const movementKey = {
 	space: 'SPACE',
 };
 
-export default class Control extends Emmitter {
+export default class Control {
 	constructor() {
-		super();
-
 		const game = getGame();
 		const keyboard = game.keyboard;
 
-		keyboard.on('keydown', (key) => {
+		signal.on('keydown', (key) => {
 			this.keyDown(key);
 		});
-		keyboard.on('keyup', (key) => {
+		signal.on('keyup', (key) => {
 			this.keyUp(key);
 		});
 

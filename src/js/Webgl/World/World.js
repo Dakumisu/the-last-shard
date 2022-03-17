@@ -1,5 +1,5 @@
-import Player from './Entities/Player';
-import Ground from './Colliders/Ground';
+import Player from './Entities/Player.js';
+import Ground from './Colliders/Ground.js';
 
 let initialized = false;
 
