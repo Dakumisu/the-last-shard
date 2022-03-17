@@ -146,7 +146,7 @@ export default class Camera {
 			///// #endif
 		}
 
-		if (this.instance instanceof Orthographic) {
+		if (this.instance instanceof OrthographicCamera) {
 			// If you want to keep the aspect of your image in a shader
 			const aspect = 1 / 1; // Aspect of the displayed image
 			const imgAspect = imageAspect(aspect, store.resolution.width, store.resolution.height);

@@ -23,7 +23,7 @@ import { getWebgl } from '@webgl/Webgl';
 import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
-import mergeGeometry from '@utils/webgl/mergeBufferGeometries';
+import { mergeGeometry } from '@utils/webgl';
 
 import model from '/assets/model/player.glb';
 
