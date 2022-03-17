@@ -24,6 +24,7 @@ import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { mergeGeometry } from '@utils/webgl';
+import { lerp } from 'philbin-packages/maths';
 
 import model from '/assets/model/player.glb';
 
@@ -34,6 +35,9 @@ const tBox = new Box3();
 const tMat = new Matrix4();
 const tSegment = new Line3();
 const playerVelocity = new Vector3();
+
+let tmpAngle = 0,
+	playerAngle = 0;
 
 let initialized = false;
 
@@ -62,8 +66,10 @@ export default class Player extends BaseEntity {
 		const webgl = getWebgl();
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
-		this.debugCam = webgl.camera.debugCam.camera;
-		this.control = webgl.camera.debugCam.orbit;
+
+		this.debugCam = webgl.camera.debugCam;
+		// this.debugCam.camera = webgl.camera.debugCam;
+		// this.debugCam.orbit = webgl.camera.debugCam.orbit;
 
 		this.scene = webgl.scene.instance;
 
@@ -151,34 +157,38 @@ export default class Player extends BaseEntity {
 		// move the player
 
 		// if (state.playerOnGround) {
-		// const angle = this.base.mesh.rotation.y;
-		const angle = this.control.spherical.theta;
+		const angle = this.base.mesh.rotation.y;
+
+		tmpAngle = lerp(tmpAngle, angle, 0.01);
+		playerAngle = lerp(playerAngle, angle, 0.05);
+
+		// const angle = this.debugCam.orbit.spherical.theta;
 		if (this.keyPressed.forward) {
-			tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, angle);
+			tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerAngle);
 			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
 		}
 
 		if (this.keyPressed.backward) {
-			tVec3a.set(0, 0, 1).applyAxisAngle(params.upVector, angle);
+			tVec3a.set(0, 0, 1).applyAxisAngle(params.upVector, playerAngle);
 			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
 		}
 
 		if (this.keyPressed.left) {
 			// tVec3a.set(-1, 0, 0).applyAxisAngle(params.upVector, angle);
 			// this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
-			this.base.mesh.rotation.y += 0.015;
+			this.base.mesh.rotation.y += 0.01;
 			// this.base.mesh.rotation.y = this.base.mesh.rotation.y;
-			if (this.base.mesh.rotation.y > Math.PI)
-				this.base.mesh.rotation.y = this.base.mesh.rotation.y - 2 * Math.PI;
+			// if (this.base.mesh.rotation.y > Math.PI)
+			// 	this.base.mesh.rotation.y = this.base.mesh.rotation.y - 2 * Math.PI;
 		}
 
 		if (this.keyPressed.right) {
 			// tVec3a.set(1, 0, 0).applyAxisAngle(params.upVector, angle);
 			// this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
-			this.base.mesh.rotation.y -= 0.015;
+			this.base.mesh.rotation.y -= 0.01;
 			// this.base.mesh.rotation.y = this.base.mesh.rotation.y;
-			if (this.base.mesh.rotation.y < -Math.PI)
-				this.base.mesh.rotation.y = this.base.mesh.rotation.y + 2 * Math.PI;
+			// if (this.base.mesh.rotation.y < -Math.PI)
+			// 	this.base.mesh.rotation.y = this.base.mesh.rotation.y + 2 * Math.PI;
 		}
 		// }
 
@@ -253,9 +263,15 @@ export default class Player extends BaseEntity {
 		}
 
 		// adjust the camera
-		this.debugCam.position.sub(this.control.target);
-		this.control.targetOffset.copy(this.base.mesh.position);
-		this.debugCam.position.add(this.base.mesh.position);
+		this.debugCam.camera.position.sub(this.debugCam.orbit.target);
+		this.debugCam.orbit.targetOffset.copy(this.base.mesh.position);
+		this.debugCam.camera.position.add(this.base.mesh.position);
+
+		this.debugCam.orbit.sphericalTarget.set(
+			this.debugCam.orbit.sphericalTarget.radius,
+			this.debugCam.orbit.sphericalTarget.phi,
+			tmpAngle,
+		);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) {
@@ -266,9 +282,9 @@ export default class Player extends BaseEntity {
 	reset() {
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.copy(params.defaultPos);
-		this.debugCam.position.sub(this.control.targetOffset);
-		this.control.targetOffset.copy(this.base.mesh.position);
-		this.debugCam.position.add(this.base.mesh.position);
+		this.debugCam.camera.position.sub(this.debugCam.orbit.targetOffset);
+		this.debugCam.orbit.targetOffset.copy(this.base.mesh.position);
+		this.debugCam.camera.position.add(this.base.mesh.position);
 	}
 
 	resize() {

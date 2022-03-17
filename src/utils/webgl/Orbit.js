@@ -20,6 +20,12 @@ class Spherical {
 		this.theta = theta;
 	}
 
+	add(radius = 0, phi = 0, theta = 0) {
+		this.radius += radius;
+		this.phi += phi;
+		this.theta += theta;
+	}
+
 	equals(spherical) {
 		return (
 			this.radius === spherical.radius &&
