@@ -5,7 +5,6 @@ import Keyboard from '@tools/Keyboard';
 import Mouse from '@tools/Mouse';
 import PerformanceMonitor from '@tools/PerformanceMonitor';
 import Raf from '@tools/Raf';
-import Raycasters from '@tools/Raycasters';
 import Size from '@tools/Size';
 import Camera from './Camera';
 import Renderer from './Renderer';
@@ -22,7 +21,6 @@ class Webgl {
 	static instance;
 
 	constructor(_canvas) {
-		console.log(_canvas);
 		if (!_canvas) {
 			console.error(`Missing 'canvas' property 🚫`);
 			return null;
@@ -30,11 +28,11 @@ class Webgl {
 		this.canvas = _canvas;
 		Webgl.instance = this;
 
-		this.init();
+		this.beforeInit();
 		this.event();
 	}
 
-	init() {
+	beforeInit() {
 		/// #if DEBUG
 		this.debug = new Debug();
 		/// #endif
@@ -44,16 +42,24 @@ class Webgl {
 
 		this.raf = new Raf();
 		this.scene = new Scene();
+		this.keyboard = new Keyboard();
+
+		this.init();
+	}
+
+	init() {
 		this.camera = new Camera();
 		this.performance = new PerformanceMonitor();
 		this.renderer = new Renderer();
 
-		this.keyboard = new Keyboard();
 		this.mouse = new Mouse();
 
 		this.world = new World();
-		this.raycaster = new Raycasters();
 
+		this.afterInit();
+	}
+
+	afterInit() {
 		this.performance.everythingLoaded();
 		this.resize();
 
@@ -82,18 +88,10 @@ class Webgl {
 		});
 	}
 
-	render() {
-		if (!initialized) return;
-
-		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
-		if (this.camera) this.camera.render();
-		if (this.renderer) this.renderer.render();
-	}
-
 	update() {
 		if (!initialized) return;
 
-		// if (this.raycaster) this.raycaster.update();
+		if (this.camera) this.camera.update();
 		if (this.performance) this.performance.update(this.raf.delta);
 
 		/// #if DEBUG
@@ -101,7 +99,16 @@ class Webgl {
 		/// #endif
 	}
 
+	render() {
+		if (!initialized) return;
+
+		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
+		if (this.renderer) this.renderer.render();
+	}
+
 	resize() {
+		if (!initialized) return;
+
 		if (this.renderer) this.renderer.resize();
 		if (this.camera) this.camera.resize();
 		if (this.world) this.world.resize();

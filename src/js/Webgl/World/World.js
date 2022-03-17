@@ -1,5 +1,5 @@
-import Player from './Entities/Player';
-import Ground from './Colliders/Ground';
+import Player from './Entities/Player.js';
+import Ground from './Colliders/Ground.js';
 
 let initialized = false;
 
@@ -13,7 +13,7 @@ export default class World {
 		setTimeout(() => {
 			this.player = new Player({ ground: this.ground.base.mesh });
 			initialized = true;
-		}, 5000);
+		}, 3000);
 	}
 
 	resize() {

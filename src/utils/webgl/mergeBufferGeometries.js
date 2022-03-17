@@ -1,10 +1,12 @@
-import loadGLTF from '@utils/loaders/loadGLTF';
-import wMergeGeo from '@workers/wMergeGeo?worker';
 import { BufferAttribute, BufferGeometry, Matrix4, Object3D } from 'three';
+
+import wMergeGeo from '@workers/wMergeGeo?worker';
+
+import { loadGLTF } from '@utils/loaders';
 
 let geometries = [];
 
-export default function mergeGeometry(geos = [], models = []) {
+export function mergeGeometry(geos = [], models = []) {
 	return new Promise((resolve) => {
 		if (!geos.length && !models.length) {
 			console.error('Geometries required 🚫');
@@ -114,14 +116,8 @@ function mergeBufferGeometries(datas) {
 
 			// Conversion des attributes mergés en geometry
 			bufferGeo.setIndex(new BufferAttribute(geo.index, 1, false));
-			bufferGeo.setAttribute(
-				'position',
-				new BufferAttribute(geo.pos, 3, false),
-			);
-			bufferGeo.setAttribute(
-				'normal',
-				new BufferAttribute(geo.normal, 3, false),
-			);
+			bufferGeo.setAttribute('position', new BufferAttribute(geo.pos, 3, false));
+			bufferGeo.setAttribute('normal', new BufferAttribute(geo.normal, 3, false));
 			bufferGeo.setAttribute('uv', new BufferAttribute(geo.uv, 2, false));
 
 			worker.terminate();

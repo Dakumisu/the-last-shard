@@ -1,9 +1,10 @@
 import signal from 'philbin-packages/signal';
+
 import { NoToneMapping, sRGBEncoding, WebGLRenderer } from 'three';
 
 import { getWebgl } from './Webgl';
 
-import PostFX from './PostProcessing/PostProcessing';
+import PostFX from './PostFX/PostFX';
 
 import { store } from '@tools/Store';
 import { clamp } from 'philbin-packages/maths';
@@ -39,6 +40,8 @@ export default class Renderer {
 
 		signal.on('quality', (quality) => {
 			const q = clamp(Math.ceil(quality / 2), 0, resolutionList.length - 1);
+
+			if (store.device === 'mobile') return;
 			if (resolutionQuality == q) return;
 			resolutionQuality = q;
 

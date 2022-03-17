@@ -1,7 +1,9 @@
-import { getGame } from '@game/Game';
-import { getWebgl } from '@webgl/Webgl';
 import { Box3, Line3, Matrix4, Mesh, MeshNormalMaterial, Vector3 } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+
+import { getGame } from '@game/Game';
+import { getWebgl } from '@webgl/Webgl';
+
 import BaseEntity from '../Components/BaseEntity';
 
 const twoPI = Math.PI * 2;
@@ -40,7 +42,7 @@ export default class Player extends BaseEntity {
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
 		this.debugCam = webgl.camera.debugCam.camera;
-		this.control = webgl.camera.debugCam.orbitControls;
+		this.control = webgl.camera.debugCam.orbit;
 
 		this.scene = webgl.scene.instance;
 
@@ -125,7 +127,7 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
 		// move the player
-		const angle = this.control.getAzimuthalAngle();
+		const angle = this.control.spherical.theta;
 		if (this.keyPressed.forward) {
 			tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, angle);
 			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
@@ -216,7 +218,7 @@ export default class Player extends BaseEntity {
 
 		// adjust the camera
 		this.debugCam.position.sub(this.control.target);
-		this.control.target.copy(this.base.mesh.position);
+		this.control.targetOffset.copy(this.base.mesh.position);
 		this.debugCam.position.add(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
@@ -228,10 +230,9 @@ export default class Player extends BaseEntity {
 	reset() {
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.copy(params.defaultPos);
-		this.debugCam.position.sub(this.control.target);
-		this.control.target.copy(this.base.mesh.position);
+		this.debugCam.position.sub(this.control.targetOffset);
+		this.control.targetOffset.copy(this.base.mesh.position);
 		this.debugCam.position.add(this.base.mesh.position);
-		this.control.update();
 	}
 
 	resize() {

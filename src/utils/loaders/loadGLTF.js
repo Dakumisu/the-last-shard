@@ -9,9 +9,9 @@ import {
 
 import wLoadGLTF from '@workers/wLoadGLTF?worker';
 
-export default function loadModel(model) {
+export function loadGLTF(model) {
 	return new Promise((resolve) => {
-		loadGLTF(model).then((response) => {
+		load(model).then((response) => {
 			const geometries = [...response];
 
 			setMesh(geometries).then((response) => {
@@ -21,7 +21,7 @@ export default function loadModel(model) {
 	});
 }
 
-function loadGLTF(src) {
+function load(src) {
 	const worker = wLoadGLTF();
 
 	const geometries = [];
@@ -38,21 +38,10 @@ function loadGLTF(src) {
 				const bufferGeo = new BufferGeometry();
 
 				// Conversion des attributes du model en geometry
-				bufferGeo.setIndex(
-					new BufferAttribute(attributes.index, 1, false),
-				);
-				bufferGeo.setAttribute(
-					'position',
-					new BufferAttribute(attributes.pos, 3, false),
-				);
-				bufferGeo.setAttribute(
-					'normal',
-					new BufferAttribute(attributes.normal, 3, false),
-				);
-				bufferGeo.setAttribute(
-					'uv',
-					new BufferAttribute(attributes.uv, 2, false),
-				);
+				bufferGeo.setIndex(new BufferAttribute(attributes.index, 1, false));
+				bufferGeo.setAttribute('position', new BufferAttribute(attributes.pos, 3, false));
+				bufferGeo.setAttribute('normal', new BufferAttribute(attributes.normal, 3, false));
+				bufferGeo.setAttribute('uv', new BufferAttribute(attributes.uv, 2, false));
 
 				geometries.push(bufferGeo);
 			});

@@ -4,8 +4,12 @@ import { store } from '@tools/Store';
 
 export default class Nodes {
 	constructor() {
-		this.domLoadedEventHandler = this.domLoaded.bind(this);
-		window.addEventListener('DOMContentLoaded', this.domLoadedEventHandler);
+		window.addEventListener('DOMContentLoaded', async () => {
+			await this.getNodes();
+			await this.getShadowNodes();
+
+			signal.emit('domLoaded');
+		});
 	}
 
 	async getNodes() {
@@ -82,14 +86,7 @@ export default class Nodes {
 		});
 	}
 
-	async domLoaded() {
-		await this.getNodes();
-		await this.getShadowNodes();
-
-		signal.emit('load');
-	}
-
-	delete(node) {
+	deleteNode(node) {
 		delete this.domElements[node];
 		delete this.shadowElements[node];
 	}
@@ -99,8 +96,6 @@ export default class Nodes {
 		delete this.shadowRef;
 		delete this.domElements;
 		delete this.shadowElements;
-
-		window.removeEventListener('DOMContentLoaded', this.domLoadedEventHandler);
 	}
 
 	async reset() {
