@@ -91,7 +91,6 @@ class Webgl {
 	update() {
 		if (!initialized) return;
 
-		if (this.camera) this.camera.update();
 		if (this.performance) this.performance.update(this.raf.delta);
 
 		/// #if DEBUG
@@ -103,6 +102,7 @@ class Webgl {
 		if (!initialized) return;
 
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
+		if (this.camera) this.camera.update();
 		if (this.renderer) this.renderer.render();
 	}
 
