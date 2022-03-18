@@ -14,6 +14,8 @@ import {
 	MeshToonMaterial,
 	Vector2,
 	Vector3,
+	Group,
+	AxesHelper,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
@@ -24,7 +26,7 @@ import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { mergeGeometry } from '@utils/webgl';
-import { lerp } from 'philbin-packages/maths';
+import { lerp, lerpPrecise } from 'philbin-packages/maths';
 
 import model from '/assets/model/player.glb';
 
@@ -35,9 +37,6 @@ const tBox = new Box3();
 const tMat = new Matrix4();
 const tSegment = new Line3();
 const playerVelocity = new Vector3();
-
-let tmpAngle = 0,
-	playerAngle = 0;
 
 let initialized = false;
 
@@ -51,6 +50,17 @@ const params = {
 const state = {
 	playerOnGround: true,
 };
+
+const dynamic = {
+	cameraAngle: 0,
+	playerAngle: 0,
+	currentAngle: 0,
+
+	speed: 0,
+};
+
+let turnAngleTarget = 0;
+let speedTarget = 0;
 
 /// #if DEBUG
 const debug = {
@@ -67,21 +77,23 @@ export default class Player extends BaseEntity {
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
 
-		this.debugCam = webgl.camera.debugCam;
-		// this.debugCam.camera = webgl.camera.debugCam;
-		// this.debugCam.orbit = webgl.camera.debugCam.orbit;
+		this.playerCamera = webgl.camera.debugCam;
 
 		this.scene = webgl.scene.instance;
 
 		this.ground = opt.ground;
 
 		this.base = {};
+		this.base.group = new Group();
 
 		this.init();
+
+		// this.playerCamera.orbit.sphericalTarget.add(0, 0, -2);
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		this.debug();
+		this.helpers();
 		/// #endif
 	}
 
@@ -106,6 +118,17 @@ export default class Player extends BaseEntity {
 		gui.addSeparator();
 		gui.addMonitor(state, 'playerOnGround', { label: 'Player on ground', type: 'graph' });
 	}
+
+	helpers() {
+		this.scene.add(this.base.group);
+
+		const v = this.setVisualizer(this.base.mesh, 15);
+		this.scene.add(v);
+
+		const axesHelper = new AxesHelper(2);
+		this.base.group.add(axesHelper);
+		console.log(axesHelper.position);
+	}
 	/// #endif
 
 	async init() {
@@ -122,7 +145,7 @@ export default class Player extends BaseEntity {
 		this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
-			radius: 1,
+			radius: 0.5,
 			segment: new Line3(new Vector3(), new Vector3(0, -1.0, 0.0)),
 		};
 
@@ -140,12 +163,8 @@ export default class Player extends BaseEntity {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
 		this.base.mesh.position.copy(params.defaultPos);
+		this.base.group.add(this.base.mesh);
 		this.scene.add(this.base.mesh);
-
-		/// #if DEBUG
-		const v = this.setVisualizer(this.base.mesh, 15);
-		this.scene.add(v);
-		/// #endif
 	}
 
 	move(dt) {
@@ -157,39 +176,75 @@ export default class Player extends BaseEntity {
 		// move the player
 
 		// if (state.playerOnGround) {
-		const angle = this.base.mesh.rotation.y;
+		dynamic.currentAngle = this.base.mesh.rotation.y;
 
-		tmpAngle = lerp(tmpAngle, angle, 0.01);
-		playerAngle = lerp(playerAngle, angle, 0.05);
+		let tmpAngle = this.playerCamera.orbit.spherical.theta;
+		// console.log(tmpAngle);
+		// dynamic.currentAngle = this.playerCamera.orbit.spherical.theta;
 
-		// const angle = this.debugCam.orbit.spherical.theta;
 		if (this.keyPressed.forward) {
-			tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerAngle);
-			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
+			// tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.playerAngle);
+			// this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+
+			turnAngleTarget = tmpAngle + 0;
 		}
 
 		if (this.keyPressed.backward) {
-			tVec3a.set(0, 0, 1).applyAxisAngle(params.upVector, playerAngle);
-			this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
+			// tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.playerAngle);
+			// this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+
+			turnAngleTarget = tmpAngle + Math.PI;
 		}
 
 		if (this.keyPressed.left) {
-			// tVec3a.set(-1, 0, 0).applyAxisAngle(params.upVector, angle);
-			// this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
-			this.base.mesh.rotation.y += 0.01;
+			// tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.playerAngle);
+			// this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+
+			turnAngleTarget = tmpAngle + Math.PI / 2;
+
+			// this.base.mesh.rotation.y += delta * 2.2;
 			// this.base.mesh.rotation.y = this.base.mesh.rotation.y;
 			// if (this.base.mesh.rotation.y > Math.PI)
 			// 	this.base.mesh.rotation.y = this.base.mesh.rotation.y - 2 * Math.PI;
 		}
-
 		if (this.keyPressed.right) {
-			// tVec3a.set(1, 0, 0).applyAxisAngle(params.upVector, angle);
-			// this.base.mesh.position.addScaledVector(tVec3a, params.speed * delta);
-			this.base.mesh.rotation.y -= 0.01;
+			// tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.playerAngle);
+			// this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+
+			turnAngleTarget = tmpAngle + -Math.PI / 2;
+
 			// this.base.mesh.rotation.y = this.base.mesh.rotation.y;
 			// if (this.base.mesh.rotation.y < -Math.PI)
 			// 	this.base.mesh.rotation.y = this.base.mesh.rotation.y + 2 * Math.PI;
 		}
+
+		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.playerAngle);
+		this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+
+		if (this.keyPressed.forward && this.keyPressed.left)
+			turnAngleTarget = tmpAngle + Math.PI / 4;
+		if (this.keyPressed.forward && this.keyPressed.right)
+			turnAngleTarget = tmpAngle + -Math.PI / 4;
+		if (this.keyPressed.backward && this.keyPressed.left)
+			turnAngleTarget = tmpAngle + (3 * Math.PI) / 4;
+		if (this.keyPressed.backward && this.keyPressed.right)
+			turnAngleTarget = tmpAngle + (5 * Math.PI) / 4;
+
+		if (
+			this.keyPressed.forward ||
+			this.keyPressed.backward ||
+			this.keyPressed.left ||
+			this.keyPressed.right
+		)
+			speedTarget = params.speed;
+		else speedTarget = 0;
+
+		// if (
+		// 	(!this.keyPressed.left && !this.keyPressed.right) ||
+		// 	(this.keyPressed.left && this.keyPressed.right)
+		// ) {
+		// 	turnAngleTarget = 0;
+		// }
 		// }
 
 		// console.log(this.base.mesh.rotation.y);
@@ -263,15 +318,15 @@ export default class Player extends BaseEntity {
 		}
 
 		// adjust the camera
-		this.debugCam.camera.position.sub(this.debugCam.orbit.target);
-		this.debugCam.orbit.targetOffset.copy(this.base.mesh.position);
-		this.debugCam.camera.position.add(this.base.mesh.position);
+		this.playerCamera.camera.position.sub(this.playerCamera.orbit.target);
+		this.playerCamera.orbit.targetOffset.copy(this.base.mesh.position);
+		this.playerCamera.camera.position.add(this.base.mesh.position);
 
-		this.debugCam.orbit.sphericalTarget.set(
-			this.debugCam.orbit.sphericalTarget.radius,
-			this.debugCam.orbit.sphericalTarget.phi,
-			tmpAngle,
-		);
+		// this.playerCamera.orbit.sphericalTarget.set(
+		// 	this.playerCamera.orbit.sphericalTarget.radius,
+		// 	this.playerCamera.orbit.sphericalTarget.phi,
+		// 	dynamic.cameraAngle,
+		// );
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) {
@@ -282,9 +337,9 @@ export default class Player extends BaseEntity {
 	reset() {
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.copy(params.defaultPos);
-		this.debugCam.camera.position.sub(this.debugCam.orbit.targetOffset);
-		this.debugCam.orbit.targetOffset.copy(this.base.mesh.position);
-		this.debugCam.camera.position.add(this.base.mesh.position);
+		this.playerCamera.camera.position.sub(this.playerCamera.orbit.targetOffset);
+		this.playerCamera.orbit.targetOffset.copy(this.base.mesh.position);
+		this.playerCamera.camera.position.add(this.base.mesh.position);
 	}
 
 	resize() {
@@ -297,5 +352,23 @@ export default class Player extends BaseEntity {
 		for (let i = 0; i < params.physicsSteps; i++) {
 			this.move(dt / params.physicsSteps);
 		}
+
+		dynamic.cameraAngle = lerp(dynamic.cameraAngle, dynamic.currentAngle, 0.1);
+		dynamic.playerAngle = lerp(dynamic.playerAngle, dynamic.currentAngle, 0.1);
+
+		// turnAngleTarget += 0.001;
+		// console.log(turnAngleTarget);
+
+		this.base.mesh.rotation.y = lerpPrecise(this.base.mesh.rotation.y, turnAngleTarget, 0.05);
+		dynamic.speed = lerpPrecise(dynamic.speed, speedTarget, 0.03);
+
+		this.base.group.position.copy(this.base.mesh.position);
+		this.base.group.quaternion.copy(this.base.mesh.quaternion);
+
+		// console.log(this.base.group.position, this.base.group.quaternion);
+		// console.log(dynamic.speed);
+
+		// dynamic.cameraAngle = lerp(dynamic.cameraAngle, 0, 0.01);
+		// console.log(dynamic.cameraAngle);
 	}
 }
