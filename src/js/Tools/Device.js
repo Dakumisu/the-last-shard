@@ -24,16 +24,16 @@ export default class Device {
 			)
 		) {
 			device = deviceList[1]; // Mobile
+			store.device.isMobile = true;
 		} else {
 			device = deviceList[0]; // Desktop
+			store.device.isMobile = false;
 		}
 
 		deviceList.forEach((e) => {
 			if (e === device) html.classList.add(e);
 			else html.classList.remove(e);
 		});
-
-		store.device.machine = device;
 	}
 
 	checkBrowser() {
@@ -95,7 +95,7 @@ export default class Device {
 	}
 
 	destroy() {
-		store.device.machine = null;
+		store.device.isMobile = null;
 		store.device.os = {};
 		store.browser = null;
 		store.style = null;

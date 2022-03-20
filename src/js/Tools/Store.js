@@ -4,9 +4,8 @@ const store = {
 		height: window.innerHeight,
 		dpr: window.devicePixelRatio,
 	},
-
 	aspect: {
-		ratio: 0,
+		ratio: window.innerWidth / window.innerHeight,
 
 		a1: 0,
 		a2: 0,
@@ -15,15 +14,14 @@ const store = {
 	style: null,
 
 	device: {
-		machine: null,
+		isMobile: null,
+
 		os: {
 			name: '',
 			version: null,
 		},
 	},
-
 	browser: null,
-
 	views: null,
 
 	loadedAssets: {
