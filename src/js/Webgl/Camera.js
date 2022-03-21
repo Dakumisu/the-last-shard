@@ -113,7 +113,7 @@ export default class Camera {
 			},
 
 			minDistance: 0.5,
-			maxDistance: 40,
+			maxDistance: 100,
 
 			fps: false,
 		};
