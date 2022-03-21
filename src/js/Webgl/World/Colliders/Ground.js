@@ -5,6 +5,8 @@ import BaseCollider from '../Components/BaseCollider';
 
 import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
+import debugMaterial from '../materials/debug/material';
+import defaultMaterial from '../materials/default/material';
 
 // import sandbox from '/assets/model/sandbox.glb';
 const sandbox = '/assets/model/sandbox.glb';
@@ -17,7 +19,7 @@ const params = {};
 /// #if DEBUG
 const debug = {
 	instance: null,
-	label: 'Character',
+	label: 'Ground',
 };
 /// #endif
 
@@ -30,19 +32,16 @@ export default class Ground extends BaseCollider {
 
 		this.base = {};
 
-		// this.init();
-
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.debug();
-		this.helpers();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	debug() {}
-
 	helpers() {
+		this.visualizer = this.setVisualizer(this.base.mesh, 30);
+		this.scene.add(this.visualizer);
+
 		const size = 150;
 		const divisions = 40;
 		const colorCenterLine = new Color('#f00');
@@ -52,10 +51,24 @@ export default class Ground extends BaseCollider {
 		gridHelper.position.z = -30;
 		this.scene.add(gridHelper);
 	}
+
+	debug() {
+		debug.instance.setFolder(debug.label);
+		const gui = debug.instance.getFolder(debug.label);
+
+		gui.addButton({ title: 'bvh' }).on('click', () => {
+			this.visualizer.visible = !this.visualizer.visible;
+		});
+	}
 	/// #endif
 
 	async init() {
 		await this.setGround();
+
+		/// #if DEBUG
+		this.debug();
+		this.helpers();
+		/// #endif
 
 		initialized = true;
 	}
@@ -67,15 +80,12 @@ export default class Ground extends BaseCollider {
 			lazyGeneration: false,
 		};
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
-		this.base.material = new MeshNormalMaterial({ side: DoubleSide });
+
+		this.base.material = defaultMaterial.get();
+
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
 		this.scene.add(this.base.mesh);
-
-		/// #if DEBUG
-		const v = this.setVisualizer(this.base.mesh, 30);
-		this.scene.add(v);
-		/// #endif
 	}
 
 	resize() {
