@@ -2,7 +2,7 @@ import { Pane } from 'tweakpane';
 
 import StatsJs from '@tools/Stats';
 
-const tabList = ['General', 'Stats'];
+const tabList = ['General', 'Lights', 'Stats'];
 
 export default class Debug {
 	constructor() {
