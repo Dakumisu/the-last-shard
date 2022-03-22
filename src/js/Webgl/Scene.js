@@ -2,6 +2,9 @@ import { Scene as ThreeScene } from 'three';
 
 export default class Scene {
 	constructor(opt = {}) {
+		/**
+		 * @type {ThreeScene}
+		 */
 		this.instance = new ThreeScene();
 	}
 

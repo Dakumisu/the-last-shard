@@ -1,7 +1,6 @@
-import { OrthographicCamera, PerspectiveCamera, Vector3 } from 'three';
-import { orbitController } from '@utils/webgl';
+import { OrthographicCamera, PerspectiveCamera } from 'three';
 
-import { getWebgl } from './Webgl';
+import { getWebgl } from '../../Webgl';
 
 import { store } from '@tools/Store';
 import { imageAspect } from 'philbin-packages/maths';
@@ -19,6 +18,7 @@ export default class Camera {
 	constructor(opt = {}) {
 		const webgl = getWebgl();
 		this.scene = webgl.scene.instance;
+
 		this.canvas = webgl.canvas;
 
 		this.type = opt.type || 'Perspective';
@@ -36,39 +36,13 @@ export default class Camera {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addInput(this.orbitParams, 'fps', {
-			label: 'mode',
-			options: { Default: false, FPS: true },
-		}).on('change', (e) => {
-			this.debugCam.orbit.setFPSMode(e.value);
-		});
-
-		gui.addButton({
-			title: 'Toggle auto rotate',
-		}).on('click', () => {
-			this.debugCam.orbit.autoRotate = !this.debugCam.orbit.autoRotate;
-		});
-
-		gui.addButton({
-			title: 'Reset',
-		}).on('click', () => {
-			this.debugCam.orbit.sphericalTarget.set(
-				this.orbitParams.spherical.radius,
-				this.orbitParams.spherical.phi,
-				this.orbitParams.spherical.theta,
-			);
-
-			// WIP
-		});
+		// WIP
 	}
 	///// #endif
 
 	init() {
 		this.type == 'Orthographic' ? this.setOrthographicCamera() : this.setPerspectiveCamera();
-
-		///// #if DEBUG
-		this.setDebugCamera();
-		///// #endif
+		this.setPerspectiveCamera();
 
 		initialized = true;
 	}
@@ -103,47 +77,10 @@ export default class Camera {
 		this.scene.add(this.instance);
 	}
 
-	///// #if DEBUG
-	setDebugCamera() {
-		this.orbitParams = {
-			spherical: {
-				radius: 5,
-				phi: 1,
-				theta: 0.5,
-			},
-
-			minDistance: 0.5,
-			maxDistance: 100,
-
-			fps: false,
-		};
-
-		this.debugCam = {};
-		this.debugCam.camera = this.instance.clone();
-		this.debugCam.camera.rotation.reorder('YXZ');
-
-		this.debugCam.orbit = new orbitController(this.debugCam.camera, {
-			minDistance: this.orbitParams.minDistance,
-			maxDistance: this.orbitParams.maxDistance,
-			useOrbitKeyboard: false,
-		});
-		this.debugCam.orbit.sphericalTarget.set(
-			this.orbitParams.spherical.radius,
-			this.orbitParams.spherical.phi,
-			this.orbitParams.spherical.theta,
-		);
-	}
-	///// #endif
-
 	resize() {
 		if (this.instance instanceof PerspectiveCamera) {
 			this.instance.aspect = store.aspect.ratio;
 			this.instance.updateProjectionMatrix();
-
-			///// #if DEBUG
-			this.debugCam.camera.aspect = store.aspect.ratio;
-			this.debugCam.camera.updateProjectionMatrix();
-			///// #endif
 		}
 
 		if (this.instance instanceof OrthographicCamera) {
@@ -157,18 +94,7 @@ export default class Camera {
 
 	update() {
 		if (!initialized) return;
-		///// #if DEBUG
-		this.debugCam.orbit.update();
 
-		this.instance.position.copy(this.debugCam.camera.position);
-		this.instance.quaternion.copy(this.debugCam.camera.quaternion);
-		this.instance.updateMatrixWorld();
-		///// #endif
-	}
-
-	destroy() {
-		///// #if DEBUG
-		this.debugCam.orbit.destroy();
-		///// #endif
+		// WIP
 	}
 }
