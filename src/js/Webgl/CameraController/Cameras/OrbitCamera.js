@@ -44,30 +44,36 @@ export default class OrbitCamera {
 
 	/// #if DEBUG
 	initDebug() {
-		const gui = debug.instance
+		this.gui = debug.instance
 			.getFolder('CameraController')
 			.addFolder({ title: this.label ? this.label : 'noname', expanded: false });
-		gui.addInput(this.orbitParams, 'fps', {
-			label: 'mode',
-			options: { Default: false, FPS: true },
-		}).on('change', (e) => {
-			this.camObject.orbit.setFPSMode(e.value);
-		});
-		gui.addButton({
-			title: 'Toggle auto rotate',
-		}).on('click', () => {
-			this.camObject.orbit.autoRotate = !this.camObject.orbit.autoRotate;
-		});
-		gui.addButton({
-			title: 'Reset',
-		}).on('click', () => {
-			this.camObject.orbit.sphericalTarget.set(
-				this.orbitParams.spherical.radius,
-				this.orbitParams.spherical.phi,
-				this.orbitParams.spherical.theta,
-			);
-			// WIP
-		});
+		this.gui
+			.addInput(this.orbitParams, 'fps', {
+				label: 'mode',
+				options: { Default: false, FPS: true },
+			})
+			.on('change', (e) => {
+				this.camObject.orbit.setFPSMode(e.value);
+			});
+		this.gui
+			.addButton({
+				title: 'Toggle auto rotate',
+			})
+			.on('click', () => {
+				this.camObject.orbit.autoRotate = !this.camObject.orbit.autoRotate;
+			});
+		this.gui
+			.addButton({
+				title: 'Reset',
+			})
+			.on('click', () => {
+				this.camObject.orbit.sphericalTarget.set(
+					this.orbitParams.spherical.radius,
+					this.orbitParams.spherical.phi,
+					this.orbitParams.spherical.theta,
+				);
+				// WIP
+			});
 	}
 	/// #endif
 

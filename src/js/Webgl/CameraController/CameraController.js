@@ -37,13 +37,15 @@ export default class CameraController {
 		if (debug.guiList) debug.guiList.dispose();
 		debug.guiList = gui.addBlade({
 			view: 'list',
-			label: 'Switch',
+			label: 'Cameras',
 			options: debug.camList,
 			value: label,
 		});
 		debug.guiList.on('change', (e) => {
 			this.switch(e.value);
 		});
+		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.backgroundColor =
+			'#f55f0099';
 	}
 	/// #endif
 
@@ -68,11 +70,14 @@ export default class CameraController {
 	switch(label) {
 		console.log('📹 Switch Camera', label);
 		if (this.get(label)) {
+			/// #if DEBUG
+			if (this.currentCamera) this.currentCamera.gui.expanded = false;
+			/// #endif
 			this.currentCamera = this.get(label);
+			this.currentCamera.resize();
+			/// #if DEBUG
+			this.currentCamera.gui.expanded = true;
+			/// #endif
 		}
-	}
-
-	resizeAll() {
-		for (const cam in this.cameras) this.cameras[cam].resize();
 	}
 }
