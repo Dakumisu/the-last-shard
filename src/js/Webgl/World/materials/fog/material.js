@@ -1,5 +1,6 @@
 import {
 	Color,
+	DoubleSide,
 	MeshBasicMaterial,
 	MeshStandardMaterial,
 	MeshToonMaterial,
@@ -14,6 +15,7 @@ export default class fogMaterial extends MeshToonMaterial {
 
 		this.color = new Color('#a8b556');
 		this.transparent = true;
+		this.side = DoubleSide;
 
 		for (const opt in opts) {
 			this[opt] = opts[opt];
