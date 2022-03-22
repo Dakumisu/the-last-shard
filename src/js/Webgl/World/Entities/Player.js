@@ -189,8 +189,6 @@ export default class Player extends BaseEntity {
 
 				minDistance: 0.5,
 				maxDistance: 100,
-
-				fps: false,
 			},
 			'playerCam',
 		);

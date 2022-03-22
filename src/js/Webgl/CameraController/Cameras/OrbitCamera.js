@@ -47,14 +47,15 @@ export default class OrbitCamera {
 		this.gui = debug.instance
 			.getFolder('CameraController')
 			.addFolder({ title: this.label ? this.label : 'noname', expanded: false });
-		this.gui
-			.addInput(this.orbitParams, 'fps', {
-				label: 'mode',
-				options: { Default: false, FPS: true },
-			})
-			.on('change', (e) => {
-				this.camObject.orbit.setFPSMode(e.value);
-			});
+		if (this.orbitParams.fps !== undefined)
+			this.gui
+				.addInput(this.orbitParams, 'fps', {
+					label: 'mode',
+					options: { Default: false, FPS: true },
+				})
+				.on('change', (e) => {
+					this.camObject.orbit.setFPSMode(e.value);
+				});
 		this.gui
 			.addButton({
 				title: 'Toggle auto rotate',
