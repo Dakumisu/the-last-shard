@@ -1,6 +1,7 @@
 import Player from './Entities/Player.js';
 import Ground from './Colliders/Ground.js';
-import Lights from './Lights/Lights.js';
+import Lights from './Environment/Lights/Lights.js';
+import CustomFog from './Environment/Fog/CustomFog.js';
 
 let initialized = false;
 
@@ -11,6 +12,7 @@ export default class World {
 
 	async setComponent() {
 		this.lights = new Lights();
+		this.fog = new CustomFog();
 
 		this.ground = new Ground();
 		await this.ground.init();
@@ -30,6 +32,8 @@ export default class World {
 		if (!initialized) return;
 
 		if (this.player) this.player.update(et, dt);
+		if (this.ground) this.ground.update(et, dt);
+		if (this.fog) this.fog.update(et, dt);
 	}
 
 	destroy() {

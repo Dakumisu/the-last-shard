@@ -29,11 +29,7 @@ export default class Ambient {
 
 	/// #if DEBUG
 	debug() {
-		const parentGui = debug.instance.getFolder(debug.parentLabel);
-		const gui = parentGui.addFolder({
-			title: debug.label,
-			expanded: true,
-		});
+		const gui = debug.instance.getFolder(debug.parentLabel);
 
 		gui.addInput(params, 'color').on('change', (color) => {
 			this.light.color.set(color.value);
