@@ -32,6 +32,7 @@ import model from '/assets/model/player.glb';
 import Camera from '@webgl/Camera';
 import debugMaterial from '../materials/debug/material';
 import defaultMaterial from '../materials/default/material';
+import fogMaterial from '../materials/fog/material';
 
 const twoPI = Math.PI * 2;
 const tVec3a = new Vector3();
@@ -172,7 +173,8 @@ export default class Player extends BaseEntity {
 			color: new Color('#ff0000'),
 		};
 
-		this.base.material = defaultMaterial.get(matOpts);
+		// this.base.material = defaultMaterial.get(matOpts);
+		this.base.material = fogMaterial.get();
 	}
 
 	setMesh() {

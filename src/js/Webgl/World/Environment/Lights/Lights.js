@@ -8,7 +8,7 @@ import Directionnal from './DirectionnalLight';
 const debug = {
 	instance: null,
 	labels: ['Ambient Light', 'Directionnal Light'],
-	tab: 'Lights',
+	tab: 'Env',
 };
 /// #endif
 
