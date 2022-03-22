@@ -1,7 +1,12 @@
 {
 	"compileOnSave": false,
 	"exclude": ["dist/", "node_modules/", "config/"],
-	"include": ["node_modules/philbin-packages/**/*", "src/**/*", "public/**/*", "src/env.d.ts"],
+	"include": [
+		"node_modules/philbin-packages/**/*",
+		"src/**/*",
+		"public/**/*",
+		"src/vite-env.d.ts"
+	],
 	"compilerOptions": {
 		"checkJs": true,
 		"target": "esnext",
