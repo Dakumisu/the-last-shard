@@ -29,29 +29,6 @@ export default class CameraController {
 	/// #if DEBUG
 	initDebug() {
 		debug.instance.setFolder(debug.label);
-		const gui = debug.instance.getFolder(debug.label);
-
-		// gui.addInput(this.orbitParams, 'fps', {
-		// 	label: 'mode',
-		// 	options: { Default: false, FPS: true },
-		// }).on('change', (e) => {
-		// 	this.debugCam.orbit.setFPSMode(e.value);
-		// });
-		// gui.addButton({
-		// 	title: 'Toggle auto rotate',
-		// }).on('click', () => {
-		// 	this.debugCam.orbit.autoRotate = !this.debugCam.orbit.autoRotate;
-		// });
-		// gui.addButton({
-		// 	title: 'Reset',
-		// }).on('click', () => {
-		// 	this.debugCam.orbit.sphericalTarget.set(
-		// 		this.orbitParams.spherical.radius,
-		// 		this.orbitParams.spherical.phi,
-		// 		this.orbitParams.spherical.theta,
-		// 	);
-		// 	// WIP
-		// });
 	}
 
 	addToDebug(label) {
@@ -96,6 +73,6 @@ export default class CameraController {
 	}
 
 	resizeAll() {
-		for (const cam in this.cameras) cam.resize();
+		for (const cam in this.cameras) this.cameras[cam].resize();
 	}
 }

@@ -32,7 +32,7 @@ import model from '/assets/model/player.glb';
 // import Camera from '@webgl/Camera';
 import debugMaterial from '../materials/debug/material';
 import defaultMaterial from '../materials/default/material';
-import { OrbitCamera } from '@webgl/Cameras/OrbitCamera';
+import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
 
 const twoPI = Math.PI * 2;
 const tVec3a = new Vector3();

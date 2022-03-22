@@ -9,12 +9,12 @@ import Size from '@tools/Size';
 import Renderer from './Renderer';
 import Scene from './Scene';
 import World from './World/World';
-import MainCamera from './Cameras/MainCamera';
-import CameraController from './Cameras/CameraController';
+import MainCamera from './CameraController/MainCamera';
+import CameraController from './CameraController/CameraController';
 
 /// #if DEBUG
 import Debug from '@tools/Debug';
-import { OrbitCamera } from './Cameras/OrbitCamera';
+import OrbitCamera from './CameraController/Cameras/OrbitCamera';
 /// #endif
 
 let initialized = false;

@@ -8,7 +8,7 @@ const debug = {
 };
 /// #endif
 
-export class OrbitCamera {
+export default class OrbitCamera {
 	constructor(orbitParams = {}, label) {
 		const webgl = getWebgl();
 
