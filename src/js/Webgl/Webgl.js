@@ -13,6 +13,7 @@ import World from './World/World';
 
 /// #if DEBUG
 import Debug from '@tools/Debug';
+import Raycast from '@tools/Raycast';
 /// #endif
 
 let initialized = false;
@@ -54,6 +55,8 @@ class Webgl {
 
 		this.mouse = new Mouse();
 
+		this.raycaster = new Raycast();
+
 		this.world = new World();
 
 		this.afterInit();
@@ -71,7 +74,7 @@ class Webgl {
 
 		signal.on('raycast', (e) => {
 			/// #if DEBUG
-			// console.log('Raycast something 🔍', e);
+			console.log('Raycast something 🔍', e);
 			/// #endif
 		});
 
@@ -92,6 +95,7 @@ class Webgl {
 		if (!initialized) return;
 
 		if (this.performance) this.performance.update(this.raf.delta);
+		if (this.raycaster) this.raycaster.update();
 
 		/// #if DEBUG
 		if (this.debug.stats) this.debug.stats.update();

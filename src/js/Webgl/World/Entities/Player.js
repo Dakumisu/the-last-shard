@@ -94,6 +94,8 @@ export default class Player extends BaseEntity {
 		this.base = {};
 		this.base.group = new Group();
 
+		this.raycaster = webgl.raycaster;
+
 		this.init();
 
 		/// #if DEBUG
