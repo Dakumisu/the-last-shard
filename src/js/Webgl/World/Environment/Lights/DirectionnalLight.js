@@ -1,5 +1,6 @@
-import { getWebgl } from '@webgl/Webgl';
 import { DirectionalLight } from 'three';
+
+import { getWebgl } from '@webgl/Webgl';
 
 const params = {
 	color: '#ffffff',
@@ -30,7 +31,11 @@ export default class Directionnal {
 
 	/// #if DEBUG
 	debug() {
-		const gui = debug.instance.getFolder(debug.parentLabel);
+		const parentGui = debug.instance.getFolder(debug.parentLabel);
+		const g = parentGui.children[1];
+		const gui = g.addFolder({
+			title: debug.label,
+		});
 
 		gui.addInput(params, 'color').on('change', (color) => {
 			this.light.color.set(color.value);

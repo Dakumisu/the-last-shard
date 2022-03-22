@@ -7,7 +7,8 @@ import Directionnal from './DirectionnalLight';
 /// #if DEBUG
 const debug = {
 	instance: null,
-	labels: ['Ambient Light', 'Directionnal Light'],
+	label: 'Lights',
+	typeLabels: ['Ambient Light', 'Directionnal Light'],
 	tab: 'Env',
 };
 /// #endif
@@ -21,8 +22,13 @@ export default class Lights {
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		debug.labels.forEach((label) => {
-			debug.instance.setFolder(label, debug.tab);
+		debug.instance.setFolder(debug.label, debug.tab);
+		const gui = debug.instance.getFolder(debug.label);
+
+		debug.typeLabels.forEach((label) => {
+			gui.addFolder({
+				title: label,
+			});
 		});
 		/// #endif
 
@@ -30,8 +36,18 @@ export default class Lights {
 	}
 
 	setLights() {
-		const ambientLight = new Ambient('light one', debug.labels[0]);
-		const directionnalLight = new Directionnal('light one', debug.labels[1]);
+		const ambientLight = new Ambient(
+			/// #if DEBUG
+			'light one',
+			debug.label,
+			/// #endif
+		);
+		const directionnalLight = new Directionnal(
+			/// #if DEBUG
+			'light one',
+			debug.label,
+			/// #endif
+		);
 
 		this.group.add(ambientLight.light, directionnalLight.light);
 		this.scene.add(this.group);
