@@ -6,18 +6,23 @@ import Mouse from '@tools/Mouse';
 import PerformanceMonitor from '@tools/PerformanceMonitor';
 import Raf from '@tools/Raf';
 import Size from '@tools/Size';
-import Camera from './Camera';
 import Renderer from './Renderer';
 import Scene from './Scene';
 import World from './World/World';
+import MainCamera from './Cameras/MainCamera';
+import CameraController from './Cameras/CameraController';
 
 /// #if DEBUG
 import Debug from '@tools/Debug';
+import { OrbitCamera } from './Cameras/OrbitCamera';
 /// #endif
 
 let initialized = false;
 
 class Webgl {
+	/**
+	 * @type {Webgl}
+	 */
 	static instance;
 
 	constructor(_canvas) {
@@ -48,7 +53,28 @@ class Webgl {
 	}
 
 	init() {
-		this.camera = new Camera();
+		this.cameraController = new CameraController();
+		this.camera = new MainCamera();
+
+		/// #if DEBUG
+		const debugOrbitCam = new OrbitCamera(
+			{
+				spherical: {
+					radius: 5,
+					phi: 1,
+					theta: 0.5,
+				},
+
+				minDistance: 0.5,
+				maxDistance: 100,
+
+				fps: false,
+			},
+			'debugCam',
+		);
+		this.cameraController.add('debugCam', debugOrbitCam, true);
+		/// #endif
+
 		this.performance = new PerformanceMonitor();
 		this.renderer = new Renderer();
 

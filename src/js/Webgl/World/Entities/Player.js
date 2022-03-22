@@ -29,9 +29,10 @@ import { mergeGeometry } from '@utils/webgl';
 import { lerp, lerpPrecise } from 'philbin-packages/maths';
 
 import model from '/assets/model/player.glb';
-import Camera from '@webgl/Camera';
+// import Camera from '@webgl/Camera';
 import debugMaterial from '../materials/debug/material';
 import defaultMaterial from '../materials/default/material';
+import { OrbitCamera } from '@webgl/Cameras/OrbitCamera';
 
 const twoPI = Math.PI * 2;
 const tVec3a = new Vector3();
@@ -84,10 +85,8 @@ export default class Player extends BaseEntity {
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
 
-		this.camera = webgl.camera.debugCam;
-		console.log(this.camera);
-
 		this.scene = webgl.scene.instance;
+		this.cameraController = webgl.cameraController;
 
 		this.ground = opt.ground;
 
@@ -138,7 +137,7 @@ export default class Player extends BaseEntity {
 	/// #endif
 
 	async init() {
-		// this.setCameraPlayer();
+		this.setCameraPlayer();
 		this.setGeometry();
 		this.setMaterial();
 		this.setMesh();
@@ -147,8 +146,27 @@ export default class Player extends BaseEntity {
 	}
 
 	setCameraPlayer() {
-		const cam = new Camera();
-		this.camera = cam.debugCam;
+		// const cam = new Camera();
+		// this.camera = cam.debugCam;
+
+		// Create OrbitCam for the player and add it to controller
+		const playerOrbitCam = new OrbitCamera(
+			{
+				spherical: {
+					radius: 5,
+					phi: 1,
+					theta: 0.5,
+				},
+
+				minDistance: 0.5,
+				maxDistance: 100,
+
+				fps: false,
+			},
+			'playerCam',
+		);
+		this.cameraController.add('playerCam', playerOrbitCam, true);
+		this.camera = this.cameraController.get('playerCam').camObject;
 	}
 
 	setGeometry() {

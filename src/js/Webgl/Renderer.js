@@ -41,7 +41,7 @@ export default class Renderer {
 		signal.on('quality', (quality) => {
 			const q = clamp(Math.ceil(quality / 2), 0, resolutionList.length - 1);
 
-			if (store.device === 'mobile') return;
+			if (store.device.isMobile) return;
 			if (resolutionQuality == q) return;
 			resolutionQuality = q;
 
