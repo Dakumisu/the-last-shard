@@ -19,6 +19,7 @@ export default class BasePhysic {
 			console.error('Need geometry');
 			return null;
 		}
+
 		return new MeshBVH(geometry, options);
 	}
 
