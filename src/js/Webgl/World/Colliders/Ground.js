@@ -18,11 +18,6 @@ import { store } from '@tools/Store';
 import debugMaterial from '../materials/debug/material';
 import fogMaterial from '../materials/fog/material';
 
-import fogFrag from './Shader/fogFrag.glsl';
-import fogParsFrag from './Shader/fogParsFrag.glsl';
-import fogParsVert from './Shader/fogParsVert.glsl';
-import fogVert from './Shader/fogVert.glsl';
-
 // import sandbox from '/assets/model/sandbox.glb';
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
