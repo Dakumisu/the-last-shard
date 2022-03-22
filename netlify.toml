@@ -23,6 +23,10 @@
 [context.production]
   command = "npm run build"
 
+
+[context.staging] # “staging” is a branch name
+  command = "npm run build"
+
 # Specific branch context: all deploys from 
 # this specific branch will inherit these settings.
 [context.master]
