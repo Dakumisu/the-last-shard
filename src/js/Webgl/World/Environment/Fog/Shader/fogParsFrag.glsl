@@ -3,6 +3,7 @@
 uniform vec3 fogColor;
 uniform vec3 fogNearColor;
 varying float fogDepth;
+varying vec3 test;
 	#ifdef FOG_EXP2
 uniform float fogDensity;
 	#else

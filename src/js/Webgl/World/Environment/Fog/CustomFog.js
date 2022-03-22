@@ -18,8 +18,8 @@ const params = {
 	fogBgColor: '#39e1ff',
 	fogNearColor: '#e3dbd0',
 	fogFarColor: '#36a6ba',
-	fogDensity: 0.1,
-	fogNoiseSpeed: 0.0015,
+	fogDensity: 0.02,
+	fogNoiseSpeed: 0.001,
 	fogNoiseFreq: 0.25,
 	fogNoiseImpact: 0.2,
 };
