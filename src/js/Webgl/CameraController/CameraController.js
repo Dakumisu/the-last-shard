@@ -45,7 +45,8 @@ export default class CameraController {
 			this.switch(e.value);
 		});
 		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.backgroundColor =
-			'#f55f0099';
+			'#f55f0066';
+		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.color = '#fff';
 	}
 	/// #endif
 
