@@ -45,6 +45,7 @@ let initialized = false;
 
 const params = {
 	speed: 10,
+
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
 	defaultPos: new Vector3().set(0, 3, 30),
@@ -59,25 +60,41 @@ const state = {
 	rightPressed: false,
 
 	updateDirection: false,
+
+	playerisMounting: false,
+	playerisDowning: false,
+	playerisStanding: true,
 };
 
+// TODO -> inertie
 const dynamic = {
-	cameraAngle: 0,
-	playerAngle: 0,
 	currentAngle: 0,
 
 	speed: 0,
+	inertie: 1,
 };
 
-let tmpAngle = 0;
-let turnAngleTarget = 0;
-let tmpTurnAngleTarget = 0;
+let camAngle = 0;
+let directionTarget = 0;
+let nextDirection = 0;
+let currentDirection = 0;
 
 let speedTarget = 0;
-// let lastDirection;
-let sens = 1;
 
-const lastDirection = new Vector3();
+let previousPlayerPos = 0;
+let playerPos = 0;
+
+function rLerp(start, end, t, limit) {
+	let cs = (1 - t) * Math.cos(start) + t * Math.cos(end);
+	let sn = (1 - t) * Math.sin(start) + t * Math.sin(end);
+	const v = Math.atan2(sn, cs);
+	return v;
+	// return Math.abs(end - v) < limit ? end : v;
+}
+
+function rDamp(start, end, smoothing, dt) {
+	return rLerp(start, end, 1 - Math.exp(-smoothing * 0.05 * dt));
+}
 
 /// #if DEBUG
 const debug = {
@@ -95,7 +112,6 @@ export default class Player extends BaseEntity {
 		this.keyPressed = game.control.keyPressed;
 
 		this.camera = webgl.camera.debugCam;
-		console.log(this.camera);
 
 		this.scene = webgl.scene.instance;
 
@@ -132,7 +148,11 @@ export default class Player extends BaseEntity {
 			step: 1,
 		});
 		gui.addSeparator();
-		gui.addMonitor(state, 'playerOnGround', { label: 'Player on ground', type: 'graph' });
+		gui.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
+		gui.addSeparator();
+		gui.addMonitor(state, 'playerisMounting', { label: 'is mounting', type: 'graph' });
+		gui.addMonitor(state, 'playerisDowning', { label: 'is downing', type: 'graph' });
+		gui.addMonitor(state, 'playerisStanding', { label: 'is standing', type: 'graph' });
 	}
 
 	helpers() {
@@ -193,7 +213,7 @@ export default class Player extends BaseEntity {
 		this.scene.add(this.base.mesh);
 	}
 
-	move(dt) {
+	move(dt, et) {
 		// check if the direction change
 		state.updateDirection = false;
 		if (state.forwardPressed != this.keyPressed.forward) state.updateDirection = true;
@@ -212,56 +232,37 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
 		dynamic.currentAngle = this.base.mesh.rotation.y;
+		camAngle = this.camera.orbit.spherical.theta;
 
-		if (state.updateDirection) {
-			console.log('TURN');
-			let previousAngleTarget = tmpTurnAngleTarget;
-
-			if (this.keyPressed.forward) {
-				tmpTurnAngleTarget = 0;
-			}
-
-			if (this.keyPressed.backward) {
-				tmpTurnAngleTarget = Math.PI;
-			}
-
-			if (this.keyPressed.left) {
-				tmpTurnAngleTarget = Math.PI * 0.5;
-			}
-			if (this.keyPressed.right) {
-				tmpTurnAngleTarget = Math.PI * 1.5;
-			}
-
-			if (this.keyPressed.forward && this.keyPressed.left)
-				tmpTurnAngleTarget = Math.PI * 0.25;
-			if (this.keyPressed.forward && this.keyPressed.right)
-				tmpTurnAngleTarget = Math.PI * 1.75;
-			if (this.keyPressed.backward && this.keyPressed.left)
-				tmpTurnAngleTarget = Math.PI * 0.75;
-			if (this.keyPressed.backward && this.keyPressed.right)
-				tmpTurnAngleTarget = Math.PI * 1.25;
-
-			// const s1 = twoPI - tmpTurnAngleTarget;
-			// // const s2 = tmpTurnAngleTarget - previousAngleTarget;
-
-			// if (s1 > Math.PI && s1 != twoPI) tmpTurnAngleTarget += s1;
-			// console.log(tmpTurnAngleTarget);
-
-			// turnAngleTarget = tmpAngle + tmpTurnAngleTarget;
+		if (state.playerOnGround) {
+			// TODO prevent player movement on jump
 		}
-		turnAngleTarget = tmpAngle + tmpTurnAngleTarget;
+		if (state.updateDirection) {
+			if (this.keyPressed.forward) nextDirection = 0; // ⬆️
+			if (this.keyPressed.backward) nextDirection = Math.PI; // ⬇️
+			if (this.keyPressed.left) nextDirection = Math.PI * 0.5; // ⬅️
+			if (this.keyPressed.right) nextDirection = Math.PI * 1.5; // ➡️
 
-		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.playerAngle);
-		this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = Math.PI * 0.25; // ↗️
+			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = Math.PI * 1.75; // ↖️
+			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = Math.PI * 0.75; // ↙️
+			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = Math.PI * 1.25; // ↘️
+
+			currentDirection = nextDirection;
+		}
 
 		if (
 			this.keyPressed.forward ||
 			this.keyPressed.backward ||
 			this.keyPressed.left ||
 			this.keyPressed.right
-		)
+		) {
 			speedTarget = params.speed;
-		else speedTarget = 0;
+			directionTarget = camAngle + currentDirection;
+		} else speedTarget = 0;
+
+		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.currentAngle);
+		this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
 
 		if (this.keyPressed.space) {
 			if (state.playerOnGround) playerVelocity.y = 10.0;
@@ -342,11 +343,13 @@ export default class Player extends BaseEntity {
 		}
 	}
 
-	updateDirection(current, target) {
-		console.log('here');
-		const s1 = target - current;
-		const s2 = current - target;
-		if (s1 > s2) turnAngleTarget = tmpAngle + s2;
+	checkPlayerHeightPosition() {
+		previousPlayerPos = playerPos;
+		playerPos = this.base.mesh.position.y;
+
+		state.playerisMounting = playerPos - previousPlayerPos <= 0 ? false : true;
+		state.playerisDowning = playerPos - previousPlayerPos >= 0 ? false : true;
+		state.playerisStanding = playerPos - previousPlayerPos === 0 ? true : false;
 	}
 
 	reset() {
@@ -364,37 +367,15 @@ export default class Player extends BaseEntity {
 	update(et, dt) {
 		if (!initialized) return;
 
-		for (let i = 0; i < params.physicsSteps; i++) {
-			this.move(dt / params.physicsSteps);
-		}
+		for (let i = 0; i < params.physicsSteps; i++) this.move(dt / params.physicsSteps, et);
 
-		dynamic.cameraAngle = damp(dynamic.cameraAngle, dynamic.currentAngle, 0.1, dt);
-		dynamic.playerAngle = damp(dynamic.playerAngle, dynamic.currentAngle, 0.1, dt);
+		this.base.mesh.rotation.y = rDamp(this.base.mesh.rotation.y, directionTarget, 0.2, dt);
 
-		tmpAngle = this.camera.orbit.spherical.theta;
-
-		// if (this.base.mesh.rotation.y >= twoPI)
-		// if (turnAngleTarget >= twoPI) turnAngleTarget -= twoPI;
-
-		// if (turnAngleTarget - this.base.mesh.rotation.y >= Math.PI) sens = -1;
-		// else sens = 1;
-
-		this.base.mesh.rotation.y = dampPrecise(
-			this.base.mesh.rotation.y,
-			turnAngleTarget,
-			dt,
-			0.09,
-		);
-
-		// this.base.mesh.rotation.y = turnAngleTarget;
-		// console.log(this.base.mesh.rotation.y - turnAngleTarget);
-		// if (this.base.mesh.rotation.y - turnAngleTarget < 0.01) {
-		dynamic.speed = dampPrecise(dynamic.speed, speedTarget, dt, 0.06);
-		// }
+		dynamic.speed = dampPrecise(dynamic.speed, speedTarget, dt, 0.07);
 
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
-		// dynamic.cameraAngle = lerp(dynamic.cameraAngle, 0, 0.01);
+		this.checkPlayerHeightPosition();
 	}
 }
