@@ -63,7 +63,6 @@ const state = {
 
 	playerisMounting: false,
 	playerisDowning: false,
-	playerisStanding: true,
 };
 
 // TODO -> inertie
@@ -152,7 +151,6 @@ export default class Player extends BaseEntity {
 		gui.addSeparator();
 		gui.addMonitor(state, 'playerisMounting', { label: 'is mounting', type: 'graph' });
 		gui.addMonitor(state, 'playerisDowning', { label: 'is downing', type: 'graph' });
-		gui.addMonitor(state, 'playerisStanding', { label: 'is standing', type: 'graph' });
 	}
 
 	helpers() {
@@ -243,8 +241,8 @@ export default class Player extends BaseEntity {
 			if (this.keyPressed.left) nextDirection = Math.PI * 0.5; // ⬅️
 			if (this.keyPressed.right) nextDirection = Math.PI * 1.5; // ➡️
 
-			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = Math.PI * 0.25; // ↗️
-			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = Math.PI * 1.75; // ↖️
+			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = Math.PI * 0.25; // ↖️
+			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = Math.PI * 1.75; // ↗️
 			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = Math.PI * 0.75; // ↙️
 			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = Math.PI * 1.25; // ↘️
 
@@ -349,7 +347,6 @@ export default class Player extends BaseEntity {
 
 		state.playerisMounting = playerPos - previousPlayerPos <= 0 ? false : true;
 		state.playerisDowning = playerPos - previousPlayerPos >= 0 ? false : true;
-		state.playerisStanding = playerPos - previousPlayerPos === 0 ? true : false;
 	}
 
 	reset() {
