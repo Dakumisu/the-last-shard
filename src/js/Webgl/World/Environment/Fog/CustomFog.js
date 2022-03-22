@@ -15,13 +15,13 @@ const debug = {
 /// #endif
 
 const params = {
-	fogBgColor: 0xffffff,
-	fogNearColor: 0xefd1b5,
-	fogFarColor: 0xffffff,
-	fogDensity: 0.15,
+	fogBgColor: '#39e1ff',
+	fogNearColor: '#e3dbd0',
+	fogFarColor: '#36a6ba',
+	fogDensity: 0.1,
 	fogNoiseSpeed: 0.0015,
 	fogNoiseFreq: 0.25,
-	fogNoiseImpact: 0.5,
+	fogNoiseImpact: 0.2,
 };
 
 let initialized = false;

@@ -12,7 +12,8 @@ export default class fogMaterial extends MeshToonMaterial {
 	constructor(opts = {}) {
 		super();
 
-		this.color = new Color('#efd1b5');
+		this.color = new Color('#a8b556');
+		this.transparent = true;
 
 		for (const opt in opts) {
 			this[opt] = opts[opt];

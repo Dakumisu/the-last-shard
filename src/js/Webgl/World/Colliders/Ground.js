@@ -23,15 +23,6 @@ const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
 
 let initialized = false;
-let terrainShader;
-
-const params = {
-	fogNearColor: 0xfc4848,
-	fogHorizonColor: 0xe4dcff,
-	fogNoiseSpeed: 0.001,
-	fogNoiseFreq: 0.25,
-	fogNoiseImpact: 0.5,
-};
 
 /// #if DEBUG
 const debug = {
