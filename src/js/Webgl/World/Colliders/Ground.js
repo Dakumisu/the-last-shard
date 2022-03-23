@@ -74,8 +74,8 @@ export default class Ground extends BaseCollider {
 		await this.setGround();
 
 		/// #if DEBUG
-		// this.debug();
-		// this.helpers();
+		this.debug();
+		this.helpers();
 		/// #endif
 
 		initialized = true;
