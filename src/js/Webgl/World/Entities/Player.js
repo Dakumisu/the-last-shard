@@ -50,7 +50,8 @@ const params = {
 
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
-	defaultPos: new Vector3().set(0, 3, 30),
+	defaultPos: [0, 3, 30],
+	// defaultPos: [15, 3, -60],
 };
 
 const state = {
@@ -67,16 +68,16 @@ const state = {
 	playerisDowning: false,
 };
 
-// TODO -> inertie
 const dynamic = {
 	currentAngle: 0,
 
 	speed: 0,
-	inertie: 1,
+	inertie: 0,
 };
 
 let camAngle = 0;
 let directionTarget = 0;
+let directionTargetSmooth = 0.2;
 let nextDirection = 0;
 let currentDirection = 0;
 
@@ -85,16 +86,25 @@ let speedTarget = 0;
 let previousPlayerPos = 0;
 let playerPos = 0;
 
-function rLerp(start, end, t, limit) {
+function rLerp(start, end, t) {
+	let cs = (1 - t) * Math.cos(start) + t * Math.cos(end);
+	let sn = (1 - t) * Math.sin(start) + t * Math.sin(end);
+	return Math.atan2(sn, cs);
+}
+
+function rLerpPrecise(start, end, t, limit) {
 	let cs = (1 - t) * Math.cos(start) + t * Math.cos(end);
 	let sn = (1 - t) * Math.sin(start) + t * Math.sin(end);
 	const v = Math.atan2(sn, cs);
-	return v;
-	// return Math.abs(end - v) < limit ? end : v;
+	return Math.abs(end - v) < limit ? end : v;
 }
 
 function rDamp(start, end, smoothing, dt) {
 	return rLerp(start, end, 1 - Math.exp(-smoothing * 0.05 * dt));
+}
+
+function rDampPrecise(start, end, smoothing, dt, limit) {
+	return rLerpPrecise(start, end, 1 - Math.exp(-smoothing * 0.05 * dt), limit);
 }
 
 /// #if DEBUG
@@ -115,7 +125,7 @@ export default class Player extends BaseEntity {
 		this.scene = webgl.scene.instance;
 		this.cameraController = webgl.cameraController;
 
-		this.ground = opt.ground;
+		this.ground = opt.ground; // TODO -> replace 'this.ground' by all the colliders (map, props, etc...)
 
 		this.base = {};
 		this.base.group = new Group();
@@ -145,9 +155,31 @@ export default class Player extends BaseEntity {
 			max: 30,
 		});
 		gui.addInput(params, 'physicsSteps', {
-			min: 0,
+			min: 1,
 			max: 30,
 			step: 1,
+		});
+		gui.addSeparator();
+		gui.addButton({
+			title: 'copy player pos',
+		}).on('click', () => {
+			const stuffToCopy = `[
+				${this.base.mesh.position.x.toPrecision(5)},
+				${this.base.mesh.position.y.toPrecision(5)},
+				${this.base.mesh.position.z.toPrecision(5)}
+			]`;
+			if (navigator.clipboard) {
+				navigator.clipboard.writeText(stuffToCopy).then(
+					() => {
+						console.log('player pos copied ✅');
+					},
+					() => {
+						console.log('copy failed ❌');
+					},
+				);
+			} else {
+				console.warn('Server need to be in https to access to this command');
+			}
 		});
 		gui.addSeparator();
 		gui.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
@@ -164,7 +196,6 @@ export default class Player extends BaseEntity {
 
 		const axesHelper = new AxesHelper(2);
 		this.base.group.add(axesHelper);
-		console.log(axesHelper.position);
 	}
 	/// #endif
 
@@ -187,8 +218,17 @@ export default class Player extends BaseEntity {
 					theta: 0.5,
 				},
 
-				minDistance: 0.5,
-				maxDistance: 100,
+				minDistance: 1,
+				maxDistance: 30,
+				/// #if !DEBUG
+				enableZoom: false,
+				/// #endif
+
+				enablePan: false,
+				rotateSpeed: 0.2,
+
+				minPolarAngle: Math.PI * 0.25,
+				maxPolarAngle: Math.PI * 0.5,
 			},
 			'playerCam',
 		);
@@ -203,7 +243,7 @@ export default class Player extends BaseEntity {
 
 		this.base.capsuleInfo = {
 			radius: 0.5,
-			segment: new Line3(new Vector3(), new Vector3(0, -1.0, 0.0)),
+			segment: new Line3(new Vector3(0, 0, 0), new Vector3(0, -1, 0)),
 		};
 
 		const geoOpt = {
@@ -217,19 +257,19 @@ export default class Player extends BaseEntity {
 			color: new Color('#ff0000'),
 		};
 
-		// this.base.material = defaultMaterial.get(matOpts);
-		this.base.material = fogMaterial.get();
+		this.base.material = defaultMaterial.get(matOpts);
+		// this.base.material = fogMaterial.get();
 	}
 
 	setMesh() {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
-		this.base.mesh.position.copy(params.defaultPos);
+		this.base.mesh.position.fromArray(params.defaultPos);
 		this.base.group.add(this.base.mesh);
 		this.scene.add(this.base.mesh);
 	}
 
-	move(dt, et) {
+	move(dt) {
 		// check if the direction change
 		state.updateDirection = false;
 		if (state.forwardPressed != this.keyPressed.forward) state.updateDirection = true;
@@ -250,9 +290,6 @@ export default class Player extends BaseEntity {
 		dynamic.currentAngle = this.base.mesh.rotation.y;
 		camAngle = this.camera.orbit.spherical.theta;
 
-		if (state.playerOnGround) {
-			// TODO prevent player movement on jump
-		}
 		if (state.updateDirection) {
 			if (this.keyPressed.forward) nextDirection = 0; // ⬆️
 			if (this.keyPressed.backward) nextDirection = Math.PI; // ⬇️
@@ -263,6 +300,12 @@ export default class Player extends BaseEntity {
 			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = Math.PI * 1.75; // ↗️
 			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = Math.PI * 0.75; // ↙️
 			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = Math.PI * 1.25; // ↘️
+
+			console.log(Math.abs(currentDirection - nextDirection));
+
+			if (Math.abs(currentDirection - nextDirection) === Math.PI)
+				directionTargetSmooth = 0.75;
+			else directionTargetSmooth = 0.2;
 
 			currentDirection = nextDirection;
 		}
@@ -281,7 +324,7 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
 
 		if (this.keyPressed.space) {
-			if (state.playerOnGround) playerVelocity.y = 10.0;
+			if (state.playerOnGround) playerVelocity.y = 15.0;
 		}
 
 		this.base.mesh.updateMatrixWorld();
@@ -335,8 +378,8 @@ export default class Player extends BaseEntity {
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
 		state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
-		const offset = Math.max(0.0, deltaVector.length() - 1e-5);
-		deltaVector.normalize().multiplyScalar(offset);
+		// const offset = Math.max(0, deltaVector.length() - 1e-5);
+		// deltaVector.normalize().multiplyScalar(offset);
 
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
@@ -369,7 +412,7 @@ export default class Player extends BaseEntity {
 
 	reset() {
 		playerVelocity.set(0, 0, 0);
-		this.base.mesh.position.copy(params.defaultPos);
+		this.base.mesh.position.fromArray(params.defaultPos);
 		this.camera.camera.position.sub(this.camera.orbit.targetOffset);
 		this.camera.orbit.targetOffset.copy(this.base.mesh.position);
 		this.camera.camera.position.add(this.base.mesh.position);
@@ -384,7 +427,14 @@ export default class Player extends BaseEntity {
 
 		for (let i = 0; i < params.physicsSteps; i++) this.move(dt / params.physicsSteps, et);
 
-		this.base.mesh.rotation.y = rDamp(this.base.mesh.rotation.y, directionTarget, 0.2, dt);
+		this.base.mesh.rotation.y = rDampPrecise(
+			this.base.mesh.rotation.y,
+			directionTarget,
+			directionTargetSmooth,
+			dt,
+			0.002,
+		);
+		// console.log(this.base.mesh.rotation.y, directionTarget);
 
 		dynamic.speed = dampPrecise(dynamic.speed, speedTarget, dt, 0.07);
 
