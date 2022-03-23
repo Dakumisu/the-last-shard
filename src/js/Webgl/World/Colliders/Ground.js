@@ -17,6 +17,7 @@ import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
 import debugMaterial from '../materials/debug/material';
 import fogMaterial from '../materials/fog/material';
+import defaultMaterial from '../materials/default/material';
 
 // import sandbox from '/assets/model/sandbox.glb';
 const sandbox = '/assets/model/sandbox.glb';
@@ -89,7 +90,8 @@ export default class Ground extends BaseCollider {
 		};
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
 
-		this.base.material = fogMaterial.get();
+		this.base.material = defaultMaterial.get();
+		// this.base.material = fogMaterial.get();
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.scene.add(this.base.mesh);
 	}
