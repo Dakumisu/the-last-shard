@@ -26,12 +26,12 @@ const params = {
 
 const cubeTextureLoader = new CubeTextureLoader();
 const environmentMapTexture = cubeTextureLoader.load([
-	'/assets/image/environmentMaps/px.png',
-	'/assets/image/environmentMaps/nx.png',
-	'/assets/image/environmentMaps/py.png',
-	'/assets/image/environmentMaps/ny.png',
-	'/assets/image/environmentMaps/pz.png',
-	'/assets/image/environmentMaps/nz.png',
+	'/assets/image/environmentMaps/1/px.png',
+	'/assets/image/environmentMaps/1/nx.png',
+	'/assets/image/environmentMaps/1/py.png',
+	'/assets/image/environmentMaps/1/ny.png',
+	'/assets/image/environmentMaps/1/pz.png',
+	'/assets/image/environmentMaps/1/nz.png',
 ]);
 
 let initialized = false;
