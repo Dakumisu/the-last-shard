@@ -1,9 +1,8 @@
 #ifdef USE_FOG
-#pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/3d')
+#pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
 uniform vec3 fogColor;
 uniform vec3 fogNearColor;
 varying float fogDepth;
-varying vec3 test;
 	#ifdef FOG_EXP2
 uniform float fogDensity;
 	#else
