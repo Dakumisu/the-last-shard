@@ -1,6 +1,6 @@
 import { getWebgl } from '@webgl/Webgl';
 import fogMaterial from '@webgl/World/materials/fog/material';
-import { Color, Fog, FogExp2, ShaderChunk } from 'three';
+import { Color, CubeTextureLoader, Fog, FogExp2, ShaderChunk } from 'three';
 import fogFrag from './Shader/fogFrag.glsl';
 import fogParsFrag from './Shader/fogParsFrag.glsl';
 import fogParsVert from './Shader/fogParsVert.glsl';
@@ -18,11 +18,21 @@ const params = {
 	fogBgColor: '#39e1ff',
 	fogNearColor: '#e3dbd0',
 	fogFarColor: '#39e1ff',
-	fogDensity: 0.021,
-	fogNoiseSpeed: 0.0025,
-	fogNoiseFreq: 0.1,
-	fogNoiseImpact: 0.2,
+	fogDensity: 0.02,
+	fogNoiseSpeed: 0.003,
+	fogNoiseFreq: 0.11,
+	fogNoiseImpact: 0.1,
 };
+
+const cubeTextureLoader = new CubeTextureLoader();
+const environmentMapTexture = cubeTextureLoader.load([
+	'/assets/image/environmentMaps/px.png',
+	'/assets/image/environmentMaps/nx.png',
+	'/assets/image/environmentMaps/py.png',
+	'/assets/image/environmentMaps/ny.png',
+	'/assets/image/environmentMaps/pz.png',
+	'/assets/image/environmentMaps/nz.png',
+]);
 
 let initialized = false;
 export default class CustomFog {
@@ -55,6 +65,7 @@ export default class CustomFog {
 		const fog = new FogExp2(params.fogFarColor, params.fogDensity);
 		this.scene.fog = fog;
 		this.scene.background = new Color(params.fogBgColor);
+		this.scene.background = environmentMapTexture;
 
 		initialized = true;
 	}

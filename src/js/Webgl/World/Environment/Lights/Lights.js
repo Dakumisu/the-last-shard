@@ -49,7 +49,7 @@ export default class Lights {
 			/// #endif
 		);
 
-		this.group.add(ambientLight.light, directionnalLight.light);
+		this.group.add(directionnalLight.light);
 		this.scene.add(this.group);
 	}
 }

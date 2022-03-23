@@ -9,7 +9,7 @@ import {
 
 let instance;
 
-export default class fogMaterial extends MeshToonMaterial {
+export default class fogMaterial extends MeshStandardMaterial {
 	constructor(opts = {}) {
 		super();
 
