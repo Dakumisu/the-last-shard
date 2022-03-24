@@ -1,12 +1,11 @@
 #ifdef USE_FOG
-vec3 windDir = vec3(-time, time, time);
-vec3 scrollingPos = vFogWorldPosition.xyz + fogNoiseSpeed * windDir;
-float noise = cnoise(fogNoiseFreq * scrollingPos.xyz);
-float vFogDepth = (1.0 - fogNoiseImpact * noise) * fogDepth;
-#ifdef FOG_EXP2
-float fogFactor = 1.0 - exp(-fogDensity * fogDensity * vFogDepth * vFogDepth);
-#else
+vec3 windDir = vec3(-uTime, uTime, uTime);
+vec3 scrollingPos = vFogWorldPosition.xyz + uFogNoiseSpeed * windDir;
+float noise = cnoise(uFogNoiseFreq * scrollingPos.zx);
+float vFogDepth = (1.0 - uFogNoiseImpact * noise) * fogDepth;
 float fogFactor = smoothstep(fogNear, fogFar, vFogDepth);
-#endif
-gl_FragColor.rgb = mix(gl_FragColor.rgb, mix(fogNearColor, fogColor, fogFactor), fogFactor);
+
+gl_FragColor.a = (1. - fogFactor);
+
+gl_FragColor.rgb = mix(gl_FragColor.rgb, mix(uFogNearColor, fogColor, fogFactor), (fogFactor + noise * uFogNoiseAmount));
 #endif

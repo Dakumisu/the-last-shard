@@ -2,6 +2,9 @@
 uniform vec3 diffuse;
 uniform vec3 emissive;
 uniform float opacity;
+
+uniform float uTime;
+
 #include <common>
 #include <packing>
 #include <dithering_pars_fragment>

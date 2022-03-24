@@ -1,10 +1,10 @@
-import { DirectionalLight } from 'three';
+import { DirectionalLight, Vector3 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 
 const params = {
-	color: '#ffffff',
-	intensity: 1,
+	color: '#844bb8',
+	intensity: 2,
 };
 
 /// #if DEBUG
@@ -18,7 +18,7 @@ const debug = {
 export default class Directionnal {
 	constructor(label, parentLabel) {
 		this.light = new DirectionalLight(params.color, params.intensity);
-		this.light.position.set(5, 10, 30);
+		this.light.position.set(-10, 0, 10);
 
 		/// #if DEBUG
 		const webgl = getWebgl();
@@ -42,7 +42,23 @@ export default class Directionnal {
 		});
 		gui.addInput(this.light, 'intensity', {
 			min: 0,
-			max: 2,
+			max: 10,
+			step: 0.01,
+		});
+
+		gui.addInput(this.light.position, 'x', {
+			min: 0,
+			max: 10,
+			step: 0.01,
+		});
+		gui.addInput(this.light.position, 'y', {
+			min: 0,
+			max: 10,
+			step: 0.01,
+		});
+		gui.addInput(this.light.position, 'z', {
+			min: 0,
+			max: 10,
 			step: 0.01,
 		});
 	}

@@ -16,12 +16,10 @@ import BaseCollider from '../Components/BaseCollider';
 import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
 import debugMaterial from '../Materials/debug/material';
-import fogMaterial from '../Materials/fog/material';
 import { CustomMeshBasicMaterial } from '../Materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
 import { CustomMeshToonMaterial } from '../Materials/CustomMeshToonMaterial/CustomMeshToonMaterial';
 import { CustomMeshStandardMaterial } from '../Materials/CustomMeshStandardMaterial/CustomMeshStandardMaterial';
 
-// import sandbox from '/assets/model/sandbox.glb';
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
 
@@ -51,7 +49,7 @@ export default class Ground extends BaseCollider {
 	/// #if DEBUG
 	helpers() {
 		this.visualizer = this.setVisualizer(this.base.mesh, 30);
-		this.scene.add(this.visualizer);
+		// this.scene.add(this.visualizer);
 
 		const size = 150;
 		const divisions = 40;
@@ -60,7 +58,7 @@ export default class Ground extends BaseCollider {
 
 		gridHelper.position.x = 40;
 		gridHelper.position.z = -30;
-		this.scene.add(gridHelper);
+		// this.scene.add(gridHelper);
 	}
 
 	debug() {
@@ -85,7 +83,11 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		this.base.geometry = await mergeGeometry([], [sandbox]);
+		const g = new PlaneBufferGeometry(200, 200);
+		g.rotateX(-Math.PI * 0.5);
+
+		// this.base.geometry = g;
+		this.base.geometry = await mergeGeometry([g], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
@@ -96,12 +98,13 @@ export default class Ground extends BaseCollider {
 		this.base.material = new CustomMeshToonMaterial({
 			side: DoubleSide,
 			uniforms: {
-				diffuse: { value: new Color('#45FFFF') },
+				diffuse: { value: new Color('#d29ddc') },
 			},
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.scene.add(this.base.mesh);
+		this.base.mesh.position.y = -9;
 	}
 
 	resize() {

@@ -16,6 +16,7 @@ import {
 	Vector3,
 	Group,
 	AxesHelper,
+	DoubleSide,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
@@ -30,7 +31,6 @@ import { damp, dampPrecise, lerp, lerpPrecise } from 'philbin-packages/maths';
 
 import model from '/assets/model/player.glb';
 import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
-import fogMaterial from '../Materials/fog/material';
 import { CustomMeshBasicMaterial } from '../Materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
 import { CustomMeshToonMaterial } from '../Materials/CustomMeshToonMaterial/CustomMeshToonMaterial';
 import { CustomMeshStandardMaterial } from '../Materials/CustomMeshStandardMaterial/CustomMeshStandardMaterial';
@@ -127,7 +127,7 @@ export default class Player extends BaseEntity {
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		this.debug();
-		this.helpers();
+		// this.helpers();
 		/// #endif
 	}
 
@@ -213,14 +213,10 @@ export default class Player extends BaseEntity {
 	}
 
 	setMaterial() {
-		const matOpts = {
-			color: new Color('#ff0000'),
-		};
-
 		// this.base.material = fogMaterial.get();
 		this.base.material = new CustomMeshToonMaterial({
 			uniforms: {
-				diffuse: { value: new Color('#e3dbd0') },
+				diffuse: { value: new Color('#d29ddc') },
 			},
 		});
 	}
