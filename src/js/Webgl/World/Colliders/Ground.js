@@ -7,6 +7,7 @@ import {
 	MeshBasicMaterial,
 	MeshNormalMaterial,
 	PlaneBufferGeometry,
+	PlaneGeometry,
 	UniformsUtils,
 } from 'three';
 
@@ -19,7 +20,6 @@ import debugMaterial from '../materials/debug/material';
 import fogMaterial from '../materials/fog/material';
 import defaultMaterial from '../materials/default/material';
 
-// import sandbox from '/assets/model/sandbox.glb';
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
 
@@ -83,7 +83,9 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		this.base.geometry = await mergeGeometry([], [sandbox]);
+		const plane = new PlaneGeometry(200, 200);
+		plane.rotateX(-Math.PI * 0.5);
+		this.base.geometry = await mergeGeometry([plane], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
