@@ -69,7 +69,7 @@ export default class CameraController {
 	}
 
 	switch(label) {
-		console.log('📹 Switch Camera', label);
+		console.log('📹 Switch Camera :', label);
 		if (this.get(label)) {
 			/// #if DEBUG
 			if (this.currentCamera) this.currentCamera.gui.expanded = false;

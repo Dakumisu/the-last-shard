@@ -1,6 +1,7 @@
 import { getWebgl } from '@webgl/Webgl';
-import fogMaterial from '@webgl/World/materials/fog/material';
-import { Color, Fog, FogExp2, ShaderChunk } from 'three';
+import { CustomMeshBasicMaterial } from '@webgl/World/Materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
+import fogMaterial from '@webgl/World/Materials/fog/material';
+import { Color, FogExp2, MeshBasicMaterial, ShaderChunk } from 'three';
 import fogFrag from './Shader/fogFrag.glsl';
 import fogParsFrag from './Shader/fogParsFrag.glsl';
 import fogParsVert from './Shader/fogParsVert.glsl';

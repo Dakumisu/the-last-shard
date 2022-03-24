@@ -11,18 +11,13 @@ let instance;
 
 export default class fogMaterial extends MeshToonMaterial {
 	constructor(opts = {}) {
-		super();
+		super(opts);
+		this.uniforms = opts.uniforms;
 
-		this.color = new Color('#a8b556');
-		this.transparent = true;
 		this.side = DoubleSide;
 
-		for (const opt in opts) {
-			this[opt] = opts[opt];
-		}
-
 		this.onBeforeCompile = (shader) => {
-			shader.uniforms = UniformsUtils.merge([shader.uniforms, opts.uniforms]);
+			shader.uniforms = { ...shader.uniforms, ...opts.uniforms };
 			this.uniforms = shader.uniforms;
 		};
 	}

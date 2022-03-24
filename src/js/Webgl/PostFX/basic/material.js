@@ -16,5 +16,4 @@ export default class postProcessingMaterial extends RawShaderMaterial {
 	}
 }
 
-postProcessingMaterial.get = (opts) =>
-	(instance = instance || new postProcessingMaterial(opts));
+postProcessingMaterial.get = (opts) => (instance = instance || new postProcessingMaterial(opts));

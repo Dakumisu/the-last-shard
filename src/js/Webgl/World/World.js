@@ -2,6 +2,7 @@ import Player from './Entities/Player.js';
 import Ground from './Colliders/Ground.js';
 import Lights from './Environment/Lights/Lights.js';
 import CustomFog from './Environment/Fog/CustomFog.js';
+import baseUniforms from './Materials/baseUniforms.js';
 
 let initialized = false;
 
@@ -12,6 +13,7 @@ export default class World {
 
 	async setComponent() {
 		this.lights = new Lights();
+
 		this.fog = new CustomFog();
 
 		this.ground = new Ground();

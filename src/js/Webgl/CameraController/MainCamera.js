@@ -4,7 +4,7 @@ import { PerspectiveCamera } from 'three';
 
 export default class MainCamera {
 	constructor() {
-		this.instance = new PerspectiveCamera(75, store.aspect.ratio, 0.1, 1000);
+		this.instance = new PerspectiveCamera(75, store.aspect.ratio, 0.5, 1000);
 		this.instance.position.set(2, 3, 3);
 		this.instance.lookAt(0, 0, 0);
 		this.instance.rotation.reorder('YXZ');

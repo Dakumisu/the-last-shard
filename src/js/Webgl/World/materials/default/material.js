@@ -2,17 +2,19 @@ import { Color, DoubleSide, MeshStandardMaterial } from 'three';
 
 let instance;
 
-export default class defaultMaterial extends MeshStandardMaterial {
+export default class DefaultMaterial extends MeshStandardMaterial {
+	static defaultUniforms = {
+		uTime: { value: 0 },
+	};
 	constructor(opts = {}) {
-		super();
+		super(opts);
+		this.uniforms = opts.uniforms;
 
 		this.color = new Color('#ffffff');
 		this.side = DoubleSide;
+	}
 
-		for (const opt in opts) {
-			this[opt] = opts[opt];
-		}
+	static get(opts) {
+		return new DefaultMaterial(opts);
 	}
 }
-
-defaultMaterial.get = (opts) => new defaultMaterial(opts);

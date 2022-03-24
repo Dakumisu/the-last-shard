@@ -29,11 +29,11 @@ import { mergeGeometry } from '@utils/webgl';
 import { damp, dampPrecise, lerp, lerpPrecise } from 'philbin-packages/maths';
 
 import model from '/assets/model/player.glb';
-// import Camera from '@webgl/Camera';
-import debugMaterial from '../materials/debug/material';
-import defaultMaterial from '../materials/default/material';
 import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
-import fogMaterial from '../materials/fog/material';
+import fogMaterial from '../Materials/fog/material';
+import { CustomMeshBasicMaterial } from '../Materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
+import { CustomMeshToonMaterial } from '../Materials/CustomMeshToonMaterial/CustomMeshToonMaterial';
+import { CustomMeshStandardMaterial } from '../Materials/CustomMeshStandardMaterial/CustomMeshStandardMaterial';
 
 const twoPI = Math.PI * 2;
 const tVec3a = new Vector3();
@@ -217,8 +217,12 @@ export default class Player extends BaseEntity {
 			color: new Color('#ff0000'),
 		};
 
-		// this.base.material = defaultMaterial.get(matOpts);
-		this.base.material = fogMaterial.get();
+		// this.base.material = fogMaterial.get();
+		this.base.material = new CustomMeshToonMaterial({
+			uniforms: {
+				diffuse: { value: new Color('#e3dbd0') },
+			},
+		});
 	}
 
 	setMesh() {
