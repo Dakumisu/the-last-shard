@@ -127,7 +127,7 @@ export default class Player extends BaseEntity {
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		this.debug();
-		this.helpers();
+		// this.helpers();
 		/// #endif
 	}
 

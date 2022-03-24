@@ -40,16 +40,14 @@ const debug = {
 const cubeTextureLoader = new CubeTextureLoader();
 const textureLoader = new TextureLoader();
 const cloud = textureLoader.load('/assets/image/cloud.png');
-// cloud.wrapS = MirroredRepeatWrapping;
-// cloud.wrapT = MirroredRepeatWrapping;
 
 const environmentMapTexture = cubeTextureLoader.load([
-	'/assets/image/environmentMaps/px.jpg',
-	'/assets/image/environmentMaps/nx.jpg',
-	'/assets/image/environmentMaps/py.jpg',
-	'/assets/image/environmentMaps/ny.jpg',
-	'/assets/image/environmentMaps/pz.jpg',
-	'/assets/image/environmentMaps/nz.jpg',
+	'/assets/image/environmentMaps/1/px.png',
+	'/assets/image/environmentMaps/1/nx.png',
+	'/assets/image/environmentMaps/1/py.png',
+	'/assets/image/environmentMaps/1/ny.png',
+	'/assets/image/environmentMaps/1/pz.png',
+	'/assets/image/environmentMaps/1/nz.png',
 ]);
 
 export default class Sky {
@@ -100,7 +98,7 @@ export default class Sky {
 		});
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		// this.scene.add(this.base.mesh);
-		this.base.mesh.scale.set(300, 300, 300);
+		this.base.mesh.scale.set(600, 600, 600);
 	}
 
 	resize() {

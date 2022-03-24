@@ -15,13 +15,14 @@ const debug = {
 /// #endif
 
 const params = {
-	fogBgColor: '#39e1ff',
-	fogNearColor: '#e3dbd0',
-	fogFarColor: '#39e1ff',
-	fogDensity: 0.02,
-	fogNoiseSpeed: 0.003,
-	fogNoiseFreq: 0.11,
-	fogNoiseImpact: 0.1,
+	fogNearColor: '#844bb8',
+	fogFarColor: '#3e2e77',
+	fogNear: 0,
+	fogFar: 100,
+	fogNoiseSpeed: 0.004,
+	fogNoiseFreq: 0.065,
+	fogNoiseImpact: 0.0,
+	fogNoiseAmount: 0.2,
 };
 
 const cubeTextureLoader = new CubeTextureLoader();
@@ -53,6 +54,7 @@ export default class CustomFog {
 				fogNoiseFreq: { value: params.fogNoiseFreq },
 				fogNoiseSpeed: { value: params.fogNoiseSpeed },
 				fogNoiseImpact: { value: params.fogNoiseImpact },
+				fogNoiseAmount: { value: params.fogNoiseAmount },
 				time: { value: 0 },
 			},
 		};
@@ -62,9 +64,8 @@ export default class CustomFog {
 		ShaderChunk.fog_vertex = fogVert;
 		ShaderChunk.fog_pars_fragment = fogParsFrag;
 		ShaderChunk.fog_fragment = fogFrag;
-		const fog = new FogExp2(params.fogFarColor, params.fogDensity);
+		const fog = new Fog(params.fogFarColor, params.fogNear, params.fogFar);
 		this.scene.fog = fog;
-		this.scene.background = new Color(params.fogBgColor);
 		this.scene.background = environmentMapTexture;
 
 		initialized = true;
@@ -76,12 +77,6 @@ export default class CustomFog {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addInput(params, 'fogBgColor', { label: 'bgColor', view: 'color' }).on(
-			'change',
-			(fogBgColor) => {
-				this.scene.background.set(fogBgColor.value);
-			},
-		);
 		gui.addInput(params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(
 			'change',
 			(fogFarColor) => {
@@ -94,12 +89,18 @@ export default class CustomFog {
 		}).on('change', (fogNearColor) => {
 			this.material.uniforms.fogNearColor.value.set(fogNearColor.value);
 		});
-
-		gui.addInput(this.scene.fog, 'density', {
-			min: 0,
-			max: 0.5,
-			step: 0.01,
-		});
+		gui.addInput(params, 'fogFar', { label: 'farRange', min: 20, max: 150, step: 0.01 }).on(
+			'change',
+			(fogFar) => {
+				this.scene.fog.far = fogFar.value;
+			},
+		);
+		gui.addInput(params, 'fogNear', { label: 'nearRange', min: 0, max: 50, step: 0.01 }).on(
+			'change',
+			(fogNear) => {
+				this.scene.fog.near = fogNear.value;
+			},
+		);
 		gui.addInput(this.material.uniforms.fogNoiseSpeed, 'value', {
 			label: 'speed',
 			min: 0,
@@ -123,6 +124,14 @@ export default class CustomFog {
 			step: 0.001,
 		}).on('change', (imp) => {
 			this.material.uniforms.fogNoiseImpact.value = imp.value;
+		});
+		gui.addInput(this.material.uniforms.fogNoiseAmount, 'value', {
+			label: 'amount',
+			min: 0,
+			max: 1,
+			step: 0.001,
+		}).on('change', (amount) => {
+			this.material.uniforms.fogNoiseAmount.value = amount.value;
 		});
 	}
 	/// #endif

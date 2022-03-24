@@ -81,7 +81,11 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		this.base.geometry = await mergeGeometry([], [sandbox]);
+		const g = new PlaneBufferGeometry(200, 200);
+		g.rotateX(-Math.PI * 0.5);
+
+		// this.base.geometry = g;
+		this.base.geometry = await mergeGeometry([g], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
@@ -89,10 +93,9 @@ export default class Ground extends BaseCollider {
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
 
 		this.base.material = fogMaterial.get();
-		// this.base.material = new MeshNormalMaterial();
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.scene.add(this.base.mesh);
-		this.base.mesh.position.y = -10;
+		this.base.mesh.position.y = -9;
 	}
 
 	resize() {

@@ -19,9 +19,9 @@ void main() {
 	textUv += sin(textUv);
 	textUv = fract(textUv + vec2(0.0, uTime * 0.1));
 	vec4 text = texture2D(uTexture, textUv);
-	text.r *= noise;
+	// text.r *= noise;
 
 	gl_FragColor = vec4(vec3(noise), distFront * distBack * distY * noise * text.r);
-	gl_FragColor = vec4(text.rbg, distFront * distBack * distY * text.a);
 	gl_FragColor = vec4(text.rbg, text.a) * text2;
+	gl_FragColor = vec4(text.rbg, distFront * distBack * distY * text.a);
 }
