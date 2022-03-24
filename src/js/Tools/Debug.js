@@ -1,4 +1,5 @@
 import { Pane } from 'tweakpane';
+import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 
 import StatsJs from '@tools/Stats';
 
@@ -7,6 +8,7 @@ const tabList = ['General', 'Env', 'Stats'];
 export default class Debug {
 	constructor() {
 		this.gui = new Pane();
+		this.gui.registerPlugin(EssentialsPlugin);
 		this.stats = new StatsJs();
 
 		this.debugFolders = {};

@@ -26,16 +26,15 @@ import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { mergeGeometry } from '@utils/webgl';
-import { damp, dampPrecise, lerp, lerpPrecise } from 'philbin-packages/maths';
+import { damp, dampPrecise } from 'philbin-packages/maths';
 
-import model from '/assets/model/player.glb';
-// import Camera from '@webgl/Camera';
 import debugMaterial from '../materials/debug/material';
 import defaultMaterial from '../materials/default/material';
 import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
 import fogMaterial from '../materials/fog/material';
 
-const twoPI = Math.PI * 2;
+const PI = Math.PI;
+const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
 const tBox = new Box3();
@@ -47,12 +46,21 @@ let initialized = false;
 
 const params = {
 	speed: 10,
+	sprint: 25,
 
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
 	defaultPos: [0, 3, 30],
-	// defaultPos: [15, 3, -60],
 };
+
+/// #if DEBUG
+const teleportPoints = [
+	params.defaultPos,
+	[-6.5303, 11, -27.421],
+	[15, 2, -60],
+	[104.32, 14, -65.342],
+];
+/// #endif
 
 const state = {
 	playerOnGround: true,
@@ -66,7 +74,10 @@ const state = {
 
 	playerisMounting: false,
 	playerisDowning: false,
+
+	slowDown: false,
 };
+let sd = state.slowDown;
 
 const dynamic = {
 	currentAngle: 0,
@@ -77,26 +88,34 @@ const dynamic = {
 
 let camAngle = 0;
 let directionTarget = 0;
-let directionTargetSmooth = 0.2;
 let nextDirection = 0;
 let currentDirection = 0;
 
+let inertieTarget = 0;
 let speedTarget = 0;
 
 let previousPlayerPos = 0;
 let playerPos = 0;
 
+// function rLerp(start, end, t) {
+// 	let cs = Math.cos(start) * (1 - t) + Math.cos(end) * t;
+// 	let sn = Math.sin(start) * (1 - t) + Math.sin(end) * t;
+// 	return Math.atan2(sn, cs);
+// }
+
+// function rDamp(start, end, smoothing, dt) {
+// 	return rLerp(start, end, 1 - Math.exp(-smoothing * 0.05 * dt));
+// }
+
 function rLerp(start, end, t) {
-	let cs = (1 - t) * Math.cos(start) + t * Math.cos(end);
-	let sn = (1 - t) * Math.sin(start) + t * Math.sin(end);
-	return Math.atan2(sn, cs);
+	const delta = ((end - start + PI2 + PI) % PI2) - PI;
+	return (start + delta * t + PI2) % PI2;
 }
 
 function rLerpPrecise(start, end, t, limit) {
-	let cs = (1 - t) * Math.cos(start) + t * Math.cos(end);
-	let sn = (1 - t) * Math.sin(start) + t * Math.sin(end);
-	const v = Math.atan2(sn, cs);
-	return Math.abs(end - v) < limit ? end : v;
+	const delta = ((end - start + PI2 + PI) % PI2) - PI;
+	const r = (start + delta * t + PI2) % PI2;
+	return Math.abs(end - r) < limit ? end : r;
 }
 
 function rDamp(start, end, smoothing, dt) {
@@ -159,33 +178,69 @@ export default class Player extends BaseEntity {
 			max: 30,
 			step: 1,
 		});
-		gui.addSeparator();
-		gui.addButton({
-			title: 'copy player pos',
-		}).on('click', () => {
-			const stuffToCopy = `[
+
+		const guiPosition = gui.addFolder({
+			title: 'Position',
+		});
+
+		guiPosition.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
+		guiPosition.addMonitor(state, 'playerisMounting', { label: 'mounting', type: 'graph' });
+		guiPosition.addMonitor(state, 'playerisDowning', { label: 'downing', type: 'graph' });
+
+		guiPosition.addSeparator();
+
+		guiPosition.addMonitor(dynamic, 'speed', { label: 'speed', type: 'graph' });
+
+		guiPosition.addSeparator();
+
+		guiPosition
+			.addButton({
+				title: 'copy player pos',
+			})
+			.on('click', () => {
+				const stuffToCopy = `[
 				${this.base.mesh.position.x.toPrecision(5)},
 				${this.base.mesh.position.y.toPrecision(5)},
 				${this.base.mesh.position.z.toPrecision(5)}
 			]`;
-			if (navigator.clipboard) {
-				navigator.clipboard.writeText(stuffToCopy).then(
-					() => {
-						console.log('player pos copied ✅');
-					},
-					() => {
-						console.log('copy failed ❌');
-					},
-				);
-			} else {
-				console.warn('Server need to be in https to access to this command');
-			}
+				if (navigator.clipboard) {
+					navigator.clipboard.writeText(stuffToCopy).then(
+						() => {
+							console.log('player pos copied ✅');
+						},
+						() => {
+							console.log('copy failed ❌');
+						},
+					);
+				} else {
+					console.warn('Server need to be in https to access to this command');
+				}
+			});
+
+		guiPosition.addSeparator();
+
+		const guiTeleport = guiPosition.addFolder({
+			title: 'Teleport',
 		});
-		gui.addSeparator();
-		gui.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
-		gui.addSeparator();
-		gui.addMonitor(state, 'playerisMounting', { label: 'is mounting', type: 'graph' });
-		gui.addMonitor(state, 'playerisDowning', { label: 'is downing', type: 'graph' });
+
+		const dummy = {
+			a: -1,
+		};
+		guiTeleport
+			.addInput(dummy, 'a', {
+				view: 'radiogrid',
+				groupName: 'positions',
+				size: [4, 1],
+				cells: (x, y) => ({
+					title: `${x + y}`,
+					value: teleportPoints[x + y],
+				}),
+
+				label: 'points',
+			})
+			.on('change', (pos) => {
+				this.base.mesh.position.fromArray(pos.value);
+			});
 	}
 
 	helpers() {
@@ -215,7 +270,7 @@ export default class Player extends BaseEntity {
 				spherical: {
 					radius: 5,
 					phi: 1,
-					theta: 0.5,
+					theta: PI2 * 1000,
 				},
 
 				minDistance: 1,
@@ -227,8 +282,8 @@ export default class Player extends BaseEntity {
 				enablePan: false,
 				rotateSpeed: 0.2,
 
-				minPolarAngle: Math.PI * 0.25,
-				maxPolarAngle: Math.PI * 0.5,
+				minPolarAngle: PI * 0.25,
+				maxPolarAngle: PI * 0.5,
 			},
 			'playerCam',
 		);
@@ -292,23 +347,27 @@ export default class Player extends BaseEntity {
 
 		if (state.updateDirection) {
 			if (this.keyPressed.forward) nextDirection = 0; // ⬆️
-			if (this.keyPressed.backward) nextDirection = Math.PI; // ⬇️
-			if (this.keyPressed.left) nextDirection = Math.PI * 0.5; // ⬅️
-			if (this.keyPressed.right) nextDirection = Math.PI * 1.5; // ➡️
+			if (this.keyPressed.backward) nextDirection = PI - 0; // ⬇️
+			if (this.keyPressed.left) nextDirection = PI * 0.5 + 0; // ⬅️
+			if (this.keyPressed.right) nextDirection = PI * 1.5 - 0; // ➡️
+			// if (this.keyPressed.forward) nextDirection = 0.001; // ⬆️
+			// if (this.keyPressed.backward) nextDirection = PI - 0.001; // ⬇️
+			// if (this.keyPressed.left) nextDirection = PI * 0.5 + 0.001; // ⬅️
+			// if (this.keyPressed.right) nextDirection = PI * 1.5 - 0.001; // ➡️
 
-			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = Math.PI * 0.25; // ↖️
-			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = Math.PI * 1.75; // ↗️
-			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = Math.PI * 0.75; // ↙️
-			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = Math.PI * 1.25; // ↘️
+			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = PI * 0.25; // ↖️
+			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = PI * 1.75; // ↗️
+			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = PI * 0.75; // ↙️
+			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = PI * 1.25; // ↘️
 
-			console.log(Math.abs(currentDirection - nextDirection));
-
-			if (Math.abs(currentDirection - nextDirection) === Math.PI)
-				directionTargetSmooth = 0.75;
-			else directionTargetSmooth = 0.2;
+			state.slowDown =
+				Math.abs(currentDirection - nextDirection) >= PI - 0.004 &&
+				Math.abs(currentDirection - nextDirection) <= PI + 0.004;
 
 			currentDirection = nextDirection;
 		}
+
+		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
 		if (
 			this.keyPressed.forward ||
@@ -316,9 +375,13 @@ export default class Player extends BaseEntity {
 			this.keyPressed.left ||
 			this.keyPressed.right
 		) {
-			speedTarget = params.speed;
+			if (!sd && state.slowDown) {
+				speedTarget = -1.5;
+			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.05, dt, 0.1);
 			directionTarget = camAngle + currentDirection;
 		} else speedTarget = 0;
+
+		sd = state.slowDown;
 
 		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.currentAngle);
 		this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
@@ -430,13 +493,12 @@ export default class Player extends BaseEntity {
 		this.base.mesh.rotation.y = rDampPrecise(
 			this.base.mesh.rotation.y,
 			directionTarget,
-			directionTargetSmooth,
+			0.11,
 			dt,
-			0.002,
+			0.01,
 		);
-		// console.log(this.base.mesh.rotation.y, directionTarget);
 
-		dynamic.speed = dampPrecise(dynamic.speed, speedTarget, dt, 0.07);
+		dynamic.speed = dampPrecise(dynamic.speed, speedTarget, 0.1, dt, 0.1);
 
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);

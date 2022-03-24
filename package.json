@@ -19,6 +19,7 @@
     "three-mesh-bvh": "^0.5.5"
   },
   "devDependencies": {
+    "@tweakpane/plugin-essentials": "^0.1.4",
     "bezier-easing": "^2.1.0",
     "bowser": "^1.9.4",
     "esbuild": "^0.14.23",
