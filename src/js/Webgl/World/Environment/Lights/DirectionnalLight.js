@@ -18,7 +18,7 @@ const debug = {
 export default class Directionnal {
 	constructor(label, parentLabel) {
 		this.light = new DirectionalLight(params.color, params.intensity);
-		this.light.position.set(0, 0, 20);
+		this.light.position.set(-10, 0, 10);
 
 		/// #if DEBUG
 		const webgl = getWebgl();
