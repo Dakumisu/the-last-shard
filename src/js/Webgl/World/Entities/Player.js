@@ -26,7 +26,7 @@ import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { mergeGeometry } from '@utils/webgl';
-import { damp, dampPrecise } from 'philbin-packages/maths';
+import { damp, dampPrecise, mean, rDampPrecise } from 'philbin-packages/maths';
 
 import debugMaterial from '../materials/debug/material';
 import defaultMaterial from '../materials/default/material';
@@ -37,6 +37,7 @@ const PI = Math.PI;
 const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
+const tVec3c = new Vector3().setScalar(0);
 const tBox = new Box3();
 const tMat = new Matrix4();
 const tSegment = new Line3();
@@ -77,54 +78,27 @@ const state = {
 
 	slowDown: false,
 };
-let sd = state.slowDown;
+let tmpSlowDown = state.slowDown;
 
-const dynamic = {
-	currentAngle: 0,
-
-	speed: 0,
-	inertie: 0,
+const player = {
+	realSpeed: 0,
 };
 
-let camAngle = 0;
+let playerDirection = 0;
+let camDirection = 0;
+
+let turnCounter = 0;
 let directionTarget = 0;
 let nextDirection = 0;
 let currentDirection = 0;
 
+let inertie = 0;
 let inertieTarget = 0;
+let speed = 0;
 let speedTarget = 0;
 
 let previousPlayerPos = 0;
 let playerPos = 0;
-
-// function rLerp(start, end, t) {
-// 	let cs = Math.cos(start) * (1 - t) + Math.cos(end) * t;
-// 	let sn = Math.sin(start) * (1 - t) + Math.sin(end) * t;
-// 	return Math.atan2(sn, cs);
-// }
-
-// function rDamp(start, end, smoothing, dt) {
-// 	return rLerp(start, end, 1 - Math.exp(-smoothing * 0.05 * dt));
-// }
-
-function rLerp(start, end, t) {
-	const delta = ((end - start + PI2 + PI) % PI2) - PI;
-	return (start + delta * t + PI2) % PI2;
-}
-
-function rLerpPrecise(start, end, t, limit) {
-	const delta = ((end - start + PI2 + PI) % PI2) - PI;
-	const r = (start + delta * t + PI2) % PI2;
-	return Math.abs(end - r) < limit ? end : r;
-}
-
-function rDamp(start, end, smoothing, dt) {
-	return rLerp(start, end, 1 - Math.exp(-smoothing * 0.05 * dt));
-}
-
-function rDampPrecise(start, end, smoothing, dt, limit) {
-	return rLerpPrecise(start, end, 1 - Math.exp(-smoothing * 0.05 * dt), limit);
-}
 
 /// #if DEBUG
 const debug = {
@@ -189,7 +163,7 @@ export default class Player extends BaseEntity {
 
 		guiPosition.addSeparator();
 
-		guiPosition.addMonitor(dynamic, 'speed', { label: 'speed', type: 'graph' });
+		guiPosition.addMonitor(player, 'realSpeed', { label: 'speed', type: 'graph' });
 
 		guiPosition.addSeparator();
 
@@ -206,14 +180,14 @@ export default class Player extends BaseEntity {
 				if (navigator.clipboard) {
 					navigator.clipboard.writeText(stuffToCopy).then(
 						() => {
-							console.log('player pos copied ✅');
+							console.log('player position copied ✅');
 						},
 						() => {
 							console.log('copy failed ❌');
 						},
 					);
 				} else {
-					console.warn('Server need to be in https to access to this command');
+					console.warn("Dev server need to be in 'https' to access this command");
 				}
 			});
 
@@ -244,8 +218,6 @@ export default class Player extends BaseEntity {
 	}
 
 	helpers() {
-		this.scene.add(this.base.group);
-
 		const v = this.setVisualizer(this.base.mesh, 15);
 		this.scene.add(v);
 
@@ -270,7 +242,7 @@ export default class Player extends BaseEntity {
 				spherical: {
 					radius: 5,
 					phi: 1,
-					theta: PI2 * 1000,
+					theta: 0,
 				},
 
 				minDistance: 1,
@@ -320,8 +292,9 @@ export default class Player extends BaseEntity {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
 		this.base.mesh.position.fromArray(params.defaultPos);
-		this.base.group.add(this.base.mesh);
+
 		this.scene.add(this.base.mesh);
+		this.scene.add(this.base.group);
 	}
 
 	move(dt) {
@@ -342,18 +315,14 @@ export default class Player extends BaseEntity {
 		playerVelocity.y += state.playerOnGround ? 0 : delta * this.params.gravity;
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
-		dynamic.currentAngle = this.base.mesh.rotation.y;
-		camAngle = this.camera.orbit.spherical.theta;
+		playerDirection = this.base.mesh.rotation.y;
+		camDirection = this.camera.orbit.spherical.theta;
 
 		if (state.updateDirection) {
 			if (this.keyPressed.forward) nextDirection = 0; // ⬆️
-			if (this.keyPressed.backward) nextDirection = PI - 0; // ⬇️
-			if (this.keyPressed.left) nextDirection = PI * 0.5 + 0; // ⬅️
-			if (this.keyPressed.right) nextDirection = PI * 1.5 - 0; // ➡️
-			// if (this.keyPressed.forward) nextDirection = 0.001; // ⬆️
-			// if (this.keyPressed.backward) nextDirection = PI - 0.001; // ⬇️
-			// if (this.keyPressed.left) nextDirection = PI * 0.5 + 0.001; // ⬅️
-			// if (this.keyPressed.right) nextDirection = PI * 1.5 - 0.001; // ➡️
+			if (this.keyPressed.backward) nextDirection = PI; // ⬇️
+			if (this.keyPressed.left) nextDirection = PI * 0.5; // ⬅️
+			if (this.keyPressed.right) nextDirection = PI * 1.5; // ➡️
 
 			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = PI * 0.25; // ↖️
 			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = PI * 1.75; // ↗️
@@ -361,8 +330,8 @@ export default class Player extends BaseEntity {
 			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = PI * 1.25; // ↘️
 
 			state.slowDown =
-				Math.abs(currentDirection - nextDirection) >= PI - 0.004 &&
-				Math.abs(currentDirection - nextDirection) <= PI + 0.004;
+				Math.abs(currentDirection - nextDirection) >= PI - 0.003 &&
+				Math.abs(currentDirection - nextDirection) <= PI + 0.003;
 
 			currentDirection = nextDirection;
 		}
@@ -375,16 +344,30 @@ export default class Player extends BaseEntity {
 			this.keyPressed.left ||
 			this.keyPressed.right
 		) {
-			if (!sd && state.slowDown) {
+			if (!tmpSlowDown && state.slowDown) {
 				speedTarget = -1.5;
 			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.05, dt, 0.1);
-			directionTarget = camAngle + currentDirection;
 		} else speedTarget = 0;
 
-		sd = state.slowDown;
+		tmpSlowDown = state.slowDown;
 
-		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.currentAngle);
-		this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+		// Rotate only if the player is moving
+		if (speed >= 1.5 || speedTarget < 0) {
+			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
+			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
+			directionTarget = currentDirection + camDirection;
+
+			this.base.mesh.rotation.y = rDampPrecise(
+				this.base.mesh.rotation.y,
+				directionTarget,
+				0.11,
+				dt,
+				0.01,
+			);
+		}
+
+		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
+		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
 		if (this.keyPressed.space) {
 			if (state.playerOnGround) playerVelocity.y = 15.0;
@@ -465,12 +448,18 @@ export default class Player extends BaseEntity {
 		}
 	}
 
-	checkPlayerHeightPosition() {
+	checkPlayerPosition(dt) {
 		previousPlayerPos = playerPos;
 		playerPos = this.base.mesh.position.y;
 
 		state.playerisMounting = playerPos - previousPlayerPos <= 0 ? false : true;
 		state.playerisDowning = playerPos - previousPlayerPos >= 0 ? false : true;
+
+		tVec3c.sub(this.base.mesh.position);
+
+		player.realSpeed = mean([Math.abs(tVec3c.x), Math.abs(tVec3c.y), Math.abs(tVec3c.z)]) * dt;
+
+		tVec3c.copy(this.base.mesh.position);
 	}
 
 	reset() {
@@ -490,19 +479,11 @@ export default class Player extends BaseEntity {
 
 		for (let i = 0; i < params.physicsSteps; i++) this.move(dt / params.physicsSteps, et);
 
-		this.base.mesh.rotation.y = rDampPrecise(
-			this.base.mesh.rotation.y,
-			directionTarget,
-			0.11,
-			dt,
-			0.01,
-		);
-
-		dynamic.speed = dampPrecise(dynamic.speed, speedTarget, 0.1, dt, 0.1);
+		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
-		this.checkPlayerHeightPosition();
+		this.checkPlayerPosition(dt);
 	}
 }
