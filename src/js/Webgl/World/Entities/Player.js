@@ -466,18 +466,10 @@ export default class Player extends BaseEntity {
 		state.playerisDowning = playerPosY - previousPlayerPos >= 0 ? false : true;
 
 		// get real speed based on the player's delta position
-		tVec3c.sub(this.base.mesh.position);
-
-		player.realSpeed =
-			Math.sqrt(
-				Math.pow(Math.abs(tVec3c.x), 2) +
-					Math.pow(Math.abs(tVec3c.y), 2) +
-					Math.pow(Math.abs(tVec3c.z), 2),
-			) * dt;
-
-		tVec3c.copy(this.base.mesh.position);
-
+		const d = tVec3c.distanceTo(this.base.mesh.position);
+		player.realSpeed = (d / dt) * 1000;
 		player.isMoving = player.realSpeed > 0.001;
+		tVec3c.copy(this.base.mesh.position);
 	}
 
 	reset() {
