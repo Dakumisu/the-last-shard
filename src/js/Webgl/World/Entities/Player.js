@@ -17,8 +17,8 @@ import {
 	Group,
 	AxesHelper,
 	DoubleSide,
+	CapsuleGeometry,
 } from 'three';
-import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
 import { getGame } from '@game/Game';
 import { getWebgl } from '@webgl/Webgl';
@@ -131,8 +131,8 @@ export default class Player extends BaseEntity {
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.debug();
 		this.helpers();
+		this.debug();
 		/// #endif
 	}
 
@@ -157,6 +157,10 @@ export default class Player extends BaseEntity {
 			min: 1,
 			max: 30,
 			step: 1,
+		});
+
+		gui.addButton({ title: 'bvh' }).on('click', () => {
+			this.visualizer.visible = !this.visualizer.visible;
 		});
 
 		const guiPosition = gui.addFolder({
@@ -224,8 +228,9 @@ export default class Player extends BaseEntity {
 	}
 
 	helpers() {
-		const v = this.setVisualizer(this.base.mesh, 15);
-		this.scene.add(v);
+		this.visualizer = this.setVisualizer(this.base.mesh, 15);
+		this.visualizer.visible = false;
+		this.scene.add(this.visualizer);
 
 		const axesHelper = new AxesHelper(2);
 		this.base.group.add(axesHelper);
@@ -270,13 +275,13 @@ export default class Player extends BaseEntity {
 	}
 
 	setGeometry() {
-		this.base.geometry = new RoundedBoxGeometry(1.0, 2.0, 1.0, 10, 0.5);
+		this.base.geometry = new CapsuleGeometry(0.5, 1, 10, 10);
 
 		this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
 			radius: 0.5,
-			segment: new Line3(new Vector3(0, 0, 0), new Vector3(0, -1, 0)),
+			segment: new Line3(new Vector3(), new Vector3(0, -1, 0)),
 		};
 
 		const geoOpt = {
@@ -286,7 +291,6 @@ export default class Player extends BaseEntity {
 	}
 
 	setMaterial() {
-		// this.base.material = fogMaterial.get();
 		this.base.material = new CustomMeshToonMaterial({
 			uniforms: {
 				diffuse: { value: new Color('#d29ddc') },
