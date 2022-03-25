@@ -27,17 +27,18 @@ import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { mergeGeometry } from '@utils/webgl';
-import { damp, dampPrecise, lerp, lerpPrecise } from 'philbin-packages/maths';
+import { damp, dampPrecise, mean, rDampPrecise } from 'philbin-packages/maths';
 
-import model from '/assets/model/player.glb';
 import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
 import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
 import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
 import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
 
-const twoPI = Math.PI * 2;
+const PI = Math.PI;
+const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
+const tVec3c = new Vector3().setScalar(0);
 const tBox = new Box3();
 const tMat = new Matrix4();
 const tSegment = new Line3();
@@ -47,11 +48,21 @@ let initialized = false;
 
 const params = {
 	speed: 10,
+	sprint: 20,
 
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
-	defaultPos: new Vector3().set(0, 3, 30),
+	defaultPos: [0, 3, 30],
 };
+
+/// #if DEBUG
+const teleportPoints = [
+	params.defaultPos,
+	[-6.5303, 11, -27.421],
+	[15, 2, -60],
+	[104.32, 14, -65.342],
+];
+/// #endif
 
 const state = {
 	playerOnGround: true,
@@ -65,37 +76,31 @@ const state = {
 
 	playerisMounting: false,
 	playerisDowning: false,
+
+	slowDown: false,
+};
+let tmpSlowDown = state.slowDown;
+
+const player = {
+	realSpeed: 0,
+	isMoving: false,
 };
 
-// TODO -> inertie
-const dynamic = {
-	currentAngle: 0,
+let playerDirection = 0;
+let camDirection = 0;
 
-	speed: 0,
-	inertie: 1,
-};
-
-let camAngle = 0;
+let turnCounter = 0;
 let directionTarget = 0;
 let nextDirection = 0;
 let currentDirection = 0;
 
+let inertie = 0;
+let inertieTarget = 0;
+let speed = 0;
 let speedTarget = 0;
 
 let previousPlayerPos = 0;
 let playerPos = 0;
-
-function rLerp(start, end, t, limit) {
-	let cs = (1 - t) * Math.cos(start) + t * Math.cos(end);
-	let sn = (1 - t) * Math.sin(start) + t * Math.sin(end);
-	const v = Math.atan2(sn, cs);
-	return v;
-	// return Math.abs(end - v) < limit ? end : v;
-}
-
-function rDamp(start, end, smoothing, dt) {
-	return rLerp(start, end, 1 - Math.exp(-smoothing * 0.05 * dt));
-}
 
 /// #if DEBUG
 const debug = {
@@ -115,7 +120,7 @@ export default class Player extends BaseEntity {
 		this.scene = webgl.scene.instance;
 		this.cameraController = webgl.cameraController;
 
-		this.ground = opt.ground;
+		this.ground = opt.ground; // TODO -> replace 'this.ground' by all the colliders (map, props, etc...)
 
 		this.base = {};
 		this.base.group = new Group();
@@ -144,27 +149,86 @@ export default class Player extends BaseEntity {
 			min: 0,
 			max: 30,
 		});
+		gui.addInput(params, 'sprint', {
+			min: params.speed,
+			max: 40,
+		});
 		gui.addInput(params, 'physicsSteps', {
-			min: 0,
+			min: 1,
 			max: 30,
 			step: 1,
 		});
-		gui.addSeparator();
-		gui.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
-		gui.addSeparator();
-		gui.addMonitor(state, 'playerisMounting', { label: 'is mounting', type: 'graph' });
-		gui.addMonitor(state, 'playerisDowning', { label: 'is downing', type: 'graph' });
+
+		const guiPosition = gui.addFolder({
+			title: 'Position',
+		});
+
+		guiPosition.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
+		guiPosition.addMonitor(state, 'playerisMounting', { label: 'mounting', type: 'graph' });
+		guiPosition.addMonitor(state, 'playerisDowning', { label: 'downing', type: 'graph' });
+
+		guiPosition.addSeparator();
+
+		guiPosition.addMonitor(player, 'realSpeed', { label: 'speed', type: 'graph' });
+
+		guiPosition.addSeparator();
+
+		guiPosition
+			.addButton({
+				title: 'copy player pos',
+			})
+			.on('click', () => {
+				const stuffToCopy = `[
+				${this.base.mesh.position.x.toPrecision(5)},
+				${this.base.mesh.position.y.toPrecision(5)},
+				${this.base.mesh.position.z.toPrecision(5)}
+			]`;
+				if (navigator.clipboard) {
+					navigator.clipboard.writeText(stuffToCopy).then(
+						() => {
+							console.log('player position copied ✅');
+						},
+						() => {
+							console.log('copy failed ❌');
+						},
+					);
+				} else {
+					console.warn("Dev server need to be in 'https' to access this command");
+				}
+			});
+
+		guiPosition.addSeparator();
+
+		const guiTeleport = guiPosition.addFolder({
+			title: 'Teleport',
+		});
+
+		const dummy = {
+			a: -1,
+		};
+		guiTeleport
+			.addInput(dummy, 'a', {
+				view: 'radiogrid',
+				groupName: 'positions',
+				size: [4, 1],
+				cells: (x, y) => ({
+					title: `${x + y}`,
+					value: teleportPoints[x + y],
+				}),
+
+				label: 'points',
+			})
+			.on('change', (pos) => {
+				this.base.mesh.position.fromArray(pos.value);
+			});
 	}
 
 	helpers() {
-		this.scene.add(this.base.group);
-
 		const v = this.setVisualizer(this.base.mesh, 15);
 		this.scene.add(v);
 
 		const axesHelper = new AxesHelper(2);
 		this.base.group.add(axesHelper);
-		console.log(axesHelper.position);
 	}
 	/// #endif
 
@@ -184,11 +248,20 @@ export default class Player extends BaseEntity {
 				spherical: {
 					radius: 5,
 					phi: 1,
-					theta: 0.5,
+					theta: 0,
 				},
 
-				minDistance: 0.5,
-				maxDistance: 100,
+				minDistance: 1,
+				maxDistance: 30,
+				/// #if !DEBUG
+				enableZoom: false,
+				/// #endif
+
+				enablePan: false,
+				rotateSpeed: 0.2,
+
+				minPolarAngle: PI * 0.25,
+				maxPolarAngle: PI * 0.5,
 			},
 			'playerCam',
 		);
@@ -203,7 +276,7 @@ export default class Player extends BaseEntity {
 
 		this.base.capsuleInfo = {
 			radius: 0.5,
-			segment: new Line3(new Vector3(), new Vector3(0, -1.0, 0.0)),
+			segment: new Line3(new Vector3(0, 0, 0), new Vector3(0, -1, 0)),
 		};
 
 		const geoOpt = {
@@ -224,12 +297,13 @@ export default class Player extends BaseEntity {
 	setMesh() {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
-		this.base.mesh.position.copy(params.defaultPos);
-		this.base.group.add(this.base.mesh);
+		this.base.mesh.position.fromArray(params.defaultPos);
+
 		this.scene.add(this.base.mesh);
+		this.scene.add(this.base.group);
 	}
 
-	move(dt, et) {
+	move(dt) {
 		// check if the direction change
 		state.updateDirection = false;
 		if (state.forwardPressed != this.keyPressed.forward) state.updateDirection = true;
@@ -247,25 +321,28 @@ export default class Player extends BaseEntity {
 		playerVelocity.y += state.playerOnGround ? 0 : delta * this.params.gravity;
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
-		dynamic.currentAngle = this.base.mesh.rotation.y;
-		camAngle = this.camera.orbit.spherical.theta;
+		playerDirection = this.base.mesh.rotation.y;
+		camDirection = this.camera.orbit.spherical.theta;
 
-		if (state.playerOnGround) {
-			// TODO prevent player movement on jump
-		}
 		if (state.updateDirection) {
 			if (this.keyPressed.forward) nextDirection = 0; // ⬆️
-			if (this.keyPressed.backward) nextDirection = Math.PI; // ⬇️
-			if (this.keyPressed.left) nextDirection = Math.PI * 0.5; // ⬅️
-			if (this.keyPressed.right) nextDirection = Math.PI * 1.5; // ➡️
+			if (this.keyPressed.backward) nextDirection = PI; // ⬇️
+			if (this.keyPressed.left) nextDirection = PI * 0.5; // ⬅️
+			if (this.keyPressed.right) nextDirection = PI * 1.5; // ➡️
 
-			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = Math.PI * 0.25; // ↖️
-			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = Math.PI * 1.75; // ↗️
-			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = Math.PI * 0.75; // ↙️
-			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = Math.PI * 1.25; // ↘️
+			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = PI * 0.25; // ↖️
+			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = PI * 1.75; // ↗️
+			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = PI * 0.75; // ↙️
+			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = PI * 1.25; // ↘️
+
+			state.slowDown =
+				Math.abs(currentDirection - nextDirection) >= PI - 0.003 &&
+				Math.abs(currentDirection - nextDirection) <= PI + 0.003;
 
 			currentDirection = nextDirection;
 		}
+
+		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
 		if (
 			this.keyPressed.forward ||
@@ -273,15 +350,33 @@ export default class Player extends BaseEntity {
 			this.keyPressed.left ||
 			this.keyPressed.right
 		) {
-			speedTarget = params.speed;
-			directionTarget = camAngle + currentDirection;
+			if (!tmpSlowDown && state.slowDown) {
+				speedTarget = -1.5;
+			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.05, dt, 0.1);
 		} else speedTarget = 0;
 
-		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, dynamic.currentAngle);
-		this.base.mesh.position.addScaledVector(tVec3a, dynamic.speed * delta);
+		tmpSlowDown = state.slowDown;
+
+		// Rotate only if the player is moving
+		if (player.isMoving) {
+			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
+			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
+			directionTarget = currentDirection + camDirection;
+
+			this.base.mesh.rotation.y = rDampPrecise(
+				this.base.mesh.rotation.y,
+				directionTarget,
+				0.11,
+				dt,
+				0.01,
+			);
+		}
+
+		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
+		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
 		if (this.keyPressed.space) {
-			if (state.playerOnGround) playerVelocity.y = 10.0;
+			if (state.playerOnGround) playerVelocity.y = 15.0;
 		}
 
 		this.base.mesh.updateMatrixWorld();
@@ -335,8 +430,8 @@ export default class Player extends BaseEntity {
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
 		state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
-		const offset = Math.max(0.0, deltaVector.length() - 1e-5);
-		deltaVector.normalize().multiplyScalar(offset);
+		// const offset = Math.max(0, deltaVector.length() - 1e-5);
+		// deltaVector.normalize().multiplyScalar(offset);
 
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
@@ -359,17 +454,30 @@ export default class Player extends BaseEntity {
 		}
 	}
 
-	checkPlayerHeightPosition() {
+	checkPlayerPosition(dt) {
 		previousPlayerPos = playerPos;
 		playerPos = this.base.mesh.position.y;
 
 		state.playerisMounting = playerPos - previousPlayerPos <= 0 ? false : true;
 		state.playerisDowning = playerPos - previousPlayerPos >= 0 ? false : true;
+
+		tVec3c.sub(this.base.mesh.position);
+
+		player.realSpeed =
+			Math.sqrt(
+				Math.pow(Math.abs(tVec3c.x), 2) +
+					Math.pow(Math.abs(tVec3c.y), 2) +
+					Math.pow(Math.abs(tVec3c.z), 2),
+			) * dt;
+
+		tVec3c.copy(this.base.mesh.position);
+
+		player.isMoving = player.realSpeed > 0.001;
 	}
 
 	reset() {
 		playerVelocity.set(0, 0, 0);
-		this.base.mesh.position.copy(params.defaultPos);
+		this.base.mesh.position.fromArray(params.defaultPos);
 		this.camera.camera.position.sub(this.camera.orbit.targetOffset);
 		this.camera.orbit.targetOffset.copy(this.base.mesh.position);
 		this.camera.camera.position.add(this.base.mesh.position);
@@ -384,13 +492,11 @@ export default class Player extends BaseEntity {
 
 		for (let i = 0; i < params.physicsSteps; i++) this.move(dt / params.physicsSteps, et);
 
-		this.base.mesh.rotation.y = rDamp(this.base.mesh.rotation.y, directionTarget, 0.2, dt);
-
-		dynamic.speed = dampPrecise(dynamic.speed, speedTarget, dt, 0.07);
+		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
-		this.checkPlayerHeightPosition();
+		this.checkPlayerPosition(dt);
 	}
 }

@@ -86,17 +86,15 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		const g = new PlaneGeometry(200, 200);
-		g.rotateX(-Math.PI * 0.5);
-
-		this.base.geometry = await mergeGeometry([g], [sandbox]);
+		const plane = new PlaneGeometry(200, 200);
+		plane.rotateX(-Math.PI * 0.5);
+		this.base.geometry = await mergeGeometry([plane], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
 		};
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
 
-		// this.base.material = fogMaterial.get();
 		this.base.material = new CustomMeshToonMaterial({
 			side: DoubleSide,
 			uniforms: {

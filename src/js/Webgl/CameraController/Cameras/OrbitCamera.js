@@ -19,8 +19,7 @@ export default class OrbitCamera {
 		this.camObject = {
 			camera: this.instance,
 			orbit: orbitController(this.instance, {
-				minDistance: orbitParams.minDistance,
-				maxDistance: orbitParams.maxDistance,
+				...orbitParams,
 				useOrbitKeyboard: false,
 			}),
 		};

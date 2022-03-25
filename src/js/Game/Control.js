@@ -8,6 +8,7 @@ const movementKey = {
 	backward: 'S',
 	right: 'D',
 	space: 'SPACE',
+	shift: 'SHIFT',
 };
 
 export default class Control {
@@ -28,6 +29,7 @@ export default class Control {
 			backward: false,
 			right: false,
 			space: false,
+			shift: false,
 		};
 	}
 
@@ -48,6 +50,9 @@ export default class Control {
 			case movementKey.space:
 				this.keyPressed.space = true;
 				break;
+			case movementKey.shift:
+				this.keyPressed.shift = true;
+				break;
 		}
 	}
 
@@ -67,6 +72,9 @@ export default class Control {
 				break;
 			case movementKey.space:
 				this.keyPressed.space = false;
+				break;
+			case movementKey.shift:
+				this.keyPressed.shift = false;
 				break;
 		}
 	}

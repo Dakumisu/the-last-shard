@@ -532,6 +532,9 @@ function orbitController(
 		get spherical() {
 			return spherical;
 		},
+		get sphericalDelta() {
+			return sphericalDelta;
+		},
 		get sphericalTarget() {
 			return sphericalTarget;
 		},
