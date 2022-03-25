@@ -16,10 +16,10 @@ import BaseCollider from '../Components/BaseCollider';
 
 import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
-import debugMaterial from '../materials/debug/material';
-import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
-import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
-import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
+import debugMaterial from '../../Materials/debug/material';
+import { CustomMeshBasicMaterial } from '../../Materials/CustomMeshBasicMaterial/Material';
+import { CustomMeshToonMaterial } from '../../Materials/CustomMeshToonMaterial/Material';
+import { CustomMeshStandardMaterial } from '../../Materials/CustomMeshStandardMaterial/Material';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;

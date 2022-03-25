@@ -50,16 +50,20 @@ export class CustomMeshToonMaterial extends ShaderMaterial {
 			...baseUniforms,
 		};
 
-		opts.uniforms = { ...opts.uniforms, ...baseUniforms };
 		super(opts);
 
 		this.defines = {
 			TOON: '',
 		};
+
 		this.lights = true;
 		this.fog = true;
 		this.transparent = true;
-		this.gradientMap = CustomMeshToonMaterial.gradientMap;
+
+		this.type = 'ShaderMaterial';
+		this.isShaderMaterial = true;
+
+		this.gradientMap = this.uniforms.gradientMap.value;
 	}
 
 	static setGradientMap() {

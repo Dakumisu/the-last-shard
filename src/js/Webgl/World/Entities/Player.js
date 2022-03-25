@@ -30,9 +30,9 @@ import { mergeGeometry } from '@utils/webgl';
 import { damp, dampPrecise, mean, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
-import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
-import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
-import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
+import { CustomMeshBasicMaterial } from '../../Materials/CustomMeshBasicMaterial/Material';
+import { CustomMeshToonMaterial } from '../../Materials/CustomMeshToonMaterial/Material';
+import { CustomMeshStandardMaterial } from '../../Materials/CustomMeshStandardMaterial/Material';
 
 const PI = Math.PI;
 const PI2 = PI * 2;
