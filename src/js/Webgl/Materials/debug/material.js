@@ -1,6 +1,7 @@
-import { AdditiveBlending, Color, MeshBasicMaterial } from 'three';
+import { AdditiveBlending, Color } from 'three';
+import { BaseBasicMaterial } from '../BaseMaterials/basic/material';
 
-export default class debugMaterial extends MeshBasicMaterial {
+export default class debugMaterial extends BaseBasicMaterial {
 	constructor(opts = {}) {
 		super();
 

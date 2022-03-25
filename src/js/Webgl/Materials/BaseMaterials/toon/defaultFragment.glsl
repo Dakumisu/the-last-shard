@@ -50,4 +50,5 @@ void main() {
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
+	// gl_FragColor = vec4(1., 1., 1., 1.);
 }

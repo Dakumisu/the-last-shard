@@ -2,9 +2,6 @@
 uniform vec3 diffuse;
 uniform vec3 emissive;
 uniform float opacity;
-
-uniform float uTime;
-
 #include <common>
 #include <packing>
 #include <dithering_pars_fragment>
@@ -13,6 +10,7 @@ uniform float uTime;
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
+#include <alphatest_pars_fragment>
 #include <aomap_pars_fragment>
 #include <lightmap_pars_fragment>
 #include <emissivemap_pars_fragment>
@@ -20,6 +18,7 @@ uniform float uTime;
 #include <fog_pars_fragment>
 #include <bsdfs>
 #include <lights_pars_begin>
+#include <normal_pars_fragment>
 #include <lights_toon_pars_fragment>
 #include <shadowmap_pars_fragment>
 #include <bumpmap_pars_fragment>
@@ -45,10 +44,11 @@ void main() {
 	#include <lights_fragment_end>
 	#include <aomap_fragment>
 	vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
-	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
+	#include <output_fragment>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
+    // gl_FragColor = vec4(1., 1., 1., 1.);
 }

@@ -1,3 +1,5 @@
+import { ShaderChunk } from 'three';
+
 export default {
 	uTime: { value: 0 },
 	uFogNearColor: { value: null },
@@ -6,3 +8,6 @@ export default {
 	uFogNoiseImpact: { value: 0 },
 	uFogNoiseAmount: { value: 0 },
 };
+
+ShaderChunk.common += `
+uniform float uTime;`;

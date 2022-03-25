@@ -26,6 +26,7 @@ import { store } from '@tools/Store';
 
 import vertexShader from './shaders/vertexShader.glsl';
 import fragmentShader from './shaders/fragmentShader.glsl';
+import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
 
 let initialized = false;
 
@@ -84,13 +85,12 @@ export default class Sky {
 
 		// this.base.material = fogMaterial.get();
 		// this.base.material.side = DoubleSide;
-		this.base.material = new ShaderMaterial({
+		this.base.material = new BaseShaderMaterial({
 			vertexShader: vertexShader,
 			fragmentShader: fragmentShader,
 			side: DoubleSide,
 			transparent: true,
 			uniforms: {
-				uTime: { value: 0 },
 				uTexture: { value: cloud },
 			},
 			// envMap: environmentMapTexture,
@@ -106,7 +106,7 @@ export default class Sky {
 
 	update(et, dt) {
 		if (!initialized) return;
-		this.base.material.uniforms.uTime.value = et * 0.001;
+		// this.base.material.uniforms.uTime.value = et * 0.001;
 		// this.base.mesh.rotation.x = et ;
 	}
 }

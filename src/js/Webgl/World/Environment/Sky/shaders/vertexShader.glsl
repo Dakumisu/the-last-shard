@@ -1,3 +1,5 @@
+uniform float uTime;
+
 varying vec2 vUv;
 varying vec3 vPosition;
 varying vec2 vTextUv;

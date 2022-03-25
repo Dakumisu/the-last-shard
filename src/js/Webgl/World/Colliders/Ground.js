@@ -17,9 +17,7 @@ import BaseCollider from '../Components/BaseCollider';
 import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
 import debugMaterial from '../../Materials/debug/material';
-import { CustomMeshBasicMaterial } from '../../Materials/CustomMeshBasicMaterial/Material';
-import { CustomMeshToonMaterial } from '../../Materials/CustomMeshToonMaterial/Material';
-import { CustomMeshStandardMaterial } from '../../Materials/CustomMeshStandardMaterial/Material';
+import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
@@ -96,11 +94,9 @@ export default class Ground extends BaseCollider {
 		};
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
 
-		this.base.material = new CustomMeshToonMaterial({
+		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,
-			uniforms: {
-				diffuse: { value: new Color('#d29ddc') },
-			},
+			color: new Color('yellow'),
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);

@@ -16,6 +16,7 @@ import CameraController from './CameraController/CameraController';
 /// #if DEBUG
 import Debug from '@tools/Debug';
 import OrbitCamera from './CameraController/Cameras/OrbitCamera';
+import baseUniforms from './Materials/baseUniforms';
 /// #endif
 
 let initialized = false;
@@ -117,11 +118,12 @@ class Webgl {
 		});
 	}
 
-	update() {
+	update(et) {
 		if (!initialized) return;
 
 		if (this.performance) this.performance.update(this.raf.delta);
 		if (this.raycaster) this.raycaster.update();
+		baseUniforms.uTime.value = et;
 
 		/// #if DEBUG
 		if (this.debug.stats) this.debug.stats.update();
