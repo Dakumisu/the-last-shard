@@ -71,9 +71,9 @@ class Webgl {
 
 				fps: false,
 			},
-			'debugCam',
+			'debug',
 		);
-		this.cameraController.add('debugCam', debugOrbitCam, true);
+		this.cameraController.add('debug', debugOrbitCam, true);
 		/// #endif
 
 		this.performance = new PerformanceMonitor();

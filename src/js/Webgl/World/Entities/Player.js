@@ -38,7 +38,7 @@ const PI = Math.PI;
 const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
-const tVec3c = new Vector3().setScalar(0);
+const tVec3c = new Vector3();
 const tBox = new Box3();
 const tMat = new Matrix4();
 const tSegment = new Line3();
@@ -263,10 +263,10 @@ export default class Player extends BaseEntity {
 				minPolarAngle: PI * 0.25,
 				maxPolarAngle: PI * 0.5,
 			},
-			'playerCam',
+			'player',
 		);
-		this.cameraController.add('playerCam', playerOrbitCam, true);
-		this.camera = this.cameraController.get('playerCam').camObject;
+		this.cameraController.add('player', playerOrbitCam, true);
+		this.camera = this.cameraController.get('player').camObject;
 	}
 
 	setGeometry() {
