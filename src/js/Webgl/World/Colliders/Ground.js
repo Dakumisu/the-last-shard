@@ -50,6 +50,7 @@ export default class Ground extends BaseCollider {
 	/// #if DEBUG
 	helpers() {
 		this.visualizer = this.setVisualizer(this.base.mesh, 30);
+		this.visualizer.visible = false;
 		this.scene.add(this.visualizer);
 
 		const size = 150;
