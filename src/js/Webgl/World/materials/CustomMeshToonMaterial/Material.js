@@ -2,6 +2,8 @@ import {
 	Color,
 	DataTexture,
 	LuminanceFormat,
+	RedFormat,
+	ShaderLib,
 	ShaderMaterial,
 	UniformsLib,
 	UniformsUtils,
@@ -22,24 +24,31 @@ export class CustomMeshToonMaterial extends ShaderMaterial {
 			opts.vertexShader = defaultVertex;
 		}
 
-		opts.uniforms = UniformsUtils.merge([
-			UniformsLib.common,
-			UniformsLib.aomap,
-			UniformsLib.lightmap,
-			UniformsLib.emissivemap,
-			UniformsLib.bumpmap,
-			UniformsLib.normalmap,
-			UniformsLib.displacementmap,
-			UniformsLib.gradientmap,
-			UniformsLib.fog,
-			UniformsLib.lights,
-			{
-				emissive: { value: new Color(0x000000) },
-				gradientMap: { value: CustomMeshToonMaterial.gradientMap },
-			},
-			opts.uniforms,
-			// baseUniforms,
-		]);
+		// opts.uniforms = UniformsUtils.merge([
+		// 	UniformsLib.common,
+		// 	UniformsLib.aomap,
+		// 	UniformsLib.lightmap,
+		// 	UniformsLib.emissivemap,
+		// 	UniformsLib.bumpmap,
+		// 	UniformsLib.normalmap,
+		// 	UniformsLib.displacementmap,
+		// 	UniformsLib.gradientmap,
+		// 	UniformsLib.fog,
+		// 	UniformsLib.lights,
+		// 	{
+		// 		emissive: { value: new Color(0x000000) },
+		// 		gradientMap: { value: CustomMeshToonMaterial.gradientMap },
+		// 	},
+		// 	opts.uniforms,
+		// 	// baseUniforms,
+		// ]);
+
+		opts.uniforms = {
+			...ShaderLib.toon.uniforms,
+			gradientMap: { value: CustomMeshToonMaterial.gradientMap },
+			...opts.uniforms,
+			...baseUniforms,
+		};
 
 		opts.uniforms = { ...opts.uniforms, ...baseUniforms };
 		super(opts);
@@ -64,7 +73,8 @@ export class CustomMeshToonMaterial extends ShaderMaterial {
 			colors,
 			colors.length,
 			1,
-			LuminanceFormat,
+			RedFormat,
+			// const format = store.isWebGL2 ? RedFormat : LuminanceFormat;
 		);
 		CustomMeshToonMaterial.gradientMap.needsUpdate = true;
 	}

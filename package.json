@@ -15,7 +15,7 @@
     "detect-gpu": "^4.0.7",
     "howler": "^2.2.1",
     "philbin-packages": "^1.0.23",
-    "three": "^0.125.2",
+    "three": "^0.139.0",
     "three-mesh-bvh": "^0.5.5"
   },
   "devDependencies": {
