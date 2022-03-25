@@ -89,6 +89,7 @@ export default class Ground extends BaseCollider {
 	async setGround() {
 		const plane = new PlaneGeometry(200, 200);
 		plane.rotateX(-Math.PI * 0.5);
+		plane.translate(0, -1, 0);
 		this.base.geometry = await mergeGeometry([plane], [sandbox]);
 
 		const geoOpt = {
@@ -104,7 +105,6 @@ export default class Ground extends BaseCollider {
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		this.base.mesh.position.y = -1;
 		this.scene.add(this.base.mesh);
 	}
 
