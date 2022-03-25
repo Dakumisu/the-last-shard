@@ -69,7 +69,6 @@ export default class Ground extends BaseCollider {
 		const gui = debug.instance.getFolder(debug.label);
 
 		gui.addButton({ title: 'bvh' }).on('click', () => {
-			console.log('oe');
 			this.visualizer.visible = !this.visualizer.visible;
 		});
 	}
