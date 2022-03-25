@@ -106,6 +106,8 @@ export default class Renderer {
 		this.renderer.outputEncoding = sRGBEncoding;
 		this.renderer.toneMapping = NoToneMapping;
 		this.renderer.toneMappingExposure = 1;
+
+		store.isWebGL2 = this.renderer.capabilities.isWebGL2;
 	}
 
 	setPostProcess() {

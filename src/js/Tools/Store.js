@@ -24,6 +24,8 @@ const store = {
 	browser: null,
 	views: null,
 
+	isWebGL2: true,
+
 	loadedAssets: {
 		models: new Map(),
 		audios: new Map(),
