@@ -100,7 +100,7 @@ let speed = 0;
 let speedTarget = 0;
 
 let previousPlayerPos = 0;
-let playerPos = 0;
+let playerPosY = 0;
 
 /// #if DEBUG
 const debug = {
@@ -132,7 +132,7 @@ export default class Player extends BaseEntity {
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		this.debug();
-		// this.helpers();
+		this.helpers();
 		/// #endif
 	}
 
@@ -430,8 +430,8 @@ export default class Player extends BaseEntity {
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
 		state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
-		// const offset = Math.max(0, deltaVector.length() - 1e-5);
-		// deltaVector.normalize().multiplyScalar(offset);
+		const offset = Math.max(0, deltaVector.length() - 1e-3);
+		deltaVector.normalize().multiplyScalar(offset);
 
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
@@ -455,12 +455,13 @@ export default class Player extends BaseEntity {
 	}
 
 	checkPlayerPosition(dt) {
-		previousPlayerPos = playerPos;
-		playerPos = this.base.mesh.position.y;
+		previousPlayerPos = playerPosY;
+		playerPosY = this.base.mesh.position.y;
 
-		state.playerisMounting = playerPos - previousPlayerPos <= 0 ? false : true;
-		state.playerisDowning = playerPos - previousPlayerPos >= 0 ? false : true;
+		state.playerisMounting = playerPosY - previousPlayerPos <= 0 ? false : true;
+		state.playerisDowning = playerPosY - previousPlayerPos >= 0 ? false : true;
 
+		// get real speed based on the player's delta position
 		tVec3c.sub(this.base.mesh.position);
 
 		player.realSpeed =
