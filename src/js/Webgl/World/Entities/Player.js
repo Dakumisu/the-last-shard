@@ -47,7 +47,7 @@ let initialized = false;
 
 const params = {
 	speed: 10,
-	sprint: 25,
+	sprint: 20,
 
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
@@ -82,6 +82,7 @@ let tmpSlowDown = state.slowDown;
 
 const player = {
 	realSpeed: 0,
+	isMoving: false,
 };
 
 let playerDirection = 0;
@@ -146,6 +147,10 @@ export default class Player extends BaseEntity {
 		gui.addInput(params, 'speed', {
 			min: 0,
 			max: 30,
+		});
+		gui.addInput(params, 'sprint', {
+			min: params.speed,
+			max: 40,
 		});
 		gui.addInput(params, 'physicsSteps', {
 			min: 1,
@@ -352,7 +357,7 @@ export default class Player extends BaseEntity {
 		tmpSlowDown = state.slowDown;
 
 		// Rotate only if the player is moving
-		if (speed >= 1.5 || speedTarget < 0) {
+		if (player.isMoving) {
 			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
 			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
 			directionTarget = currentDirection + camDirection;
@@ -457,9 +462,16 @@ export default class Player extends BaseEntity {
 
 		tVec3c.sub(this.base.mesh.position);
 
-		player.realSpeed = mean([Math.abs(tVec3c.x), Math.abs(tVec3c.y), Math.abs(tVec3c.z)]) * dt;
+		player.realSpeed =
+			Math.sqrt(
+				Math.pow(Math.abs(tVec3c.x), 2) +
+					Math.pow(Math.abs(tVec3c.y), 2) +
+					Math.pow(Math.abs(tVec3c.z), 2),
+			) * dt;
 
 		tVec3c.copy(this.base.mesh.position);
+
+		player.isMoving = player.realSpeed > 0.001;
 	}
 
 	reset() {
