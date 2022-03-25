@@ -2,7 +2,7 @@ import Player from './Entities/Player.js';
 import Ground from './Colliders/Ground.js';
 import Lights from './Environment/Lights/Lights.js';
 import CustomFog from './Environment/Fog/CustomFog.js';
-import baseUniforms from './Materials/baseUniforms.js';
+import baseUniforms from './materials/baseUniforms.js';
 import Sky from './Environment/Sky/Sky.js';
 
 let initialized = false;
