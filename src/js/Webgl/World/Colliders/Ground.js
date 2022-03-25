@@ -1,22 +1,9 @@
-import {
-	Clock,
-	Color,
-	DoubleSide,
-	GridHelper,
-	Mesh,
-	MeshBasicMaterial,
-	MeshNormalMaterial,
-	PlaneBufferGeometry,
-	PlaneGeometry,
-	UniformsUtils,
-} from 'three';
+import { Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 import BaseCollider from '../Components/BaseCollider';
 
 import { mergeGeometry } from '@utils/webgl';
-import { store } from '@tools/Store';
-import debugMaterial from '../../Materials/debug/material';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 const sandbox = '/assets/model/sandbox.glb';

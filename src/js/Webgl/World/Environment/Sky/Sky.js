@@ -1,23 +1,4 @@
-import {
-	BoxBufferGeometry,
-	Clock,
-	Color,
-	CubeTextureLoader,
-	DoubleSide,
-	GridHelper,
-	Mesh,
-	MeshBasicMaterial,
-	MeshDepthMaterial,
-	MeshNormalMaterial,
-	MeshStandardMaterial,
-	MirroredRepeatWrapping,
-	PlaneBufferGeometry,
-	RepeatWrapping,
-	ShaderMaterial,
-	SphereBufferGeometry,
-	TextureLoader,
-	UniformsUtils,
-} from 'three';
+import { CubeTextureLoader, DoubleSide, Mesh, SphereBufferGeometry, TextureLoader } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 

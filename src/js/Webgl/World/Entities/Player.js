@@ -1,19 +1,13 @@
 import {
 	Box3,
-	BoxHelper,
 	Color,
-	GridHelper,
 	Line3,
 	Matrix4,
 	Mesh,
-	Vector2,
 	Vector3,
 	Group,
 	AxesHelper,
-	DoubleSide,
 	CapsuleGeometry,
-	DataTexture,
-	RedFormat,
 } from 'three';
 
 import { getGame } from '@game/Game';

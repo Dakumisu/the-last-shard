@@ -1,13 +1,4 @@
-import {
-	Color,
-	Material,
-	ShaderLib,
-	ShaderMaterial,
-	TangentSpaceNormalMap,
-	UniformsLib,
-	UniformsUtils,
-	Vector2,
-} from 'three';
+import { Color, Material, ShaderLib, TangentSpaceNormalMap, Vector2 } from 'three';
 import defaultVertex from './defaultVertex.glsl';
 import defaultFragment from './defaultFragment.glsl';
 import baseUniforms from '@webgl/Materials/baseUniforms';

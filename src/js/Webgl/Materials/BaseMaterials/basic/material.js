@@ -1,12 +1,4 @@
-import {
-	Material,
-	Color,
-	ShaderMaterial,
-	UniformsLib,
-	UniformsUtils,
-	MultiplyOperation,
-	ShaderLib,
-} from 'three';
+import { Material, Color, MultiplyOperation, ShaderLib } from 'three';
 import baseUniforms from '../../baseUniforms';
 import defaultVertex from './defaultVertex.glsl';
 import defaultFragment from './defaultFragment.glsl';

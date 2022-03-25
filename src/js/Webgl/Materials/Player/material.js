@@ -1,5 +1,4 @@
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import { BaseShaderMaterial } from '../BaseMaterials/shader/material';
 import hotShaders from './hotShaders';
 
 export class PlayerMaterial extends BaseToonMaterial {
