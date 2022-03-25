@@ -65,12 +65,12 @@ export default class Renderer {
 			this.stats.setRenderPanel(this.context);
 		}
 
-		debug.instance.setFolder(debug.label);
-		const gui = debug.instance.getFolder(debug.label);
+		// debug.instance.setFolder(debug.label);
+		// const gui = debug.instance.getFolder(debug.label);
 
-		gui.addInput(params, 'clearColor', { label: 'background color' }).on('change', (color) => {
-			this.renderer.setClearColor(color.value);
-		});
+		// gui.addInput(params, 'clearColor', { label: 'background color' }).on('change', (color) => {
+		// 	this.renderer.setClearColor(color.value);
+		// });
 	}
 	/// #endif
 
