@@ -3,7 +3,7 @@ uniform vec3 diffuse;
 uniform vec3 emissive;
 uniform float opacity;
 
-uniform float uTime;
+// uniform float uTime;
 
 #include <common>
 #include <packing>

@@ -5,6 +5,8 @@ uniform vec3 fogColor;
 uniform float fogNear;
 uniform float fogFar;
 
+uniform float uTime;
+
 uniform vec3 uFogNearColor;
 uniform float uFogNoiseSpeed;
 uniform float uFogNoiseFreq;

@@ -7,6 +7,7 @@ import {
 	MeshBasicMaterial,
 	MeshNormalMaterial,
 	PlaneBufferGeometry,
+	PlaneGeometry,
 	UniformsUtils,
 } from 'three';
 
@@ -16,9 +17,9 @@ import BaseCollider from '../Components/BaseCollider';
 import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
 import debugMaterial from '../materials/debug/material';
-import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
-import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/CustomMeshToonMaterial';
-import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/CustomMeshStandardMaterial';
+import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
+import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
+import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
@@ -49,7 +50,7 @@ export default class Ground extends BaseCollider {
 	/// #if DEBUG
 	helpers() {
 		this.visualizer = this.setVisualizer(this.base.mesh, 30);
-		// this.scene.add(this.visualizer);
+		this.scene.add(this.visualizer);
 
 		const size = 150;
 		const divisions = 40;
@@ -58,7 +59,8 @@ export default class Ground extends BaseCollider {
 
 		gridHelper.position.x = 40;
 		gridHelper.position.z = -30;
-		// this.scene.add(gridHelper);
+		gridHelper.position.y = -0.8;
+		this.scene.add(gridHelper);
 	}
 
 	debug() {
@@ -66,6 +68,7 @@ export default class Ground extends BaseCollider {
 		const gui = debug.instance.getFolder(debug.label);
 
 		gui.addButton({ title: 'bvh' }).on('click', () => {
+			console.log('oe');
 			this.visualizer.visible = !this.visualizer.visible;
 		});
 	}
@@ -75,18 +78,17 @@ export default class Ground extends BaseCollider {
 		await this.setGround();
 
 		/// #if DEBUG
-		this.debug();
 		this.helpers();
+		this.debug();
 		/// #endif
 
 		initialized = true;
 	}
 
 	async setGround() {
-		const g = new PlaneBufferGeometry(200, 200);
+		const g = new PlaneGeometry(200, 200);
 		g.rotateX(-Math.PI * 0.5);
 
-		// this.base.geometry = g;
 		this.base.geometry = await mergeGeometry([g], [sandbox]);
 
 		const geoOpt = {
@@ -103,8 +105,8 @@ export default class Ground extends BaseCollider {
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		this.base.mesh.position.y = -1;
 		this.scene.add(this.base.mesh);
-		this.base.mesh.position.y = -9;
 	}
 
 	resize() {

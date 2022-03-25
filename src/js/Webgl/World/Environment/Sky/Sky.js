@@ -24,8 +24,8 @@ import { getWebgl } from '@webgl/Webgl';
 import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
 
-import vertexShader from './Shader/vertexShader.glsl';
-import fragmentShader from './Shader/fragmentShader.glsl';
+import vertexShader from './shaders/vertexShader.glsl';
+import fragmentShader from './shaders/fragmentShader.glsl';
 
 let initialized = false;
 

@@ -31,9 +31,9 @@ import { damp, dampPrecise, lerp, lerpPrecise } from 'philbin-packages/maths';
 
 import model from '/assets/model/player.glb';
 import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
-import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
-import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/CustomMeshToonMaterial';
-import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/CustomMeshStandardMaterial';
+import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
+import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
+import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
 
 const twoPI = Math.PI * 2;
 const tVec3a = new Vector3();

@@ -8,7 +8,7 @@ export default class DefaultMaterial extends MeshStandardMaterial {
 	};
 	constructor(opts = {}) {
 		super(opts);
-		this.uniforms = opts.uniforms;
+		this.uniforms = { ...opts.uniforms, ...DefaultMaterial.defaultUniforms };
 
 		this.color = new Color('#ffffff');
 		this.side = DoubleSide;

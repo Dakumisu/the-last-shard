@@ -21,6 +21,7 @@ export class CustomMeshToonMaterial extends ShaderMaterial {
 			opts.fragmentShader = defaultFragment;
 			opts.vertexShader = defaultVertex;
 		}
+
 		opts.uniforms = UniformsUtils.merge([
 			UniformsLib.common,
 			UniformsLib.aomap,
@@ -39,6 +40,7 @@ export class CustomMeshToonMaterial extends ShaderMaterial {
 			opts.uniforms,
 			// baseUniforms,
 		]);
+
 		opts.uniforms = { ...opts.uniforms, ...baseUniforms };
 		super(opts);
 
