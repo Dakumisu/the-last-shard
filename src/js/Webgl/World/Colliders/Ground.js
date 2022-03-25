@@ -15,10 +15,10 @@ import BaseCollider from '../Components/BaseCollider';
 
 import { mergeGeometry } from '@utils/webgl';
 import { store } from '@tools/Store';
-import debugMaterial from '../Materials/debug/material';
-import { CustomMeshBasicMaterial } from '../Materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
-import { CustomMeshToonMaterial } from '../Materials/CustomMeshToonMaterial/CustomMeshToonMaterial';
-import { CustomMeshStandardMaterial } from '../Materials/CustomMeshStandardMaterial/CustomMeshStandardMaterial';
+import debugMaterial from '../materials/debug/material';
+import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
+import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/CustomMeshToonMaterial';
+import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/CustomMeshStandardMaterial';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;

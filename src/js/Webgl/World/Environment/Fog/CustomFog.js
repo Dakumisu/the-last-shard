@@ -1,6 +1,6 @@
 import { getWebgl } from '@webgl/Webgl';
-import baseUniforms from '@webgl/World/Materials/baseUniforms';
-import { CustomMeshBasicMaterial } from '@webgl/World/Materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
+import baseUniforms from '@webgl/World/materials/baseUniforms';
+import { CustomMeshBasicMaterial } from '@webgl/World/materials/CustomMeshBasicMaterial/CustomMeshBasicMaterial';
 import { Color, CubeTextureLoader, Fog, ShaderChunk } from 'three';
 import fogFrag from './Shader/fogFrag.glsl';
 import fogParsFrag from './Shader/fogParsFrag.glsl';
