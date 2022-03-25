@@ -5,7 +5,6 @@
 import {
 	WebGLRenderTarget,
 	OrthographicCamera,
-	RGBFormat,
 	BufferGeometry,
 	BufferAttribute,
 	Mesh,
@@ -13,6 +12,7 @@ import {
 	RawShaderMaterial,
 	Vector2,
 	Vector3,
+	RGBAFormat,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
@@ -91,7 +91,7 @@ export default class PostFX {
 
 	setRenderTarget() {
 		this.target = new WebGLRenderTarget(tVec2.x, tVec2.y, {
-			format: RGBFormat,
+			format: RGBAFormat,
 			stencilBuffer: false,
 			depthBuffer: true,
 		});
