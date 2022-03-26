@@ -33,6 +33,7 @@ let initialized = false;
 const debug = {
 	instance: null,
 	label: 'Sky',
+	tab: 'Env',
 };
 /// #endif
 
@@ -63,7 +64,7 @@ export default class Sky {
 
 	/// #if DEBUG
 	debug() {
-		debug.instance.setFolder(debug.label);
+		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 	}
 	/// #endif

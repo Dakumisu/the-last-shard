@@ -1,58 +1,114 @@
 import { AnimationMixer } from 'three';
 
-export default class Controller {
+import { getWebgl } from '@webgl/Webgl';
+
+/// #if DEBUG
+const debug = {
+	instance: null,
+	parentLabel: 'null',
+	label: 'Animation',
+};
+/// #endif
+
+export default class AnimationController {
 	constructor(opts = {}) {
-		this.animations = {};
-	}
+		if (!opts.model) return;
+		this.model = opts.model;
+		this.name = opts.name || 'null';
 
-	set() {
-		this.animation = {};
+		this.animations = this.model.animations;
 
-		// Mixer
-		this.animation.mixer = new AnimationMixer(this.model);
-
-		// Actions
-		this.animation.actions = {};
-
-		// this.animation.actions.idle = this.animation.mixer.clipAction(this.resource.animations[0])
-		// this.animation.actions.walking = this.animation.mixer.clipAction(this.resource.animations[1])
-		// this.animation.actions.running = this.animation.mixer.clipAction(this.resource.animations[2])
-
-		// this.animation.actions.current = this.animation.actions.idle
-		this.animation.actions.current.play();
-
-		// Play the action
-		this.animation.play = (name) => {
-			const newAction = this.animation.actions[name];
-			const oldAction = this.animation.actions.current;
-
-			newAction.reset();
-			newAction.play();
-			newAction.crossFadeFrom(oldAction, 1);
-
-			this.animation.actions.current = newAction;
-		};
+		this.set();
 
 		/// #if DEBUG
-
-		// const debugObject = {
-		//     playIdle: () => { this.animation.play('idle') },
-		//     playWalking: () => { this.animation.play('walking') },
-		//     playRunning: () => { this.animation.play('running') }
-		// }
-		// this.debugFolder.add(debugObject, 'playIdle')
-		// this.debugFolder.add(debugObject, 'playWalking')
-		// this.debugFolder.add(debugObject, 'playRunning')
+		const webgl = getWebgl();
+		debug.instance = webgl.debug;
+		debug.parentLabel = this.name;
+		this.debug();
 		/// #endif
 	}
 
-	get() {}
+	/// #if DEBUG
+	debug() {
+		const parentGui = debug.instance.getFolder(debug.parentLabel);
+		const gui = parentGui.addFolder({
+			title: debug.label,
+		});
+
+		for (const key in this.actions.list) {
+			gui.addButton({
+				title: this.actions.list[key].name,
+			}).on('click', () => {
+				this.switch(this.actions.list[key]);
+			});
+		}
+	}
+	/// #endif
+
+	set() {
+		this.mixer = new AnimationMixer(this.model);
+
+		this.actions = {};
+		this.actions.list = {};
+		this.actions.current = null;
+
+		this.animations.forEach((animation) => {
+			this.actions.list[animation.name] = {};
+			this.actions.list[animation.name].name = animation.name;
+			this.actions.list[animation.name].animation = this.mixer.clipAction(animation);
+		});
+
+		this.setCurrent(Object.values(this.actions.list)[0], true);
+		// this.actions.current.animation.play();
+	}
+
+	get(name) {
+		const r = this.actions.list[name];
+		if (!r) {
+			console.error(`Animation '${name}' in '${this.name}' doesn't exist ❌`);
+			return;
+		}
+		return r;
+	}
+
+	switch(action) {
+		const newAction = action;
+		const oldAction = this.actions.current;
+
+		if (newAction === oldAction) return;
+
+		// newAction.animation.reset();
+		// newAction.animation.play();
+		// newAction.animation.crossFadeFrom(oldAction.animation, 1);
+
+		this.setCurrent(newAction);
+		/// #if DEBUG
+		console.log(
+			`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
+		);
+		/// #endif
+	}
+
+	setCurrent(action, force = false) {
+		if (force) {
+			this.actions.current = action;
+			return this;
+		}
+
+		if (action) {
+			this.actions.current = action;
+			return this;
+		} else {
+			console.error(`Animation '${action.name}' in '${this.name}' doesn't exist ❌`);
+			return;
+		}
+	}
 
 	delete() {}
 
 	destroy() {}
 
 	update(dt) {
-		this.animation.mixer.update(dt * 0.001);
+		this.mixer.update(dt * 0.001);
 	}
 }

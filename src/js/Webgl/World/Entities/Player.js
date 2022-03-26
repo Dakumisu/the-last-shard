@@ -34,6 +34,7 @@ import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
 import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
 import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
+import AnimationController from '@webgl/Animation/Controller';
 
 const model = '/assets/model/player.glb';
 
@@ -64,15 +65,6 @@ const camParams = {
 	phi: 1,
 	theta: 0,
 };
-
-/// #if DEBUG
-const teleportPoints = [
-	params.defaultPos,
-	[-6.5303, 11, -27.421],
-	[15, 2, -60],
-	[104.32, 14, -65.342],
-];
-/// #endif
 
 const state = {
 	playerOnGround: true,
@@ -115,9 +107,18 @@ let playerPosY = 0;
 let camInertie = 0;
 
 /// #if DEBUG
+// TODO -> replace teleport points by checkpoint
+const teleportPoints = [
+	params.defaultPos,
+	[-6.5303, 11, -27.421],
+	[15, 2, -60],
+	[104.32, 14, -65.342],
+];
+
 const debug = {
 	instance: null,
 	label: 'Player',
+	tab: 'Player',
 };
 /// #endif
 
@@ -150,7 +151,7 @@ export default class Player extends BaseEntity {
 
 	/// #if DEBUG
 	debug() {
-		debug.instance.setFolder(debug.label);
+		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
 		gui.addInput(this.params, 'gravity', {
@@ -264,7 +265,13 @@ export default class Player extends BaseEntity {
 		const m = await loadGLTF(model);
 		console.log(m);
 
-		this.base.model = m.scene;
+		this.base.model = m;
+
+		this.setAnimation();
+	}
+
+	setAnimation() {
+		this.base.animation = new AnimationController({ model: this.base.model, name: 'player' });
 	}
 
 	setCameraPlayer() {
@@ -469,9 +476,7 @@ export default class Player extends BaseEntity {
 		}
 
 		// adjust the camera
-		// this.base.camera.camera.position.sub(this.base.camera.orbit.target);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		// this.base.camera.camera.position.add(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) {
@@ -491,6 +496,12 @@ export default class Player extends BaseEntity {
 		const d = tVec2b.distanceTo(tVec2a);
 		player.realSpeed = (d / dt) * 1000;
 		player.isMoving = player.realSpeed > 0.001;
+
+		// let deltaX = -(tVec2a.x - tVec2b.x) * 30;
+		// let deltaZ = -(tVec2a.y - tVec2b.y) * 30;
+
+		// this.base.camera.orbit.pan(deltaX, deltaZ);
+
 		tVec2b.copy(tVec2a);
 	}
 
