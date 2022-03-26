@@ -457,9 +457,9 @@ export default class Player extends BaseEntity {
 		}
 
 		// adjust the camera
-		this.base.camera.camera.position.sub(this.base.camera.orbit.target);
+		// this.base.camera.camera.position.sub(this.base.camera.orbit.target);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		this.base.camera.camera.position.add(this.base.mesh.position);
+		// this.base.camera.camera.position.add(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) {
