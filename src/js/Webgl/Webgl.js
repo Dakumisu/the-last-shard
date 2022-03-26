@@ -118,12 +118,12 @@ class Webgl {
 		});
 	}
 
-	update(et) {
+	update() {
 		if (!initialized) return;
 
 		if (this.performance) this.performance.update(this.raf.delta);
 		if (this.raycaster) this.raycaster.update();
-		baseUniforms.uTime.value = et;
+		baseUniforms.uTime.value = this.raf.elapsed;
 
 		/// #if DEBUG
 		if (this.debug.stats) this.debug.stats.update();
