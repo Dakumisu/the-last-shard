@@ -31,19 +31,29 @@ export default class CameraController {
 		debug.instance.setFolder(debug.label);
 	}
 
-	addToDebug(label) {
+	addToDebug(label, autoSwitch) {
+		let previousValue;
+
 		const gui = debug.instance.getFolder(debug.label);
+
 		debug.camList = [...debug.camList, { text: label, value: label }];
-		if (debug.guiList) debug.guiList.dispose();
+
+		if (debug.guiList) {
+			previousValue = debug.guiList.value;
+			debug.guiList.dispose();
+		}
+
 		debug.guiList = gui.addBlade({
 			view: 'list',
 			label: 'Cameras',
 			options: debug.camList,
-			value: label,
+			value: autoSwitch ? label : previousValue ? previousValue : label,
 		});
+
 		debug.guiList.on('change', (e) => {
 			this.switch(e.value);
 		});
+
 		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.backgroundColor =
 			'#f55f0066';
 		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.color = '#fff';
@@ -54,7 +64,7 @@ export default class CameraController {
 		if (!this.cameras[label]) {
 			this.cameras[label] = camera;
 			/// #if DEBUG
-			this.addToDebug(label);
+			this.addToDebug(label, autoSwitch);
 			/// #endif
 			if (autoSwitch) this.switch(label);
 			return;

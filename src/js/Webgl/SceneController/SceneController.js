@@ -32,22 +32,30 @@ export default class SceneController {
 		debug.instance.setFolder(debug.label);
 	}
 
-	addToDebug(label) {
+	addToDebug(label, autoSwitch) {
+		let previousValue;
+
 		const gui = debug.instance.getFolder(debug.label);
+
 		debug.scenesList = [...debug.scenesList, { text: label, value: label }];
-		if (debug.guiList) debug.guiList.dispose();
+
+		if (debug.guiList) {
+			previousValue = debug.guiList.value;
+			debug.guiList.dispose();
+		}
 		debug.guiList = gui.addBlade({
 			view: 'list',
 			label: 'Scenes',
 			options: debug.scenesList,
-			value: this.currentScene || label,
+			value: autoSwitch ? label : previousValue ? previousValue : label,
 		});
-		console.log(this.currentScene);
+
 		debug.guiList.on('change', (e) => {
 			this.switch(e.value);
 		});
+
 		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.backgroundColor =
-			'#f55f0066';
+			'#005fff66';
 		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.color = '#fff';
 	}
 	/// #endif
@@ -56,7 +64,7 @@ export default class SceneController {
 		if (!this.scenes[label]) {
 			this.scenes[label] = scene;
 			/// #if DEBUG
-			this.addToDebug(label);
+			this.addToDebug(label, autoSwitch);
 			/// #endif
 			if (autoSwitch) this.switch(label);
 			return;

@@ -51,7 +51,7 @@ class Webgl {
 		this.raf = new Raf();
 
 		this.sceneController = new SceneController();
-		this.sceneController.add('scene1', 'scene1', true);
+		this.sceneController.add('scene1', 'scene1');
 		this.sceneController.add('scene2', 'scene2');
 		this.scene = new Scene();
 
