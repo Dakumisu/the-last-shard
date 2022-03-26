@@ -12,11 +12,12 @@ const debug = {
 
 export default class SceneController {
 	constructor() {
+		const webgl = getWebgl();
+
 		this.scenes = {};
 		this.currentScene = null;
 
 		/// #if DEBUG
-		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		this.initDebug();
 		/// #endif
