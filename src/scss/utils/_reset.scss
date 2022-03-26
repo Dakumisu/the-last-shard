@@ -21,6 +21,7 @@ html {
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-touch-callout: none; // disable iOS Link Preview
 	-webkit-tap-highlight-color: #ffffff00;
+	overscroll-behavior: none;
 }
 
 body {
@@ -31,6 +32,7 @@ body {
 	min-height: 100vh;
 	text-rendering: optimizeSpeed;
 	line-height: 1.5;
+	overscroll-behavior: none;
 }
 
 body,
