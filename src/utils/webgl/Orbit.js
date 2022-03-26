@@ -39,6 +39,16 @@ class Spherical {
 		this.phi = spherical.phi;
 		this.theta = spherical.theta;
 	}
+
+	setRadius(radius) {
+		this.radius = radius;
+	}
+	setPhi(phi) {
+		this.phi = phi;
+	}
+	setTheta(theta) {
+		this.theta = theta;
+	}
 }
 
 function orbitController(

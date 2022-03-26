@@ -27,7 +27,7 @@ import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { mergeGeometry } from '@utils/webgl';
-import { damp, dampPrecise, mean, rDampPrecise } from 'philbin-packages/maths';
+import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
 import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
@@ -38,7 +38,8 @@ const PI = Math.PI;
 const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
-const tVec3c = new Vector3();
+const tVec2a = new Vector2();
+const tVec2b = new Vector2();
 const tBox = new Box3();
 const tMat = new Matrix4();
 const tSegment = new Line3();
@@ -53,6 +54,12 @@ const params = {
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
 	defaultPos: [0, 3, 30],
+};
+
+const camParams = {
+	radius: 5,
+	phi: 1,
+	theta: 0,
 };
 
 /// #if DEBUG
@@ -101,6 +108,8 @@ let speedTarget = 0;
 
 let previousPlayerPos = 0;
 let playerPosY = 0;
+
+let camInertie = 0;
 
 /// #if DEBUG
 const debug = {
@@ -251,9 +260,9 @@ export default class Player extends BaseEntity {
 		const playerOrbitCam = new OrbitCamera(
 			{
 				spherical: {
-					radius: 5,
-					phi: 1,
-					theta: 0,
+					radius: camParams.radius,
+					phi: camParams.phi,
+					theta: camParams.theta,
 				},
 
 				minDistance: 1,
@@ -271,7 +280,7 @@ export default class Player extends BaseEntity {
 			'player',
 		);
 		this.cameraController.add('player', playerOrbitCam, true);
-		this.camera = this.cameraController.get('player').camObject;
+		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
 	setGeometry() {
@@ -326,7 +335,7 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
 		playerDirection = this.base.mesh.rotation.y;
-		camDirection = this.camera.orbit.spherical.theta;
+		camDirection = this.base.camera.orbit.spherical.theta;
 
 		if (state.updateDirection) {
 			if (this.keyPressed.forward) nextDirection = 0; // ⬆️
@@ -434,7 +443,7 @@ export default class Player extends BaseEntity {
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
 		state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
-		const offset = Math.max(0, deltaVector.length() - 1e-3);
+		const offset = Math.max(0, deltaVector.length() - 1e-5);
 		deltaVector.normalize().multiplyScalar(offset);
 
 		// adjust the player model
@@ -448,9 +457,9 @@ export default class Player extends BaseEntity {
 		}
 
 		// adjust the camera
-		this.camera.camera.position.sub(this.camera.orbit.target);
-		this.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		this.camera.camera.position.add(this.base.mesh.position);
+		// this.base.camera.camera.position.sub(this.base.camera.orbit.target);
+		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
+		// this.base.camera.camera.position.add(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) {
@@ -466,18 +475,24 @@ export default class Player extends BaseEntity {
 		state.playerisDowning = playerPosY - previousPlayerPos >= 0 ? false : true;
 
 		// get real speed based on the player's delta position
-		const d = tVec3c.distanceTo(this.base.mesh.position);
+		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
+		const d = tVec2b.distanceTo(tVec2a);
 		player.realSpeed = (d / dt) * 1000;
 		player.isMoving = player.realSpeed > 0.001;
-		tVec3c.copy(this.base.mesh.position);
+		tVec2b.copy(tVec2a);
+	}
+
+	updateCamInertie(dt) {
+		camInertie = dampPrecise(camInertie, player.realSpeed * 0.2, 0.25, dt, 0.001);
+		this.base.camera.orbit.spherical.setRadius(camParams.radius + camInertie);
 	}
 
 	reset() {
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.fromArray(params.defaultPos);
-		this.camera.camera.position.sub(this.camera.orbit.targetOffset);
-		this.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		this.camera.camera.position.add(this.base.mesh.position);
+		this.base.camera.camera.position.sub(this.base.camera.orbit.targetOffset);
+		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
+		this.base.camera.camera.position.add(this.base.mesh.position);
 	}
 
 	resize() {
@@ -495,5 +510,6 @@ export default class Player extends BaseEntity {
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
 		this.checkPlayerPosition(dt);
+		this.updateCamInertie(dt);
 	}
 }
