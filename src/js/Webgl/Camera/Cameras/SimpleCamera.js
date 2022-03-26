@@ -1,18 +1,18 @@
 import { OrthographicCamera, PerspectiveCamera } from 'three';
+import { imageAspect } from 'philbin-packages/maths';
 
-import { getWebgl } from '../../Webgl';
+import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
-import { imageAspect } from 'philbin-packages/maths';
 
 let initialized = false;
 
-///// #if DEBUG
+/// #if DEBUG
 const debug = {
 	instance: null,
 	label: 'Camera',
 };
-///// #endif
+/// #endif
 
 export default class Camera {
 	constructor(opt = {}) {
@@ -25,20 +25,20 @@ export default class Camera {
 
 		this.init();
 
-		///// #if DEBUG
+		/// #if DEBUG
 		debug.instance = webgl.debug;
 		this.debug();
-		///// #endif
+		/// #endif
 	}
 
-	///// #if DEBUG
+	/// #if DEBUG
 	debug() {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 
 		// WIP
 	}
-	///// #endif
+	/// #endif
 
 	init() {
 		this.type == 'Orthographic' ? this.setOrthographicCamera() : this.setPerspectiveCamera();

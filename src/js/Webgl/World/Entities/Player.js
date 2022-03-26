@@ -26,13 +26,16 @@ import { getWebgl } from '@webgl/Webgl';
 import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
+import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
 import { mergeGeometry } from '@utils/webgl';
 import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
-import OrbitCamera from '@webgl/CameraController/Cameras/OrbitCamera';
+import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
 import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
 import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
+
+const model = '/assets/model/player.glb';
 
 const PI = Math.PI;
 const PI2 = PI * 2;
@@ -247,12 +250,21 @@ export default class Player extends BaseEntity {
 	/// #endif
 
 	async init() {
+		this.setModel();
+
 		this.setCameraPlayer();
 		this.setGeometry();
 		this.setMaterial();
 		this.setMesh();
 
 		initialized = true;
+	}
+
+	async setModel() {
+		const m = await loadGLTF(model);
+		console.log(m);
+
+		this.base.model = m.scene;
 	}
 
 	setCameraPlayer() {

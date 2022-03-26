@@ -10,7 +10,7 @@ const debug = {
 };
 /// #endif
 
-export default class CameraController {
+export default class Controller {
 	constructor() {
 		this.cameras = {};
 		this.currentCamera = null;

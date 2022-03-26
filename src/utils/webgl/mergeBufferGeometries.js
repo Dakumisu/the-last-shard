@@ -2,7 +2,7 @@ import { BufferAttribute, BufferGeometry, Matrix4, Object3D } from 'three';
 
 import wMergeGeo from '@workers/wMergeGeo?worker';
 
-import { loadGLTF } from '@utils/loaders';
+import { loadStaticGLTF as loadGLTF } from '@utils/loaders';
 
 let geometries = [];
 
