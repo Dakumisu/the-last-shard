@@ -293,7 +293,7 @@ export default class Player extends BaseEntity {
 	setGeometry() {
 		this.base.geometry = new CapsuleGeometry(0.5, 1, 10, 10);
 
-		this.base.geometry.translate(0, -0.5, 0);
+		this.base.geometry.translate(0, -0.55, 0);
 
 		this.base.capsuleInfo = {
 			radius: 0.5,
@@ -462,7 +462,9 @@ export default class Player extends BaseEntity {
 		}
 
 		// adjust the camera
+		this.base.camera.camera.position.sub(this.base.camera.orbit.target);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
+		this.base.camera.camera.position.add(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) {
@@ -491,6 +493,7 @@ export default class Player extends BaseEntity {
 	}
 
 	reset() {
+		speed = 0;
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.fromArray(params.defaultPos);
 		this.base.camera.camera.position.sub(this.base.camera.orbit.targetOffset);

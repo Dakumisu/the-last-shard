@@ -132,8 +132,7 @@ function match_if(line, type = IfType.If) {
 	const match = re.exec(line);
 	return (
 		match !== null &&
-		((type == IfType.If && match[2] == 'if') ||
-			(type == IfType.Elif && match[2] == 'elif'))
+		((type == IfType.If && match[2] == 'if') || (type == IfType.Elif && match[2] == 'elif'))
 	);
 }
 /**
@@ -173,13 +172,9 @@ function apply_if(lines, ifBlock, defs, verbose = false, filePath) {
 			console.log(
 				`#if block lines [${ifBlock.startIx + 1}-${
 					ifBlock.endIx + 1
-				}]: Condition '${condition}' is ${
-					outcome ? 'TRUE' : 'FALSE'
-				}. ${
+				}]: Condition '${condition}' is ${outcome ? 'TRUE' : 'FALSE'}. ${
 					includeRange != null
-						? `Including lines [${includeRange[0] + 1}-${
-								includeRange[1] + 1
-						  }]`
+						? `Including lines [${includeRange[0] + 1}-${includeRange[1] + 1}]`
 						: 'Excluding everything'
 				} (${filePath})`,
 			);

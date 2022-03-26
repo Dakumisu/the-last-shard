@@ -15,8 +15,8 @@ import CameraController from './Camera/Controller';
 import baseUniforms from './Materials/baseUniforms';
 
 /// #if DEBUG
-/// #code import Debug from '@tools/Debug';
-/// #code import OrbitCamera from './Camera/Cameras/OrbitCamera';
+import Debug from '../Tools/Debug';
+import OrbitCamera from './Camera/Cameras/OrbitCamera';
 /// #endif
 
 let initialized = false;
