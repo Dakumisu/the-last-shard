@@ -8,6 +8,7 @@ import {
 	Group,
 	AxesHelper,
 	CapsuleGeometry,
+	Vector2,
 } from 'three';
 
 import { getGame } from '@game/Game';
