@@ -54,19 +54,25 @@ export default class CameraController {
 			this.switch(e.value);
 		});
 
-		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.backgroundColor =
-			'#f55f0066';
-		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.color = '#fff';
+		const domEl = debug.guiList.controller_.view.valueElement.firstChild.firstChild;
+		domEl.style.backgroundColor = '#f55f0066';
+		domEl.style.color = '#fff';
+		const forceColor = () => {
+			domEl.style.setProperty('background-color', '#f55f0066', 'important');
+			domEl.style.setProperty('color', '#fff', 'important');
+		};
+		domEl.addEventListener('focus', forceColor);
+		domEl.addEventListener('mouseover', forceColor);
 	}
 	/// #endif
 
-	add(label, camera, autoSwitch) {
-		if (!this.cameras[label]) {
-			this.cameras[label] = camera;
+	add(camera, autoSwitch) {
+		if (!this.cameras[camera.label]) {
+			this.cameras[camera.label] = camera;
 			/// #if DEBUG
-			this.addToDebug(label, autoSwitch);
+			this.addToDebug(camera.label, autoSwitch);
 			/// #endif
-			if (autoSwitch) this.switch(label);
+			if (autoSwitch) this.switch(camera.label);
 			return;
 		}
 		console.error('Camera already exists');
@@ -79,13 +85,17 @@ export default class CameraController {
 	}
 
 	switch(label) {
+		/// #if DEBUG
 		console.log('📹 Switch Camera :', label);
+		/// #endif
 		if (this.get(label)) {
 			/// #if DEBUG
 			if (this.currentCamera) this.currentCamera.gui.expanded = false;
 			/// #endif
+
 			this.currentCamera = this.get(label);
 			this.currentCamera.resize();
+
 			/// #if DEBUG
 			this.currentCamera.gui.expanded = true;
 			/// #endif

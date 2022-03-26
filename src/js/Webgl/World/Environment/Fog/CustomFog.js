@@ -39,7 +39,7 @@ let initialized = false;
 export default class CustomFog {
 	constructor() {
 		this.webgl = getWebgl();
-		this.scene = this.webgl.scene.instance;
+		this.scene = this.webgl.mainScene.instance;
 
 		this.setFog();
 		/// #if DEBUG

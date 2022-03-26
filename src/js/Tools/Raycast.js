@@ -8,7 +8,7 @@ let initialized = false;
 export default class Raycast {
 	constructor(opt = {}) {
 		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 		this.mouse = webgl.mouse.scene;
 		this.camera = webgl.camera.instance;
 

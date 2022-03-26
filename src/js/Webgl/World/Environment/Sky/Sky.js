@@ -35,7 +35,7 @@ const environmentMapTexture = cubeTextureLoader.load([
 export default class Sky {
 	constructor() {
 		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 
 		this.base = {};
 

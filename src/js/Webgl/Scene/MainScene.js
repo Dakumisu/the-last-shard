@@ -1,11 +1,11 @@
-import { Scene as ThreeScene } from 'three';
+import { Scene } from 'three';
 
-export default class Scene {
+export default class MainScene {
 	constructor(opt = {}) {
 		/**
-		 * @type {ThreeScene}
+		 * @type {Scene}
 		 */
-		this.instance = new ThreeScene();
+		this.instance = new Scene();
 	}
 
 	cleanScene() {

@@ -7,13 +7,13 @@ import PerformanceMonitor from '@tools/PerformanceMonitor';
 import Raf from '@tools/Raf';
 import Size from '@tools/Size';
 import Renderer from './Renderer';
-import Scene from './Scene';
 import Raycast from '@tools/Raycast';
 import World from './World/World';
 import MainCamera from './Camera/MainCamera';
 import CameraController from './Camera/Controller';
 import baseUniforms from './Materials/baseUniforms';
-import SceneController from './SceneController/SceneController';
+import Scenes from './Scene/Scenes';
+import MainScene from './Scene/MainScene';
 
 /// #if DEBUG
 import Debug from '@tools/Debug';
@@ -50,10 +50,8 @@ class Webgl {
 
 		this.raf = new Raf();
 
-		this.sceneController = new SceneController();
-		this.sceneController.add('scene1', 'scene1');
-		this.sceneController.add('scene2', 'scene2');
-		this.scene = new Scene();
+		this.mainScene = new MainScene();
+		this.scenes = new Scenes();
 
 		this.keyboard = new Keyboard();
 
@@ -80,7 +78,7 @@ class Webgl {
 			},
 			'debug',
 		);
-		this.cameraController.add('debug', debugOrbitCam, true);
+		this.cameraController.add(debugOrbitCam);
 		/// #endif
 
 		this.performance = new PerformanceMonitor();
@@ -166,7 +164,7 @@ class Webgl {
 		this.mouse.destroy();
 		this.performance.destroy();
 
-		this.scene.destroy();
+		this.mainScene.destroy();
 		this.world.destroy();
 		this.renderer.destroy();
 		this.camera.destroy();

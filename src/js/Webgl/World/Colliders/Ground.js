@@ -23,7 +23,7 @@ export default class Ground extends BaseCollider {
 		super();
 
 		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 
 		this.base = {};
 

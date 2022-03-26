@@ -118,7 +118,7 @@ export default class Player extends BaseEntity {
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
 
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 		this.cameraController = webgl.cameraController;
 
 		this.ground = opt.ground; // TODO -> replace 'this.ground' by all the colliders (map, props, etc...)
@@ -286,7 +286,7 @@ export default class Player extends BaseEntity {
 			},
 			'player',
 		);
-		this.cameraController.add('player', playerOrbitCam, true);
+		this.cameraController.add(playerOrbitCam, true);
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 

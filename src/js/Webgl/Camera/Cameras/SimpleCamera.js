@@ -17,7 +17,7 @@ const debug = {
 export default class Camera {
 	constructor(opt = {}) {
 		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 
 		this.canvas = webgl.canvas;
 

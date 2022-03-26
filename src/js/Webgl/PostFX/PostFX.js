@@ -41,7 +41,7 @@ const debug = {
 export default class PostFX {
 	constructor(renderer) {
 		const webgl = getWebgl();
-		this.rendererScene = webgl.scene.instance;
+		this.rendererScene = webgl.mainScene.instance;
 		this.rendererCamera = webgl.camera.instance;
 
 		this.renderer = renderer;

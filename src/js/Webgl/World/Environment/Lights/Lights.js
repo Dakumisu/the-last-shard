@@ -17,7 +17,7 @@ const debug = {
 export default class Lights {
 	constructor() {
 		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 
 		this.group = new Group();
 

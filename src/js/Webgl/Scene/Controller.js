@@ -13,7 +13,7 @@ const debug = {
 export default class SceneController {
 	constructor() {
 		const webgl = getWebgl();
-
+		this.mainScene = webgl.mainScene;
 		this.scenes = {};
 		this.currentScene = null;
 
@@ -53,20 +53,25 @@ export default class SceneController {
 		debug.guiList.on('change', (e) => {
 			this.switch(e.value);
 		});
-
-		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.backgroundColor =
-			'#005fff66';
-		debug.guiList.controller_.view.valueElement.firstChild.firstChild.style.color = '#fff';
+		const domEl = debug.guiList.controller_.view.valueElement.firstChild.firstChild;
+		domEl.style.backgroundColor = '#005fff66';
+		domEl.style.color = '#fff';
+		const forceColor = () => {
+			domEl.style.setProperty('background-color', '#005fff66', 'important');
+			domEl.style.setProperty('color', '#fff', 'important');
+		};
+		domEl.addEventListener('focus', forceColor);
+		domEl.addEventListener('mouseover', forceColor);
 	}
 	/// #endif
 
-	add(label, scene, autoSwitch) {
-		if (!this.scenes[label]) {
-			this.scenes[label] = scene;
+	add(scene, autoSwitch) {
+		if (!this.scenes[scene.label]) {
+			this.scenes[scene.label] = scene;
 			/// #if DEBUG
-			this.addToDebug(label, autoSwitch);
+			this.addToDebug(scene.label, autoSwitch);
 			/// #endif
-			if (autoSwitch) this.switch(label);
+			if (autoSwitch) this.switch(scene.label);
 			return;
 		}
 		console.error('Scene already exists');
@@ -79,15 +84,22 @@ export default class SceneController {
 	}
 
 	switch(label) {
+		/// #if DEBUG
 		console.log('🌆 Switch Scene :', label);
+		/// #endif
 		if (this.get(label)) {
-			/// #if DEBUG
-			// if (this.currentScene) this.currentScene.gui.expanded = false;
-			/// #endif
+			if (this.currentScene) {
+				/// #if DEBUG
+				this.currentScene.gui.expanded = false;
+				/// #endif
+				this.currentScene.instance.removeFromParent();
+			}
 			this.currentScene = this.get(label);
-			// this.currentScene.resize();
+			this.mainScene.instance.add(this.currentScene.instance);
+			this.currentScene.initScene();
+
 			/// #if DEBUG
-			// this.currentScene.gui.expanded = true;
+			this.currentScene.gui.expanded = true;
 			/// #endif
 		}
 	}
