@@ -13,9 +13,10 @@ import World from './World/World';
 import MainCamera from './Camera/MainCamera';
 import CameraController from './Camera/Controller';
 import baseUniforms from './Materials/baseUniforms';
+import SceneController from './SceneController/SceneController';
 
 /// #if DEBUG
-import Debug from '../Tools/Debug';
+import Debug from '@tools/Debug';
 import OrbitCamera from './Camera/Cameras/OrbitCamera';
 /// #endif
 
@@ -48,7 +49,12 @@ class Webgl {
 		this.size = new Size();
 
 		this.raf = new Raf();
+
+		this.sceneController = new SceneController();
+		this.sceneController.add('scene1', 'scene1', true);
+		this.sceneController.add('scene2', 'scene2');
 		this.scene = new Scene();
+
 		this.keyboard = new Keyboard();
 
 		this.init();
