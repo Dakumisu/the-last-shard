@@ -496,12 +496,6 @@ export default class Player extends BaseEntity {
 		const d = tVec2b.distanceTo(tVec2a);
 		player.realSpeed = (d / dt) * 1000;
 		player.isMoving = player.realSpeed > 0.001;
-
-		// let deltaX = -(tVec2a.x - tVec2b.x) * 30;
-		// let deltaZ = -(tVec2a.y - tVec2b.y) * 30;
-
-		// this.base.camera.orbit.pan(deltaX, deltaZ);
-
 		tVec2b.copy(tVec2a);
 	}
 
