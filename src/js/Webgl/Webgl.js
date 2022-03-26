@@ -12,11 +12,11 @@ import Raycast from '@tools/Raycast';
 import World from './World/World';
 import MainCamera from './Camera/MainCamera';
 import CameraController from './Camera/Controller';
+import baseUniforms from './Materials/baseUniforms';
 
 /// #if DEBUG
-import Debug from '@tools/Debug';
-import OrbitCamera from './Camera/Cameras/OrbitCamera';
-import baseUniforms from './Materials/baseUniforms';
+/// #code import Debug from '@tools/Debug';
+/// #code import OrbitCamera from './Camera/Cameras/OrbitCamera';
 /// #endif
 
 let initialized = false;
