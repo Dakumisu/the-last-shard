@@ -1,7 +1,7 @@
 import { hotMaterial } from 'philbin-packages/webgl';
 
-import vs from './defaultVertex.glsl';
-import fs from './defaultFragment.glsl';
+import vs from './vertex.glsl';
+import fs from './fragment.glsl';
 
 let hmr = false;
 /// #if DEBUG

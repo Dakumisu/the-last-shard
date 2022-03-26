@@ -1,8 +1,10 @@
 varying vec2 vUv;
 varying vec2 vTextUv;
 varying vec3 vPosition;
+
 uniform float uTime;
 uniform sampler2D uTexture;
+
 #pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
 
 void main() {

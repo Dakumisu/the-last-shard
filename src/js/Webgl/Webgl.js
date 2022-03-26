@@ -16,6 +16,7 @@ import CameraController from './Camera/Controller';
 /// #if DEBUG
 import Debug from '@tools/Debug';
 import OrbitCamera from './Camera/Cameras/OrbitCamera';
+import baseUniforms from './Materials/baseUniforms';
 /// #endif
 
 let initialized = false;
@@ -122,6 +123,7 @@ class Webgl {
 
 		if (this.performance) this.performance.update(this.raf.delta);
 		if (this.raycaster) this.raycaster.update();
+		baseUniforms.uTime.value = this.raf.elapsed;
 
 		/// #if DEBUG
 		if (this.debug.stats) this.debug.stats.update();

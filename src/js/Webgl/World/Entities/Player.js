@@ -1,28 +1,17 @@
 import {
 	Box3,
-	BoxHelper,
 	Color,
-	GridHelper,
 	Line3,
 	Matrix4,
 	Mesh,
-	BoxGeometry,
-	MeshBasicMaterial,
-	MeshLambertMaterial,
-	MeshNormalMaterial,
-	MeshStandardMaterial,
-	MeshToonMaterial,
-	Vector2,
 	Vector3,
 	Group,
 	AxesHelper,
-	DoubleSide,
 	CapsuleGeometry,
 } from 'three';
 
 import { getGame } from '@game/Game';
 import { getWebgl } from '@webgl/Webgl';
-
 import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
@@ -31,9 +20,7 @@ import { mergeGeometry } from '@utils/webgl';
 import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
-import { CustomMeshBasicMaterial } from '../materials/CustomMeshBasicMaterial/Material';
-import { CustomMeshToonMaterial } from '../materials/CustomMeshToonMaterial/Material';
-import { CustomMeshStandardMaterial } from '../materials/CustomMeshStandardMaterial/Material';
+import { PlayerMaterial } from '@webgl/Materials/Player/material';
 import AnimationController from '@webgl/Animation/Controller';
 
 const model = '/assets/model/player.glb';
@@ -319,10 +306,8 @@ export default class Player extends BaseEntity {
 	}
 
 	setMaterial() {
-		this.base.material = new CustomMeshToonMaterial({
-			uniforms: {
-				diffuse: { value: new Color('#d29ddc') },
-			},
+		this.base.material = new PlayerMaterial({
+			color: new Color('blue'),
 		});
 	}
 

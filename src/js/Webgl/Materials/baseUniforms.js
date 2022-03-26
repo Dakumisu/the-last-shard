@@ -1,4 +1,4 @@
-import { Color } from 'three';
+import { ShaderChunk } from 'three';
 
 export default {
 	uTime: { value: 0 },
@@ -8,3 +8,6 @@ export default {
 	uFogNoiseImpact: { value: 0 },
 	uFogNoiseAmount: { value: 0 },
 };
+
+ShaderChunk.common += `
+uniform float uTime;`;
