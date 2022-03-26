@@ -10,12 +10,12 @@ import Renderer from './Renderer';
 import Scene from './Scene';
 import Raycast from '@tools/Raycast';
 import World from './World/World';
-import MainCamera from './Camera/MainCamera';
-import CameraController from './Camera/Controller';
+import MainCamera from './CameraController/MainCamera';
+import CameraController from './CameraController/CameraController';
 
 /// #if DEBUG
 import Debug from '@tools/Debug';
-import OrbitCamera from './Camera/Cameras/OrbitCamera';
+import OrbitCamera from './CameraController/Cameras/OrbitCamera';
 /// #endif
 
 let initialized = false;

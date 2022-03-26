@@ -2,7 +2,7 @@ import { BufferAttribute, BufferGeometry, Matrix4, Object3D } from 'three';
 
 import wMergeGeo from '@workers/wMergeGeo?worker';
 
-import { loadStatic } from '@utils/loaders';
+import { loadGLTF } from '@utils/loaders';
 
 let geometries = [];
 
@@ -57,7 +57,7 @@ function loadModels(models) {
 
 	return new Promise((resolve) => {
 		models.forEach((modelSrc) => {
-			loadStatic(modelSrc).then((response) => {
+			loadGLTF(modelSrc).then((response) => {
 				geometries.push(response);
 
 				count++;
