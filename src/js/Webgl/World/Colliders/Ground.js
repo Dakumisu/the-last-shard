@@ -5,8 +5,10 @@ import BaseCollider from '../Components/BaseCollider';
 
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
+import { BaseStandardMaterial } from '@webgl/Materials/BaseMaterials/standard/material';
 
-const sandbox = '/assets/model/sandbox.glb';
+const sandbox = '/assets/model/collinetest.glb';
+// const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
 
 let initialized = false;
@@ -83,8 +85,15 @@ export default class Ground extends BaseCollider {
 
 		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,
-			color: new Color('yellow'),
+			color: new Color('#4e4b37'),
 		});
+		// this.base.material = new BaseStandardMaterial({
+		// 	side: DoubleSide,
+		// 	color: new Color('#d29ddc'),
+		// 	flatShading: true,
+		// 	metalness: 0.3,
+		// 	roughness: 0.7,
+		// });
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.scene.add(this.base.mesh);

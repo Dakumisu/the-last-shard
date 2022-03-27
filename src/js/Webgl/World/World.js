@@ -2,7 +2,6 @@ import Player from './Entities/Player.js';
 import Ground from './Colliders/Ground.js';
 import Lights from './Environment/Lights/Lights.js';
 import CustomFog from './Environment/Fog/CustomFog.js';
-import Sky from './Environment/Sky/Sky.js';
 
 let initialized = false;
 
@@ -15,8 +14,6 @@ export default class World {
 		this.lights = new Lights();
 
 		this.fog = new CustomFog();
-		this.sky = new Sky();
-		await this.sky.init();
 
 		this.ground = new Ground();
 		await this.ground.init();

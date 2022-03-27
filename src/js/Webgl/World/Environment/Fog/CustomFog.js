@@ -18,11 +18,10 @@ const params = {
 	fogNearColor: '#844bb8',
 	fogFarColor: '#3e2e77',
 	fogNear: 0,
-	fogFar: 100,
-	fogNoiseSpeed: 0.0035,
-	fogNoiseFreq: 0.065,
-	fogNoiseImpact: 0.0,
-	fogNoiseAmount: 0.2,
+	fogFar: 140,
+	fogNoiseSpeed: 0.003,
+	fogNoiseFreq: 0.125,
+	fogNoiseImpact: 0.1,
 };
 
 const cubeTextureLoader = new CubeTextureLoader();
@@ -52,7 +51,6 @@ export default class CustomFog {
 		baseUniforms.uFogNoiseFreq.value = params.fogNoiseFreq;
 		baseUniforms.uFogNoiseSpeed.value = params.fogNoiseSpeed;
 		baseUniforms.uFogNoiseImpact.value = params.fogNoiseImpact;
-		baseUniforms.uFogNoiseAmount.value = params.fogNoiseAmount;
 
 		ShaderChunk.fog_pars_vertex = fogParsVert;
 		ShaderChunk.fog_vertex = fogVert;
@@ -118,14 +116,6 @@ export default class CustomFog {
 			step: 0.001,
 		}).on('change', (imp) => {
 			baseUniforms.uFogNoiseImpact.value = imp.value;
-		});
-		gui.addInput(baseUniforms.uFogNoiseAmount, 'value', {
-			label: 'amount',
-			min: 0,
-			max: 1,
-			step: 0.001,
-		}).on('change', (amount) => {
-			baseUniforms.uFogNoiseAmount.value = amount.value;
 		});
 	}
 	/// #endif

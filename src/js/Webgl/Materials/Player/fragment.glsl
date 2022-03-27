@@ -2,6 +2,8 @@
 uniform vec3 diffuse;
 uniform vec3 emissive;
 uniform float opacity;
+varying vec3 vPositionW;
+varying vec3 vNormalW;
 #include <common>
 #include <packing>
 #include <dithering_pars_fragment>
@@ -45,10 +47,16 @@ void main() {
 	#include <aomap_fragment>
 	vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
 	#include <output_fragment>
+
+	vec3 viewDirectionW = normalize(cameraPosition - vPositionW);
+	float fresnelTerm = dot(viewDirectionW, vNormalW);
+	fresnelTerm = clamp(1.0 - fresnelTerm, 0.0, 1.0);
+	
+	gl_FragColor.rgb *= fresnelTerm;
+	
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
-    // gl_FragColor = vec4(1., 1., 1., 1.);
 }
