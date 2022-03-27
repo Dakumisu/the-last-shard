@@ -1,7 +1,7 @@
 import { AdditiveBlending, Color } from 'three';
 import { BaseBasicMaterial } from '../BaseMaterials/basic/material';
 
-export default class debugMaterial extends BaseBasicMaterial {
+export default class DebugMaterial extends BaseBasicMaterial {
 	constructor(opts = {}) {
 		super(opts);
 
@@ -12,4 +12,4 @@ export default class debugMaterial extends BaseBasicMaterial {
 	}
 }
 
-debugMaterial.get = (opts) => new debugMaterial(opts);
+DebugMaterial.get = (opts) => new DebugMaterial(opts);

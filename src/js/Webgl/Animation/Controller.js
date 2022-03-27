@@ -1,4 +1,5 @@
-import { AnimationMixer } from 'three';
+import { AnimationMixer, LoopOnce, LoopRepeat } from 'three';
+import { wait } from 'philbin-packages/misc';
 
 import { getWebgl } from '@webgl/Webgl';
 
@@ -9,6 +10,8 @@ const debug = {
 	label: 'Animation',
 };
 /// #endif
+
+let initialized = false;
 
 export default class AnimationController {
 	constructor(opts = {}) {
@@ -46,7 +49,7 @@ export default class AnimationController {
 	/// #endif
 
 	set() {
-		this.mixer = new AnimationMixer(this.model);
+		this.mixer = new AnimationMixer(this.model.scene);
 
 		this.actions = {};
 		this.actions.list = {};
@@ -59,7 +62,9 @@ export default class AnimationController {
 		});
 
 		this.setCurrent(Object.values(this.actions.list)[0], true);
-		// this.actions.current.animation.play();
+		this.actions.current.animation.play();
+
+		initialized = true;
 	}
 
 	get(name) {
@@ -71,15 +76,23 @@ export default class AnimationController {
 		return r;
 	}
 
-	switch(action) {
+	switch(action, loop = true) {
+		if (!initialized) return;
+
 		const newAction = action;
 		const oldAction = this.actions.current;
 
 		if (newAction === oldAction) return;
 
-		// newAction.animation.reset();
-		// newAction.animation.play();
-		// newAction.animation.crossFadeFrom(oldAction.animation, 1);
+		if (!loop) {
+			newAction.animation.loop = LoopOnce;
+			newAction.animation.clampWhenFinished = true;
+		} else {
+			newAction.animation.loop = LoopRepeat;
+		}
+		newAction.animation.reset();
+		newAction.animation.play();
+		newAction.animation.crossFadeFrom(oldAction.animation, 1);
 
 		this.setCurrent(newAction);
 		/// #if DEBUG
@@ -87,6 +100,22 @@ export default class AnimationController {
 			`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
 		);
 		/// #endif
+	}
+
+	async playOnce(action) {
+		if (!initialized) return;
+
+		// this.setCurrent(action);
+		// action.animation.play();
+		const oldAction = this.actions.current;
+
+		this.switch(action, false);
+		await wait(1000);
+		this.switch(this.actions.current);
+
+		// this.mixer.addEventListener('loop', function (e) {
+		// 	console.log('here');
+		// });
 	}
 
 	setCurrent(action, force = false) {
@@ -109,6 +138,8 @@ export default class AnimationController {
 	destroy() {}
 
 	update(dt) {
+		if (!initialized) return;
+
 		this.mixer.update(dt * 0.001);
 	}
 }

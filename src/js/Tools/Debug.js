@@ -3,7 +3,7 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 
 import StatsJs from '@tools/Stats';
 
-const tabList = ['General', 'Player', 'Env', 'Stats'];
+let tabList = ['General', 'Player', 'Env', 'Stats'];
 
 export default class Debug {
 	constructor() {
@@ -15,20 +15,22 @@ export default class Debug {
 		this.tabs = {};
 
 		this.initTab();
+		this.getTab('Player').selected = true;
 	}
 
 	setFolder(folderLabel, tabLabel = tabList[0], expanded = true) {
-		const l = folderLabel.toLowerCase();
-		const tab = this.getTab(tabLabel);
-		this.debugFolders[l] = tab.addFolder({
+		const fl = folderLabel.toLowerCase();
+		const tl = tabLabel.toLowerCase();
+		const tab = this.getTab(tl);
+		this.debugFolders[fl] = tab.addFolder({
 			title: folderLabel,
 			expanded: expanded,
 		});
 	}
 
 	getFolder(folderLabel) {
-		const l = folderLabel.toLowerCase();
-		return this.debugFolders[l];
+		const fl = folderLabel.toLowerCase();
+		return this.debugFolders[fl];
 	}
 
 	initTab() {
@@ -36,6 +38,7 @@ export default class Debug {
 		tabList.forEach((tab) => {
 			pages.push({ title: tab });
 		});
+		tabList = tabList.map((t) => t.toLowerCase());
 
 		this.tabs = this.gui.addTab({
 			pages: pages,
@@ -43,7 +46,8 @@ export default class Debug {
 	}
 
 	getTab(tabLabel, folderLabel) {
-		const checkIndex = tabList.indexOf(tabLabel);
+		const tl = tabLabel.toLowerCase();
+		const checkIndex = tabList.indexOf(tl);
 		if (checkIndex == -1)
 			console.warn(
 				`Tab '${tabLabel}' doesn't exist ❗️ \n Setting folder in tab 'General' per default`,

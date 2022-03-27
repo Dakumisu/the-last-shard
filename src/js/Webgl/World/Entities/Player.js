@@ -23,6 +23,7 @@ import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import { PlayerMaterial } from '@webgl/Materials/Player/material';
 import AnimationController from '@webgl/Animation/Controller';
+import DebugMaterial from '@webgl/Materials/debug/material';
 
 const model = '/assets/model/player.glb';
 
@@ -36,8 +37,6 @@ const tBox = new Box3();
 const tMat = new Matrix4();
 const tSegment = new Line3();
 const playerVelocity = new Vector3();
-
-let initialized = false;
 
 const params = {
 	speed: 10,
@@ -74,6 +73,8 @@ let tmpSlowDown = state.slowDown;
 const player = {
 	realSpeed: 0,
 	isMoving: false,
+
+	anim: null,
 };
 
 let playerDirection = 0;
@@ -110,6 +111,8 @@ const debug = {
 };
 /// #endif
 
+let initialized = false;
+
 export default class Player extends BaseEntity {
 	constructor(opt = {}) {
 		super();
@@ -128,13 +131,11 @@ export default class Player extends BaseEntity {
 
 		this.raycaster = webgl.raycaster;
 
-		this.init();
-
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.helpers();
-		this.debug();
 		/// #endif
+
+		this.beforeInit();
 	}
 
 	/// #if DEBUG
@@ -238,8 +239,21 @@ export default class Player extends BaseEntity {
 	}
 	/// #endif
 
+	async beforeInit() {
+		/// #if DEBUG
+		this.debug();
+		/// #endif
+
+		await this.init();
+
+		/// #if DEBUG
+		this.helpers();
+		/// #endif
+	}
+
 	async init() {
-		this.setModel();
+		await this.setModel();
+		this.setAnimation();
 
 		this.setCameraPlayer();
 		this.setGeometry();
@@ -254,8 +268,10 @@ export default class Player extends BaseEntity {
 		console.log(m);
 
 		this.base.model = m;
+		this.base.model.scene.rotateY(PI);
+		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
 
-		this.setAnimation();
+		this.base.group.add(this.base.model.scene);
 	}
 
 	setAnimation() {
@@ -282,7 +298,7 @@ export default class Player extends BaseEntity {
 				rotateSpeed: 0.2,
 
 				minPolarAngle: PI * 0.25,
-				maxPolarAngle: PI * 0.5,
+				maxPolarAngle: PI * 0.55,
 			},
 			'player',
 		);
@@ -291,9 +307,8 @@ export default class Player extends BaseEntity {
 	}
 
 	setGeometry() {
-		this.base.geometry = new CapsuleGeometry(0.5, 1, 10, 10);
-
-		this.base.geometry.translate(0, -0.55, 0);
+		this.base.geometry = new CapsuleGeometry(0.25, 1.5, 10, 10);
+		this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
 			radius: 0.5,
@@ -307,9 +322,10 @@ export default class Player extends BaseEntity {
 	}
 
 	setMaterial() {
-		this.base.material = new PlayerMaterial({
-			color: new Color('blue'),
-		});
+		this.base.material = new DebugMaterial();
+		// this.base.material = new PlayerMaterial({
+		// 	color: new Color('blue'),
+		// });
 	}
 
 	setMesh() {
@@ -448,8 +464,8 @@ export default class Player extends BaseEntity {
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
 		state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
-		const offset = Math.max(0, deltaVector.length() - 1e-5);
-		deltaVector.normalize().multiplyScalar(offset);
+		// const offset = Math.max(0, deltaVector.length() - 1e-5);
+		// deltaVector.normalize().multiplyScalar(offset);
 
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
@@ -492,6 +508,26 @@ export default class Player extends BaseEntity {
 		this.base.camera.orbit.spherical.setRadius(camParams.radius + camInertie);
 	}
 
+	updateAnimation() {
+		let previousPlayerAnim = player.anim;
+		if (state.playerOnGround) {
+			if (!player.isMoving || player.realSpeed <= params.speed * 0.15) {
+				player.anim = this.base.animation.get('idle');
+			}
+			if (player.realSpeed > params.speed + 2) {
+				player.anim = this.base.animation.get('run');
+			}
+			if (player.realSpeed <= params.speed + 2 && player.realSpeed > params.speed * 0.15) {
+				player.anim = this.base.animation.get('walk');
+			}
+		}
+		if (this.keyPressed.space) {
+			player.anim = this.base.animation.get('jump');
+			this.base.animation.playOnce(player.anim);
+		}
+		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
+	}
+
 	reset() {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
@@ -517,5 +553,8 @@ export default class Player extends BaseEntity {
 
 		this.checkPlayerPosition(dt);
 		this.updateCamInertie(dt);
+		this.updateAnimation();
+
+		this.base.animation.update(dt);
 	}
 }
