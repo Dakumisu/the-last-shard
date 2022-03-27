@@ -1,10 +1,13 @@
+import Player from '@webgl/World/Characters/Player';
+import BaseScene from '../../../Scene/BaseScene';
+import Ground from './Props/Ground';
+import Lights from './Environment/Lights/Lights';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import { Color, Mesh, SphereGeometry } from 'three';
-import BaseScene from '../BaseScene';
 
-export default class TestScene extends BaseScene {
+export default class EndScene extends BaseScene {
 	constructor() {
-		super({ label: 'TestScene' });
+		super({ label: 'EndScene' });
 
 		this.initScene();
 	}
@@ -19,7 +22,6 @@ export default class TestScene extends BaseScene {
 		const plane = new Mesh(geometry, material);
 
 		this.instance.add(plane);
-		// console.log('Custom init : ', this.label);
 	}
 
 	update(et, dt) {

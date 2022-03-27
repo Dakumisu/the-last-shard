@@ -18,7 +18,10 @@ export default class Lights {
 		this.group = new Group();
 
 		/// #if DEBUG
-		debug.parentFolder = scene.gui.addFolder({ title: debug.label, expanded: false });
+		debug.parentFolder = scene.gui.addFolder({
+			title: debug.label,
+			expanded: true,
+		});
 
 		debug.typeLabels.forEach((label) => {
 			debug.parentFolder.addFolder({

@@ -1,7 +1,7 @@
-import Player from '@webgl/World/Entities/Player';
-import BaseScene from '../BaseScene';
-import Ground from './Children/Ground';
-import Lights from './Lights/Lights';
+import Player from '@webgl/World/Characters/Player';
+import BaseScene from '../../../Scene/BaseScene';
+import Ground from './Props/Ground';
+import Lights from './Environment/Lights/Lights';
 
 export default class IntroScene extends BaseScene {
 	constructor() {

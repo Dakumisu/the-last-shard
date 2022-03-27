@@ -1,7 +1,6 @@
 import SceneController from './Controller';
-import BaseScene from './BaseScene';
-import IntroScene from './IntroScene/IntroScene';
-import TestScene from './TestScene/TestScene';
+import IntroScene from '../World/Chapters/Intro/Scene';
+import TestScene from '../World/Chapters/End/Scene';
 
 export default class Scenes {
 	constructor() {

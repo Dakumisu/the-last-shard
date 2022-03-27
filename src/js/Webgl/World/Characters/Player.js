@@ -13,7 +13,6 @@ import {
 
 import { getGame } from '@game/Game';
 import { getWebgl } from '@webgl/Webgl';
-import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
@@ -23,6 +22,7 @@ import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import { PlayerMaterial } from '@webgl/Materials/Player/material';
 import AnimationController from '@webgl/Animation/Controller';
+import BaseEntity from '../Bases/BaseEntity';
 
 const model = '/assets/model/player.glb';
 

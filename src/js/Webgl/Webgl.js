@@ -12,8 +12,8 @@ import World from './World/World';
 import MainCamera from './Camera/MainCamera';
 import CameraController from './Camera/Controller';
 import baseUniforms from './Materials/baseUniforms';
-import Scenes from './Scenes/Scenes';
-import MainScene from './Scenes/MainScene';
+import Scenes from './Scene/Scenes';
+import MainScene from './Scene/MainScene';
 
 /// #if DEBUG
 import Debug from '@tools/Debug';

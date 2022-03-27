@@ -1,7 +1,7 @@
-import { getWebgl } from '@webgl/Webgl';
 import { Group } from 'three';
 
 /// #if DEBUG
+import { getWebgl } from '@webgl/Webgl';
 const debug = {
 	instance: null,
 };
@@ -9,8 +9,6 @@ const debug = {
 
 export default class BaseScene {
 	constructor({ label, textures = [], models = [], playerPosition, cameraPosition }) {
-		const webgl = getWebgl();
-
 		this.label = label;
 
 		this.textures = textures;
@@ -22,6 +20,7 @@ export default class BaseScene {
 		this.instance = new Group();
 
 		/// #if DEBUG
+		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		this.initDebug();
 		/// #endif
@@ -29,9 +28,10 @@ export default class BaseScene {
 
 	/// #if DEBUG
 	initDebug() {
-		this.gui = debug.instance
-			.getFolder('SceneController')
-			.addFolder({ title: this.label ? this.label : 'noname', expanded: false });
+		this.gui = debug.instance.getTab('Scene', this.label).addFolder({
+			title: this.label ? this.label : 'noname',
+			hidden: true,
+		});
 	}
 	/// #endif
 

@@ -2,7 +2,7 @@ import { Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
 
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import BaseCollider from '@webgl/World/Components/BaseCollider';
+import BaseCollider from '@webgl/World/Bases/BaseCollider';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;

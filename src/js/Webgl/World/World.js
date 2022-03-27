@@ -1,6 +1,6 @@
-import Player from './Entities/Player.js';
-import CustomFog from './Environment/Fog/CustomFog.js';
-import Sky from './Environment/Sky/Sky.js';
+import Player from './Characters/Player.js';
+import CustomFog from './Bases/Fog/CustomFog.js';
+import Sky from './Bases/Sky/Sky.js';
 
 let initialized = false;
 

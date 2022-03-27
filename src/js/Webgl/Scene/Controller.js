@@ -90,7 +90,7 @@ export default class SceneController {
 		if (this.get(label)) {
 			if (this.currentScene) {
 				/// #if DEBUG
-				this.currentScene.gui.expanded = false;
+				this.currentScene.gui.hidden = true;
 				/// #endif
 				this.currentScene.removeFrom(this.mainScene.instance);
 			}
@@ -98,7 +98,7 @@ export default class SceneController {
 			this.currentScene.addTo(this.mainScene.instance);
 
 			/// #if DEBUG
-			this.currentScene.gui.expanded = true;
+			this.currentScene.gui.hidden = false;
 			/// #endif
 		}
 	}
