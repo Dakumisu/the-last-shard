@@ -511,13 +511,13 @@ export default class Player extends BaseEntity {
 	updateAnimation() {
 		let previousPlayerAnim = player.anim;
 		if (state.playerOnGround) {
-			if (!player.isMoving || player.realSpeed <= params.speed * 0.15) {
+			if (!player.isMoving || player.realSpeed <= params.speed * 0.05) {
 				player.anim = this.base.animation.get('idle');
 			}
 			if (player.realSpeed > params.speed + 2) {
 				player.anim = this.base.animation.get('run');
 			}
-			if (player.realSpeed <= params.speed + 2 && player.realSpeed > params.speed * 0.15) {
+			if (player.realSpeed <= params.speed + 2 && player.realSpeed > params.speed * 0.05) {
 				player.anim = this.base.animation.get('walk');
 			}
 		}
