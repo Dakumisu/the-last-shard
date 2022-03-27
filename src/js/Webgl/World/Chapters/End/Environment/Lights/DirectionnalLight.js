@@ -3,7 +3,7 @@ import { DirectionalLight, Vector3 } from 'three';
 import { getWebgl } from '@webgl/Webgl';
 
 const params = {
-	color: '#844bb8',
+	color: '#ff0000',
 	intensity: 2,
 };
 

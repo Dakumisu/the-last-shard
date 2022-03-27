@@ -3,7 +3,7 @@ import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import { Color, Mesh, SphereGeometry } from 'three';
+import { BoxGeometry, Color, Mesh, PlaneGeometry, SphereGeometry } from 'three';
 
 export default class EndScene extends BaseScene {
 	constructor() {
@@ -15,13 +15,21 @@ export default class EndScene extends BaseScene {
 	async initScene(player, currentCamera) {
 		super.initScene(player, currentCamera);
 
+		this.lights = new Lights(this);
+
 		const material = new BaseToonMaterial({
 			color: new Color('blue'),
 		});
-		const geometry = new SphereGeometry(20, 16, 16);
+		const geometry = new PlaneGeometry(200, 200);
+		geometry.rotateX(-Math.PI * 0.5);
 		const plane = new Mesh(geometry, material);
 
-		this.instance.add(plane);
+		const cubeGeo = new BoxGeometry(10, 10, 10);
+		const cube = new Mesh(cubeGeo, material);
+
+		plane.position.y = -5;
+
+		this.instance.add(plane, cube);
 	}
 
 	update(et, dt) {

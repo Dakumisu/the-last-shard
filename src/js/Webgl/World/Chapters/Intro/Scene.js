@@ -22,7 +22,6 @@ export default class IntroScene extends BaseScene {
 		this.player = new Player({ ground: this.ground.base.mesh });
 
 		this.instance.add(this.ground.base.mesh, this.player.base.mesh);
-		// console.log('Custom init : ', this.label);
 	}
 
 	update(et, dt) {

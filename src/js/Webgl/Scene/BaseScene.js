@@ -8,11 +8,8 @@ const debug = {
 /// #endif
 
 export default class BaseScene {
-	constructor({ label, textures = [], models = [], playerPosition, cameraPosition }) {
+	constructor({ label, playerPosition, cameraPosition }) {
 		this.label = label;
-
-		this.textures = textures;
-		this.models = models;
 
 		this.playerPosition = playerPosition;
 		this.cameraPosition = cameraPosition;
@@ -34,10 +31,6 @@ export default class BaseScene {
 		});
 	}
 	/// #endif
-
-	loadAssets() {}
-
-	loadModels() {}
 
 	initScene(player, currentCamera) {
 		// console.log('Init positions : ', this.label);
