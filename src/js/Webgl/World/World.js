@@ -1,6 +1,4 @@
 import Player from './Entities/Player.js';
-import Ground from './Colliders/Ground.js';
-import Lights from './Environment/Lights/Lights.js';
 import CustomFog from './Environment/Fog/CustomFog.js';
 import Sky from './Environment/Sky/Sky.js';
 
@@ -12,16 +10,9 @@ export default class World {
 	}
 
 	async setComponent() {
-		this.lights = new Lights();
-
 		this.fog = new CustomFog();
 		this.sky = new Sky();
 		await this.sky.init();
-
-		this.ground = new Ground();
-		await this.ground.init();
-
-		this.player = new Player({ ground: this.ground.base.mesh });
 
 		initialized = true;
 	}
@@ -29,14 +20,12 @@ export default class World {
 	resize() {
 		if (!initialized) return;
 
-		if (this.player) this.player.resize();
+		// if (this.player) this.player.resize();
 	}
 
 	update(et, dt) {
 		if (!initialized) return;
 
-		if (this.player) this.player.update(et, dt);
-		if (this.ground) this.ground.update(et, dt);
 		if (this.sky) this.sky.update(et, dt);
 	}
 

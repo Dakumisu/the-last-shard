@@ -9,30 +9,24 @@ const params = {
 /// #if DEBUG
 const debug = {
 	instance: null,
-	label: '',
-	parentLabel: '',
 };
 /// #endif
 
 export default class Ambient {
-	constructor(label, parentLabel) {
+	constructor() {
 		this.light = new AmbientLight(params.color, params.intensity);
 
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
-		debug.label = label;
-		debug.parentLabel = parentLabel;
-		this.debug();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	debug() {
-		const parentGui = debug.instance.getFolder(debug.parentLabel);
-		const g = parentGui.children[0];
+	addTodebug(parentFolder, label) {
+		const g = parentFolder.children[0];
 		const gui = g.addFolder({
-			title: debug.label,
+			title: label,
 		});
 		gui.addInput(params, 'color').on('change', (color) => {
 			this.light.color.set(color.value);

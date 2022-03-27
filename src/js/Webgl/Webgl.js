@@ -12,8 +12,8 @@ import World from './World/World';
 import MainCamera from './Camera/MainCamera';
 import CameraController from './Camera/Controller';
 import baseUniforms from './Materials/baseUniforms';
-import Scenes from './Scene/Scenes';
-import MainScene from './Scene/MainScene';
+import Scenes from './Scenes/Scenes';
+import MainScene from './Scenes/MainScene';
 
 /// #if DEBUG
 import Debug from '@tools/Debug';
@@ -138,6 +138,7 @@ class Webgl {
 		if (!initialized) return;
 
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
+		if (this.scenes) this.scenes.sceneController.update(this.raf.elapsed, this.raf.delta);
 		if (this.camera) this.camera.update();
 		if (this.renderer) this.renderer.render();
 	}

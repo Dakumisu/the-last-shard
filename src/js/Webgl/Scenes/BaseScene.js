@@ -40,6 +40,16 @@ export default class BaseScene {
 	loadModels() {}
 
 	initScene(player, currentCamera) {
-		console.log('Init positions : ', this.label);
+		// console.log('Init positions : ', this.label);
 	}
+
+	addTo(mainScene) {
+		mainScene.add(this.instance);
+	}
+
+	removeFrom(mainScene) {
+		mainScene.remove(this.instance);
+	}
+
+	update(et, dt) {}
 }

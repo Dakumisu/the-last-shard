@@ -92,15 +92,18 @@ export default class SceneController {
 				/// #if DEBUG
 				this.currentScene.gui.expanded = false;
 				/// #endif
-				this.currentScene.instance.removeFromParent();
+				this.currentScene.removeFrom(this.mainScene.instance);
 			}
 			this.currentScene = this.get(label);
-			this.mainScene.instance.add(this.currentScene.instance);
-			this.currentScene.initScene();
+			this.currentScene.addTo(this.mainScene.instance);
 
 			/// #if DEBUG
 			this.currentScene.gui.expanded = true;
 			/// #endif
 		}
+	}
+
+	update(et, dt) {
+		if (this.currentScene) this.currentScene.update(et, dt);
 	}
 }

@@ -1,10 +1,10 @@
 import { Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
-import BaseCollider from '../Components/BaseCollider';
 
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
+import BaseCollider from '@webgl/World/Components/BaseCollider';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
@@ -19,11 +19,11 @@ const debug = {
 /// #endif
 
 export default class Ground extends BaseCollider {
-	constructor() {
+	constructor(scene) {
 		super();
 
 		const webgl = getWebgl();
-		this.scene = webgl.mainScene.instance;
+		this.scene = scene.instance;
 
 		this.base = {};
 
