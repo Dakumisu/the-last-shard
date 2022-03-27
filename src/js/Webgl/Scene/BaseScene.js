@@ -32,7 +32,9 @@ export default class BaseScene {
 	}
 	/// #endif
 
-	initScene(player, currentCamera) {
+	init(player, currentCamera) {
+		this.initialized = true;
+
 		// console.log('Init positions : ', this.label);
 	}
 

@@ -1,5 +1,7 @@
 #define STANDARD
 varying vec3 vViewPosition;
+varying vec3 vPositionW;
+varying vec3 vNormalW;
 #ifdef USE_TRANSMISSION
 varying vec3 vWorldPosition;
 #endif
@@ -40,4 +42,7 @@ void main() {
 #ifdef USE_TRANSMISSION
 	vWorldPosition = worldPosition.xyz;
 #endif
+
+	vPositionW = vec3( vec4( position, 1.0 ) * modelMatrix);
+	vNormalW = normalize( vec3( vec4( normal, 0.0 ) * modelMatrix ) );
 }

@@ -160,7 +160,7 @@ class BaseToonMaterial extends Material {
 	}
 
 	static setGradientMap() {
-		const colors = new Uint8Array(5 + 2);
+		const colors = new Uint8Array(3 + 2);
 
 		for (let c = 0; c <= colors.length; c++) {
 			colors[c] = (c / colors.length) * 256;

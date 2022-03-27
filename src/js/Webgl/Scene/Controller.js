@@ -83,7 +83,7 @@ export default class SceneController {
 		return;
 	}
 
-	switch(label) {
+	async switch(label) {
 		/// #if DEBUG
 		console.log('🌆 Switch Scene :', label);
 		/// #endif
@@ -95,6 +95,7 @@ export default class SceneController {
 				this.currentScene.removeFrom(this.mainScene.instance);
 			}
 			this.currentScene = this.get(label);
+			if (!this.currentScene.initialized) await this.currentScene.init();
 			this.currentScene.addTo(this.mainScene.instance);
 
 			/// #if DEBUG

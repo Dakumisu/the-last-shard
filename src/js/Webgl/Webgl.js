@@ -12,7 +12,6 @@ import World from './World/World';
 import MainCamera from './Camera/MainCamera';
 import CameraController from './Camera/Controller';
 import baseUniforms from './Materials/baseUniforms';
-import Scenes from './Scene/Scenes';
 import MainScene from './Scene/MainScene';
 
 /// #if DEBUG
@@ -51,8 +50,6 @@ class Webgl {
 		this.raf = new Raf();
 
 		this.mainScene = new MainScene();
-		this.scenes = new Scenes();
-
 		this.keyboard = new Keyboard();
 
 		this.init();
@@ -138,7 +135,6 @@ class Webgl {
 		if (!initialized) return;
 
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
-		if (this.scenes) this.scenes.sceneController.update(this.raf.elapsed, this.raf.delta);
 		if (this.camera) this.camera.update();
 		if (this.renderer) this.renderer.render();
 	}
@@ -166,7 +162,6 @@ class Webgl {
 		this.performance.destroy();
 
 		this.mainScene.destroy();
-		this.world.destroy();
 		this.renderer.destroy();
 		this.camera.destroy();
 

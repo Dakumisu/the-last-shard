@@ -1,37 +1,30 @@
-import Player from './Characters/Player.js';
-import CustomFog from './Bases/Fog/CustomFog.js';
-import Sky from './Bases/Sky/Sky.js';
-
-let initialized = false;
+import SceneController from '@webgl/Scene/Controller.js';
+import IntroScene from './Chapters/Intro/Scene.js';
+import EndScene from './Chapters/End/Scene.js';
 
 export default class World {
-	constructor(opt = {}) {
-		this.setComponent();
+	constructor() {
+		this.sceneController = new SceneController();
+		this.initScenes();
 	}
 
-	async setComponent() {
-		this.fog = new CustomFog();
-		this.sky = new Sky();
-		await this.sky.init();
+	async initScenes() {
+		const introScene = new IntroScene();
+		// await introScene.init();
 
-		initialized = true;
+		const testScene1 = new EndScene();
+		// await testScene1.init();
+
+		this.sceneController.add(introScene, true);
+		this.sceneController.add(testScene1);
 	}
 
 	resize() {
-		if (!initialized) return;
-
 		// if (this.player) this.player.resize();
 	}
 
 	update(et, dt) {
-		if (!initialized) return;
-
-		if (this.sky) this.sky.update(et, dt);
-	}
-
-	destroy() {
-		if (!initialized) return;
-
-		initialized = false;
+		if (this.sceneController) this.sceneController.update(et, dt);
+		// if (this.sky) this.sky.update(et, dt);
 	}
 }

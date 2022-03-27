@@ -4,6 +4,7 @@ import {
 	Line3,
 	Matrix4,
 	Mesh,
+	BoxGeometry,
 	Vector3,
 	Group,
 	AxesHelper,
@@ -292,6 +293,7 @@ export default class Player extends BaseEntity {
 
 	setGeometry() {
 		this.base.geometry = new CapsuleGeometry(0.5, 1, 10, 10);
+		// this.base.geometry = new BoxGeometry(0.5, 1.5, 0.5);
 
 		this.base.geometry.translate(0, -0.55, 0);
 
@@ -308,7 +310,7 @@ export default class Player extends BaseEntity {
 
 	setMaterial() {
 		this.base.material = new PlayerMaterial({
-			color: new Color('blue'),
+			color: new Color('#d29ddc'),
 		});
 	}
 
@@ -318,6 +320,7 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.fromArray(params.defaultPos);
 
 		this.scene.add(this.base.mesh);
+		this.base.mesh.position.y = 10;
 		this.scene.add(this.base.group);
 	}
 

@@ -4,16 +4,30 @@ import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import { BoxGeometry, Color, Mesh, PlaneGeometry, SphereGeometry } from 'three';
+import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
+import { loadCubeTexture } from '@utils/loaders/loadAssets';
 
 export default class EndScene extends BaseScene {
 	constructor() {
 		super({ label: 'EndScene' });
-
-		this.initScene();
 	}
 
-	async initScene(player, currentCamera) {
-		super.initScene(player, currentCamera);
+	async init(player, currentCamera) {
+		super.init(player, currentCamera);
+
+		this.fog = new BaseFog({
+			fogNearColor: '#ff0000',
+			fogFarColor: '#ffff00',
+			fogNear: 0,
+			fogFar: 140,
+			fogNoiseSpeed: 0.003,
+			fogNoiseFreq: 0.125,
+			fogNoiseImpact: 0.1,
+			background: await loadCubeTexture('envMap2'),
+			/// #if DEBUG
+			gui: this.gui,
+			/// #endif
+		});
 
 		this.lights = new Lights(this);
 
@@ -36,5 +50,10 @@ export default class EndScene extends BaseScene {
 		super.update(et, dt);
 		// if (this.ground) this.ground.update(et, dt);
 		// if (this.player) this.player.update(et, dt);
+	}
+
+	async addTo(mainScene) {
+		super.addTo(mainScene);
+		this.fog.set();
 	}
 }

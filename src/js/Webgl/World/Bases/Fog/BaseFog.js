@@ -1,6 +1,6 @@
 import { getWebgl } from '@webgl/Webgl';
 import baseUniforms from '@webgl/Materials/baseUniforms';
-import { Color, CubeTextureLoader, Fog, ShaderChunk } from 'three';
+import { Color, Fog, ShaderChunk } from 'three';
 import fogFrag from './shaders/fogFrag.glsl';
 import fogParsFrag from './shaders/fogParsFrag.glsl';
 import fogParsVert from './shaders/fogParsVert.glsl';
@@ -10,7 +10,6 @@ import fogVert from './shaders/fogVert.glsl';
 const debug = {
 	instance: null,
 	label: 'Fog',
-	tab: 'Env',
 };
 /// #endif
 
@@ -18,58 +17,65 @@ const params = {
 	fogNearColor: '#844bb8',
 	fogFarColor: '#3e2e77',
 	fogNear: 0,
-	fogFar: 100,
-	fogNoiseSpeed: 0.0035,
-	fogNoiseFreq: 0.065,
-	fogNoiseImpact: 0.0,
-	fogNoiseAmount: 0.2,
+	fogFar: 140,
+	fogNoiseSpeed: 0.003,
+	fogNoiseFreq: 0.125,
+	fogNoiseImpact: 0.1,
 };
 
-const cubeTextureLoader = new CubeTextureLoader();
-const environmentMapTexture = cubeTextureLoader.load([
-	'/assets/image/environmentMaps/1/px.png',
-	'/assets/image/environmentMaps/1/nx.png',
-	'/assets/image/environmentMaps/1/py.png',
-	'/assets/image/environmentMaps/1/ny.png',
-	'/assets/image/environmentMaps/1/pz.png',
-	'/assets/image/environmentMaps/1/nz.png',
-]);
-
-let initialized = false;
-export default class CustomFog {
-	constructor() {
+export default class BaseFog {
+	constructor({
+		fogNearColor,
+		fogFarColor,
+		fogNear,
+		fogFar,
+		fogNoiseSpeed,
+		fogNoiseFreq,
+		fogNoiseImpact,
+		background,
+		/// #if DEBUG
+		gui,
+		/// #endif
+	}) {
 		this.webgl = getWebgl();
 		this.scene = this.webgl.mainScene.instance;
 
-		this.setFog();
+		this.params = {
+			fogNearColor,
+			fogFarColor,
+			fogNear,
+			fogFar,
+			fogNoiseSpeed,
+			fogNoiseFreq,
+			fogNoiseImpact,
+			background,
+		};
+
 		/// #if DEBUG
+		debug.instance = gui;
 		this.setDebug();
 		/// #endif
 	}
 
-	setFog() {
-		baseUniforms.uFogNearColor.value = new Color(params.fogNearColor);
-		baseUniforms.uFogNoiseFreq.value = params.fogNoiseFreq;
-		baseUniforms.uFogNoiseSpeed.value = params.fogNoiseSpeed;
-		baseUniforms.uFogNoiseImpact.value = params.fogNoiseImpact;
-		baseUniforms.uFogNoiseAmount.value = params.fogNoiseAmount;
+	set() {
+		baseUniforms.uFogNearColor.value = new Color(this.params.fogNearColor);
+		baseUniforms.uFogNoiseFreq.value = this.params.fogNoiseFreq;
+		baseUniforms.uFogNoiseSpeed.value = this.params.fogNoiseSpeed;
+		baseUniforms.uFogNoiseImpact.value = this.params.fogNoiseImpact;
 
 		ShaderChunk.fog_pars_vertex = fogParsVert;
 		ShaderChunk.fog_vertex = fogVert;
 		ShaderChunk.fog_pars_fragment = fogParsFrag;
 		ShaderChunk.fog_fragment = fogFrag;
-		const fog = new Fog(params.fogFarColor, params.fogNear, params.fogFar);
-		this.scene.fog = fog;
-		this.scene.background = environmentMapTexture;
 
-		initialized = true;
+		const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
+		this.scene.fog = fog;
+		this.scene.background = this.params.background;
 	}
 
 	/// #if DEBUG
 	setDebug() {
-		debug.instance = this.webgl.debug;
-		debug.instance.setFolder(debug.label, debug.tab);
-		const gui = debug.instance.getFolder(debug.label);
+		const gui = debug.instance.addFolder({ title: debug.label, expanded: true });
 
 		gui.addInput(params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(
 			'change',
@@ -119,21 +125,6 @@ export default class CustomFog {
 		}).on('change', (imp) => {
 			baseUniforms.uFogNoiseImpact.value = imp.value;
 		});
-		gui.addInput(baseUniforms.uFogNoiseAmount, 'value', {
-			label: 'amount',
-			min: 0,
-			max: 1,
-			step: 0.001,
-		}).on('change', (amount) => {
-			baseUniforms.uFogNoiseAmount.value = amount.value;
-		});
 	}
 	/// #endif
-
-	// update(et, dt) {
-	// 	if (!initialized) return;
-	// 	if (baseUniforms) {
-	// 		baseUniforms.time.value = et;
-	// 	}
-	// }
 }
