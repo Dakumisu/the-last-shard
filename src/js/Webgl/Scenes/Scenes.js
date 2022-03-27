@@ -15,6 +15,6 @@ export default class Scenes {
 		const testScene1 = new TestScene();
 
 		this.sceneController.add(introScene, true);
-		this.sceneController.add(testScene1, true);
+		this.sceneController.add(testScene1);
 	}
 }

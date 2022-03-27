@@ -1,7 +1,5 @@
 import { Group } from 'three';
 
-import { getWebgl } from '@webgl/Webgl';
-
 import Ambient from './EnvironnementLight';
 import Directionnal from './DirectionnalLight';
 

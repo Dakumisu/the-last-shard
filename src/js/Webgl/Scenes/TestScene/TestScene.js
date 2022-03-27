@@ -1,6 +1,5 @@
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import Player from '@webgl/World/Entities/Player';
-import { Color, Mesh, PlaneGeometry } from 'three';
+import { Color, Mesh, SphereGeometry } from 'three';
 import BaseScene from '../BaseScene';
 
 export default class TestScene extends BaseScene {
@@ -16,7 +15,7 @@ export default class TestScene extends BaseScene {
 		const material = new BaseToonMaterial({
 			color: new Color('blue'),
 		});
-		const geometry = new PlaneGeometry(20, 20);
+		const geometry = new SphereGeometry(20, 16, 16);
 		const plane = new Mesh(geometry, material);
 
 		this.instance.add(plane);
