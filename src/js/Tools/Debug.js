@@ -1,5 +1,6 @@
 import { Pane } from 'tweakpane';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
+import * as TweakpaneRotationInputPlugin from '@0b5vr/tweakpane-plugin-rotation';
 
 import StatsJs from '@tools/Stats';
 
@@ -8,7 +9,8 @@ let tabList = ['General', 'Player', 'Scene', 'Stats'];
 export default class Debug {
 	constructor() {
 		this.gui = new Pane();
-		this.gui.registerPlugin(EssentialsPlugin);
+		this.gui.registerPlugin(EssentialsPlugin); // https://cocopon.github.io/tweakpane/plugins.html
+		this.gui.registerPlugin(TweakpaneRotationInputPlugin); // https://www.npmjs.com/package/@0b5vr/tweakpane-plugin-rotation
 		this.stats = new StatsJs();
 
 		this.debugFolders = {};
