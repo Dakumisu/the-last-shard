@@ -13,16 +13,6 @@ const debug = {
 };
 /// #endif
 
-const params = {
-	fogNearColor: '#844bb8',
-	fogFarColor: '#3e2e77',
-	fogNear: 0,
-	fogFar: 140,
-	fogNoiseSpeed: 0.003,
-	fogNoiseFreq: 0.125,
-	fogNoiseImpact: 0.1,
-};
-
 export default class BaseFog {
 	constructor({
 		fogNearColor,
@@ -77,30 +67,34 @@ export default class BaseFog {
 	setDebug() {
 		const gui = debug.instance.addFolder({ title: debug.label, expanded: true });
 
-		gui.addInput(params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(
+		gui.addInput(this.params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(
 			'change',
 			(fogFarColor) => {
 				this.scene.fog.color.set(fogFarColor.value);
 			},
 		);
-		gui.addInput(params, 'fogNearColor', {
+		gui.addInput(this.params, 'fogNearColor', {
 			label: 'nearColor',
 			view: 'color',
 		}).on('change', (fogNearColor) => {
 			baseUniforms.uFogNearColor.value.set(fogNearColor.value);
 		});
-		gui.addInput(params, 'fogFar', { label: 'farRange', min: 20, max: 150, step: 0.01 }).on(
-			'change',
-			(fogFar) => {
-				this.scene.fog.far = fogFar.value;
-			},
-		);
-		gui.addInput(params, 'fogNear', { label: 'nearRange', min: 0, max: 50, step: 0.01 }).on(
-			'change',
-			(fogNear) => {
-				this.scene.fog.near = fogNear.value;
-			},
-		);
+		gui.addInput(this.params, 'fogFar', {
+			label: 'farRange',
+			min: 20,
+			max: 150,
+			step: 0.01,
+		}).on('change', (fogFar) => {
+			this.scene.fog.far = fogFar.value;
+		});
+		gui.addInput(this.params, 'fogNear', {
+			label: 'nearRange',
+			min: 0,
+			max: 50,
+			step: 0.01,
+		}).on('change', (fogNear) => {
+			this.scene.fog.near = fogNear.value;
+		});
 		gui.addInput(baseUniforms.uFogNoiseSpeed, 'value', {
 			label: 'speed',
 			min: 0,
