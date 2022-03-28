@@ -28,6 +28,7 @@ import AnimationController from '@webgl/Animation/Controller';
 import DebugMaterial from '@webgl/Materials/debug/material';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/misc';
+import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 const model = '/assets/model/player.glb';
 
@@ -284,6 +285,13 @@ class Player extends BaseEntity {
 		this.base.model.scene.rotateY(PI);
 		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
 
+		const playerMaterial = new PlayerMaterial({
+			color: new Color('#d29ddc'),
+		});
+		this.base.model.scene.traverse((child) => {
+			child.material = playerMaterial;
+		});
+
 		this.base.group.add(this.base.model.scene);
 	}
 
@@ -336,10 +344,7 @@ class Player extends BaseEntity {
 
 	setMaterial() {
 		this.base.material = new DebugMaterial();
-		// this.base.material = new PlayerMaterial({
-		// 	color: new Color('blue'),
-		// });
-		// this.base.material = new PlayerMaterial({
+		// this.base.material = new BaseToonMaterial({
 		// 	color: new Color('#d29ddc'),
 		// });
 	}

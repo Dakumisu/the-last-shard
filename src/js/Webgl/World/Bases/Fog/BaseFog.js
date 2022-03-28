@@ -13,6 +13,12 @@ const debug = {
 };
 /// #endif
 
+// Edit fog chunks on time
+ShaderChunk.fog_pars_vertex = fogParsVert;
+ShaderChunk.fog_vertex = fogVert;
+ShaderChunk.fog_pars_fragment = fogParsFrag;
+ShaderChunk.fog_fragment = fogFrag;
+
 export default class BaseFog {
 	constructor({
 		fogNearColor,
@@ -52,11 +58,6 @@ export default class BaseFog {
 		baseUniforms.uFogNoiseFreq.value = this.params.fogNoiseFreq;
 		baseUniforms.uFogNoiseSpeed.value = this.params.fogNoiseSpeed;
 		baseUniforms.uFogNoiseImpact.value = this.params.fogNoiseImpact;
-
-		ShaderChunk.fog_pars_vertex = fogParsVert;
-		ShaderChunk.fog_vertex = fogVert;
-		ShaderChunk.fog_pars_fragment = fogParsFrag;
-		ShaderChunk.fog_fragment = fogFrag;
 
 		const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
 		this.scene.fog = fog;

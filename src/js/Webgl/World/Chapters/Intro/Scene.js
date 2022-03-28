@@ -1,10 +1,9 @@
-import { getPlayer } from '@webgl/World/Characters/Player';
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
-import { Matrix4, Vector3 } from 'three';
+import { Matrix4 } from 'three';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
