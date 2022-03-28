@@ -10,6 +10,7 @@ import fogVert from './shaders/fogVert.glsl';
 const debug = {
 	instance: null,
 	label: 'Fog',
+	tab: 'Env',
 };
 /// #endif
 
@@ -48,8 +49,10 @@ export default class BaseFog {
 		};
 
 		/// #if DEBUG
-		debug.instance = gui;
-		this.setDebug();
+		if (!debug.instance) {
+			debug.instance = this.webgl.debug;
+			this.setDebug();
+		}
 		/// #endif
 	}
 
@@ -66,8 +69,8 @@ export default class BaseFog {
 
 	/// #if DEBUG
 	setDebug() {
-		const gui = debug.instance.addFolder({ title: debug.label, expanded: true });
-
+		debug.instance.setFolder(debug.label, debug.tab, true);
+		const gui = debug.instance.getFolder(debug.label);
 		gui.addInput(this.params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(
 			'change',
 			(fogFarColor) => {

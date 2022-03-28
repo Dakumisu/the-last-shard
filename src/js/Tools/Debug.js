@@ -4,7 +4,7 @@ import * as TweakpaneRotationInputPlugin from '@0b5vr/tweakpane-plugin-rotation'
 
 import StatsJs from '@tools/Stats';
 
-let tabList = ['General', 'Player', 'Scene', 'Stats'];
+let tabList = ['General', 'Player', 'Scene', 'Env', 'Stats'];
 
 export default class Debug {
 	constructor() {
