@@ -1,6 +1,7 @@
 import { getPlayer } from '@webgl/World/Characters/Player';
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
+import Grass from './Props/Grass2/Grass';
 import Lights from './Environment/Lights/Lights';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
@@ -18,6 +19,9 @@ export default class IntroScene extends BaseScene {
 
 		this.ground = new Ground(this);
 		await this.ground.init();
+
+		this.grass = new Grass(this);
+		await this.grass.init();
 
 		this.player = getPlayer();
 
@@ -48,6 +52,7 @@ export default class IntroScene extends BaseScene {
 	update(et, dt) {
 		super.update(et, dt);
 		if (this.ground) this.ground.update(et, dt);
+		if (this.grass) this.grass.update(et, dt);
 		if (this.player) this.player.update(et, dt);
 	}
 
