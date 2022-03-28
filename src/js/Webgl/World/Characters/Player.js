@@ -23,7 +23,7 @@ import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import { PlayerMaterial } from '@webgl/Materials/Player/material';
 import AnimationController from '@webgl/Animation/Controller';
-import DebugMaterial from '@webgl/Materials/debug/material';
+import DebugMaterial from '@webgl/Materials/Debug/material';
 import BaseEntity from '../Bases/BaseEntity';
 
 const model = '/assets/model/player.glb';

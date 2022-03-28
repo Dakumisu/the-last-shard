@@ -7,7 +7,7 @@ import { loadStaticGLTF as loadGLTF } from '@utils/loaders';
 let geometries = [];
 
 export function mergeGeometry(geos = [], models = []) {
-	return new Promise((resolve) => {
+	return new Promise(async (resolve) => {
 		if (!geos.length && !models.length) {
 			console.error('Geometries required 🚫');
 			resolve(null);
@@ -15,12 +15,16 @@ export function mergeGeometry(geos = [], models = []) {
 
 		geometries.push(...geos);
 
-		loadModels(models).then(() => {
+		if (models.length) {
+			await loadModels(models);
 			geometriesFilter();
-			mergeGeometries().then((e) => {
-				resolve(e);
-			});
-		});
+			const g = await mergeGeometries();
+			resolve(g);
+		} else {
+			geometriesFilter();
+			const g = await mergeGeometries();
+			resolve(g);
+		}
 	});
 }
 
@@ -52,7 +56,7 @@ function geometriesFilter() {
 	}
 }
 
-function loadModels(models) {
+async function loadModels(models) {
 	let count = 0;
 
 	return new Promise((resolve) => {

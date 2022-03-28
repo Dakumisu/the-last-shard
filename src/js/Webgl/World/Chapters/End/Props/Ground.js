@@ -1,4 +1,4 @@
-import { Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
+import { BoxGeometry, Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
 
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
@@ -68,10 +68,11 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		const plane = new PlaneGeometry(200, 200);
-		plane.rotateX(-Math.PI * 0.5);
-		plane.translate(0, -1, 0);
-		this.base.geometry = await mergeGeometry([plane], [sandbox]);
+		const planeGeo = new PlaneGeometry(200, 200);
+		planeGeo.rotateX(-Math.PI * 0.5);
+		planeGeo.translate(0, -1, 0);
+		const cubeGeo = new BoxGeometry(10, 10, 10);
+		this.base.geometry = await mergeGeometry([planeGeo, cubeGeo], []);
 
 		const geoOpt = {
 			lazyGeneration: false,
@@ -80,15 +81,8 @@ export default class Ground extends BaseCollider {
 
 		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,
-			color: new Color('#4e4b37'),
+			color: new Color('blue'),
 		});
-		// this.base.material = new BaseStandardMaterial({
-		// 	side: DoubleSide,
-		// 	color: new Color('#d29ddc'),
-		// 	flatShading: true,
-		// 	metalness: 0.3,
-		// 	roughness: 0.7,
-		// });
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.scene.add(this.base.mesh);
