@@ -1,4 +1,13 @@
-import { Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
+import {
+	BoxGeometry,
+	Color,
+	DoubleSide,
+	GridHelper,
+	Matrix4,
+	Mesh,
+	MeshNormalMaterial,
+	PlaneGeometry,
+} from 'three';
 
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
@@ -77,6 +86,8 @@ export default class Ground extends BaseCollider {
 			lazyGeneration: false,
 		};
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
+		this.base.geometry.name = 'Map';
+		this.base.geometry.colliderType = 'walkable';
 
 		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,
@@ -86,6 +97,32 @@ export default class Ground extends BaseCollider {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
 		this.scene.add(this.base.mesh);
+
+		const mat4 = new Matrix4();
+
+		this.testCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
+		this.testCube.name = 'cube1';
+		this.testCube.position.set(2, 1, 12);
+		this.testCube.flag = 'collider';
+		this.testCube.geometry.colliderType = 'nonWalkable';
+		this.testCube.geometry.boundsTree = this.setPhysics(this.testCube.geometry, geoOpt);
+		this.testCube.updateWorldMatrix(true, false);
+		mat4.multiplyMatrices(this.testCube.matrixWorld, this.testCube.matrix);
+		this.testCube.geometry.matrixWorld = this.testCube.matrixWorld;
+
+		this.secondTestCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
+		this.secondTestCube.flag = 'collider';
+		this.secondTestCube.geometry.colliderType = 'nonWalkable';
+		this.secondTestCube.name = 'cube2';
+		this.secondTestCube.position.set(-6, 1, 12);
+		this.secondTestCube.geometry.boundsTree = this.setPhysics(
+			this.secondTestCube.geometry,
+			geoOpt,
+		);
+		this.secondTestCube.updateWorldMatrix(true, false);
+		mat4.multiplyMatrices(this.secondTestCube.matrixWorld, this.secondTestCube.matrix);
+		this.secondTestCube.geometry.matrixWorld = this.secondTestCube.matrixWorld;
+		this.scene.add(this.secondTestCube);
 	}
 
 	resize() {

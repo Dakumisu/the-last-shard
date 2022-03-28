@@ -4,7 +4,7 @@ import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
-import { Matrix4, Vector3 } from 'three';
+import { BoxGeometry, Matrix4, Mesh, MeshNormalMaterial, Vector3 } from 'three';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
@@ -35,7 +35,11 @@ export default class IntroScene extends BaseScene {
 			/// #endif
 		});
 
-		this.instance.add(this.ground.base.mesh);
+		this.propsColliders = [this.ground.testCube, this.ground.secondTestCube];
+
+		this.instance.add(this.ground.base.mesh, this.ground.testCube, this.ground.secondTestCube);
+
+		console.log(this.instance.children);
 
 		this.resetPlayer();
 	}
@@ -48,7 +52,8 @@ export default class IntroScene extends BaseScene {
 		mat4.multiplyMatrices(this.ground.base.mesh.matrixWorld, this.ground.base.mesh.matrix);
 		this.ground.base.geometry.matrixWorld = this.ground.base.mesh.matrixWorld;
 
-		this.player.setCollider(this.ground.base.geometry);
+		this.player.setMainCollider(this.ground.base.geometry);
+		this.player.setPropsColliders(this.propsColliders);
 	}
 
 	update(et, dt) {

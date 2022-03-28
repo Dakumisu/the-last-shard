@@ -11,6 +11,9 @@ import {
 	CapsuleGeometry,
 	Vector2,
 	BufferGeometry,
+	IcosahedronGeometry,
+	Object3D,
+	MeshBasicMaterial,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -35,6 +38,7 @@ const PI = Math.PI;
 const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
+const tVec3c = new Vector3();
 const tVec2a = new Vector2();
 const tVec2b = new Vector2();
 const tBox = new Box3();
@@ -49,6 +53,8 @@ const params = {
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
 	defaultPos: [0, 3, 30],
+
+	broadphaseRadius: 5,
 };
 
 const camParams = {
@@ -136,7 +142,9 @@ class Player extends BaseEntity {
 		this.cameraController = webgl.cameraController;
 
 		// this.ground = opt.ground; // TODO -> replace 'this.collider' by all the colliders (map, props, etc...)
-		this.collider = null;
+
+		this.colliders = [];
+		this.collidersToTest = [];
 
 		this.base = {};
 		this.base.group = new Group();
@@ -175,6 +183,9 @@ class Player extends BaseEntity {
 
 		gui.addButton({ title: 'bvh' }).on('click', () => {
 			this.visualizer.visible = !this.visualizer.visible;
+		});
+		gui.addButton({ title: 'broadphase' }).on('click', () => {
+			this.broadphaseHelper.visible = !this.broadphaseHelper.visible;
 		});
 
 		const guiPosition = gui.addFolder({
@@ -249,6 +260,12 @@ class Player extends BaseEntity {
 		const axesHelper = new AxesHelper(2);
 		axesHelper.visible = false;
 		this.base.group.add(axesHelper);
+
+		this.broadphaseHelper = new Mesh(
+			new IcosahedronGeometry(params.broadphaseRadius, 3),
+			new MeshBasicMaterial({ wireframe: true }),
+		);
+		this.base.group.add(this.broadphaseHelper);
 	}
 	/// #endif
 
@@ -265,20 +282,25 @@ class Player extends BaseEntity {
 	}
 
 	async init() {
-		await this.setModel();
-		this.setAnimation();
-
 		this.setCameraPlayer();
 		this.setGeometry();
 		this.setMaterial();
 		this.setMesh();
+
+		await this.setModel();
+		this.setAnimation();
 
 		initialized = true;
 	}
 
 	async setModel() {
 		const m = await loadGLTF(model);
-		// console.log(m);
+
+		m.scene.traverse((object) => {
+			if (object.type === 'SkinnedMesh') {
+				object.material = this.base.material;
+			}
+		});
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
@@ -336,12 +358,10 @@ class Player extends BaseEntity {
 
 	setMaterial() {
 		this.base.material = new DebugMaterial();
-		// this.base.material = new PlayerMaterial({
-		// 	color: new Color('blue'),
-		// });
-		// this.base.material = new PlayerMaterial({
-		// 	color: new Color('#d29ddc'),
-		// });
+
+		this.base.material = new PlayerMaterial({
+			color: new Color('#d29ddc'),
+		});
 	}
 
 	setMesh() {
@@ -355,7 +375,7 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.group);
 	}
 
-	move(dt) {
+	move(dt, collider) {
 		// check if the direction change
 		state.updateDirection = false;
 		if (state.forwardPressed != this.keyPressed.forward) state.updateDirection = true;
@@ -423,7 +443,6 @@ class Player extends BaseEntity {
 				0.01,
 			);
 		}
-
 		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
 		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
@@ -434,7 +453,7 @@ class Player extends BaseEntity {
 		// adjust player position based on collisions
 		const capsuleInfo = this.base.capsuleInfo;
 		tBox.makeEmpty();
-		tMat.copy(this.collider.matrixWorld).invert();
+		tMat.copy(collider.matrixWorld).invert();
 		tSegment.copy(capsuleInfo.segment);
 
 		// get the position of the capsule in the local space of the collider
@@ -448,7 +467,7 @@ class Player extends BaseEntity {
 		tBox.min.addScalar(-capsuleInfo.radius);
 		tBox.max.addScalar(capsuleInfo.radius);
 
-		this.collider.boundsTree.shapecast({
+		collider.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox),
 
 			intersectsTriangle: (tri) => {
@@ -471,14 +490,15 @@ class Player extends BaseEntity {
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
 		// the origin of the player model.
 		const newPosition = tVec3a;
-		newPosition.copy(tSegment.start).applyMatrix4(this.collider.matrixWorld);
+		newPosition.copy(tSegment.start).applyMatrix4(collider.matrixWorld);
 
 		// check how much the collider was moved
 		const deltaVector = tVec3b;
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
-		state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
+		if (collider.colliderType === 'walkable')
+			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
 		// const offset = Math.max(0, deltaVector.length() - 1e-5);
 		// deltaVector.normalize().multiplyScalar(offset);
@@ -486,11 +506,13 @@ class Player extends BaseEntity {
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
 
-		if (!state.playerOnGround) {
-			deltaVector.normalize();
-			playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
-		} else {
-			playerVelocity.set(0, 0, 0);
+		if (collider.colliderType === 'walkable') {
+			if (!state.playerOnGround) {
+				deltaVector.normalize();
+				playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
+			} else {
+				playerVelocity.set(0, 0, 0);
+			}
 		}
 
 		// adjust the camera
@@ -560,6 +582,24 @@ class Player extends BaseEntity {
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
+	updateBroadphase() {
+		this.collidersToTest.forEach((object) => {
+			const d = this.base.mesh.position.distanceTo(object.position);
+			if (d <= params.broadphaseRadius) {
+				if (!this.colliders.includes(object.geometry)) {
+					this.colliders.push(object.geometry);
+					console.log(this.colliders);
+				}
+			} else {
+				if (this.colliders.indexOf(object.geometry) != -1) {
+					const id = this.colliders.indexOf(object.geometry);
+					this.colliders.splice(id, 1);
+					console.log(this.colliders);
+				}
+			}
+		});
+	}
+
 	reset() {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
@@ -576,8 +616,11 @@ class Player extends BaseEntity {
 	update(et, dt) {
 		if (!initialized) return;
 
-		if (this.collider)
-			for (let i = 0; i < params.physicsSteps; i++) this.move(dt / params.physicsSteps, et);
+		if (this.colliders.length)
+			this.colliders.forEach((collider) => {
+				for (let i = 0; i < params.physicsSteps; i++)
+					this.move(dt / params.physicsSteps / this.colliders.length, collider);
+			});
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 
@@ -590,15 +633,21 @@ class Player extends BaseEntity {
 
 		this.base.animation.update(dt);
 
+		this.updateBroadphase();
+
 		// if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
 	}
 
-	setCollider(geo) {
+	setMainCollider(geo) {
 		if (!(geo instanceof BufferGeometry)) {
 			console.error(`BufferGeometry required ❌`);
 			return;
 		}
-		this.collider = geo;
+		this.colliders = [];
+		this.colliders.push(geo);
+	}
+	setPropsColliders(array) {
+		this.collidersToTest = array;
 	}
 
 	setStartPosition(pos) {
