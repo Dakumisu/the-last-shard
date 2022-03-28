@@ -92,7 +92,7 @@ export default class AnimationController {
 		}
 		newAction.animation.reset();
 		newAction.animation.play();
-		newAction.animation.crossFadeFrom(oldAction.animation, 1);
+		newAction.animation.crossFadeFrom(oldAction.animation, 0.5);
 
 		this.setCurrent(newAction);
 		/// #if DEBUG
@@ -110,7 +110,7 @@ export default class AnimationController {
 		const oldAction = this.actions.current;
 
 		this.switch(action, false);
-		await wait(1000);
+		await wait(700);
 		this.switch(this.actions.current);
 
 		// this.mixer.addEventListener('loop', function (e) {

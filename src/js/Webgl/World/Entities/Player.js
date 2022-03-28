@@ -39,8 +39,8 @@ const tSegment = new Line3();
 const playerVelocity = new Vector3();
 
 const params = {
-	speed: 10,
-	sprint: 20,
+	speed: 6,
+	sprint: 14,
 
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
@@ -60,6 +60,8 @@ const state = {
 	backwardPressed: false,
 	leftPressed: false,
 	rightPressed: false,
+
+	hasJumped: false,
 
 	updateDirection: false,
 
@@ -235,6 +237,7 @@ export default class Player extends BaseEntity {
 		this.scene.add(this.visualizer);
 
 		const axesHelper = new AxesHelper(2);
+		axesHelper.visible = false;
 		this.base.group.add(axesHelper);
 	}
 	/// #endif
@@ -265,7 +268,7 @@ export default class Player extends BaseEntity {
 
 	async setModel() {
 		const m = await loadGLTF(model);
-		console.log(m);
+		// console.log(m);
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
@@ -330,6 +333,7 @@ export default class Player extends BaseEntity {
 
 	setMesh() {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		this.base.mesh.visible = false;
 
 		this.base.mesh.position.fromArray(params.defaultPos);
 
@@ -409,9 +413,8 @@ export default class Player extends BaseEntity {
 		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
 		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
-		if (this.keyPressed.space) {
-			if (state.playerOnGround) playerVelocity.y = 15.0;
-		}
+		if (this.keyPressed.space && state.playerOnGround && !state.hasJumped)
+			playerVelocity.y = 15.0;
 
 		this.base.mesh.updateMatrixWorld();
 
@@ -511,19 +514,22 @@ export default class Player extends BaseEntity {
 	updateAnimation() {
 		let previousPlayerAnim = player.anim;
 		if (state.playerOnGround) {
-			if (!player.isMoving || player.realSpeed <= params.speed * 0.05) {
-				player.anim = this.base.animation.get('idle');
-			}
-			if (player.realSpeed > params.speed + 2) {
-				player.anim = this.base.animation.get('run');
-			}
-			if (player.realSpeed <= params.speed + 2 && player.realSpeed > params.speed * 0.05) {
-				player.anim = this.base.animation.get('walk');
-			}
+			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
+				// if (player.realSpeed <= params.speed + 2)
+				// 	player.anim = this.base.animation.get('walk');
+
+				// if (player.realSpeed > params.speed + 1.5) {
+				// 	player.anim = this.base.animation.get('run');
+				// }
+				if (this.keyPressed.shift) player.anim = this.base.animation.get('run');
+				else player.anim = this.base.animation.get('walk');
+			} else player.anim = this.base.animation.get('idle');
 		}
 		if (this.keyPressed.space) {
-			player.anim = this.base.animation.get('jump');
-			this.base.animation.playOnce(player.anim);
+			if (!state.hasJumped) {
+				player.anim = this.base.animation.get('jump');
+				this.base.animation.playOnce(player.anim);
+			}
 		}
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
@@ -556,5 +562,7 @@ export default class Player extends BaseEntity {
 		this.updateAnimation();
 
 		this.base.animation.update(dt);
+
+		if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
 	}
 }
