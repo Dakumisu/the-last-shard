@@ -3,13 +3,13 @@ import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import { BoxGeometry, Color, Mesh, PlaneGeometry, SphereGeometry, Vector3 } from 'three';
+import { BoxGeometry, Color, Matrix4, Mesh, PlaneGeometry, SphereGeometry, Vector3 } from 'three';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
 
 export default class CabaneScene extends BaseScene {
 	constructor() {
-		super({ label: 'CabaneScene' });
+		super({ label: 'Cabane' });
 	}
 
 	async init(currentCamera) {
@@ -42,7 +42,13 @@ export default class CabaneScene extends BaseScene {
 
 	resetPlayer() {
 		this.player.setStartPosition(new Vector3(0, 10, 0));
-		this.player.setCollider(this.ground.base.mesh);
+
+		this.ground.base.mesh.updateWorldMatrix(true, false);
+		const mat4 = new Matrix4();
+		mat4.multiplyMatrices(this.ground.base.mesh.matrixWorld, this.ground.base.mesh.matrix);
+		this.ground.base.geometry.matrixWorld = this.ground.base.mesh.matrixWorld;
+
+		this.player.setCollider(this.ground.base.geometry);
 	}
 
 	update(et, dt) {

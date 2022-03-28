@@ -27,6 +27,7 @@ import { PlayerMaterial } from '@webgl/Materials/Player/material';
 import AnimationController from '@webgl/Animation/Controller';
 import DebugMaterial from '@webgl/Materials/debug/material';
 import BaseEntity from '../Bases/BaseEntity';
+import { wait } from 'philbin-packages/misc';
 
 const model = '/assets/model/player.glb';
 
@@ -65,6 +66,7 @@ const state = {
 	rightPressed: false,
 
 	hasJumped: false,
+	isJumping: false,
 
 	updateDirection: false,
 
@@ -425,8 +427,7 @@ class Player extends BaseEntity {
 		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
 		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
-		if (this.keyPressed.space && state.playerOnGround && !state.hasJumped)
-			playerVelocity.y = 15.0;
+		// if (this.keyPressed.space && state.playerOnGround && !state.isJumping) this.jump();
 
 		this.base.mesh.updateMatrixWorld();
 
@@ -447,7 +448,7 @@ class Player extends BaseEntity {
 		tBox.min.addScalar(-capsuleInfo.radius);
 		tBox.max.addScalar(capsuleInfo.radius);
 
-		this.collider.geometry.boundsTree.shapecast({
+		this.collider.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox),
 
 			intersectsTriangle: (tri) => {
@@ -503,6 +504,14 @@ class Player extends BaseEntity {
 		}
 	}
 
+	async jump(delay = false) {
+		if (state.isJumping) return;
+		state.isJumping = true;
+		if (delay) await wait(400);
+		playerVelocity.y = 15.0;
+		state.isJumping = false;
+	}
+
 	checkPlayerPosition(dt) {
 		previousPlayerPos = playerPosY;
 		playerPosY = this.base.mesh.position.y;
@@ -525,8 +534,8 @@ class Player extends BaseEntity {
 
 	updateAnimation() {
 		let previousPlayerAnim = player.anim;
-		if (state.playerOnGround) {
-			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
+		if (state.playerOnGround && !state.isJumping) {
+			if (player.isMoving && player.realSpeed >= params.speed * 0.2) {
 				// if (player.realSpeed <= params.speed + 2)
 				// 	player.anim = this.base.animation.get('walk');
 
@@ -537,13 +546,17 @@ class Player extends BaseEntity {
 				else player.anim = this.base.animation.get('walk');
 			} else player.anim = this.base.animation.get('idle');
 		}
-		if (this.keyPressed.space) {
-			if (!state.hasJumped) {
-				if (player.isMoving) player.anim = this.base.animation.get('run_jump');
-				else player.anim = this.base.animation.get('jump');
-				this.base.animation.playOnce(player.anim);
+		if (this.keyPressed.space && state.playerOnGround && !state.isJumping) {
+			if (player.isMoving && player.realSpeed >= params.speed * 0.2) {
+				player.anim = this.base.animation.get('run_jump');
+				this.jump();
+			} else {
+				player.anim = this.base.animation.get('jump');
+				this.jump(true);
 			}
+			this.base.animation.playOnce(player.anim);
 		}
+		// console.log(player.anim.name);
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
@@ -577,15 +590,15 @@ class Player extends BaseEntity {
 
 		this.base.animation.update(dt);
 
-		if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
+		// if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
 	}
 
-	setCollider(mesh) {
-		if (!(mesh instanceof Mesh)) {
-			console.error(`Mesh required ❌`);
+	setCollider(geo) {
+		if (!(geo instanceof BufferGeometry)) {
+			console.error(`BufferGeometry required ❌`);
 			return;
 		}
-		this.collider = mesh;
+		this.collider = geo;
 	}
 
 	setStartPosition(pos) {

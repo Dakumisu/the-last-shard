@@ -81,7 +81,7 @@ export default class Ground extends BaseCollider {
 
 		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,
-			color: new Color('blue'),
+			color: new Color('#d29ddc'),
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);

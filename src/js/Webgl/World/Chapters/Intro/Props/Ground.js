@@ -3,6 +3,7 @@ import { Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
+import { loadStaticGLTF } from '@utils/loaders';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
@@ -79,11 +80,10 @@ export default class Ground extends BaseCollider {
 
 		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,
-			color: new Color('yellow'),
+			color: new Color('#d29ddc'),
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		// this.addCollider(this.base.mesh);
 
 		this.scene.add(this.base.mesh);
 	}

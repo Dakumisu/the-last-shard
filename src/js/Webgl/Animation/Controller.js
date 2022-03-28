@@ -102,20 +102,15 @@ export default class AnimationController {
 		/// #endif
 	}
 
-	async playOnce(action) {
+	playOnce(action) {
 		if (!initialized) return;
 
-		// this.setCurrent(action);
-		// action.animation.play();
 		const oldAction = this.actions.current;
-
-		this.switch(action, false);
-		// await wait(500);
-		// this.switch(this.actions.current);
-
-		// this.mixer.addEventListener('loop', function (e) {
-		// 	console.log('here');
-		// });
+		action.animation.loop = LoopOnce;
+		action.animation.reset();
+		action.animation.play();
+		action.animation.crossFadeFrom(oldAction.animation, 0.5);
+		this.setCurrent(action);
 	}
 
 	setCurrent(action, force = false) {
