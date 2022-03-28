@@ -25,9 +25,9 @@ const debug = {
 };
 /// #endif
 
-const BLADE_WIDTH = 0.3;
-const BLADE_HEIGHT = 0.5;
-const BLADE_HEIGHT_VARIATION = 0.6;
+const BLADE_WIDTH = 0.25;
+const BLADE_HEIGHT = 0.6;
+const BLADE_HEIGHT_VARIATION = 0.7;
 const BLADE_VERTEX_COUNT = 5;
 const BLADE_TIP_OFFSET = 0.1;
 
@@ -67,7 +67,7 @@ export default class Grass {
 	}
 
 	async setGrass() {
-		const geometry = new GrassGeometry(30, 10000);
+		const geometry = new GrassGeometry(300, 2000000);
 		this.base.material = new ShaderMaterial({
 			uniforms: {
 				uCloud: { value: 0 },

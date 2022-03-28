@@ -58,7 +58,7 @@ export default class Grass {
 		/// #endif
 
 		this.base = {};
-		this.count = 100000;
+		this.count = 500000;
 	}
 
 	/// #if DEBUG
@@ -136,12 +136,13 @@ export default class Grass {
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		// this.scene.add(this.base.mesh);
+		this.scene.add(this.base.mesh);
+		this.base.mesh.frustumCulled = false;
 
 		// particles
 		const particleSystem = new ParticleSystem();
 		particleSystem.mesh.position.y = 0; // 10
-		this.scene.add(particleSystem.mesh);
+		// this.scene.add(particleSystem.mesh);
 	}
 
 	resize() {
@@ -209,7 +210,7 @@ class ParticleSystem {
 	constructor() {
 		this.time = 0.0;
 		let triangles = 1;
-		let instances = 20000;
+		let instances = 100000;
 		let geometry = new InstancedBufferGeometry();
 
 		let vertices = new BufferAttribute(new Float32Array(triangles * 3 * 3), 3);
@@ -293,7 +294,7 @@ class ParticleSystem {
 		});
 
 		let mesh = new Mesh(geometry, material);
-		// mesh.frustumCulled = false;
+		mesh.frustumCulled = false;
 		this.mesh = mesh;
 	}
 }
