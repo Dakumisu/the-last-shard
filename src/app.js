@@ -9,8 +9,8 @@ import { initGame } from '@game/Game';
 const dom = new Dom();
 
 signal.once('domLoaded', () => {
-	const webgl = initWebgl(dom.nodes.domElements.canvas);
 	const game = initGame();
+	const webgl = initWebgl(dom.nodes.domElements.canvas);
 });
 
 /// #if DEBUG

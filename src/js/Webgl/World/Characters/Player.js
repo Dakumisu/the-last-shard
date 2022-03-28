@@ -10,7 +10,9 @@ import {
 	AxesHelper,
 	CapsuleGeometry,
 	Vector2,
+	BufferGeometry,
 } from 'three';
+import { MeshBVH } from 'three-mesh-bvh';
 
 import { getGame } from '@game/Game';
 import { getWebgl } from '@webgl/Webgl';
@@ -116,9 +118,13 @@ const debug = {
 
 let initialized = false;
 
-export default class Player extends BaseEntity {
+class Player extends BaseEntity {
+	static instance;
+
 	constructor(opt = {}) {
 		super();
+
+		Player.instance = this;
 
 		const webgl = getWebgl();
 		const game = getGame();
@@ -127,7 +133,8 @@ export default class Player extends BaseEntity {
 		this.scene = webgl.mainScene.instance;
 		this.cameraController = webgl.cameraController;
 
-		this.ground = opt.ground; // TODO -> replace 'this.ground' by all the colliders (map, props, etc...)
+		// this.ground = opt.ground; // TODO -> replace 'this.collider' by all the colliders (map, props, etc...)
+		this.collider = null;
 
 		this.base = {};
 		this.base.group = new Group();
@@ -426,7 +433,7 @@ export default class Player extends BaseEntity {
 		// adjust player position based on collisions
 		const capsuleInfo = this.base.capsuleInfo;
 		tBox.makeEmpty();
-		tMat.copy(this.ground.matrixWorld).invert();
+		tMat.copy(this.collider.matrixWorld).invert();
 		tSegment.copy(capsuleInfo.segment);
 
 		// get the position of the capsule in the local space of the collider
@@ -440,7 +447,7 @@ export default class Player extends BaseEntity {
 		tBox.min.addScalar(-capsuleInfo.radius);
 		tBox.max.addScalar(capsuleInfo.radius);
 
-		this.ground.geometry.boundsTree.shapecast({
+		this.collider.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox),
 
 			intersectsTriangle: (tri) => {
@@ -463,7 +470,7 @@ export default class Player extends BaseEntity {
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
 		// the origin of the player model.
 		const newPosition = tVec3a;
-		newPosition.copy(tSegment.start).applyMatrix4(this.ground.matrixWorld);
+		newPosition.copy(tSegment.start).applyMatrix4(this.collider.matrixWorld);
 
 		// check how much the collider was moved
 		const deltaVector = tVec3b;
@@ -532,7 +539,8 @@ export default class Player extends BaseEntity {
 		}
 		if (this.keyPressed.space) {
 			if (!state.hasJumped) {
-				player.anim = this.base.animation.get('jump');
+				if (player.isMoving) player.anim = this.base.animation.get('run_jump');
+				else player.anim = this.base.animation.get('jump');
 				this.base.animation.playOnce(player.anim);
 			}
 		}
@@ -555,7 +563,8 @@ export default class Player extends BaseEntity {
 	update(et, dt) {
 		if (!initialized) return;
 
-		for (let i = 0; i < params.physicsSteps; i++) this.move(dt / params.physicsSteps, et);
+		if (this.collider)
+			for (let i = 0; i < params.physicsSteps; i++) this.move(dt / params.physicsSteps, et);
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 
@@ -570,4 +579,26 @@ export default class Player extends BaseEntity {
 
 		if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
 	}
+
+	setCollider(mesh) {
+		if (!(mesh instanceof Mesh)) {
+			console.error(`Mesh required ❌`);
+			return;
+		}
+		this.collider = mesh;
+	}
+
+	setStartPosition(pos) {
+		this.base.mesh.position.copy(pos);
+	}
 }
+
+const initPlayer = () => {
+	return new Player();
+};
+
+const getPlayer = () => {
+	return Player.instance;
+};
+
+export { initPlayer, getPlayer };

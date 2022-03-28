@@ -19,7 +19,7 @@ import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
 
-import postFXMaterial from './basic/material';
+import PostFXMaterial from './basic/material';
 
 const tVec2 = new Vector2();
 const tVec3 = new Vector3();
@@ -109,7 +109,7 @@ export default class PostFX {
 			},
 		};
 
-		this.material = postFXMaterial.get(opts);
+		this.material = PostFXMaterial.get(opts);
 	}
 
 	setPostPro() {

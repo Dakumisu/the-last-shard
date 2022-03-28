@@ -110,8 +110,8 @@ export default class AnimationController {
 		const oldAction = this.actions.current;
 
 		this.switch(action, false);
-		await wait(700);
-		this.switch(this.actions.current);
+		// await wait(500);
+		// this.switch(this.actions.current);
 
 		// this.mixer.addEventListener('loop', function (e) {
 		// 	console.log('here');

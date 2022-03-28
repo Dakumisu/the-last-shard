@@ -83,6 +83,8 @@ export default class Ground extends BaseCollider {
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		// this.addCollider(this.base.mesh);
+
 		this.scene.add(this.base.mesh);
 	}
 

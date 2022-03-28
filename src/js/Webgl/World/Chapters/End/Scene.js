@@ -1,9 +1,9 @@
-import Player from '@webgl/World/Characters/Player';
+import { getPlayer } from '@webgl/World/Characters/Player';
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import { BoxGeometry, Color, Mesh, PlaneGeometry, SphereGeometry } from 'three';
+import { BoxGeometry, Color, Mesh, PlaneGeometry, SphereGeometry, Vector3 } from 'three';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
 
@@ -12,8 +12,8 @@ export default class EndScene extends BaseScene {
 		super({ label: 'EndScene' });
 	}
 
-	async init(player, currentCamera) {
-		super.init(player, currentCamera);
+	async init(currentCamera) {
+		super.init(currentCamera);
 
 		this.fog = new BaseFog({
 			fogNearColor: '#ff0000',
@@ -34,12 +34,21 @@ export default class EndScene extends BaseScene {
 
 		this.ground = new Ground(this);
 		await this.ground.init();
+
+		this.player = getPlayer();
+
+		this.resetPlayer();
+	}
+
+	resetPlayer() {
+		this.player.setStartPosition(new Vector3(0, 20, 0));
+		this.player.setCollider(this.ground.base.mesh);
 	}
 
 	update(et, dt) {
 		super.update(et, dt);
 		// if (this.ground) this.ground.update(et, dt);
-		// if (this.player) this.player.update(et, dt);
+		if (this.player) this.player.update(et, dt);
 	}
 
 	async addTo(mainScene) {

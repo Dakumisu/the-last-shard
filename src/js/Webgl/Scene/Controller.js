@@ -87,6 +87,7 @@ export default class SceneController {
 		/// #if DEBUG
 		console.log('🌆 Switch Scene :', label);
 		/// #endif
+
 		if (this.get(label)) {
 			if (this.currentScene) {
 				/// #if DEBUG
@@ -96,6 +97,7 @@ export default class SceneController {
 			}
 			this.currentScene = this.get(label);
 			if (!this.currentScene.initialized) await this.currentScene.init();
+			this.currentScene.resetPlayer();
 			this.currentScene.addTo(this.mainScene.instance);
 
 			/// #if DEBUG

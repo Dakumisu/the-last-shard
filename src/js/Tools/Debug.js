@@ -3,7 +3,7 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 
 import StatsJs from '@tools/Stats';
 
-let tabList = ['General', 'Player', 'Scene', 'Env', 'Stats'];
+let tabList = ['General', 'Player', 'Scene', 'Stats'];
 
 export default class Debug {
 	constructor() {

@@ -1,24 +1,25 @@
-import Player from '@webgl/World/Characters/Player';
+import { getPlayer } from '@webgl/World/Characters/Player';
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
+import { Vector3 } from 'three';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
 		super({ label: 'IntroScene' });
 	}
 
-	async init(player, currentCamera) {
-		super.init(player, currentCamera);
+	async init(currentCamera) {
+		super.init(currentCamera);
 
 		this.lights = new Lights(this);
 
 		this.ground = new Ground(this);
 		await this.ground.init();
 
-		this.player = new Player({ ground: this.ground.base.mesh });
+		this.player = getPlayer();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',
@@ -34,7 +35,14 @@ export default class IntroScene extends BaseScene {
 			/// #endif
 		});
 
-		this.instance.add(this.ground.base.mesh, this.player.base.mesh);
+		this.instance.add(this.ground.base.mesh);
+
+		this.resetPlayer();
+	}
+
+	resetPlayer() {
+		this.player.setStartPosition(new Vector3(0, 3, 30));
+		this.player.setCollider(this.ground.base.mesh);
 	}
 
 	update(et, dt) {

@@ -5,7 +5,6 @@ import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
 
 const sandbox = '/assets/model/collinetest.glb';
-// const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
 
 let initialized = false;
@@ -72,12 +71,13 @@ export default class Ground extends BaseCollider {
 		planeGeo.rotateX(-Math.PI * 0.5);
 		planeGeo.translate(0, -1, 0);
 		const cubeGeo = new BoxGeometry(10, 10, 10);
-		this.base.geometry = await mergeGeometry([planeGeo, cubeGeo], []);
+		this.base.geometry = await mergeGeometry([planeGeo, cubeGeo], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
 		};
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
+		// this.addCollider(this.base.mesh);
 
 		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,

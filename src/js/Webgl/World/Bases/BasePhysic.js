@@ -10,9 +10,7 @@ let initialized = false;
 Mesh.prototype.raycast = acceleratedRaycast;
 
 export default class BasePhysic {
-	constructor() {
-		this.base = {};
-	}
+	constructor() {}
 
 	setPhysics(geometry, options = {}) {
 		if (!geometry || !(geometry instanceof BufferGeometry)) {

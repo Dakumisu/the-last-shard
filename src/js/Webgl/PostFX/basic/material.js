@@ -4,7 +4,7 @@ import hotShaders from './hotShaders';
 
 let instance;
 
-export default class postProcessingMaterial extends RawShaderMaterial {
+export default class PostProcessingMaterial extends RawShaderMaterial {
 	constructor(opts = {}) {
 		super();
 
@@ -16,4 +16,4 @@ export default class postProcessingMaterial extends RawShaderMaterial {
 	}
 }
 
-postProcessingMaterial.get = (opts) => (instance = instance || new postProcessingMaterial(opts));
+PostProcessingMaterial.get = (opts) => (instance = instance || new PostProcessingMaterial(opts));
