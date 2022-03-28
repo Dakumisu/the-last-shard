@@ -13,8 +13,8 @@ import {
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
-import fragmentShader from './shaders/fragment.glsl';
-import vertexShader from './shaders/vertex.glsl';
+import fragmentShader from './Shaders/fragment.glsl';
+import vertexShader from './Shaders/vertex.glsl';
 
 let initialized = false;
 
