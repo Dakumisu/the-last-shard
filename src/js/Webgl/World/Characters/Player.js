@@ -4,6 +4,7 @@ import {
 	Line3,
 	Matrix4,
 	Mesh,
+	BoxGeometry,
 	Vector3,
 	Group,
 	AxesHelper,
@@ -13,7 +14,6 @@ import {
 
 import { getGame } from '@game/Game';
 import { getWebgl } from '@webgl/Webgl';
-import BaseEntity from '../Components/BaseEntity';
 
 import { store } from '@tools/Store';
 import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
@@ -24,6 +24,7 @@ import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import { PlayerMaterial } from '@webgl/Materials/Player/material';
 import AnimationController from '@webgl/Animation/Controller';
 import DebugMaterial from '@webgl/Materials/debug/material';
+import BaseEntity from '../Bases/BaseEntity';
 
 const model = '/assets/model/player.glb';
 
@@ -123,7 +124,7 @@ export default class Player extends BaseEntity {
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
 
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 		this.cameraController = webgl.cameraController;
 
 		this.ground = opt.ground; // TODO -> replace 'this.ground' by all the colliders (map, props, etc...)
@@ -305,7 +306,7 @@ export default class Player extends BaseEntity {
 			},
 			'player',
 		);
-		this.cameraController.add('player', playerOrbitCam, true);
+		this.cameraController.add(playerOrbitCam, true);
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
@@ -329,6 +330,9 @@ export default class Player extends BaseEntity {
 		// this.base.material = new PlayerMaterial({
 		// 	color: new Color('blue'),
 		// });
+		// this.base.material = new PlayerMaterial({
+		// 	color: new Color('#d29ddc'),
+		// });
 	}
 
 	setMesh() {
@@ -338,6 +342,7 @@ export default class Player extends BaseEntity {
 		this.base.mesh.position.fromArray(params.defaultPos);
 
 		this.scene.add(this.base.mesh);
+		this.base.mesh.position.y = 10;
 		this.scene.add(this.base.group);
 	}
 

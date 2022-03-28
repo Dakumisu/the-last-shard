@@ -3,38 +3,32 @@ import { DirectionalLight, Vector3 } from 'three';
 import { getWebgl } from '@webgl/Webgl';
 
 const params = {
-	color: '#844bb8',
+	color: '#45b1e7',
 	intensity: 2,
 };
 
 /// #if DEBUG
 const debug = {
 	instance: null,
-	label: '',
-	parentLabel: '',
 };
 /// #endif
 
 export default class Directionnal {
-	constructor(label, parentLabel) {
+	constructor() {
 		this.light = new DirectionalLight(params.color, params.intensity);
 		this.light.position.set(-10, 0, 10);
 
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
-		debug.label = label;
-		debug.parentLabel = parentLabel;
-		this.debug();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	debug() {
-		const parentGui = debug.instance.getFolder(debug.parentLabel);
-		const g = parentGui.children[1];
+	addTodebug(parentFolder, label) {
+		const g = parentFolder.children[1];
 		const gui = g.addFolder({
-			title: debug.label,
+			title: label,
 		});
 
 		gui.addInput(params, 'color').on('change', (color) => {

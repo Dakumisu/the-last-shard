@@ -15,7 +15,7 @@ let initialized = false;
 export default class RaycastHelper {
 	constructor(opt = {}) {
 		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 
 		if (!opt.pos || !opt.dir) {
 			console.error(
@@ -55,14 +55,7 @@ export default class RaycastHelper {
 		const headLength = 0.45;
 		const headWidth = 0.12;
 
-		this.base = new ArrowHelper(
-			rayDirection,
-			rayOrigin,
-			length,
-			color,
-			headLength,
-			headWidth,
-		);
+		this.base = new ArrowHelper(rayDirection, rayOrigin, length, color, headLength, headWidth);
 		this.scene.add(this.base);
 
 		initialized = true;
@@ -75,10 +68,7 @@ export default class RaycastHelper {
 	update() {
 		if (!initialized) return;
 
-		const intersects = this.raycaster.intersectObjects(
-			this.scene.children,
-			true,
-		);
+		const intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
 		for (let i = 0; i < intersects.length; i++) {
 			signal.emit('helper_raycast', intersects[i].object);

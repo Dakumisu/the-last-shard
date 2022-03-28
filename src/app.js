@@ -14,5 +14,5 @@ signal.once('domLoaded', () => {
 });
 
 /// #if DEBUG
-console.log('debug mode 🔥');
+console.log('Debug mode 🔥');
 /// #endif

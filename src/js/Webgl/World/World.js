@@ -1,48 +1,30 @@
-import Player from './Entities/Player.js';
-import Ground from './Colliders/Ground.js';
-import Lights from './Environment/Lights/Lights.js';
-import CustomFog from './Environment/Fog/CustomFog.js';
-import Sky from './Environment/Sky/Sky.js';
-
-let initialized = false;
+import SceneController from '@webgl/Scene/Controller.js';
+import IntroScene from './Chapters/Intro/Scene.js';
+import EndScene from './Chapters/End/Scene.js';
 
 export default class World {
-	constructor(opt = {}) {
-		this.setComponent();
+	constructor() {
+		this.sceneController = new SceneController();
+		this.initScenes();
 	}
 
-	async setComponent() {
-		this.lights = new Lights();
+	async initScenes() {
+		const introScene = new IntroScene();
+		// await introScene.init();
 
-		this.fog = new CustomFog();
-		this.sky = new Sky();
-		await this.sky.init();
+		const testScene1 = new EndScene();
+		// await testScene1.init();
 
-		this.ground = new Ground();
-		await this.ground.init();
-
-		this.player = new Player({ ground: this.ground.base.mesh });
-
-		initialized = true;
+		this.sceneController.add(introScene, true);
+		this.sceneController.add(testScene1);
 	}
 
 	resize() {
-		if (!initialized) return;
-
-		if (this.player) this.player.resize();
+		// if (this.player) this.player.resize();
 	}
 
 	update(et, dt) {
-		if (!initialized) return;
-
-		if (this.player) this.player.update(et, dt);
-		if (this.ground) this.ground.update(et, dt);
-		if (this.sky) this.sky.update(et, dt);
-	}
-
-	destroy() {
-		if (!initialized) return;
-
-		initialized = false;
+		if (this.sceneController) this.sceneController.update(et, dt);
+		// if (this.sky) this.sky.update(et, dt);
 	}
 }

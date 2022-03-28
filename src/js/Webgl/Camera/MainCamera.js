@@ -10,7 +10,7 @@ export default class MainCamera {
 		this.instance.rotation.reorder('YXZ');
 
 		const webgl = getWebgl();
-		webgl.scene.instance.add(this.instance);
+		webgl.mainScene.instance.add(this.instance);
 
 		this.cameraController = webgl.cameraController;
 	}

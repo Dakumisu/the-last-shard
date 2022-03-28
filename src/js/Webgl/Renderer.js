@@ -34,7 +34,7 @@ const debug = {
 export default class Renderer {
 	constructor(opt = {}) {
 		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = webgl.mainScene.instance;
 		this.camera = webgl.camera.instance;
 		this.canvas = webgl.canvas;
 

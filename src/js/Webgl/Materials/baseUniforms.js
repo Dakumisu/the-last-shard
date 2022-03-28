@@ -9,5 +9,6 @@ export default {
 	uFogNoiseAmount: { value: 0 },
 };
 
+// List of uniforms to add globally to pre-made Three.js material
 ShaderChunk.common += `
 uniform float uTime;`;

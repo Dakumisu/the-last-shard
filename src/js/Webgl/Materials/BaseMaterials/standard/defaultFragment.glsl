@@ -36,6 +36,8 @@ uniform sampler2D sheenRoughnessMap;
 	#endif
 #endif
 varying vec3 vViewPosition;
+varying vec3 vPositionW;
+varying vec3 vNormalW;
 #include <common>
 #include <packing>
 #include <dithering_pars_fragment>
@@ -101,6 +103,13 @@ void main() {
 	outgoingLight = outgoingLight * (1.0 - material.clearcoat * Fcc) + clearcoatSpecular * material.clearcoat;
 	#endif
 	#include <output_fragment>
+
+	vec3 viewDirectionW = normalize(cameraPosition - vPositionW);
+	float fresnelTerm = dot(viewDirectionW, vNormalW);
+	fresnelTerm = clamp(1.0 - fresnelTerm, 0.0, 1.0);
+	
+	gl_FragColor.rgb *= fresnelTerm;
+
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>

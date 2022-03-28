@@ -1,10 +1,8 @@
 import { Color, DoubleSide, GridHelper, Mesh, PlaneGeometry } from 'three';
 
-import { getWebgl } from '@webgl/Webgl';
-import BaseCollider from '../Components/BaseCollider';
-
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
+import BaseCollider from '@webgl/World/Bases/BaseCollider';
 
 const sandbox = '/assets/model/sandbox.glb';
 const twoPI = Math.PI * 2;
@@ -19,16 +17,15 @@ const debug = {
 /// #endif
 
 export default class Ground extends BaseCollider {
-	constructor() {
+	constructor(scene) {
 		super();
 
-		const webgl = getWebgl();
-		this.scene = webgl.scene.instance;
+		this.scene = scene.instance;
 
 		this.base = {};
 
 		/// #if DEBUG
-		debug.instance = webgl.debug;
+		debug.instance = scene.gui;
 		/// #endif
 	}
 
@@ -50,8 +47,7 @@ export default class Ground extends BaseCollider {
 	}
 
 	debug() {
-		debug.instance.setFolder(debug.label);
-		const gui = debug.instance.getFolder(debug.label);
+		const gui = debug.instance.addFolder({ title: debug.label });
 
 		gui.addButton({ title: 'bvh' }).on('click', () => {
 			this.visualizer.visible = !this.visualizer.visible;
