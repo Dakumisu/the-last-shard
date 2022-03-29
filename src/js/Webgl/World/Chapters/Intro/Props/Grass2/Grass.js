@@ -58,7 +58,7 @@ export default class Grass {
 		/// #endif
 
 		this.base = {};
-		this.count = 500000;
+		this.count = 1000000;
 	}
 
 	/// #if DEBUG
@@ -95,8 +95,6 @@ export default class Grass {
 			new Vector3(0, 1.0, 1.0),
 		);
 
-		console.log(trian);
-
 		const triangle = new BufferGeometry();
 
 		// create a simple square shape. We duplicate the top left and bottom right
@@ -114,10 +112,10 @@ export default class Grass {
 
 		this.base.geometry = new InstancedBufferGeometry();
 
-		this.base.geometry.index = triangle.index;
-		this.base.geometry.attributes.position = triangle.attributes.position;
-		this.base.geometry.attributes.normal = triangle.attributes.normal;
-		this.base.geometry.attributes.uv = triangle.attributes.uv;
+		this.base.geometry.index = blueprintParticle.index;
+		this.base.geometry.attributes.position = blueprintParticle.attributes.position;
+		this.base.geometry.attributes.normal = blueprintParticle.attributes.normal;
+		this.base.geometry.attributes.uv = blueprintParticle.attributes.uv;
 
 		this.base.geometry.setAttribute(
 			'aPositions',
@@ -210,7 +208,7 @@ class ParticleSystem {
 	constructor() {
 		this.time = 0.0;
 		let triangles = 1;
-		let instances = 100000;
+		let instances = 2000000;
 		let geometry = new InstancedBufferGeometry();
 
 		let vertices = new BufferAttribute(new Float32Array(triangles * 3 * 3), 3);

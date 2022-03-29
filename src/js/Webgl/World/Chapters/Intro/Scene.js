@@ -20,10 +20,10 @@ export default class IntroScene extends BaseScene {
 		this.ground = new Ground(this);
 		await this.ground.init();
 
-		this.grass = new Grass(this);
-		await this.grass.init();
-
 		this.player = getPlayer();
+
+		this.grass = new Grass(this);
+		this.grass.init();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',

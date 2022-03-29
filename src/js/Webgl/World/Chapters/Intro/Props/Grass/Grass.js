@@ -8,6 +8,7 @@ import {
 	RepeatWrapping,
 	ShaderMaterial,
 	TextureLoader,
+	Vector3,
 } from 'three';
 
 import { mergeGeometry } from '@utils/webgl';
@@ -15,6 +16,7 @@ import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 import fragmentShader from './Shaders/fragment.glsl';
 import vertexShader from './Shaders/vertex.glsl';
+import { map, mean } from 'philbin-packages/maths';
 
 let initialized = false;
 
@@ -25,15 +27,13 @@ const debug = {
 };
 /// #endif
 
-const BLADE_WIDTH = 0.25;
-const BLADE_HEIGHT = 0.6;
-const BLADE_HEIGHT_VARIATION = 0.7;
-const BLADE_VERTEX_COUNT = 5;
-const BLADE_TIP_OFFSET = 0.1;
-
-function interpolate(val, oldMin, oldMax, newMin, newMax) {
-	return ((val - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
-}
+const params = {
+	width: 0.15,
+	height: 0.4,
+	heightVariation: 0.7,
+	vertexNumber: 3,
+	offset: 0.1,
+};
 
 const cloudTexture = new TextureLoader().load('/assets/image/cloud.jpg');
 cloudTexture.wrapS = cloudTexture.wrapT = RepeatWrapping;
@@ -41,6 +41,7 @@ cloudTexture.wrapS = cloudTexture.wrapT = RepeatWrapping;
 export default class Grass {
 	constructor(scene) {
 		this.scene = scene.instance;
+		this.player = scene.player;
 
 		this.base = {};
 
@@ -67,20 +68,24 @@ export default class Grass {
 	}
 
 	async setGrass() {
-		const geometry = new GrassGeometry(300, 2000000);
+		this.charaPos = new Vector3();
+		// console.log(this.player.base.mesh.position);
+
+		const geometry = new GrassGeometry(15, 30000);
 		this.base.material = new ShaderMaterial({
 			uniforms: {
 				uCloud: { value: 0 },
 				uTime: { value: 0 },
+				uCharaPos: { value: this.charaPos },
+				uHalfBoxSize: { value: 10 },
 			},
 			transparent: true,
-			opacity: 0,
-			side: DoubleSide,
 			vertexShader,
 			fragmentShader,
 		});
 
 		this.base.mesh = new Mesh(geometry, this.base.material);
+		this.base.mesh.frustumCulled = false;
 
 		this.scene.add(this.base.mesh);
 	}
@@ -94,7 +99,7 @@ export default class Grass {
 
 		this.base.material.uniforms.uTime.value = et;
 
-		console.log(et);
+		this.charaPos.copy(this.player.base.mesh.position);
 	}
 }
 
@@ -112,32 +117,82 @@ class GrassGeometry extends BufferGeometry {
 			const radius = (size / 2) * Math.random();
 			const theta = Math.random() * 2 * Math.PI;
 
-			const x = radius * Math.cos(theta);
-			const y = radius * Math.sin(theta);
+			// const x = radius * Math.cos(theta);
+			// const y = radius * Math.sin(theta);
+			const x = Math.random() * size - size * 0.5;
+			const y = Math.random() * size - size * 0.5;
 
 			uvs.push(
-				...Array.from({ length: BLADE_VERTEX_COUNT }).flatMap(() => [
-					interpolate(x, surfaceMin, surfaceMax, 0, 1),
-					interpolate(y, surfaceMin, surfaceMax, 0, 1),
+				...Array.from({ length: params.vertexNumber }).flatMap(() => [
+					map(x, surfaceMin, surfaceMax, 0, 1),
+					map(y, surfaceMin, surfaceMax, 0, 1),
 				]),
 			);
 
 			const blade = this.computeBlade([x, 0, y], i);
 			positions.push(...blade.positions);
 			indices.push(...blade.indices);
+
+			// console.log(blade);
 		}
 
-		this.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
-		this.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
+		const vertices = new Float32Array([
+			-1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0,
+
+			1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0,
+		]);
+
+		const tVec3a = new Vector3();
+		const tVec3b = new Vector3();
+		console.log(positions);
+		const posMean = [];
+
+		for (let i = 0; i < positions.length; i++) {
+			if (i % 9 === 0) {
+				// console.log(positions[i]);
+				// console.log(positions[i + 1]);
+				// console.log(positions[i + 2]);
+
+				// console.log(positions[i + 3]);
+				// console.log(positions[i + 4]);
+				// console.log(positions[i + 5]);
+
+				// console.log(positions[i + 6]);
+				// console.log(positions[i + 7]);
+				// console.log(positions[i + 8]);
+				// debugger;
+				tVec3a.set(positions[i], positions[i + 1], positions[i + 2]);
+				// tVec3b.set(positions[i + 3], positions[i + 4], positions[i + 5]);
+				// const m = tVec3a.distanceTo(tVec3b) * 0.5;
+
+				// bl
+				posMean[i] = tVec3a.x; // x
+				posMean[i + 1] = tVec3a.y; // y
+				posMean[i + 2] = tVec3a.z; // z
+
+				// br
+				posMean[i + 3] = tVec3a.x; // x
+				posMean[i + 4] = tVec3a.y; // y
+				posMean[i + 5] = tVec3a.z; // z
+
+				// tc
+				posMean[i + 6] = tVec3a.x; // x
+				posMean[i + 7] = tVec3a.y; // y
+				posMean[i + 8] = tVec3a.z; // z
+			}
+		}
+
+		console.log(posMean);
+		// itemSize = 3 because there are 3 values (components) per vertex
+		this.setAttribute('aPosition', new BufferAttribute(new Float32Array(positions), 3));
+		this.setAttribute('aPositionMean', new BufferAttribute(new Float32Array(posMean), 3));
 		this.setIndex(indices);
 		this.computeVertexNormals();
 	}
 
-	// Grass blade generation, covered in https://smythdesign.com/blog/stylized-grass-webgl
-	// TODO: reduce vertex count, optimize & possibly move to GPU
 	computeBlade(center, index = 0) {
-		const height = BLADE_HEIGHT + Math.random() * BLADE_HEIGHT_VARIATION;
-		const vIndex = index * BLADE_VERTEX_COUNT;
+		const height = params.height + Math.random() * params.heightVariation;
+		const vIndex = index * params.vertexNumber;
 
 		// Randomize blade orientation and tip angle
 		const yaw = Math.random() * Math.PI * 2;
@@ -146,54 +201,30 @@ class GrassGeometry extends BufferGeometry {
 		const bendVec = [Math.sin(bend), 0, -Math.cos(bend)];
 
 		// Calc bottom, middle, and tip vertices
-		const bl = yawVec.map((n, i) => n * (BLADE_WIDTH / 2) * 1 + center[i]);
-		const br = yawVec.map((n, i) => n * (BLADE_WIDTH / 2) * -1 + center[i]);
-		const tl = yawVec.map((n, i) => n * (BLADE_WIDTH / 4) * 1 + center[i]);
-		const tr = yawVec.map((n, i) => n * (BLADE_WIDTH / 4) * -1 + center[i]);
-		const tc = bendVec.map((n, i) => n * BLADE_TIP_OFFSET + center[i]);
+		const bl = yawVec.map((n, i) => n * (params.width / 2) * 1 + center[i]);
+		const br = yawVec.map((n, i) => n * (params.width / 2) * -1 + center[i]);
+		// const tl = yawVec.map((n, i) => n * (params.width / 4) * 1 + center[i]);
+		// const tr = yawVec.map((n, i) => n * (params.width / 4) * -1 + center[i]);
+		const tc = bendVec.map((n, i) => n * params.offset + center[i]);
 
 		// Attenuate height
-		tl[1] += height / 2;
-		tr[1] += height / 2;
+		// tl[1] += height / 2;
+		// tr[1] += height / 2;
 		tc[1] += height;
 
 		return {
-			positions: [...bl, ...br, ...tr, ...tl, ...tc],
+			positions: [...bl, ...br, ...tc],
 			indices: [
 				vIndex,
 				vIndex + 1,
 				vIndex + 2,
-				vIndex + 2,
-				vIndex + 4,
-				vIndex + 3,
-				vIndex + 3,
-				vIndex,
-				vIndex + 2,
+				// vIndex + 2,
+				// vIndex + 4,
+				// vIndex + 3,
+				// vIndex + 3,
+				// vIndex,
+				// vIndex + 2,
 			],
 		};
 	}
 }
-
-// class GrassMesh extends Mesh {
-//   constructor(size, count) {
-//     const geometry = new GrassGeometry(size, count);
-//     const material = new ShaderMaterial({
-//       uniforms: {
-//         uCloud: { value: cloudTexture },
-//         uTime: { value: 0 }
-//       },
-//       transparent: true,
-//       opacity: 0,
-//       side: THREE.DoubleSide,
-//       vertexShader,
-//       fragmentShader
-//     });
-//     super(geometry, material);
-//   }
-
-//   update(time) {
-//     this.material.uniforms.uTime.value = time;
-//   }
-// }
-
-// export default Grass;
