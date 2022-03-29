@@ -28,7 +28,7 @@ const debug = {
 /// #endif
 
 const params = {
-	width: 0.15,
+	width: 0.4,
 	height: 0.4,
 	heightVariation: 0.7,
 	vertexNumber: 3,
@@ -71,7 +71,7 @@ export default class Grass {
 		this.charaPos = new Vector3();
 		// console.log(this.player.base.mesh.position);
 
-		const geometry = new GrassGeometry(15, 30000);
+		const geometry = new GrassGeometry(25, 50000);
 		this.base.material = new ShaderMaterial({
 			uniforms: {
 				uCloud: { value: 0 },
@@ -117,10 +117,10 @@ class GrassGeometry extends BufferGeometry {
 			const radius = (size / 2) * Math.random();
 			const theta = Math.random() * 2 * Math.PI;
 
-			// const x = radius * Math.cos(theta);
-			// const y = radius * Math.sin(theta);
-			const x = Math.random() * size - size * 0.5;
-			const y = Math.random() * size - size * 0.5;
+			const x = radius * Math.cos(theta) * 2;
+			const y = radius * Math.sin(theta) * 2;
+			// const x = Math.random() * size - size * 0.5;
+			// const y = Math.random() * size - size * 0.5;
 
 			uvs.push(
 				...Array.from({ length: params.vertexNumber }).flatMap(() => [
@@ -186,6 +186,8 @@ class GrassGeometry extends BufferGeometry {
 		// itemSize = 3 because there are 3 values (components) per vertex
 		this.setAttribute('aPosition', new BufferAttribute(new Float32Array(positions), 3));
 		this.setAttribute('aPositionMean', new BufferAttribute(new Float32Array(posMean), 3));
+		this.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
+		this.setAttribute('normal', new BufferAttribute(new Float32Array(positions), 3));
 		this.setIndex(indices);
 		this.computeVertexNormals();
 	}
@@ -210,7 +212,7 @@ class GrassGeometry extends BufferGeometry {
 		// Attenuate height
 		// tl[1] += height / 2;
 		// tr[1] += height / 2;
-		tc[1] += height;
+		tc[1] += height * 0.85;
 
 		return {
 			positions: [...bl, ...br, ...tc],

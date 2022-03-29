@@ -13,12 +13,12 @@ varying vec3 vTest;
 attribute vec3 aPosition;
 attribute vec3 aPositionMean;
 
-float wave(float waveSize, float tipDistance, float centerDistance) {
+float wave(float waveSize, float topDistance, float centerDistance) {
     // Tip is the fifth vertex drawn per blade
 	bool isTop = (gl_VertexID + 1) % 3 == 0;
 
-	float waveDistance = isTop ? tipDistance : centerDistance;
-	return sin((uTime / 500.0) + waveSize) * waveDistance;
+	float waveDistance = isTop ? topDistance : centerDistance;
+	return sin((uTime * 0.0008) + waveSize) * waveDistance;
 }
 
 const float maxDuration = 20.;
@@ -33,11 +33,11 @@ void main() {
 	vec3 posMean = position + aPositionMean;
 	// vTest = posMean;
 
-	// if(vPosition.y < 0.0) {
-	// 	vPosition.y = 0.0;
-	// } else {
-	// 	vPosition.x += wave(uv.x * 10.0, 0.3, 0.1);
-	// }
+	if(vPosition.y < 0.0) {
+		vPosition.y = 0.0;
+	} else {
+		vPosition.x += wave(uv.x * 10.0, 0.3, 0.);
+	}
 
 	// vec3 centerPos = uCharaPos * 2.;
 	// vPosition = brindillePos;
