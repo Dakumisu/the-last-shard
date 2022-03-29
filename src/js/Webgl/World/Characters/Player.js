@@ -49,7 +49,7 @@ const tLine3 = new Line3();
 const playerVelocity = new Vector3();
 
 const params = {
-	speed: 6,
+	speed: 4,
 	sprint: 14,
 
 	physicsSteps: 5,
@@ -78,8 +78,8 @@ const state = {
 
 	updateDirection: false,
 
-	playerisMounting: false,
-	playerisDowning: false,
+	isMounting: false,
+	isDowning: false,
 
 	slowDown: false,
 };
@@ -195,8 +195,8 @@ class Player extends BaseEntity {
 		});
 
 		guiPosition.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
-		guiPosition.addMonitor(state, 'playerisMounting', { label: 'mounting', type: 'graph' });
-		guiPosition.addMonitor(state, 'playerisDowning', { label: 'downing', type: 'graph' });
+		guiPosition.addMonitor(state, 'isMounting', { label: 'mounting', type: 'graph' });
+		guiPosition.addMonitor(state, 'isDowning', { label: 'downing', type: 'graph' });
 
 		guiPosition.addSeparator();
 
@@ -542,8 +542,8 @@ class Player extends BaseEntity {
 		previousPlayerPos = playerPosY;
 		playerPosY = this.base.mesh.position.y;
 
-		state.playerisMounting = playerPosY - previousPlayerPos <= 0 ? false : true;
-		state.playerisDowning = playerPosY - previousPlayerPos >= 0 ? false : true;
+		state.isMounting = playerPosY - previousPlayerPos <= 0 ? false : true;
+		state.isDowning = playerPosY - previousPlayerPos >= 0 ? false : true;
 
 		// get real speed based on the player's delta position
 		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
@@ -561,7 +561,7 @@ class Player extends BaseEntity {
 	updateAnimation() {
 		let previousPlayerAnim = player.anim;
 		if (state.playerOnGround && !state.isJumping) {
-			if (player.isMoving && player.realSpeed >= params.speed * 0.2) {
+			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
 				// if (player.realSpeed <= params.speed + 2)
 				// 	player.anim = this.base.animation.get('walk');
 
@@ -573,7 +573,7 @@ class Player extends BaseEntity {
 			} else player.anim = this.base.animation.get('idle');
 		}
 		if (this.keyPressed.space && state.playerOnGround && !state.isJumping) {
-			if (player.isMoving && player.realSpeed >= params.speed * 0.2) {
+			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
 				this.jump();
 			} else {
