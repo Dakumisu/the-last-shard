@@ -96,9 +96,9 @@ export default class AnimationController {
 
 		this.setCurrent(newAction);
 		/// #if DEBUG
-		console.log(
-			`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
-		);
+		// console.log(
+		// 	`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
+		// );
 		/// #endif
 	}
 

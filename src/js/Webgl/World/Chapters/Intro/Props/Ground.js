@@ -3,10 +3,12 @@ import {
 	Color,
 	DoubleSide,
 	GridHelper,
+	MathUtils,
 	Matrix4,
 	Mesh,
 	MeshNormalMaterial,
 	PlaneGeometry,
+	SphereGeometry,
 } from 'three';
 
 import { mergeGeometry } from '@utils/webgl';
@@ -77,10 +79,19 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
+		let testPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+		testPlatform.position.set(20, 3, 20);
+
+		let secondTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+		secondTestPlatform.position.set(-20, 3, 20);
+
 		const plane = new PlaneGeometry(200, 200);
 		plane.rotateX(-Math.PI * 0.5);
 		plane.translate(0, -1, 0);
-		this.base.geometry = await mergeGeometry([plane], [sandbox]);
+		this.base.geometry = await mergeGeometry(
+			[secondTestPlatform, testPlatform, plane],
+			[sandbox],
+		);
 
 		const geoOpt = {
 			lazyGeneration: false,
@@ -98,31 +109,59 @@ export default class Ground extends BaseCollider {
 
 		this.scene.add(this.base.mesh);
 
+		this.colliders = [];
+
+		/// #if DEBUG
 		const mat4 = new Matrix4();
 
-		this.testCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
-		this.testCube.name = 'cube1';
-		this.testCube.position.set(2, 1, 12);
-		this.testCube.flag = 'collider';
-		this.testCube.geometry.colliderType = 'nonWalkable';
-		this.testCube.geometry.boundsTree = this.setPhysics(this.testCube.geometry, geoOpt);
-		this.testCube.updateWorldMatrix(true, false);
-		mat4.multiplyMatrices(this.testCube.matrixWorld, this.testCube.matrix);
-		this.testCube.geometry.matrixWorld = this.testCube.matrixWorld;
+		let testCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
+		testCube.name = 'cube1';
+		testCube.position.set(2, 1, 12);
+		testCube.flag = 'collider';
+		testCube.geometry.colliderType = 'nonWalkable';
+		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
+		testCube.updateWorldMatrix(true, false);
+		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
+		testCube.geometry.matrixWorld = testCube.matrixWorld;
 
-		this.secondTestCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
-		this.secondTestCube.flag = 'collider';
-		this.secondTestCube.geometry.colliderType = 'nonWalkable';
-		this.secondTestCube.name = 'cube2';
-		this.secondTestCube.position.set(-6, 1, 12);
-		this.secondTestCube.geometry.boundsTree = this.setPhysics(
-			this.secondTestCube.geometry,
-			geoOpt,
-		);
-		this.secondTestCube.updateWorldMatrix(true, false);
-		mat4.multiplyMatrices(this.secondTestCube.matrixWorld, this.secondTestCube.matrix);
-		this.secondTestCube.geometry.matrixWorld = this.secondTestCube.matrixWorld;
-		this.scene.add(this.secondTestCube);
+		this.colliders.push(testCube);
+
+		testCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
+		testCube.flag = 'collider';
+		testCube.geometry.colliderType = 'nonWalkable';
+		testCube.name = 'cube2';
+		testCube.position.set(-6, 1, 12);
+		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
+		testCube.updateWorldMatrix(true, false);
+		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
+		testCube.geometry.matrixWorld = testCube.matrixWorld;
+
+		this.colliders.push(testCube);
+
+		testCube = new Mesh(new BoxGeometry(3, 30, 3), new MeshNormalMaterial());
+		testCube.flag = 'collider';
+		testCube.geometry.colliderType = 'nonWalkable';
+		testCube.name = 'cube3';
+		testCube.position.set(-3, 1, -20);
+		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
+		testCube.updateWorldMatrix(true, false);
+		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
+		testCube.geometry.matrixWorld = testCube.matrixWorld;
+
+		this.colliders.push(testCube);
+
+		testCube = new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial());
+		testCube.flag = 'collider';
+		testCube.geometry.colliderType = 'nonWalkable';
+		testCube.name = 'cube4';
+		testCube.position.set(-10, 1, 20);
+		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
+		testCube.updateWorldMatrix(true, false);
+		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
+		testCube.geometry.matrixWorld = testCube.matrixWorld;
+
+		this.colliders.push(testCube);
+		/// #endif
 	}
 
 	resize() {

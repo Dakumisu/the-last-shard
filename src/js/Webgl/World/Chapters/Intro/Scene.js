@@ -35,11 +35,9 @@ export default class IntroScene extends BaseScene {
 			/// #endif
 		});
 
-		this.propsColliders = [this.ground.testCube, this.ground.secondTestCube];
+		this.propsColliders = [...this.ground.colliders];
 
-		this.instance.add(this.ground.base.mesh, this.ground.testCube, this.ground.secondTestCube);
-
-		console.log(this.instance.children);
+		this.instance.add(this.ground.base.mesh, ...this.propsColliders);
 
 		this.resetPlayer();
 	}

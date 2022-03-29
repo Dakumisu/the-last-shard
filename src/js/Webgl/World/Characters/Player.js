@@ -14,6 +14,7 @@ import {
 	IcosahedronGeometry,
 	Object3D,
 	MeshBasicMaterial,
+	CircleGeometry,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -38,12 +39,13 @@ const PI = Math.PI;
 const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
-const tVec3c = new Vector3();
 const tVec2a = new Vector2();
 const tVec2b = new Vector2();
-const tBox = new Box3();
-const tMat = new Matrix4();
-const tSegment = new Line3();
+const tBox3a = new Box3();
+const tBox3b = new Box3();
+const tMat4a = new Matrix4();
+const tMat4b = new Matrix4();
+const tLine3 = new Line3();
 const playerVelocity = new Vector3();
 
 const params = {
@@ -262,7 +264,7 @@ class Player extends BaseEntity {
 		this.base.group.add(axesHelper);
 
 		this.broadphaseHelper = new Mesh(
-			new IcosahedronGeometry(params.broadphaseRadius, 3),
+			new CircleGeometry(params.broadphaseRadius, 10).rotateX(Math.PI * 0.5),
 			new MeshBasicMaterial({ wireframe: true }),
 		);
 		this.base.group.add(this.broadphaseHelper);
@@ -452,36 +454,37 @@ class Player extends BaseEntity {
 
 		// adjust player position based on collisions
 		const capsuleInfo = this.base.capsuleInfo;
-		tBox.makeEmpty();
-		tMat.copy(collider.matrixWorld).invert();
-		tSegment.copy(capsuleInfo.segment);
+		tBox3a.makeEmpty();
+		tMat4a.copy(collider.matrixWorld).invert();
+		tLine3.copy(capsuleInfo.segment);
 
 		// get the position of the capsule in the local space of the collider
-		tSegment.start.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat);
-		tSegment.end.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat);
+		tLine3.start.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
+		tLine3.end.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
 
 		// get the axis aligned bounding box of the capsule
-		tBox.expandByPoint(tSegment.start);
-		tBox.expandByPoint(tSegment.end);
+		tBox3a.expandByPoint(tLine3.start);
+		tBox3a.expandByPoint(tLine3.end);
 
-		tBox.min.addScalar(-capsuleInfo.radius);
-		tBox.max.addScalar(capsuleInfo.radius);
+		tBox3a.min.addScalar(-capsuleInfo.radius);
+		tBox3a.max.addScalar(capsuleInfo.radius);
 
 		collider.boundsTree.shapecast({
-			intersectsBounds: (box) => box.intersectsBox(tBox),
+			intersectsBounds: (box) => box.intersectsBox(tBox3a),
 
 			intersectsTriangle: (tri) => {
 				// check if the triangle is intersecting the capsule and adjust the capsule position if it is.
 				const triPoint = tVec3a;
 				const capsulePoint = tVec3b;
 
-				const distance = tri.closestPointToSegment(tSegment, triPoint, capsulePoint);
+				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
 				if (distance < capsuleInfo.radius) {
+					// console.log(distance);
 					const depth = capsuleInfo.radius - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
-					tSegment.start.addScaledVector(direction, depth);
-					tSegment.end.addScaledVector(direction, depth);
+					tLine3.start.addScaledVector(direction, depth);
+					tLine3.end.addScaledVector(direction, depth);
 				}
 			},
 		});
@@ -490,14 +493,14 @@ class Player extends BaseEntity {
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
 		// the origin of the player model.
 		const newPosition = tVec3a;
-		newPosition.copy(tSegment.start).applyMatrix4(collider.matrixWorld);
+		newPosition.copy(tLine3.start).applyMatrix4(collider.matrixWorld);
 
 		// check how much the collider was moved
 		const deltaVector = tVec3b;
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
-		if (collider.colliderType === 'walkable')
+		if (collider.colliderType === 'walkable' && collider.state !== 'above')
 			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
 		// const offset = Math.max(0, deltaVector.length() - 1e-5);
@@ -506,14 +509,15 @@ class Player extends BaseEntity {
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
 
-		if (collider.colliderType === 'walkable') {
-			if (!state.playerOnGround) {
-				deltaVector.normalize();
-				playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
-			} else {
-				playerVelocity.set(0, 0, 0);
-			}
+		// if (collider.colliderType === 'walkable') {
+		if (!state.playerOnGround) {
+			deltaVector.normalize();
+			playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
+		} else {
+			// if (collider.colliderType === 'walkable' && collider.state !== 'above')
+			playerVelocity.set(0, 0, 0);
 		}
+		// }
 
 		// adjust the camera
 		this.base.camera.camera.position.sub(this.base.camera.orbit.target);
@@ -584,20 +588,25 @@ class Player extends BaseEntity {
 
 	updateBroadphase() {
 		this.collidersToTest.forEach((object) => {
-			const d = this.base.mesh.position.distanceTo(object.position);
-			if (d <= params.broadphaseRadius) {
-				if (!this.colliders.includes(object.geometry)) {
-					this.colliders.push(object.geometry);
-					console.log(this.colliders);
-				}
-			} else {
-				if (this.colliders.indexOf(object.geometry) != -1) {
-					const id = this.colliders.indexOf(object.geometry);
-					this.colliders.splice(id, 1);
-					console.log(this.colliders);
-				}
-			}
+			tBox3b.makeEmpty();
+			tBox3b.copy(object.geometry.boundingBox);
+			tMat4b.copy(object.matrixWorld);
+			tBox3b.applyMatrix4(tMat4b);
+
+			const d = tBox3b.distanceToPoint(this.base.mesh.position);
+
+			if (d <= params.broadphaseRadius) this.addCollider(object);
+			else this.removeCollider(object);
 		});
+	}
+	addCollider(collider) {
+		if (!this.colliders.includes(collider.geometry)) this.colliders.push(collider.geometry);
+	}
+	removeCollider(collider) {
+		if (this.colliders.indexOf(collider.geometry) === -1) return;
+
+		const id = this.colliders.indexOf(collider.geometry);
+		this.colliders.splice(id, 1);
 	}
 
 	reset() {
