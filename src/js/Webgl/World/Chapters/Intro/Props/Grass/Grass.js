@@ -28,8 +28,8 @@ const debug = {
 /// #endif
 
 const params = {
-	width: 0.4,
-	height: 0.4,
+	width: 1,
+	height: 1,
 	heightVariation: 0.7,
 	vertexNumber: 3,
 	offset: 0.1,
@@ -68,10 +68,12 @@ export default class Grass {
 	}
 
 	async setGrass() {
+		console.log(this.scene);
+
 		this.charaPos = new Vector3();
 		// console.log(this.player.base.mesh.position);
 
-		const geometry = new GrassGeometry(25, 50000);
+		const geometry = new GrassGeometry(25, 1000);
 		this.base.material = new ShaderMaterial({
 			uniforms: {
 				uCloud: { value: 0 },
@@ -100,6 +102,8 @@ export default class Grass {
 		this.base.material.uniforms.uTime.value = et;
 
 		this.charaPos.copy(this.player.base.mesh.position);
+
+		// this.base.mesh.quaternion.copy(this.player.base.mesh.quaternion);
 	}
 }
 
@@ -108,6 +112,7 @@ class GrassGeometry extends BufferGeometry {
 		super();
 
 		const positions = [];
+		const Ipos = [];
 		const uvs = [];
 		const indices = [];
 
@@ -117,10 +122,10 @@ class GrassGeometry extends BufferGeometry {
 			const radius = (size / 2) * Math.random();
 			const theta = Math.random() * 2 * Math.PI;
 
-			const x = radius * Math.cos(theta) * 2;
-			const y = radius * Math.sin(theta) * 2;
-			// const x = Math.random() * size - size * 0.5;
-			// const y = Math.random() * size - size * 0.5;
+			// const x = radius * Math.cos(theta) * 2;
+			// const y = radius * Math.sin(theta) * 2;
+			const x = Math.random() * size - size * 0.5;
+			const y = Math.random() * size - size * 0.5;
 
 			uvs.push(
 				...Array.from({ length: params.vertexNumber }).flatMap(() => [
@@ -137,33 +142,17 @@ class GrassGeometry extends BufferGeometry {
 		}
 
 		const vertices = new Float32Array([
-			-1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0,
-
-			1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0,
+			-1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0,
+			-1.0, 1.0,
 		]);
 
 		const tVec3a = new Vector3();
-		const tVec3b = new Vector3();
-		console.log(positions);
+
 		const posMean = [];
 
 		for (let i = 0; i < positions.length; i++) {
 			if (i % 9 === 0) {
-				// console.log(positions[i]);
-				// console.log(positions[i + 1]);
-				// console.log(positions[i + 2]);
-
-				// console.log(positions[i + 3]);
-				// console.log(positions[i + 4]);
-				// console.log(positions[i + 5]);
-
-				// console.log(positions[i + 6]);
-				// console.log(positions[i + 7]);
-				// console.log(positions[i + 8]);
-				// debugger;
 				tVec3a.set(positions[i], positions[i + 1], positions[i + 2]);
-				// tVec3b.set(positions[i + 3], positions[i + 4], positions[i + 5]);
-				// const m = tVec3a.distanceTo(tVec3b) * 0.5;
 
 				// bl
 				posMean[i] = tVec3a.x; // x
@@ -182,37 +171,37 @@ class GrassGeometry extends BufferGeometry {
 			}
 		}
 
-		console.log(posMean);
+		for (let i = 0; i < Ipos.length; i++) {}
+
 		// itemSize = 3 because there are 3 values (components) per vertex
 		this.setAttribute('aPosition', new BufferAttribute(new Float32Array(positions), 3));
+		this.setAttribute('aPositionI', new BufferAttribute(new Float32Array(Ipos), 3));
 		this.setAttribute('aPositionMean', new BufferAttribute(new Float32Array(posMean), 3));
 		this.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
-		this.setAttribute('normal', new BufferAttribute(new Float32Array(positions), 3));
+		// this.setAttribute('normal', new BufferAttribute(new Float32Array(positions), 3));
 		this.setIndex(indices);
 		this.computeVertexNormals();
 	}
 
 	computeBlade(center, index = 0) {
-		const height = params.height + Math.random() * params.heightVariation;
+		// const height = params.height + Math.random() * params.heightVariation;
+		const height = params.height;
 		const vIndex = index * params.vertexNumber;
 
-		// Randomize blade orientation and tip angle
-		const yaw = Math.random() * Math.PI * 2;
-		const yawVec = [Math.sin(yaw), 0, -Math.cos(yaw)];
-		const bend = Math.random() * Math.PI * 2;
-		const bendVec = [Math.sin(bend), 0, -Math.cos(bend)];
+		const yawVec = [-1, 0, 0];
+		const bendVec = [0, 0, 0];
 
 		// Calc bottom, middle, and tip vertices
 		const bl = yawVec.map((n, i) => n * (params.width / 2) * 1 + center[i]);
-		const br = yawVec.map((n, i) => n * (params.width / 2) * -1 + center[i]);
+		const br = yawVec.map((n, i) => n * (params.width / 2) * -0.5 + center[i]);
 		// const tl = yawVec.map((n, i) => n * (params.width / 4) * 1 + center[i]);
 		// const tr = yawVec.map((n, i) => n * (params.width / 4) * -1 + center[i]);
-		const tc = bendVec.map((n, i) => n * params.offset + center[i]);
+		const tc = bendVec.map((n, i) => n + center[i]);
 
 		// Attenuate height
 		// tl[1] += height / 2;
 		// tr[1] += height / 2;
-		tc[1] += height * 0.85;
+		tc[1] += height;
 
 		return {
 			positions: [...bl, ...br, ...tc],
