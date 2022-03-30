@@ -144,8 +144,6 @@ class Player extends BaseEntity {
 		this.scene = webgl.mainScene.instance;
 		this.cameraController = webgl.cameraController;
 
-		// this.ground = opt.ground; // TODO -> replace 'this.collider' by all the colliders (map, props, etc...)
-
 		this.colliders = [];
 		this.collidersToTest = [];
 
@@ -162,7 +160,7 @@ class Player extends BaseEntity {
 	}
 
 	/// #if DEBUG
-	debug() {
+	#debug() {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
@@ -255,7 +253,7 @@ class Player extends BaseEntity {
 			});
 	}
 
-	helpers() {
+	#helpers() {
 		this.visualizer = this.setVisualizer(this.base.mesh, 15);
 		this.visualizer.visible = false;
 		this.scene.add(this.visualizer);
@@ -274,29 +272,29 @@ class Player extends BaseEntity {
 
 	async beforeInit() {
 		/// #if DEBUG
-		this.debug();
+		this.#debug();
 		/// #endif
 
-		await this.init();
+		await this.#init();
 
 		/// #if DEBUG
-		this.helpers();
+		this.#helpers();
 		/// #endif
 	}
 
-	async init() {
-		this.setCameraPlayer();
-		this.setGeometry();
-		this.setMaterial();
-		this.setMesh();
+	async #init() {
+		this.#setCameraPlayer();
+		this.#setGeometry();
+		this.#setMaterial();
+		this.#setMesh();
 
-		await this.setModel();
-		this.setAnimation();
+		await this.#setModel();
+		this.#setAnimation();
 
 		initialized = true;
 	}
 
-	async setModel() {
+	async #setModel() {
 		const m = await loadGLTF(model);
 
 		m.scene.traverse((object) => {
@@ -319,11 +317,11 @@ class Player extends BaseEntity {
 		this.base.group.add(this.base.model.scene);
 	}
 
-	setAnimation() {
+	#setAnimation() {
 		this.base.animation = new AnimationController({ model: this.base.model, name: 'player' });
 	}
 
-	setCameraPlayer() {
+	#setCameraPlayer() {
 		// Create OrbitCam for the player and add it to controller
 		const playerOrbitCam = new OrbitCamera(
 			{
@@ -351,7 +349,7 @@ class Player extends BaseEntity {
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
-	setGeometry() {
+	#setGeometry() {
 		this.base.geometry = new CapsuleGeometry(0.25, 1.5, 10, 10);
 		this.base.geometry.translate(0, -0.5, 0);
 
@@ -366,7 +364,7 @@ class Player extends BaseEntity {
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
 	}
 
-	setMaterial() {
+	#setMaterial() {
 		this.base.material = new DebugMaterial();
 
 		this.base.material = new PlayerMaterial({
@@ -374,7 +372,7 @@ class Player extends BaseEntity {
 		});
 	}
 
-	setMesh() {
+	#setMesh() {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.base.mesh.visible = false;
 
@@ -385,7 +383,7 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.group);
 	}
 
-	move(dt, collider) {
+	#move(dt, collider) {
 		// check if the direction change
 		state.updateDirection = false;
 		if (state.forwardPressed != this.keyPressed.forward) state.updateDirection = true;
@@ -528,9 +526,7 @@ class Player extends BaseEntity {
 		// }
 
 		// adjust the camera
-		this.base.camera.camera.position.sub(this.base.camera.orbit.target);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		this.base.camera.camera.position.add(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) {
@@ -538,7 +534,7 @@ class Player extends BaseEntity {
 		}
 	}
 
-	async jump(delay = false) {
+	async #jump(delay = false) {
 		if (state.isJumping) return;
 		state.isJumping = true;
 		if (delay) await wait(400);
@@ -546,7 +542,7 @@ class Player extends BaseEntity {
 		state.isJumping = false;
 	}
 
-	checkPlayerPosition(dt) {
+	#checkPlayerPosition(dt) {
 		previousPlayerPos = playerPosY;
 		playerPosY = this.base.mesh.position.y;
 
@@ -561,12 +557,12 @@ class Player extends BaseEntity {
 		tVec2b.copy(tVec2a);
 	}
 
-	updateCamInertie(dt) {
+	#updateCamInertie(dt) {
 		camInertie = dampPrecise(camInertie, player.realSpeed * 0.2, 0.25, dt, 0.001);
 		this.base.camera.orbit.spherical.setRadius(camParams.radius + camInertie);
 	}
 
-	updateAnimation() {
+	#updateAnimation() {
 		let previousPlayerAnim = player.anim;
 		if (state.playerOnGround && !state.isJumping) {
 			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
@@ -583,10 +579,10 @@ class Player extends BaseEntity {
 		if (this.keyPressed.space && state.playerOnGround && !state.isJumping) {
 			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
-				this.jump();
+				this.#jump();
 			} else {
 				player.anim = this.base.animation.get('jump');
-				this.jump(true);
+				this.#jump(true);
 			}
 			this.base.animation.playOnce(player.anim);
 		}
@@ -594,7 +590,7 @@ class Player extends BaseEntity {
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
-	updateBroadphase() {
+	#updateBroadphase() {
 		this.collidersToTest.forEach((object) => {
 			tBox3b.makeEmpty();
 			tBox3b.copy(object.geometry.boundingBox);
@@ -603,14 +599,14 @@ class Player extends BaseEntity {
 
 			const d = tBox3b.distanceToPoint(this.base.mesh.position);
 
-			if (d <= params.broadphaseRadius) this.addCollider(object);
-			else this.removeCollider(object);
+			if (d <= params.broadphaseRadius) this.#addCollider(object);
+			else this.#removeCollider(object);
 		});
 	}
-	addCollider(collider) {
+	#addCollider(collider) {
 		if (!this.colliders.includes(collider.geometry)) this.colliders.push(collider.geometry);
 	}
-	removeCollider(collider) {
+	#removeCollider(collider) {
 		if (this.colliders.indexOf(collider.geometry) === -1) return;
 
 		const id = this.colliders.indexOf(collider.geometry);
@@ -621,9 +617,7 @@ class Player extends BaseEntity {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.fromArray(params.defaultPos);
-		this.base.camera.camera.position.sub(this.base.camera.orbit.targetOffset);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		this.base.camera.camera.position.add(this.base.mesh.position);
 	}
 
 	resize() {
@@ -636,7 +630,7 @@ class Player extends BaseEntity {
 		if (this.colliders.length)
 			this.colliders.forEach((collider) => {
 				for (let i = 0; i < params.physicsSteps; i++)
-					this.move(dt / params.physicsSteps / this.colliders.length, collider);
+					this.#move(dt / params.physicsSteps / this.colliders.length, collider);
 			});
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
@@ -644,13 +638,13 @@ class Player extends BaseEntity {
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
-		this.checkPlayerPosition(dt);
-		this.updateCamInertie(dt);
-		this.updateAnimation();
+		this.#checkPlayerPosition(dt);
+		this.#updateCamInertie(dt);
+		this.#updateAnimation();
 
 		this.base.animation.update(dt);
 
-		this.updateBroadphase();
+		this.#updateBroadphase();
 
 		// if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
 	}
@@ -663,6 +657,7 @@ class Player extends BaseEntity {
 		this.colliders = [];
 		this.colliders.push(geo);
 	}
+
 	setPropsColliders(array) {
 		this.collidersToTest = array;
 	}

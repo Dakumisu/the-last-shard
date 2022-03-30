@@ -23,6 +23,7 @@ export default class Ground extends BaseCollider {
 		this.scene = scene.instance;
 
 		this.base = {};
+		this.colliders = [];
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
@@ -77,7 +78,8 @@ export default class Ground extends BaseCollider {
 			lazyGeneration: false,
 		};
 		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
-		// this.addCollider(this.base.mesh);
+		this.base.geometry.name = 'Map';
+		this.base.geometry.colliderType = 'walkable';
 
 		this.base.material = new BaseToonMaterial({
 			side: DoubleSide,

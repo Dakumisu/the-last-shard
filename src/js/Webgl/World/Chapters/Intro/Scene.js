@@ -35,6 +35,7 @@ export default class IntroScene extends BaseScene {
 		this.propsColliders = [...this.ground.colliders];
 
 		this.instance.add(this.ground.base.mesh, ...this.propsColliders);
+	}
 
 	update(et, dt) {
 		super.update(et, dt);
@@ -51,7 +52,6 @@ export default class IntroScene extends BaseScene {
 
 		this.player.setMainCollider(this.ground.base.geometry);
 		this.player.setPropsColliders(this.propsColliders);
-	}
 
 		this.fog.set();
 	}

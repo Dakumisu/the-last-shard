@@ -34,6 +34,10 @@ export default class CabaneScene extends BaseScene {
 
 		this.ground = new Ground(this);
 		await this.ground.init();
+
+		this.propsColliders = [...this.ground.colliders];
+
+		this.instance.add(this.ground.base.mesh, ...this.propsColliders);
 	}
 
 	update(et, dt) {
@@ -49,7 +53,8 @@ export default class CabaneScene extends BaseScene {
 		mat4.multiplyMatrices(this.ground.base.mesh.matrixWorld, this.ground.base.mesh.matrix);
 		this.ground.base.geometry.matrixWorld = this.ground.base.mesh.matrixWorld;
 
-		this.player.setCollider(this.ground.base.geometry);
+		this.player.setMainCollider(this.ground.base.geometry);
+		this.player.setPropsColliders(this.propsColliders);
 
 		this.fog.set();
 	}

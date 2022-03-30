@@ -35,6 +35,7 @@ export default class Ground extends BaseCollider {
 		this.scene = scene.instance;
 
 		this.base = {};
+		this.colliders = [];
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
@@ -117,8 +118,6 @@ export default class Ground extends BaseCollider {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
 		this.scene.add(this.base.mesh);
-
-		this.colliders = [];
 
 		/// #if DEBUG
 		const mat4 = new Matrix4();
