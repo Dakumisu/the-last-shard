@@ -85,13 +85,22 @@ export default class Ground extends BaseCollider {
 		let secondTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		secondTestPlatform.position.set(-20, 3, 20);
 
+		let aTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+		aTestPlatform.position.set(-10, 3, -10);
+
+		let bTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+		bTestPlatform.position.set(3, 3, -20);
+
 		const plane = new PlaneGeometry(200, 200);
 		plane.rotateX(-Math.PI * 0.5);
 		plane.translate(0, -1, 0);
-		this.base.geometry = await mergeGeometry(
-			[secondTestPlatform, testPlatform, plane],
-			[sandbox],
+
+		let platforms = await mergeGeometry(
+			[secondTestPlatform, testPlatform, aTestPlatform, bTestPlatform],
+			[],
 		);
+
+		this.base.geometry = await mergeGeometry([plane, platforms], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,

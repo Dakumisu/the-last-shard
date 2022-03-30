@@ -20,9 +20,7 @@ const BufferGeometryUtils = {
 		const isIndexed = geometries[0].index !== null;
 
 		const attributesUsed = new Set(Object.keys(geometries[0].attributes));
-		const morphAttributesUsed = new Set(
-			Object.keys(geometries[0].morphAttributes),
-		);
+		const morphAttributesUsed = new Set(Object.keys(geometries[0].morphAttributes));
 
 		const attributes = {};
 		const morphAttributes = {};
@@ -100,16 +98,14 @@ const BufferGeometryUtils = {
 					return null;
 				}
 
-				if (morphAttributes[name] === undefined)
-					morphAttributes[name] = [];
+				if (morphAttributes[name] === undefined) morphAttributes[name] = [];
 
 				morphAttributes[name].push(geometry.morphAttributes[name]);
 			}
 
 			// gather .userData
 
-			mergedGeometry.userData.mergedUserData =
-				mergedGeometry.userData.mergedUserData || [];
+			mergedGeometry.userData.mergedUserData = mergedGeometry.userData.mergedUserData || [];
 			mergedGeometry.userData.mergedUserData.push(geometry.userData);
 
 			if (useGroups) {
@@ -156,9 +152,7 @@ const BufferGeometryUtils = {
 		// merge attributes
 
 		for (var name in attributes) {
-			const mergedAttribute = this.mergeBufferAttributes(
-				attributes[name],
-			);
+			const mergedAttribute = this.mergeBufferAttributes(attributes[name]);
 
 			if (!mergedAttribute) {
 				console.error(
@@ -179,8 +173,7 @@ const BufferGeometryUtils = {
 
 			if (numMorphTargets === 0) break;
 
-			mergedGeometry.morphAttributes =
-				mergedGeometry.morphAttributes || {};
+			mergedGeometry.morphAttributes = mergedGeometry.morphAttributes || {};
 			mergedGeometry.morphAttributes[name] = [];
 
 			for (var i = 0; i < numMorphTargets; ++i) {
@@ -190,9 +183,7 @@ const BufferGeometryUtils = {
 					morphAttributesToMerge.push(morphAttributes[name][j][i]);
 				}
 
-				const mergedMorphAttribute = this.mergeBufferAttributes(
-					morphAttributesToMerge,
-				);
+				const mergedMorphAttribute = this.mergeBufferAttributes(morphAttributesToMerge);
 
 				if (!mergedMorphAttribute) {
 					console.error(
@@ -230,8 +221,7 @@ const BufferGeometryUtils = {
 				return null;
 			}
 
-			if (TypedArray === undefined)
-				TypedArray = attribute.array.constructor;
+			if (TypedArray === undefined) TypedArray = attribute.array.constructor;
 			if (TypedArray !== attribute.array.constructor) {
 				console.error(
 					'THREE.BufferGeometryUtils: .mergeBufferAttributes() failed. BufferAttribute.array must be of consistent array types across matching attributes.',
@@ -282,10 +272,7 @@ function setGeo(geo) {
 	const bufferGeo = new BufferGeometry();
 
 	bufferGeo.setIndex(new BufferAttribute(geo.index, 1, false));
-	bufferGeo.setAttribute(
-		'position',
-		new BufferAttribute(geo.position, 3, false),
-	);
+	bufferGeo.setAttribute('position', new BufferAttribute(geo.position, 3, false));
 	bufferGeo.setAttribute('normal', new BufferAttribute(geo.normal, 3, false));
 	bufferGeo.setAttribute('uv', new BufferAttribute(geo.uv, 2, false));
 
@@ -305,11 +292,13 @@ function getMergedGeometries(geos) {
 	const geometries = geos;
 	const count = geometries.length;
 
-	let mergedGeo = setGeo(geometries[0]);
+	const geosToMerge = [];
 
-	for (let i = 1; i < count; i++) {
-		mergedGeo = mergeGeo([mergedGeo, setGeo(geometries[i])]);
+	for (let i = 0; i < count; i++) {
+		geosToMerge.push(setGeo(geometries[i]));
 	}
+
+	const mergedGeo = mergeGeo(geosToMerge);
 
 	let index = mergedGeo.index.array;
 	let pos = mergedGeo.attributes.position.array;
