@@ -9,11 +9,11 @@ import { loadCubeTexture } from '@utils/loaders/loadAssets';
 
 export default class CabaneScene extends BaseScene {
 	constructor() {
-		super({ label: 'Cabane' });
+		super({ label: 'Cabane', playerPosition: [0, 10, 0] });
 	}
 
-	async init(currentCamera) {
-		super.init(currentCamera);
+	async init() {
+		super.init();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#ff0000',
@@ -34,14 +34,15 @@ export default class CabaneScene extends BaseScene {
 
 		this.ground = new Ground(this);
 		await this.ground.init();
-
-		this.player = getPlayer();
-
-		this.resetPlayer();
 	}
 
-	resetPlayer() {
-		this.player.setStartPosition(new Vector3(0, 10, 0));
+	update(et, dt) {
+		super.update(et, dt);
+		if (this.ground) this.ground.update(et, dt);
+	}
+
+	addTo(mainScene) {
+		super.addTo(mainScene);
 
 		this.ground.base.mesh.updateWorldMatrix(true, false);
 		const mat4 = new Matrix4();
@@ -49,16 +50,7 @@ export default class CabaneScene extends BaseScene {
 		this.ground.base.geometry.matrixWorld = this.ground.base.mesh.matrixWorld;
 
 		this.player.setCollider(this.ground.base.geometry);
-	}
 
-	update(et, dt) {
-		super.update(et, dt);
-		// if (this.ground) this.ground.update(et, dt);
-		if (this.player) this.player.update(et, dt);
-	}
-
-	async addTo(mainScene) {
-		super.addTo(mainScene);
 		this.fog.set();
 	}
 }

@@ -1,4 +1,3 @@
-import { getPlayer } from '@webgl/World/Characters/Player';
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
@@ -8,18 +7,16 @@ import { BoxGeometry, Matrix4, Mesh, MeshNormalMaterial, Vector3 } from 'three';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
-		super({ label: 'Intro' });
+		super({ label: 'Intro', playerPosition: [0, 3, 30] });
 	}
 
-	async init(currentCamera) {
-		super.init(currentCamera);
+	async init() {
+		super.init();
 
 		this.lights = new Lights(this);
 
 		this.ground = new Ground(this);
 		await this.ground.init();
-
-		this.player = getPlayer();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',
@@ -39,11 +36,13 @@ export default class IntroScene extends BaseScene {
 
 		this.instance.add(this.ground.base.mesh, ...this.propsColliders);
 
-		this.resetPlayer();
+	update(et, dt) {
+		super.update(et, dt);
+		if (this.ground) this.ground.update(et, dt);
 	}
 
-	resetPlayer() {
-		this.player.setStartPosition(new Vector3(0, 3, 30));
+	addTo(mainScene) {
+		super.addTo(mainScene);
 
 		this.ground.base.mesh.updateWorldMatrix(true, false);
 		const mat4 = new Matrix4();
@@ -54,14 +53,6 @@ export default class IntroScene extends BaseScene {
 		this.player.setPropsColliders(this.propsColliders);
 	}
 
-	update(et, dt) {
-		super.update(et, dt);
-		if (this.ground) this.ground.update(et, dt);
-		if (this.player) this.player.update(et, dt);
-	}
-
-	addTo(mainScene) {
-		super.addTo(mainScene);
 		this.fog.set();
 	}
 }

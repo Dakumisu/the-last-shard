@@ -1,18 +1,19 @@
-import { Group } from 'three';
+import { Group, Vector3 } from 'three';
 
 /// #if DEBUG
 import { getWebgl } from '@webgl/Webgl';
+import { getPlayer } from '@webgl/World/Characters/Player';
 const debug = {
 	instance: null,
 };
 /// #endif
 
 export default class BaseScene {
-	constructor({ label, playerPosition, cameraPosition }) {
+	constructor({ label, playerPosition }) {
 		this.label = label;
 
-		this.playerPosition = playerPosition;
-		this.cameraPosition = cameraPosition;
+		this.player = getPlayer();
+		this.playerPosition = new Vector3().fromArray(playerPosition);
 
 		this.instance = new Group();
 
@@ -32,19 +33,20 @@ export default class BaseScene {
 	}
 	/// #endif
 
-	init(currentCamera) {
+	init() {
 		this.initialized = true;
-
-		// console.log('Init positions : ', this.label);
 	}
 
 	addTo(mainScene) {
 		mainScene.add(this.instance);
+		this.player.setStartPosition(this.playerPosition);
 	}
 
 	removeFrom(mainScene) {
 		mainScene.remove(this.instance);
 	}
 
-	update(et, dt) {}
+	update(et, dt) {
+		if (this.player) this.player.update(et, dt);
+	}
 }

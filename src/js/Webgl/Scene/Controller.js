@@ -97,7 +97,6 @@ export default class SceneController {
 			}
 			this.currentScene = this.get(label);
 			if (!this.currentScene.initialized) await this.currentScene.init();
-			this.currentScene.resetPlayer();
 			this.currentScene.addTo(this.mainScene.instance);
 
 			/// #if DEBUG

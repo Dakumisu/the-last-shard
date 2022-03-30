@@ -10,8 +10,15 @@ import fogVert from './shaders/fogVert.glsl';
 const debug = {
 	instance: null,
 	label: 'Fog',
+	tab: 'Env',
 };
 /// #endif
+
+// Edit fog chunks on time
+ShaderChunk.fog_pars_vertex = fogParsVert;
+ShaderChunk.fog_vertex = fogVert;
+ShaderChunk.fog_pars_fragment = fogParsFrag;
+ShaderChunk.fog_fragment = fogFrag;
 
 export default class BaseFog {
 	constructor({
@@ -42,8 +49,10 @@ export default class BaseFog {
 		};
 
 		/// #if DEBUG
-		debug.instance = gui;
-		this.setDebug();
+		if (!debug.instance) {
+			debug.instance = this.webgl.debug;
+			this.setDebug();
+		}
 		/// #endif
 	}
 
@@ -53,11 +62,6 @@ export default class BaseFog {
 		baseUniforms.uFogNoiseSpeed.value = this.params.fogNoiseSpeed;
 		baseUniforms.uFogNoiseImpact.value = this.params.fogNoiseImpact;
 
-		ShaderChunk.fog_pars_vertex = fogParsVert;
-		ShaderChunk.fog_vertex = fogVert;
-		ShaderChunk.fog_pars_fragment = fogParsFrag;
-		ShaderChunk.fog_fragment = fogFrag;
-
 		const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
 		this.scene.fog = fog;
 		this.scene.background = this.params.background;
@@ -65,8 +69,8 @@ export default class BaseFog {
 
 	/// #if DEBUG
 	setDebug() {
-		const gui = debug.instance.addFolder({ title: debug.label, expanded: true });
-
+		debug.instance.setFolder(debug.label, debug.tab, true);
+		const gui = debug.instance.getFolder(debug.label);
 		gui.addInput(this.params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(
 			'change',
 			(fogFarColor) => {
