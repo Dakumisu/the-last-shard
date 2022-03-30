@@ -77,8 +77,6 @@ const state = {
 	hasJumped: false,
 	isJumping: false,
 
-	updateDirection: false,
-
 	isMounting: false,
 	isDowning: false,
 
@@ -95,6 +93,8 @@ const player = {
 
 let playerDirection = 0;
 let camDirection = 0;
+let lastXAxis = null;
+let lastZAxis = null;
 
 let turnCounter = 0;
 let directionTarget = 0;
@@ -266,6 +266,7 @@ class Player extends BaseEntity {
 			new CircleGeometry(params.broadphaseRadius, 10).rotateX(Math.PI * 0.5),
 			new MeshBasicMaterial({ wireframe: true }),
 		);
+		this.broadphaseHelper.visible = false;
 		this.base.group.add(this.broadphaseHelper);
 	}
 	/// #endif
@@ -384,17 +385,18 @@ class Player extends BaseEntity {
 	}
 
 	#move(dt, collider) {
-		// check if the direction change
-		state.updateDirection = false;
-		if (state.forwardPressed != this.keyPressed.forward) state.updateDirection = true;
-		if (state.backwardPressed != this.keyPressed.backward) state.updateDirection = true;
-		if (state.leftPressed != this.keyPressed.left) state.updateDirection = true;
-		if (state.rightPressed != this.keyPressed.right) state.updateDirection = true;
-
 		state.forwardPressed = this.keyPressed.forward;
 		state.backwardPressed = this.keyPressed.backward;
 		state.leftPressed = this.keyPressed.left;
 		state.rightPressed = this.keyPressed.right;
+
+		if (state.leftPressed && !state.rightPressed) lastXAxis = 'left';
+		if (!state.leftPressed && state.rightPressed) lastXAxis = 'right';
+		if (!state.leftPressed && !state.rightPressed) lastXAxis = '';
+
+		if (state.forwardPressed && !state.backwardPressed) lastZAxis = 'forward';
+		if (!state.forwardPressed && state.backwardPressed) lastZAxis = 'backward';
+		if (!state.forwardPressed && !state.backwardPressed) lastZAxis = '';
 
 		const delta = dt * 0.001;
 
@@ -404,23 +406,29 @@ class Player extends BaseEntity {
 		playerDirection = this.base.mesh.rotation.y;
 		camDirection = this.base.camera.orbit.spherical.theta;
 
-		if (state.updateDirection) {
-			if (this.keyPressed.forward) nextDirection = 0; // ⬆️
-			if (this.keyPressed.backward) nextDirection = PI; // ⬇️
-			if (this.keyPressed.left) nextDirection = PI * 0.5; // ⬅️
-			if (this.keyPressed.right) nextDirection = PI * 1.5; // ➡️
+		if (this.keyPressed.forward) nextDirection = 0; // ⬆️
+		if (this.keyPressed.backward) nextDirection = PI; // ⬇️
+		if (this.keyPressed.forward && lastZAxis === 'backward') nextDirection = 0; // ⬆️
 
-			if (this.keyPressed.forward && this.keyPressed.left) nextDirection = PI * 0.25; // ↖️
-			if (this.keyPressed.forward && this.keyPressed.right) nextDirection = PI * 1.75; // ↗️
-			if (this.keyPressed.backward && this.keyPressed.left) nextDirection = PI * 0.75; // ↙️
-			if (this.keyPressed.backward && this.keyPressed.right) nextDirection = PI * 1.25; // ↘️
+		if (this.keyPressed.left) nextDirection = PI * 0.5; // ⬅️
+		if (this.keyPressed.right) nextDirection = PI * 1.5; // ➡️
+		if (this.keyPressed.left && lastXAxis === 'right') nextDirection = PI * 0.5; // ⬅️
 
-			state.slowDown =
-				Math.abs(currentDirection - nextDirection) >= PI - 0.003 &&
-				Math.abs(currentDirection - nextDirection) <= PI + 0.003;
+		if (this.keyPressed.forward && this.keyPressed.left) nextDirection = PI * 0.25; // ↖️
+		if (this.keyPressed.forward && this.keyPressed.right) nextDirection = PI * 1.75; // ↗️
+		if (this.keyPressed.forward && this.keyPressed.left && lastXAxis === 'right')
+			nextDirection = PI * 0.25; // ↖️
 
-			currentDirection = nextDirection;
-		}
+		if (this.keyPressed.backward && this.keyPressed.left) nextDirection = PI * 0.75; // ↙️
+		if (this.keyPressed.backward && this.keyPressed.right) nextDirection = PI * 1.25; // ↘️
+		if (this.keyPressed.backward && this.keyPressed.left && lastXAxis === 'right')
+			nextDirection = PI * 0.75; // ↙️
+
+		state.slowDown =
+			Math.abs(currentDirection - nextDirection) >= PI - 0.003 &&
+			Math.abs(currentDirection - nextDirection) <= PI + 0.003;
+
+		currentDirection = nextDirection;
 
 		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
@@ -506,7 +514,7 @@ class Player extends BaseEntity {
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
-		if (collider.colliderType === 'walkable' && collider.state !== 'above')
+		if (collider.colliderType === 'walkable')
 			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
 		// const offset = Math.max(0, deltaVector.length() - 1e-5);
@@ -515,15 +523,12 @@ class Player extends BaseEntity {
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
 
-		// if (collider.colliderType === 'walkable') {
 		if (!state.playerOnGround) {
 			deltaVector.normalize();
 			playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
 		} else {
-			// if (collider.colliderType === 'walkable' && collider.state !== 'above')
 			playerVelocity.set(0, 0, 0);
 		}
-		// }
 
 		// adjust the camera
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
