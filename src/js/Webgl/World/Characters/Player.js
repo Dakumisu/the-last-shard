@@ -15,6 +15,8 @@ import {
 	Object3D,
 	MeshBasicMaterial,
 	CircleGeometry,
+	LineBasicMaterial,
+	Line,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -255,11 +257,11 @@ class Player extends BaseEntity {
 
 	#helpers() {
 		this.visualizer = this.setVisualizer(this.base.mesh, 15);
-		this.visualizer.visible = false;
+		// this.visualizer.visible = false;
 		this.scene.add(this.visualizer);
 
 		const axesHelper = new AxesHelper(2);
-		axesHelper.visible = false;
+		// axesHelper.visible = false;
 		this.base.group.add(axesHelper);
 
 		this.broadphaseHelper = new Mesh(
@@ -268,6 +270,17 @@ class Player extends BaseEntity {
 		);
 		this.broadphaseHelper.visible = false;
 		this.base.group.add(this.broadphaseHelper);
+
+		const material = new LineBasicMaterial({
+			color: '#ffffff',
+		});
+		const points = [];
+		points.push(new Vector3(0, 0, 0));
+		points.push(new Vector3(0, -1, 0));
+		const geometry = new BufferGeometry().setFromPoints(points);
+
+		this.capsuleHelper = new Line(geometry, material);
+		this.base.group.add(this.capsuleHelper);
 	}
 	/// #endif
 
@@ -293,33 +306,6 @@ class Player extends BaseEntity {
 		this.#setAnimation();
 
 		initialized = true;
-	}
-
-	async #setModel() {
-		const m = await loadGLTF(model);
-
-		m.scene.traverse((object) => {
-			if (object.type === 'SkinnedMesh') {
-				object.material = this.base.material;
-			}
-		});
-
-		this.base.model = m;
-		this.base.model.scene.rotateY(PI);
-		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
-
-		const playerMaterial = new PlayerMaterial({
-			color: new Color('#d29ddc'),
-		});
-		this.base.model.scene.traverse((child) => {
-			child.material = playerMaterial;
-		});
-
-		this.base.group.add(this.base.model.scene);
-	}
-
-	#setAnimation() {
-		this.base.animation = new AnimationController({ model: this.base.model, name: 'player' });
 	}
 
 	#setCameraPlayer() {
@@ -351,7 +337,7 @@ class Player extends BaseEntity {
 	}
 
 	#setGeometry() {
-		this.base.geometry = new CapsuleGeometry(0.25, 1.5, 10, 10);
+		this.base.geometry = new CapsuleGeometry(0.5, 1.5, 10, 10);
 		this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
@@ -370,6 +356,8 @@ class Player extends BaseEntity {
 
 		this.base.material = new PlayerMaterial({
 			color: new Color('#d29ddc'),
+			transparent: true,
+			opacity: 0.3,
 		});
 	}
 
@@ -380,11 +368,39 @@ class Player extends BaseEntity {
 		this.base.mesh.position.fromArray(params.defaultPos);
 
 		this.scene.add(this.base.mesh);
-		this.base.mesh.position.y = 10;
 		this.scene.add(this.base.group);
 	}
 
+	async #setModel() {
+		const m = await loadGLTF(model);
+
+		m.scene.traverse((object) => {
+			if (object.type === 'SkinnedMesh') {
+				object.material = this.base.material;
+			}
+		});
+
+		this.base.model = m;
+		this.base.model.scene.rotateY(PI);
+		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
+
+		this.base.group.add(this.base.model.scene);
+	}
+
+	#setAnimation() {
+		this.base.animation = new AnimationController({ model: this.base.model, name: 'player' });
+	}
+
 	#move(dt, collider) {
+		const delta = dt * 0.001;
+
+		playerVelocity.y += state.playerOnGround ? 0 : delta * this.params.gravity;
+		this.base.mesh.position.addScaledVector(playerVelocity, delta);
+
+		playerDirection = this.base.mesh.rotation.y;
+		camDirection = this.base.camera.orbit.spherical.theta;
+
+		// gestion de la direction
 		state.forwardPressed = this.keyPressed.forward;
 		state.backwardPressed = this.keyPressed.backward;
 		state.leftPressed = this.keyPressed.left;
@@ -397,14 +413,6 @@ class Player extends BaseEntity {
 		if (state.forwardPressed && !state.backwardPressed) lastZAxis = 'forward';
 		if (!state.forwardPressed && state.backwardPressed) lastZAxis = 'backward';
 		if (!state.forwardPressed && !state.backwardPressed) lastZAxis = '';
-
-		const delta = dt * 0.001;
-
-		playerVelocity.y += state.playerOnGround ? 0 : delta * this.params.gravity;
-		this.base.mesh.position.addScaledVector(playerVelocity, delta);
-
-		playerDirection = this.base.mesh.rotation.y;
-		camDirection = this.base.camera.orbit.spherical.theta;
 
 		if (this.keyPressed.forward) nextDirection = 0; // ⬆️
 		if (this.keyPressed.backward) nextDirection = PI; // ⬇️
@@ -446,7 +454,7 @@ class Player extends BaseEntity {
 		tmpSlowDown = state.slowDown;
 
 		// Rotate only if the player is moving
-		if (player.isMoving) {
+		if (player.isMoving && player.realSpeed > params.speed * 0.02) {
 			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
 			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
 			directionTarget = currentDirection + camDirection;
@@ -461,8 +469,6 @@ class Player extends BaseEntity {
 		}
 		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
 		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
-
-		// if (this.keyPressed.space && state.playerOnGround && !state.isJumping) this.jump();
 
 		this.base.mesh.updateMatrixWorld();
 
@@ -493,7 +499,6 @@ class Player extends BaseEntity {
 
 				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
 				if (distance < capsuleInfo.radius) {
-					// console.log(distance);
 					const depth = capsuleInfo.radius - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
@@ -517,8 +522,8 @@ class Player extends BaseEntity {
 		if (collider.colliderType === 'walkable')
 			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
-		// const offset = Math.max(0, deltaVector.length() - 1e-5);
-		// deltaVector.normalize().multiplyScalar(offset);
+		const offset = Math.max(0, deltaVector.length() - 1e-5);
+		deltaVector.normalize().multiplyScalar(offset);
 
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
@@ -534,9 +539,7 @@ class Player extends BaseEntity {
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
-		if (this.base.mesh.position.y < -25) {
-			this.reset();
-		}
+		if (this.base.mesh.position.y < -25) this.reset();
 	}
 
 	async #jump(delay = false) {
@@ -563,7 +566,7 @@ class Player extends BaseEntity {
 	}
 
 	#updateCamInertie(dt) {
-		camInertie = dampPrecise(camInertie, player.realSpeed * 0.2, 0.25, dt, 0.001);
+		camInertie = dampPrecise(camInertie, player.realSpeed * 0.25, 0.25, dt, 0.001);
 		this.base.camera.orbit.spherical.setRadius(camParams.radius + camInertie);
 	}
 
@@ -608,9 +611,11 @@ class Player extends BaseEntity {
 			else this.#removeCollider(object);
 		});
 	}
+
 	#addCollider(collider) {
 		if (!this.colliders.includes(collider.geometry)) this.colliders.push(collider.geometry);
 	}
+
 	#removeCollider(collider) {
 		if (this.colliders.indexOf(collider.geometry) === -1) return;
 
@@ -632,6 +637,8 @@ class Player extends BaseEntity {
 	update(et, dt) {
 		if (!initialized) return;
 
+		this.#updateBroadphase();
+
 		if (this.colliders.length)
 			this.colliders.forEach((collider) => {
 				for (let i = 0; i < params.physicsSteps; i++)
@@ -648,8 +655,6 @@ class Player extends BaseEntity {
 		this.#updateAnimation();
 
 		this.base.animation.update(dt);
-
-		this.#updateBroadphase();
 
 		// if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
 	}
