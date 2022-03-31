@@ -112,13 +112,6 @@ let playerPosY = 0;
 let camInertie = 0;
 
 /// #if DEBUG
-// TODO -> replace teleport points by checkpoint
-const teleportPoints = [
-	params.defaultPos,
-	[-6.5303, 11, -27.421],
-	[15, 2, -60],
-	[104.32, 14, -65.342],
-];
 
 const debug = {
 	instance: null,
@@ -229,28 +222,28 @@ class Player extends BaseEntity {
 
 		guiPosition.addSeparator();
 
-		const guiTeleport = guiPosition.addFolder({
-			title: 'Teleport',
-		});
+		// const guiTeleport = guiPosition.addFolder({
+		// 	title: 'Teleport',
+		// });
 
-		const dummy = {
-			a: -1,
-		};
-		guiTeleport
-			.addInput(dummy, 'a', {
-				view: 'radiogrid',
-				groupName: 'positions',
-				size: [4, 1],
-				cells: (x, y) => ({
-					title: `${x + y}`,
-					value: teleportPoints[x + y],
-				}),
+		// const dummy = {
+		// 	a: -1,
+		// };
+		// guiTeleport
+		// 	.addInput(dummy, 'a', {
+		// 		view: 'radiogrid',
+		// 		groupName: 'positions',
+		// 		size: [4, 1],
+		// 		cells: (x, y) => ({
+		// 			title: `${x + y}`,
+		// 			value: teleportPoints[x + y],
+		// 		}),
 
-				label: 'points',
-			})
-			.on('change', (pos) => {
-				this.base.mesh.position.fromArray(pos.value);
-			});
+		// 		label: 'points',
+		// 	})
+		// 	.on('change', (pos) => {
+		// 		this.base.mesh.position.fromArray(pos.value);
+		// 	});
 	}
 
 	#helpers() {

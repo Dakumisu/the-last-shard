@@ -3,11 +3,28 @@ import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
-import { BoxGeometry, Matrix4, Mesh, MeshNormalMaterial, Vector3 } from 'three';
+import {
+	BoxGeometry,
+	Color,
+	Matrix4,
+	Mesh,
+	MeshNormalMaterial,
+	SphereGeometry,
+	Vector3,
+} from 'three';
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
-		super({ label: 'Intro', playerPosition: [0, 3, 30] });
+		super({
+			label: 'Intro',
+			checkpoints: [
+				[0, 3, 30],
+				[-6.5303, 11, -27.421],
+				[15, 2, -60],
+				[104.32, 14, -65.342],
+			],
+		});
 	}
 
 	async init() {

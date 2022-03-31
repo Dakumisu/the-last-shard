@@ -40,5 +40,6 @@ export default class World {
 	update(et, dt) {
 		if (this.sceneController) this.sceneController.update(et, dt);
 		// if (this.sky) this.sky.update(et, dt);
+		if (this.player) this.player.update(et, dt);
 	}
 }
