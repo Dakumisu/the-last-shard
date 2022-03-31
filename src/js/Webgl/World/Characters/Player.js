@@ -337,7 +337,7 @@ class Player extends BaseEntity {
 	}
 
 	#setGeometry() {
-		this.base.geometry = new CapsuleGeometry(0.5, 1.5, 10, 10);
+		this.base.geometry = new CapsuleGeometry(0.5, 1.5, 10, 20);
 		this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
@@ -345,10 +345,9 @@ class Player extends BaseEntity {
 			segment: new Line3(new Vector3(), new Vector3(0, -1, 0)),
 		};
 
-		const geoOpt = {
+		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, {
 			lazyGeneration: false,
-		};
-		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
+		});
 	}
 
 	#setMaterial() {
@@ -391,12 +390,7 @@ class Player extends BaseEntity {
 		this.base.animation = new AnimationController({ model: this.base.model, name: 'player' });
 	}
 
-	#move(dt, collider) {
-		const delta = dt * 0.001;
-
-		playerVelocity.y += state.playerOnGround ? 0 : delta * this.params.gravity;
-		this.base.mesh.position.addScaledVector(playerVelocity, delta);
-
+	#updateDirection() {
 		playerDirection = this.base.mesh.rotation.y;
 		camDirection = this.base.camera.orbit.spherical.theta;
 
@@ -437,7 +431,9 @@ class Player extends BaseEntity {
 			Math.abs(currentDirection - nextDirection) <= PI + 0.003;
 
 		currentDirection = nextDirection;
+	}
 
+	#updateSpeed(delta, dt) {
 		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
 		if (
@@ -471,14 +467,26 @@ class Player extends BaseEntity {
 		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
 		this.base.mesh.updateMatrixWorld();
+	}
+
+	#move(dt, collider) {
+		const delta = dt * 0.001;
+
+		playerVelocity.y += state.playerOnGround ? 0 : delta * this.params.gravity;
+		this.base.mesh.position.addScaledVector(playerVelocity, delta);
+
+		this.#updateDirection();
+		this.#updateSpeed(delta, dt);
 
 		// adjust player position based on collisions
-		const capsuleInfo = this.base.capsuleInfo;
-		tBox3a.makeEmpty();
 		tMat4a.copy(collider.matrixWorld).invert();
-		tLine3.copy(capsuleInfo.segment);
+
+		tBox3a.makeEmpty();
+		tBox3a.copy(this.base.mesh.geometry.boundingBox);
+		tBox3a.applyMatrix4(tMat4a);
 
 		// get the position of the capsule in the local space of the collider
+		tLine3.copy(this.base.capsuleInfo.segment);
 		tLine3.start.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
 		tLine3.end.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
 
@@ -486,8 +494,8 @@ class Player extends BaseEntity {
 		tBox3a.expandByPoint(tLine3.start);
 		tBox3a.expandByPoint(tLine3.end);
 
-		tBox3a.min.addScalar(-capsuleInfo.radius);
-		tBox3a.max.addScalar(capsuleInfo.radius);
+		tBox3a.min.addScalar(-this.base.capsuleInfo.radius);
+		tBox3a.max.addScalar(this.base.capsuleInfo.radius);
 
 		collider.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3a),
@@ -498,8 +506,8 @@ class Player extends BaseEntity {
 				const capsulePoint = tVec3b;
 
 				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
-				if (distance < capsuleInfo.radius) {
-					const depth = capsuleInfo.radius - distance;
+				if (distance < this.base.capsuleInfo.radius) {
+					const depth = this.base.capsuleInfo.radius - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
 					tLine3.start.addScaledVector(direction, depth);
@@ -530,7 +538,7 @@ class Player extends BaseEntity {
 
 		if (!state.playerOnGround) {
 			deltaVector.normalize();
-			playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
+			// playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
 		} else {
 			playerVelocity.set(0, 0, 0);
 		}
