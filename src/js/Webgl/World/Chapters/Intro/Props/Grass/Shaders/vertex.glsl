@@ -1,73 +1,71 @@
 #define PI 3.14159265
 
+#pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
+
 uniform float uTime;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
-uniform vec3 vOffset;
-uniform vec3 uBoxPosition;
+uniform sampler2D uNoiseTexture;
+
+attribute vec3 aScale;
+attribute vec3 aPositions;
 
 varying vec3 vPos;
 varying vec2 vUv;
-// varying vec2 vOffset;
-varying vec3 vNormal;
-varying vec3 vTest;
+varying float vFade;
+varying float vNoiseMouvement;
+varying float vNoiseElevation;
 
-attribute vec3 aPosition;
-attribute vec3 aPositionMean;
-
-float wave(float waveSize, float topDistance, float centerDistance) {
-    // Tip is the fifth vertex drawn per blade
-	bool isTop = (gl_VertexID + 1) % 3 == 0;
-
-	float waveDistance = isTop ? topDistance : centerDistance;
-	return sin((uTime * 0.0008) + waveSize) * waveDistance;
+float N(vec2 st) {
+	return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
 
-const float maxDuration = 20.;
-const int brindille = 3;
+float smoothNoise(vec2 ip) {
+	vec2 lv = fract(ip);
+	vec2 id = floor(ip);
+
+	lv = lv * lv * (3. - 2. * lv);
+
+	float bl = N(id);
+	float br = N(id + vec2(1, 0));
+	float b = mix(bl, br, lv.x);
+
+	float tl = N(id + vec2(0, 1));
+	float tr = N(id + vec2(1, 1));
+	float t = mix(tl, tr, lv.x);
+
+	return mix(b, t, lv.y);
+}
 
 void main() {
+	float time = -uTime * 0.00025;
+
+	vec3 pos = position * aScale;
+
 	vUv = uv;
-	// vOffset = offset;
-	vNormal = normalize(normalMatrix * normal);
-
-	vec3 pos = position;
-	vPos = pos + aPosition;
-
-	vec3 posMean = position + aPositionMean;
-	// vTest = posMean;
-
-	// if(vPos.y < 0.0) {
-	// 	vPos.y = 0.0;
-	// } else {
-	// 	vPos.x += wave(uv.x * 10.0, 0.3, 0.);
-	// }
-
-	// vec3 centerPos = uCharaPos * 2.;
-	// vPos = brindillePos;
-
-	// float loop = mod((uTime * 0.0015) - vOffset.x * maxDuration, maxDuration) / maxDuration;
-	vec3 particlePos = vPos;
+	vPos = pos;
 
 	float boxSize = uHalfBoxSize * 2.;
 
-	// vec3 translation = vec3(0., vPos.y, 0.);
-	// translation.xz = uCharaPos.xz - mod(posMean.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
-	// translation.xz -= vPos.xz;
-	// // particlePos.z += (loop);
-
 	vec3 translation = vec3(0., vPos.y, 0.);
-	translation.xz = uCharaPos.xz - mod(vPos.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
-	// float fade = 1.0 - smoothstep(.25, .75, (.2 * distance(uCharaPos, translation))); // Sphere mask
 
-	// vPos.y *= vPos.y;
+	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
-	vec3 render = vPos;
+	vNoiseMouvement = cnoise(translation.xz * 0.2 + time);
+	vNoiseElevation = smoothstep(0.4, .6, smoothNoise(translation.xz * 0.1));
+	// vNoiseElevation = 1.0 - smoothstep(0.3, .6, cnoise(translation.xz * 0.05));
+
+	if(translation.y < 0.) {
+		translation.y = 0.;
+	} else {
+		translation.xz -= vNoiseMouvement * 0.25;
+	}
+
+	float fade = 1.0 - smoothstep(0., 1., (.03 * distance(uCharaPos.xz, translation.xz)));
+
+	vFade = fade;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
-	mv.xyz += pos.xyz * (PI * 2.);
-
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(render, 1.0);
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(render, 1.0);
+	mv.xyz += pos.xyz;
 	gl_Position = projectionMatrix * mv;
 }

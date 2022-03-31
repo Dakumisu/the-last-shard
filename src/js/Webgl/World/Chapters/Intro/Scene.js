@@ -1,7 +1,7 @@
 import { getPlayer } from '@webgl/World/Characters/Player';
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
-import Grass from './Props/Grass2/Grass';
+import Grass from './Props/Grass/Grass';
 import Lights from './Environment/Lights/Lights';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
@@ -24,6 +24,8 @@ export default class IntroScene extends BaseScene {
 
 		this.grass = new Grass(this);
 		this.grass.init();
+
+		// const texture = await lo
 
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',

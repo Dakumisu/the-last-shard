@@ -118,12 +118,4 @@ export default class CustomFog {
 			baseUniforms.uFogNoiseImpact.value = imp.value;
 		});
 	}
-	/// #endif
-
-	// update(et, dt) {
-	// 	if (!initialized) return;
-	// 	if (baseUniforms) {
-	// 		baseUniforms.time.value = et;
-	// 	}
-	// }
 }
