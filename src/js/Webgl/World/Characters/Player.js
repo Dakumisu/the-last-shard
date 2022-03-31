@@ -33,6 +33,7 @@ import DebugMaterial from '@webgl/Materials/debug/material';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/misc';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
+import signal from 'philbin-packages/signal';
 
 const model = '/assets/model/player.glb';
 
@@ -284,6 +285,8 @@ class Player extends BaseEntity {
 		await this.#setModel();
 		this.#setAnimation();
 
+		this.#setListeners();
+
 		initialized = true;
 	}
 
@@ -374,6 +377,10 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.mesh);
 		this.base.mesh.position.y = 10;
 		this.scene.add(this.base.group);
+	}
+
+	#setListeners() {
+		signal.on('checkpoint', this.setCheckpoint.bind(this));
 	}
 
 	#move(dt, collider) {
@@ -609,7 +616,7 @@ class Player extends BaseEntity {
 	reset() {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
-		this.base.mesh.position.fromArray(params.defaultPos);
+		this.base.mesh.position.copy(this.checkpoint);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
 	}
 
@@ -655,8 +662,13 @@ class Player extends BaseEntity {
 		this.collidersToTest = array;
 	}
 
+	setCheckpoint(pos) {
+		this.checkpoint = pos;
+	}
+
 	setStartPosition(pos) {
 		this.base.mesh.position.copy(pos);
+		this.setCheckpoint(pos);
 	}
 }
 

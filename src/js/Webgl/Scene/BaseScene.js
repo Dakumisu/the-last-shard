@@ -10,8 +10,6 @@ const debug = {
 };
 /// #endif
 
-const _pVec3 = new Vector3();
-
 export default class BaseScene {
 	constructor({ label, checkpoints = [] }) {
 		this.label = label;
@@ -36,10 +34,13 @@ export default class BaseScene {
 			hidden: true,
 		});
 
-		const checkpoints = this.gui.addFolder({ title: 'Checkpoints' });
-		checkpoints.addButton({ title: 'Tp to checkpoint' }).on('click', () => {
-			console.log('tp to checkpoint');
-			this.player.base.mesh.position.copy(_pVec3.fromArray(this.checkpoints.getCurrent()));
+		const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
+		checkpointsFolder.addButton({ title: 'Tp to checkpoint' }).on('click', () => {
+			console.log('🪄	 Tp to checkpoint');
+			this.player.base.mesh.position.copy(this.checkpoints.getCurrent());
+		});
+		checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
+			label: 'Sphere',
 		});
 	}
 	/// #endif
@@ -50,7 +51,7 @@ export default class BaseScene {
 
 	addTo(mainScene) {
 		mainScene.add(this.instance);
-		this.player.setStartPosition(_pVec3.fromArray(this.checkpoints.getCurrent()));
+		this.player.setStartPosition(this.checkpoints.getCurrent());
 	}
 
 	removeFrom(mainScene) {
