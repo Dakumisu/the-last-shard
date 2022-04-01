@@ -17,6 +17,7 @@ import {
 	CircleGeometry,
 	LineBasicMaterial,
 	Line,
+	Box3Helper,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -34,6 +35,7 @@ import AnimationController from '@webgl/Animation/Controller';
 import DebugMaterial from '@webgl/Materials/debug/material';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/misc';
+import signal from 'philbin-packages/signal';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 const model = '/assets/model/player.glb';
@@ -42,10 +44,13 @@ const PI = Math.PI;
 const PI2 = PI * 2;
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
+const tVec3c = new Vector3();
+const tVec3d = new Vector3();
 const tVec2a = new Vector2();
 const tVec2b = new Vector2();
 const tBox3a = new Box3();
 const tBox3b = new Box3();
+const tBox3c = new Box3();
 const tMat4a = new Matrix4();
 const tMat4b = new Matrix4();
 const tLine3 = new Line3();
@@ -89,6 +94,7 @@ let tmpSlowDown = state.slowDown;
 const player = {
 	realSpeed: 0,
 	isMoving: false,
+	isBlocked: false,
 
 	anim: null,
 };
@@ -257,7 +263,7 @@ class Player extends BaseEntity {
 
 	#helpers() {
 		this.visualizer = this.setVisualizer(this.base.mesh, 15);
-		// this.visualizer.visible = false;
+		this.visualizer.visible = false;
 		this.scene.add(this.visualizer);
 
 		const axesHelper = new AxesHelper(2);
@@ -275,12 +281,18 @@ class Player extends BaseEntity {
 			color: '#ffffff',
 		});
 		const points = [];
-		points.push(new Vector3(0, 0, 0));
-		points.push(new Vector3(0, -1, 0));
+		// console.log(tLine3);
+		points.push(new Vector3(0, tLine3.start.y, 0));
+		points.push(new Vector3(0, tLine3.end.y, 0));
 		const geometry = new BufferGeometry().setFromPoints(points);
+		// console.log(geometry);
 
 		this.capsuleHelper = new Line(geometry, material);
 		this.base.group.add(this.capsuleHelper);
+
+		this.boxHelperA = new Box3Helper(tBox3a, 0xffffff);
+		this.boxHelperB = new Box3Helper(tBox3b, 0xffffff);
+		// this.scene.add(this.boxHelperA, this.boxHelperB);
 	}
 	/// #endif
 
@@ -341,7 +353,10 @@ class Player extends BaseEntity {
 		this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
-			radius: 0.5,
+			radius: {
+				base: 0.5,
+				body: 0.27,
+			},
 			segment: new Line3(new Vector3(), new Vector3(0, -1, 0)),
 		};
 
@@ -479,14 +494,11 @@ class Player extends BaseEntity {
 		this.#updateSpeed(delta, dt);
 
 		// adjust player position based on collisions
-		tMat4a.copy(collider.matrixWorld).invert();
-
 		tBox3a.makeEmpty();
-		tBox3a.copy(this.base.mesh.geometry.boundingBox);
-		tBox3a.applyMatrix4(tMat4a);
+		tMat4a.copy(collider.matrixWorld).invert();
+		tLine3.copy(this.base.capsuleInfo.segment);
 
 		// get the position of the capsule in the local space of the collider
-		tLine3.copy(this.base.capsuleInfo.segment);
 		tLine3.start.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
 		tLine3.end.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
 
@@ -494,8 +506,13 @@ class Player extends BaseEntity {
 		tBox3a.expandByPoint(tLine3.start);
 		tBox3a.expandByPoint(tLine3.end);
 
-		tBox3a.min.addScalar(-this.base.capsuleInfo.radius);
-		tBox3a.max.addScalar(this.base.capsuleInfo.radius);
+		tBox3b.copy(tBox3a);
+
+		tBox3a.min.addScalar(-this.base.capsuleInfo.radius.base);
+		tBox3a.max.addScalar(this.base.capsuleInfo.radius.base);
+
+		tBox3b.min.addScalar(-this.base.capsuleInfo.radius.body);
+		tBox3b.max.addScalar(this.base.capsuleInfo.radius.body);
 
 		collider.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3a),
@@ -506,8 +523,8 @@ class Player extends BaseEntity {
 				const capsulePoint = tVec3b;
 
 				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
-				if (distance < this.base.capsuleInfo.radius) {
-					const depth = this.base.capsuleInfo.radius - distance;
+				if (distance < this.base.capsuleInfo.radius.base) {
+					const depth = this.base.capsuleInfo.radius.base - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
 					tLine3.start.addScaledVector(direction, depth);
@@ -515,6 +532,14 @@ class Player extends BaseEntity {
 				}
 			},
 		});
+
+		if (!player.isMoving && player.realSpeed < params.speed * 0.97)
+			this.#checkPlayerStuck(collider, dt);
+
+		this.capsuleHelper.geometry.setFromPoints([
+			new Vector3(0, tLine3.start.y, 0),
+			new Vector3(0, tLine3.end.y, 0),
+		]);
 
 		// get the adjusted position of the capsule collider in world space after checking
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
@@ -537,25 +562,57 @@ class Player extends BaseEntity {
 		this.base.mesh.position.add(deltaVector);
 
 		if (!state.playerOnGround) {
-			deltaVector.normalize();
-			// playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
+			// prevent user sticking the ceiling
+			if (state.isMounting) {
+				deltaVector.normalize();
+				playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
+			}
 		} else {
 			playerVelocity.set(0, 0, 0);
 		}
 
 		// adjust the camera
-		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
+		this.base.camera.orbit.targetOffset.set(
+			this.base.mesh.position.x,
+			this.base.mesh.position.y,
+			this.base.mesh.position.z,
+		);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
 	}
 
-	async #jump(delay = false) {
+	async #jump(delay = 0) {
 		if (state.isJumping) return;
 		state.isJumping = true;
-		if (delay) await wait(400);
+		await wait(delay);
 		playerVelocity.y = 15.0;
 		state.isJumping = false;
+	}
+
+	#checkPlayerStuck(collider, dt) {
+		collider.boundsTree.shapecast({
+			intersectsBounds: (box) => box.intersectsBox(tBox3b),
+
+			intersectsTriangle: (tri) => {
+				// check if the triangle is intersecting the capsule and adjust the capsule position if it is.
+				const triPoint = tVec3c;
+				const capsulePoint = tVec3d;
+
+				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
+
+				if (distance < this.base.capsuleInfo.radius.body * 2) {
+					let tmpIsBlocked = !player.isMoving && player.realSpeed <= params.speed * 0.97;
+
+					if (player.isBlocked !== tmpIsBlocked) player.isBlocked = tmpIsBlocked;
+
+					if (player.isBlocked) {
+						tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection - PI);
+						this.base.mesh.position.addScaledVector(tVec3a, dt);
+					}
+				}
+			},
+		});
 	}
 
 	#checkPlayerPosition(dt) {
@@ -574,7 +631,7 @@ class Player extends BaseEntity {
 	}
 
 	#updateCamInertie(dt) {
-		camInertie = dampPrecise(camInertie, player.realSpeed * 0.25, 0.25, dt, 0.001);
+		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
 		this.base.camera.orbit.spherical.setRadius(camParams.radius + camInertie);
 	}
 
@@ -595,10 +652,10 @@ class Player extends BaseEntity {
 		if (this.keyPressed.space && state.playerOnGround && !state.isJumping) {
 			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
-				this.#jump();
+				this.#jump(100);
 			} else {
 				player.anim = this.base.animation.get('jump');
-				this.#jump(true);
+				this.#jump(400);
 			}
 			this.base.animation.playOnce(player.anim);
 		}
@@ -608,12 +665,12 @@ class Player extends BaseEntity {
 
 	#updateBroadphase() {
 		this.collidersToTest.forEach((object) => {
-			tBox3b.makeEmpty();
-			tBox3b.copy(object.geometry.boundingBox);
+			tBox3c.makeEmpty();
+			tBox3c.copy(object.geometry.boundingBox);
 			tMat4b.copy(object.matrixWorld);
-			tBox3b.applyMatrix4(tMat4b);
+			tBox3c.applyMatrix4(tMat4b);
 
-			const d = tBox3b.distanceToPoint(this.base.mesh.position);
+			const d = tBox3c.distanceToPoint(this.base.mesh.position);
 
 			if (d <= params.broadphaseRadius) this.#addCollider(object);
 			else this.#removeCollider(object);
@@ -663,8 +720,6 @@ class Player extends BaseEntity {
 		this.#updateAnimation();
 
 		this.base.animation.update(dt);
-
-		// if (state.hasJumped != this.keyPressed.space) state.hasJumped = this.keyPressed.space;
 	}
 
 	setMainCollider(geo) {
@@ -677,6 +732,10 @@ class Player extends BaseEntity {
 	}
 
 	setPropsColliders(array) {
+		if (!(array instanceof Array)) {
+			console.error(`Array required ❌`);
+			return;
+		}
 		this.collidersToTest = array;
 	}
 
