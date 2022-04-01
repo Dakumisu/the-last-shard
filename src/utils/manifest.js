@@ -1,6 +1,6 @@
 /**
  * Assets es6 Map
- * @type {Map<string, {path: string | string[], data: {}}>}
+ * @type {Map<string, {path: string | string[], data: any}>}
  */
 const assetsMap = new Map();
 
@@ -30,6 +30,9 @@ assetsMap.set('envMap2', {
 	data: {},
 });
 
-assetsMap.set('noiseTexture', { path: '/assets/image/perlinNoise.jpeg', data: {} });
+assetsMap.set('noiseTexture', {
+	path: '/assets/image/perlinNoise.jpeg',
+	data: {},
+});
 
 export default assetsMap;

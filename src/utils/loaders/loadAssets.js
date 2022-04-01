@@ -1,17 +1,21 @@
 import { store } from '@tools/Store';
 import manifest from '@utils/manifest';
+import { getWebgl } from '@webgl/Webgl';
 import {
 	AudioLoader,
 	CubeTexture,
 	CubeTextureLoader,
 	LoadingManager,
+	RGBAFormat,
+	sRGBEncoding,
 	Texture,
 	TextureLoader,
 } from 'three';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 
-const loadingManager = new LoadingManager();
-// TODO => decide if an asset needs to be in the LoadingManager
-// Or maybe create one LoadingManager for each scene (checking later...)
+const basisLoader = new KTX2Loader();
+let basisLoaderInit = false;
+basisLoader.setTranscoderPath('/assets/basis/');
 
 const textureLoader = new TextureLoader();
 const audioLoader = new AudioLoader();
@@ -30,10 +34,18 @@ export async function loadTexture(key) {
 		/// #endif
 		return;
 	}
+	let loader = textureLoader;
+	if (path.includes('.ktx2')) {
+		if (!basisLoaderInit) {
+			basisLoader.detectSupport(getWebgl().renderer.renderer);
+			basisLoaderInit = true;
+		}
+		loader = basisLoader;
+	}
 
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
-		loadedTexture = await textureLoader.loadAsync(path);
+		loadedTexture = await loader.loadAsync(path);
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
