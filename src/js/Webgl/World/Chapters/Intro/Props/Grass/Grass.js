@@ -7,6 +7,7 @@ import {
 	InstancedBufferGeometry,
 	MathUtils,
 	Mesh,
+	PlaneBufferGeometry,
 	RepeatWrapping,
 	ShaderMaterial,
 	TextureLoader,
@@ -95,10 +96,10 @@ export default class Grass {
 		const uv = new Float32Array([0, 1, 1, 1, 0, 0]);
 		const indices = new Uint16Array([0, 1, 2]);
 
+		this.triangle.setIndex(new BufferAttribute(indices, 1));
 		this.triangle.setAttribute('position', new BufferAttribute(vertices, 3));
 		this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
 		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
-		this.triangle.setIndex(new BufferAttribute(indices, 1));
 	}
 
 	setInstancedGeometry() {
@@ -119,6 +120,7 @@ export default class Grass {
 
 		this.base.geometry.index = this.triangle.index;
 		this.base.geometry.attributes.position = this.triangle.attributes.position;
+		this.base.geometry.attributes.normal = this.triangle.attributes.normal;
 		this.base.geometry.attributes.uv = this.triangle.attributes.uv;
 
 		this.base.geometry.setAttribute(

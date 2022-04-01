@@ -11,6 +11,7 @@ attribute vec3 aScale;
 attribute vec3 aPositions;
 
 varying vec3 vPos;
+varying vec3 vNormal;
 varying vec2 vUv;
 varying float vFade;
 varying float vNoiseMouvement;
@@ -42,18 +43,21 @@ void main() {
 
 	vec3 pos = position * aScale;
 
+	float displacement = texture2D(uNoiseTexture, uv).r * 100.;
+
 	vUv = uv;
+
 	vPos = pos;
+	vNormal = normal;
 
 	float boxSize = uHalfBoxSize * 2.;
 
-	vec3 translation = vec3(0., vPos.y, 0.);
+	vec3 translation = vec3(0., pos.y, 0.);
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
 	vNoiseMouvement = cnoise(translation.xz * 0.2 + time);
 	vNoiseElevation = smoothstep(0.4, .6, smoothNoise(translation.xz * 0.1));
-	// vNoiseElevation = 1.0 - smoothstep(0.3, .6, cnoise(translation.xz * 0.05));
 
 	if(translation.y < 0.) {
 		translation.y = 0.;
@@ -64,6 +68,8 @@ void main() {
 	float fade = 1.0 - smoothstep(0., 1., (.03 * distance(uCharaPos.xz, translation.xz)));
 
 	vFade = fade;
+
+	translation.y *= fade;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 	mv.xyz += pos.xyz;

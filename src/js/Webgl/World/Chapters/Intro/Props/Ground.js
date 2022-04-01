@@ -4,7 +4,7 @@ import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
 
-const sandbox = '/assets/model/sandbox.glb';
+const sandbox = '/assets/model/collineTest.glb';
 const twoPI = Math.PI * 2;
 
 let initialized = false;
