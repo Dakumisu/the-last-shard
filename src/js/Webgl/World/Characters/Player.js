@@ -33,6 +33,7 @@ import DebugMaterial from '@webgl/Materials/debug/material';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/misc';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
+import signal from 'philbin-packages/signal';
 
 const model = '/assets/model/player.glb';
 
@@ -112,13 +113,6 @@ let playerPosY = 0;
 let camInertie = 0;
 
 /// #if DEBUG
-// TODO -> replace teleport points by checkpoint
-const teleportPoints = [
-	params.defaultPos,
-	[-6.5303, 11, -27.421],
-	[15, 2, -60],
-	[104.32, 14, -65.342],
-];
 
 const debug = {
 	instance: null,
@@ -229,28 +223,28 @@ class Player extends BaseEntity {
 
 		guiPosition.addSeparator();
 
-		const guiTeleport = guiPosition.addFolder({
-			title: 'Teleport',
-		});
+		// const guiTeleport = guiPosition.addFolder({
+		// 	title: 'Teleport',
+		// });
 
-		const dummy = {
-			a: -1,
-		};
-		guiTeleport
-			.addInput(dummy, 'a', {
-				view: 'radiogrid',
-				groupName: 'positions',
-				size: [4, 1],
-				cells: (x, y) => ({
-					title: `${x + y}`,
-					value: teleportPoints[x + y],
-				}),
+		// const dummy = {
+		// 	a: -1,
+		// };
+		// guiTeleport
+		// 	.addInput(dummy, 'a', {
+		// 		view: 'radiogrid',
+		// 		groupName: 'positions',
+		// 		size: [4, 1],
+		// 		cells: (x, y) => ({
+		// 			title: `${x + y}`,
+		// 			value: teleportPoints[x + y],
+		// 		}),
 
-				label: 'points',
-			})
-			.on('change', (pos) => {
-				this.base.mesh.position.fromArray(pos.value);
-			});
+		// 		label: 'points',
+		// 	})
+		// 	.on('change', (pos) => {
+		// 		this.base.mesh.position.fromArray(pos.value);
+		// 	});
 	}
 
 	#helpers() {
@@ -290,6 +284,8 @@ class Player extends BaseEntity {
 
 		await this.#setModel();
 		this.#setAnimation();
+
+		this.#setListeners();
 
 		initialized = true;
 	}
@@ -382,6 +378,10 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.mesh);
 		this.base.mesh.position.y = 10;
 		this.scene.add(this.base.group);
+	}
+
+	#setListeners() {
+		signal.on('checkpoint', this.setCheckpoint.bind(this));
 	}
 
 	#move(dt, collider) {
@@ -617,7 +617,7 @@ class Player extends BaseEntity {
 	reset() {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
-		this.base.mesh.position.fromArray(params.defaultPos);
+		this.base.mesh.position.copy(this.checkpoint);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
 	}
 
@@ -663,8 +663,13 @@ class Player extends BaseEntity {
 		this.collidersToTest = array;
 	}
 
+	setCheckpoint(pos) {
+		this.checkpoint = pos;
+	}
+
 	setStartPosition(pos) {
 		this.base.mesh.position.copy(pos);
+		this.setCheckpoint(pos);
 	}
 }
 

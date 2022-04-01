@@ -9,7 +9,7 @@ import { loadCubeTexture } from '@utils/loaders/loadAssets';
 
 export default class CabaneScene extends BaseScene {
 	constructor() {
-		super({ label: 'Cabane', playerPosition: [0, 10, 0] });
+		super({ label: 'Cabane', checkpoints: [[0, 10, 0]] });
 	}
 
 	async init() {

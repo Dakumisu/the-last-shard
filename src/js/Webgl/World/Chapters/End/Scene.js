@@ -9,7 +9,7 @@ import { loadCubeTexture } from '@utils/loaders/loadAssets';
 
 export default class EndScene extends BaseScene {
 	constructor() {
-		super({ label: 'End', playerPosition: [0, 20, 0] });
+		super({ label: 'End', checkpoints: [[0, 20, 0]] });
 	}
 
 	async init() {
