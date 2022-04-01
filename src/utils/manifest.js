@@ -1,6 +1,6 @@
 /**
  * Assets es6 Map
- * @type {Map<string, {path: string | string[], data: {}}>}
+ * @type {Map<string, {path: string | string[], data: any}>}
  */
 const assetsMap = new Map();
 

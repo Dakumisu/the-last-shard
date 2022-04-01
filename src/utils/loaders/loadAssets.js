@@ -72,14 +72,14 @@ export async function loadCubeTexture(key) {
 			textureLoader.loadAsync(path[5]),
 		]);
 
-		loadedTexture = new CubeTexture(textures);
+		loadedTexture = new CubeTexture(textures.map((texture) => texture.image));
 
-		// loadedTexture.minFilter = textures[0].minFilter;
-		// loadedTexture.magFilter = textures[0].magFilter;
-		// loadedTexture.format = textures[0].format;
-		// loadedTexture.encoding = textures[0].encoding;
+		loadedTexture.minFilter = textures[0].minFilter;
+		loadedTexture.magFilter = textures[0].magFilter;
+		loadedTexture.format = textures[0].format;
+		loadedTexture.encoding = textures[0].encoding;
 
-		// loadedTexture.needsUpdate = true;
+		loadedTexture.needsUpdate = true;
 
 		console.log(loadedTexture);
 
