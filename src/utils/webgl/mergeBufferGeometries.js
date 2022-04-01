@@ -92,20 +92,20 @@ function mergeBufferGeometries(datas) {
 	const bufferGeometries = [];
 	const buffers = [];
 
+	for (let i = 0; i < datas.length; i++) {
+		bufferGeometries[i] = {};
+		bufferGeometries[i].index = datas[i].index.array;
+		bufferGeometries[i].position = datas[i].attributes.position.array;
+		bufferGeometries[i].normal = datas[i].attributes.normal.array;
+		bufferGeometries[i].uv = datas[i].attributes.uv.array;
+
+		buffers.push(datas[i].index.array.buffer);
+		buffers.push(datas[i].attributes.position.array.buffer);
+		buffers.push(datas[i].attributes.normal.array.buffer);
+		buffers.push(datas[i].attributes.uv.array.buffer);
+	}
+
 	return new Promise((resolve) => {
-		for (let i = 0; i < datas.length; i++) {
-			bufferGeometries[i] = {};
-			bufferGeometries[i].index = datas[i].index.array;
-			bufferGeometries[i].position = datas[i].attributes.position.array;
-			bufferGeometries[i].normal = datas[i].attributes.normal.array;
-			bufferGeometries[i].uv = datas[i].attributes.uv.array;
-
-			buffers.push(datas[i].index.array.buffer);
-			buffers.push(datas[i].attributes.position.array.buffer);
-			buffers.push(datas[i].attributes.normal.array.buffer);
-			buffers.push(datas[i].attributes.uv.array.buffer);
-		}
-
 		worker.postMessage(
 			{
 				geometries: bufferGeometries,
