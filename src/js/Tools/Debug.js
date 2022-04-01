@@ -1,8 +1,10 @@
 import { Pane } from 'tweakpane';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import * as TweakpaneRotationInputPlugin from '@0b5vr/tweakpane-plugin-rotation';
-
 import StatsJs from '@tools/Stats';
+/// #if DEBUG
+import signal from 'philbin-packages/signal';
+/// #endif
 
 let tabList = ['General', 'Player', 'Scene', 'Env', 'Stats'];
 
@@ -17,6 +19,12 @@ export default class Debug {
 		this.tabs = {};
 
 		this.initTab();
+
+		/// #if DEBUG
+		signal.on('keyup', (key) => {
+			if (key === 'H') this.gui.hidden = !this.gui.hidden;
+		});
+		/// #endif
 	}
 
 	setFolder(folderLabel, tabLabel = tabList[0], expanded = true) {
