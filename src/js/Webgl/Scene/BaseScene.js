@@ -36,7 +36,7 @@ export default class BaseScene {
 
 		const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
 		checkpointsFolder.addButton({ title: 'Tp to checkpoint' }).on('click', () => {
-			console.log('🪄	 Tp to checkpoint');
+			console.log('🪄 Tp to checkpoint');
 			this.player.base.mesh.position.copy(this.checkpoints.getCurrent());
 		});
 		checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
