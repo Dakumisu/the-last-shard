@@ -8,24 +8,24 @@ const assetsMap = new Map();
 
 assetsMap.set('envMap1', {
 	path: [
-		'/assets/image/environmentMaps/1/px.ktx2',
-		'/assets/image/environmentMaps/1/nx.ktx2',
-		'/assets/image/environmentMaps/1/py.ktx2',
-		'/assets/image/environmentMaps/1/ny.ktx2',
-		'/assets/image/environmentMaps/1/pz.ktx2',
-		'/assets/image/environmentMaps/1/nz.ktx2',
+		'/assets/image/environmentMaps/1/px.png',
+		'/assets/image/environmentMaps/1/nx.png',
+		'/assets/image/environmentMaps/1/py.png',
+		'/assets/image/environmentMaps/1/ny.png',
+		'/assets/image/environmentMaps/1/pz.png',
+		'/assets/image/environmentMaps/1/nz.png',
 	],
 	data: {},
 });
 
 assetsMap.set('envMap2', {
 	path: [
-		'/assets/image/environmentMaps/2/px.ktx2',
-		'/assets/image/environmentMaps/2/nx.ktx2',
-		'/assets/image/environmentMaps/2/py.ktx2',
-		'/assets/image/environmentMaps/2/ny.ktx2',
-		'/assets/image/environmentMaps/2/pz.ktx2',
-		'/assets/image/environmentMaps/2/nz.ktx2',
+		'/assets/image/environmentMaps/2/px.png',
+		'/assets/image/environmentMaps/2/nx.png',
+		'/assets/image/environmentMaps/2/py.png',
+		'/assets/image/environmentMaps/2/ny.png',
+		'/assets/image/environmentMaps/2/pz.png',
+		'/assets/image/environmentMaps/2/nz.png',
 	],
 	data: {},
 });

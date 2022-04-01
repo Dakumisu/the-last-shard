@@ -6,12 +6,15 @@ import {
 	CubeTexture,
 	CubeTextureLoader,
 	LoadingManager,
+	RGBAFormat,
+	sRGBEncoding,
 	Texture,
 	TextureLoader,
 } from 'three';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 
 const basisLoader = new KTX2Loader();
+let basisLoaderInit = false;
 basisLoader.setTranscoderPath('/assets/basis/');
 
 const textureLoader = new TextureLoader();
@@ -46,7 +49,10 @@ export async function loadTexture(key) {
  * @returns {Promise<CubeTexture | null>}
  */
 export async function loadCubeTexture(key) {
-	basisLoader.detectSupport(getWebgl().renderer.renderer);
+	if (!basisLoaderInit) {
+		basisLoader.detectSupport(getWebgl().renderer.renderer);
+		basisLoaderInit = true;
+	}
 	const path = manifest.get(key)?.path;
 	if (!path) {
 		/// #if DEBUG
@@ -58,22 +64,25 @@ export async function loadCubeTexture(key) {
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
 		const textures = await Promise.all([
-			basisLoader.loadAsync(path[0]),
-			basisLoader.loadAsync(path[1]),
-			basisLoader.loadAsync(path[2]),
-			basisLoader.loadAsync(path[3]),
-			basisLoader.loadAsync(path[4]),
-			basisLoader.loadAsync(path[5]),
+			textureLoader.loadAsync(path[0]),
+			textureLoader.loadAsync(path[1]),
+			textureLoader.loadAsync(path[2]),
+			textureLoader.loadAsync(path[3]),
+			textureLoader.loadAsync(path[4]),
+			textureLoader.loadAsync(path[5]),
 		]);
+
 		loadedTexture = new CubeTexture(textures);
 
-		loadedTexture.minFilter = textures[0].minFilter;
-		loadedTexture.magFilter = textures[0].magFilter;
-		loadedTexture.format = textures[0].format;
-		loadedTexture.encoding = textures[0].encoding;
+		// loadedTexture.minFilter = textures[0].minFilter;
+		// loadedTexture.magFilter = textures[0].magFilter;
+		// loadedTexture.format = textures[0].format;
+		// loadedTexture.encoding = textures[0].encoding;
 
-		loadedTexture.needsUpdate = true;
+		// loadedTexture.needsUpdate = true;
+
 		console.log(loadedTexture);
+
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
