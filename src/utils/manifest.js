@@ -30,6 +30,9 @@ assetsMap.set('envMap2', {
 	data: {},
 });
 
-assetsMap.set('noiseTexture', { path: '/assets/image/perlinNoise.jpeg', data: {} });
+assetsMap.set('noiseTexture', {
+	path: '/assets/image/perlinNoise.jpeg',
+	data: {},
+});
 
 export default assetsMap;

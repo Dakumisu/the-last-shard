@@ -34,10 +34,18 @@ export async function loadTexture(key) {
 		/// #endif
 		return;
 	}
+	let loader = textureLoader;
+	if (path.includes('.ktx2')) {
+		if (!basisLoaderInit) {
+			basisLoader.detectSupport(getWebgl().renderer.renderer);
+			basisLoaderInit = true;
+		}
+		loader = basisLoader;
+	}
 
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
-		loadedTexture = await textureLoader.loadAsync(path);
+		loadedTexture = await loader.loadAsync(path);
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
@@ -49,10 +57,6 @@ export async function loadTexture(key) {
  * @returns {Promise<CubeTexture | null>}
  */
 export async function loadCubeTexture(key) {
-	if (!basisLoaderInit) {
-		basisLoader.detectSupport(getWebgl().renderer.renderer);
-		basisLoaderInit = true;
-	}
 	const path = manifest.get(key)?.path;
 	if (!path) {
 		/// #if DEBUG
@@ -63,26 +67,7 @@ export async function loadCubeTexture(key) {
 
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
-		const textures = await Promise.all([
-			textureLoader.loadAsync(path[0]),
-			textureLoader.loadAsync(path[1]),
-			textureLoader.loadAsync(path[2]),
-			textureLoader.loadAsync(path[3]),
-			textureLoader.loadAsync(path[4]),
-			textureLoader.loadAsync(path[5]),
-		]);
-
-		loadedTexture = new CubeTexture(textures.map((texture) => texture.image));
-
-		loadedTexture.minFilter = textures[0].minFilter;
-		loadedTexture.magFilter = textures[0].magFilter;
-		loadedTexture.format = textures[0].format;
-		loadedTexture.encoding = textures[0].encoding;
-
-		loadedTexture.needsUpdate = true;
-
-		console.log(loadedTexture);
-
+		loadedTexture = await cubeTextureLoader.load(path);
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
