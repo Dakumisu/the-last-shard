@@ -24,7 +24,18 @@ export default class MainCamera {
 
 	update() {
 		if (this.cameraController.currentCamera) {
+			/// #if DEBUG
+			if (
+				this.cameraController.get('player') &&
+				this.cameraController.currentCamera !== this.cameraController.get('player')
+			) {
+				this.cameraController.get('player').update();
+				this.cameraController.currentCamera.update();
+			} else this.cameraController.currentCamera.update();
+			/// #endif
+			/// #if !DEBUG
 			this.cameraController.currentCamera.update();
+			/// #endif
 			this.instance.position.copy(this.cameraController.currentCamera.instance.position);
 			this.instance.quaternion.copy(this.cameraController.currentCamera.instance.quaternion);
 			this.instance.updateMatrixWorld();

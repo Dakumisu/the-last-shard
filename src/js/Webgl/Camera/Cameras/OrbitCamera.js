@@ -3,8 +3,12 @@ import { orbitController } from '@utils/webgl';
 import { getWebgl } from '@webgl/Webgl';
 
 /// #if DEBUG
+import { CameraHelper } from 'three';
+
 const debug = {
 	instance: null,
+	scene: null,
+	cameraController: null,
 };
 /// #endif
 
@@ -37,12 +41,18 @@ export default class OrbitCamera {
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
+		debug.scene = webgl.mainScene.instance;
+		debug.cameraController = webgl.cameraController;
 		this.initDebug();
 		/// #endif
 	}
 
 	/// #if DEBUG
 	initDebug() {
+		this.camHelper = new CameraHelper(this.camObject.camera);
+		this.camHelper.visible = false;
+		debug.scene.add(this.camHelper);
+
 		this.gui = debug.instance
 			.getFolder('CameraController')
 			.addFolder({ title: this.label ? this.label : 'noname', expanded: false });
@@ -74,6 +84,9 @@ export default class OrbitCamera {
 				);
 				// WIP
 			});
+		this.gui.addInput(this.camHelper, 'visible', {
+			label: 'Show Helper',
+		});
 	}
 	/// #endif
 
@@ -84,6 +97,9 @@ export default class OrbitCamera {
 
 	update() {
 		this.camObject.orbit.update();
+		/// #if DEBUG
+		this.camHelper.update();
+		/// #endif
 	}
 
 	destroy() {
