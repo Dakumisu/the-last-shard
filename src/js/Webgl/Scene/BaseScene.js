@@ -38,7 +38,7 @@ export default class BaseScene {
 		const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
 
 		const checkpointsOptions = [];
-		for (let i = 0; i <= this.checkpoints.points.length; i++) {
+		for (let i = 0; i < this.checkpoints.points.length; i++) {
 			checkpointsOptions.push({
 				text: i + '',
 				value: i,
