@@ -2,6 +2,7 @@ import {
 	BoxBufferGeometry,
 	BufferAttribute,
 	BufferGeometry,
+	Color,
 	DoubleSide,
 	InstancedBufferAttribute,
 	InstancedBufferGeometry,
@@ -25,9 +26,18 @@ import vertexShader from './Shaders/vertex.glsl';
 let initialized = false;
 
 const params = {
+	speed: 0.15,
+	displacement: 0.2,
+	windColorIntensity: 0.2,
+	noiseMouvementIntensity: 0.2,
+	noiseElevationIntensity: 0.75,
+	elevationIntensity: 0.25,
+	maskRange: 0.04,
 	halfBoxSize: 28,
 	verticeScale: 0.42,
-	count: 200000,
+	count: 300000,
+	color: '#de47ff',
+	fogColor: '#3e2e77',
 };
 
 /// #if DEBUG
@@ -48,13 +58,6 @@ export default class Grass {
 
 		this.base = {};
 	}
-
-	/// #if DEBUG
-
-	debug() {
-		const gui = debug.instance.addFolder({ title: debug.label });
-	}
-	/// #endif
 
 	async loadTexture() {
 		this.noiseTexture = await loadTexture('noiseTexture');
@@ -103,12 +106,12 @@ export default class Grass {
 	}
 
 	setInstancedGeometry() {
-		const positions = new Float32Array(params.count * 2);
+		this.positions = new Float32Array(params.count * 2);
 		const scale = new Float32Array(params.count * 1);
 
 		for (let i = 0; i < params.count; i++) {
-			positions[i * 3 + 0] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
-			positions[i * 3 + 2] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
+			this.positions[i * 3 + 0] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
+			this.positions[i * 3 + 2] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
 
 			const random = MathUtils.randFloat(1, 2);
 			scale[i * 3 + 0] = random;
@@ -125,7 +128,7 @@ export default class Grass {
 
 		this.base.geometry.setAttribute(
 			'aPositions',
-			new InstancedBufferAttribute(positions, 3, false),
+			new InstancedBufferAttribute(this.positions, 3, false),
 		);
 		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 3, false));
 	}
@@ -137,9 +140,18 @@ export default class Grass {
 			side: DoubleSide,
 			uniforms: {
 				uTime: { value: 0 },
+				uSpeed: { value: params.speed },
+				uDisplacement: { value: params.displacement },
+				uWindColorIntensity: { value: params.windColorIntensity },
+				uMaskRange: { value: params.maskRange },
+				uNoiseMouvementIntensity: { value: params.noiseMouvementIntensity },
+				uNoiseElevationIntensity: { value: params.noiseElevationIntensity },
+				uElevationIntensity: { value: params.elevationIntensity },
 				uHalfBoxSize: { value: params.halfBoxSize },
 				uCharaPos: { value: this.charaPos },
 				uNoiseTexture: { value: this.noiseTexture },
+				uColor: { value: new Color().set(params.color) },
+				uFogColor: { value: new Color().set(params.fogColor) },
 			},
 			transparent: true,
 			vertexShader: vertexShader,
@@ -152,6 +164,78 @@ export default class Grass {
 		this.scene.add(this.base.mesh);
 		this.base.mesh.frustumCulled = false;
 	}
+
+	/// #if DEBUG
+	debug() {
+		const gui = debug.instance.addFolder({ title: debug.label });
+		gui.addInput(this.base.material.uniforms.uSpeed, 'value', {
+			label: 'speed',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		});
+		gui.addInput(this.base.material.uniforms.uDisplacement, 'value', {
+			label: 'displace',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		});
+		gui.addInput(this.base.material.uniforms.uWindColorIntensity, 'value', {
+			label: 'windColorI',
+			min: 0,
+			max: 0.5,
+			step: 0.01,
+		});
+		gui.addInput(this.base.material.uniforms.uElevationIntensity, 'value', {
+			label: 'elevationI',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		});
+		gui.addInput(this.base.material.uniforms.uNoiseMouvementIntensity, 'value', {
+			label: 'nMouvementI',
+			min: 0,
+			max: 0.5,
+			step: 0.01,
+		});
+		gui.addInput(this.base.material.uniforms.uNoiseElevationIntensity, 'value', {
+			label: 'nElevationI',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		});
+		gui.addInput(params, 'halfBoxSize', {
+			label: 'boxSize',
+			min: 1,
+			max: 100,
+			step: 0.01,
+		}).on('change', (size) => {
+			if (!size.last) return;
+			for (let i = 0; i < params.count; i++) {
+				this.positions[i * 3 + 0] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
+				this.positions[i * 3 + 2] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
+			}
+			this.base.material.uniforms.uHalfBoxSize.value = size.value;
+			this.base.geometry.setAttribute(
+				'aPositions',
+				new InstancedBufferAttribute(this.positions, 3, false),
+			);
+		});
+		gui.addInput(this.base.material.uniforms.uMaskRange, 'value', {
+			label: 'maskRange',
+			min: 0,
+			max: 0.5,
+			step: 0.01,
+		});
+
+		gui.addInput(params, 'color').on('change', (color) => {
+			this.base.material.uniforms.uColor.value.set(color.value);
+		});
+		gui.addInput(params, 'fogColor').on('change', (color) => {
+			this.base.material.uniforms.uFogColor.value.set(color.value);
+		});
+	}
+	/// #endif
 
 	resize() {
 		if (!initialized) return;
