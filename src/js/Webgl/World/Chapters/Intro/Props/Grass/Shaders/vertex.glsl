@@ -1,8 +1,12 @@
-#define PI 3.14159265
-
 #pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
 
 uniform float uTime;
+uniform float uSpeed;
+uniform float uMaskRange;
+uniform float uDisplacement;
+uniform float uNoiseMouvementIntensity;
+uniform float uNoiseElevationIntensity;
+uniform float uElevationIntensity;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
 uniform sampler2D uNoiseTexture;
@@ -39,7 +43,7 @@ float smoothNoise(vec2 ip) {
 }
 
 void main() {
-	float time = -uTime * 0.00025;
+	float time = uTime * uSpeed * 0.002;
 
 	vec3 pos = position * aScale;
 
@@ -56,22 +60,23 @@ void main() {
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
-	vNoiseMouvement = cnoise(translation.xz * 0.2 + time);
-	vNoiseElevation = smoothstep(0.4, .6, smoothNoise(translation.xz * 0.1));
+	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
+	vNoiseElevation = smoothstep(0.2, .8, smoothNoise(translation.xz * uNoiseElevationIntensity));
 
 	if(translation.y < 0.) {
 		translation.y = 0.;
 	} else {
-		translation.xz -= vNoiseMouvement * 0.25;
+		translation.xz += vNoiseMouvement * uDisplacement;
 	}
 
-	float fade = 1.0 - smoothstep(0., 1., (.03 * distance(uCharaPos.xz, translation.xz)));
+	float fade = 1.0 - smoothstep(0., 1., (uMaskRange * distance(uCharaPos.xz, translation.xz)));
 
 	vFade = fade;
 
-	translation.y *= fade;
+	pos.y += fade * vNoiseElevation * uElevationIntensity;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 	mv.xyz += pos.xyz;
 	gl_Position = projectionMatrix * mv;
+
 }

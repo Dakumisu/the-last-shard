@@ -266,7 +266,7 @@ class Player extends BaseEntity {
 			new CircleGeometry(params.broadphaseRadius, 10).rotateX(Math.PI * 0.5),
 			new MeshBasicMaterial({ wireframe: true }),
 		);
-		this.base.group.add(this.broadphaseHelper);
+		// this.base.group.add(this.broadphaseHelper);
 	}
 	/// #endif
 
