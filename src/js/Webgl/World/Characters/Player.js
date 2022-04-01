@@ -309,6 +309,9 @@ class Player extends BaseEntity {
 
 		const playerMaterial = new PlayerMaterial({
 			color: new Color('#d29ddc'),
+			// uniforms: {
+			// 	uTest: { value: new Color('red') },
+			// },
 		});
 		this.base.model.scene.traverse((child) => {
 			child.material = playerMaterial;
