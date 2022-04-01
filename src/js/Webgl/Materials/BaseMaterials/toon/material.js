@@ -8,6 +8,8 @@ import {
 	RedFormat,
 	ShaderLib,
 	TangentSpaceNormalMap,
+	UniformsLib,
+	UniformsUtils,
 	Vector2,
 } from 'three';
 import baseUniforms from '@webgl/Materials/baseUniforms';
@@ -22,9 +24,10 @@ class BaseToonMaterial extends Material {
 
 		this.uniforms = {
 			...ShaderLib.toon.uniforms,
-			...parameters.uniforms,
 			...baseUniforms,
+			...parameters.uniforms,
 		};
+		delete parameters.uniforms;
 
 		this.type = 'ShaderMaterial';
 

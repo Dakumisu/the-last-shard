@@ -60,5 +60,4 @@ void main() {
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
 
-	// gl_FragColor = vec4( color * fresnelTerm, 1.);
 }

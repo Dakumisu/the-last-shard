@@ -1,9 +1,12 @@
 #define TOON
+
 uniform vec3 diffuse;
 uniform vec3 emissive;
 uniform float opacity;
+
 varying vec3 vPositionW;
 varying vec3 vNormalW;
+
 #include <common>
 #include <packing>
 #include <dithering_pars_fragment>

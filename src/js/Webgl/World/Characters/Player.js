@@ -308,8 +308,9 @@ class Player extends BaseEntity {
 		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
 
 		const playerMaterial = new PlayerMaterial({
-			color: new Color('#d29ddc'),
+			color: new Color('red'),
 		});
+
 		this.base.model.scene.traverse((child) => {
 			child.material = playerMaterial;
 		});
@@ -367,9 +368,9 @@ class Player extends BaseEntity {
 	#setMaterial() {
 		this.base.material = new DebugMaterial();
 
-		this.base.material = new PlayerMaterial({
-			color: new Color('#d29ddc'),
-		});
+		// this.base.material = new PlayerMaterial({
+		// 	color: new Color('#d29ddc'),
+		// });
 	}
 
 	#setMesh() {

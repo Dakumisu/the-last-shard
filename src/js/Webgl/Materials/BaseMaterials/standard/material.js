@@ -12,6 +12,7 @@ class BaseStandardMaterial extends Material {
 			...parameters.uniforms,
 			...baseUniforms,
 		};
+		delete parameters.uniforms;
 
 		this.defines = { STANDARD: '' };
 

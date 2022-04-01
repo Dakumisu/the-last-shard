@@ -12,6 +12,7 @@ class BaseBasicMaterial extends Material {
 			...parameters.uniforms,
 			...baseUniforms,
 		};
+		delete parameters.uniforms;
 
 		this.type = 'ShaderMaterial';
 
