@@ -43,7 +43,8 @@ export default class Checkpoints {
 	}
 
 	update(et, dt) {
-		if (this.initialized && this.checkpointsIndex !== this.points.length) {
+		if (!this.initialized) return;
+		if (this.checkpointsIndex !== this.points.length) {
 			const inRange =
 				this.scene.player.base.mesh.position.distanceTo(this.nextCheckpointPos) < radius;
 
