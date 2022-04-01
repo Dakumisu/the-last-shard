@@ -1,4 +1,3 @@
-import { getPlayer } from '@webgl/World/Characters/Player';
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Lights from './Environment/Lights/Lights';

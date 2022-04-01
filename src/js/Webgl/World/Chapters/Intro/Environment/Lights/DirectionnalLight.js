@@ -4,7 +4,7 @@ import { getWebgl } from '@webgl/Webgl';
 
 const params = {
 	color: '#45b1e7',
-	intensity: 2,
+	intensity: 7,
 };
 
 /// #if DEBUG
@@ -26,7 +26,7 @@ export default class Directionnal {
 
 	/// #if DEBUG
 	addTodebug(parentFolder, label) {
-		const g = parentFolder.children[1];
+		const g = parentFolder.children[0];
 		const gui = g.addFolder({
 			title: label,
 		});

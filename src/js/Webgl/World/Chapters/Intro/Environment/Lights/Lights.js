@@ -7,7 +7,7 @@ import Directionnal from './DirectionnalLight';
 const debug = {
 	parentFolder: null,
 	label: 'Lights',
-	typeLabels: ['Ambient Light', 'Directionnal Light'],
+	typeLabels: ['Directionnal Light'],
 };
 /// #endif
 
@@ -34,11 +34,9 @@ export default class Lights {
 	}
 
 	setLights() {
-		const ambientLight = new Ambient();
 		const directionnalLight = new Directionnal();
 
 		/// #if DEBUG
-		ambientLight.addTodebug(debug.parentFolder, 'light one');
 		directionnalLight.addTodebug(debug.parentFolder, 'light one');
 		/// #endif
 
