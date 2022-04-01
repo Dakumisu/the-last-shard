@@ -3,10 +3,10 @@ import { Color, Group, Mesh, SphereGeometry, Vector3 } from 'three';
 /// #if DEBUG
 import { getWebgl } from '@webgl/Webgl';
 import { getPlayer } from '@webgl/World/Characters/Player';
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import Checkpoints from './Checkpoints';
 const debug = {
 	instance: null,
+	debugCam: null,
 };
 /// #endif
 
@@ -23,6 +23,7 @@ export default class BaseScene {
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
+		debug.debugCam = webgl.debugOrbitCam;
 		this.initDebug();
 		/// #endif
 	}
@@ -35,10 +36,50 @@ export default class BaseScene {
 		});
 
 		const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
-		checkpointsFolder.addButton({ title: 'Tp to checkpoint' }).on('click', () => {
-			console.log('🪄 Tp to checkpoint');
+
+		const checkpointsOptions = [];
+		for (let i = 0; i <= this.checkpoints.points.length; i++) {
+			checkpointsOptions.push({
+				text: i + '',
+				value: i,
+			});
+		}
+		checkpointsFolder
+			.addBlade({
+				view: 'list',
+				label: 'Tp debugCam',
+				options: checkpointsOptions,
+				value: 0,
+			})
+			.on('change', (e) => {
+				debug.debugCam.camObject.orbit.targetOffset.fromArray(
+					this.checkpoints.points[e.value],
+				);
+			});
+
+		checkpointsFolder.addButton({ title: 'Tp debugCam to current' }).on('click', () => {
+			console.log('🪄 Tp debugCam to current');
+			debug.debugCam.camObject.orbit.targetOffset.copy(this.checkpoints.getCurrent());
+		});
+
+		checkpointsFolder.addSeparator();
+
+		checkpointsFolder
+			.addBlade({
+				view: 'list',
+				label: 'Tp player',
+				options: checkpointsOptions,
+				value: 0,
+			})
+			.on('change', (e) => {
+				this.player.base.mesh.position.fromArray(this.checkpoints.points[e.value]);
+			});
+
+		checkpointsFolder.addButton({ title: 'Tp player to current' }).on('click', () => {
+			console.log('🪄 Tp player to current');
 			this.player.base.mesh.position.copy(this.checkpoints.getCurrent());
 		});
+
 		checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
 			label: 'Sphere',
 		});

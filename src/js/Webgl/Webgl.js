@@ -60,7 +60,7 @@ class Webgl {
 		this.camera = new MainCamera();
 
 		/// #if DEBUG
-		const debugOrbitCam = new OrbitCamera(
+		this.debugOrbitCam = new OrbitCamera(
 			{
 				spherical: {
 					radius: 5,
@@ -75,7 +75,7 @@ class Webgl {
 			},
 			'debug',
 		);
-		this.cameraController.add(debugOrbitCam);
+		this.cameraController.add(this.debugOrbitCam);
 		/// #endif
 
 		this.performance = new PerformanceMonitor();
