@@ -1,14 +1,14 @@
-import { Color, Group, Mesh, SphereGeometry, Vector3 } from 'three';
-
 /// #if DEBUG
 import { getWebgl } from '@webgl/Webgl';
-import { getPlayer } from '@webgl/World/Characters/Player';
-import Checkpoints from './Checkpoints';
 const debug = {
 	instance: null,
 	debugCam: null,
 };
 /// #endif
+
+import { Color, Group, Mesh, SphereGeometry, Vector3 } from 'three';
+import { getPlayer } from '@webgl/World/Characters/Player';
+import Checkpoints from './Checkpoints';
 
 export default class BaseScene {
 	constructor({ label, checkpoints = [] }) {
