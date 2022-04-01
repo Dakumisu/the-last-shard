@@ -50,7 +50,7 @@ class Webgl {
 		this.raf = new Raf();
 
 		this.mainScene = new MainScene();
-		this.keyboard = new Keyboard();
+		// this.keyboard = new Keyboard();
 
 		this.init();
 	}
