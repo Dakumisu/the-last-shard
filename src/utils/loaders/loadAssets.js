@@ -67,7 +67,7 @@ export async function loadCubeTexture(key) {
 
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
-		loadedTexture = await cubeTextureLoader.load(path);
+		loadedTexture = await cubeTextureLoader.loadAsync(path);
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
