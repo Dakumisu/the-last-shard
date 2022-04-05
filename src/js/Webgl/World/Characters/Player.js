@@ -615,8 +615,9 @@ class Player extends BaseEntity {
 		let axisTarget = 0;
 		let strength = 0;
 		if (!state.hasJumped) {
-			axisTarget = state.isDowning ? -0.15 : 0;
-			strength = state.isDowning ? 0.03 : 0.2;
+			axisTarget =
+				state.isDowning || state.isMounting ? (playerPosY - previousPlayerPos) * 0.5 : 0;
+			strength = state.isDowning || state.isMounting ? 0.03 : 0.2;
 		}
 		camAxisTarget = dampPrecise(camAxisTarget, axisTarget, strength, dt, 0.001);
 		this.base.camera.orbit.spherical.setPhi(
