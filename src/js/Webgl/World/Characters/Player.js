@@ -535,10 +535,12 @@ class Player extends BaseEntity {
 		if (!player.isMoving && player.realSpeed < params.speed * 0.97)
 			this.#checkPlayerStuck(collider, dt);
 
+		/// #if DEBUG
 		this.capsuleHelper.geometry.setFromPoints([
 			new Vector3(0, tLine3.start.y, 0),
 			new Vector3(0, tLine3.end.y, 0),
 		]);
+		/// #endif
 
 		// get the adjusted position of the capsule collider in world space after checking
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
