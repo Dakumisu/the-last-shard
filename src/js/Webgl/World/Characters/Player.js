@@ -118,6 +118,7 @@ let previousPlayerPos = 0;
 let playerPosY = 0;
 
 let camInertie = 0;
+let camAxisTarget = 0;
 
 /// #if DEBUG
 
@@ -194,6 +195,7 @@ class Player extends BaseEntity {
 			title: 'Position',
 		});
 
+		guiPosition.addMonitor(state, 'hasJumped', { label: 'has jumped', type: 'graph' });
 		guiPosition.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
 		guiPosition.addMonitor(state, 'isMounting', { label: 'mounting', type: 'graph' });
 		guiPosition.addMonitor(state, 'isDowning', { label: 'downing', type: 'graph' });
@@ -229,29 +231,6 @@ class Player extends BaseEntity {
 			});
 
 		guiPosition.addSeparator();
-
-		// const guiTeleport = guiPosition.addFolder({
-		// 	title: 'Teleport',
-		// });
-
-		// const dummy = {
-		// 	a: -1,
-		// };
-		// guiTeleport
-		// 	.addInput(dummy, 'a', {
-		// 		view: 'radiogrid',
-		// 		groupName: 'positions',
-		// 		size: [4, 1],
-		// 		cells: (x, y) => ({
-		// 			title: `${x + y}`,
-		// 			value: teleportPoints[x + y],
-		// 		}),
-
-		// 		label: 'points',
-		// 	})
-		// 	.on('change', (pos) => {
-		// 		this.base.mesh.position.fromArray(pos.value);
-		// 	});
 	}
 
 	#helpers() {
@@ -334,7 +313,7 @@ class Player extends BaseEntity {
 				enablePan: false,
 				rotateSpeed: 0.2,
 
-				minPolarAngle: PI * 0.25,
+				minPolarAngle: PI * 0.2,
 				maxPolarAngle: PI * 0.55,
 			},
 			'player',
@@ -585,8 +564,8 @@ class Player extends BaseEntity {
 
 	async #jump(delay = 0) {
 		if (state.isJumping) return;
-		state.isJumping = true;
 		await wait(delay);
+		state.hasJumped = state.isJumping = true;
 		playerVelocity.y = 15.0;
 		state.isJumping = false;
 	}
@@ -631,9 +610,21 @@ class Player extends BaseEntity {
 		tVec2b.copy(tVec2a);
 	}
 
-	#updateCamInertie(dt) {
+	#updatePlayerCam(dt) {
 		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
 		this.base.camera.orbit.spherical.setRadius(camParams.radius + camInertie);
+
+		let axisTarget = 0;
+		let strength = 0;
+		if (!state.hasJumped) {
+			axisTarget =
+				state.isDowning || state.isMounting ? (playerPosY - previousPlayerPos) * 0.5 : 0;
+			strength = state.isDowning || state.isMounting ? 0.03 : 0.2;
+		}
+		camAxisTarget = dampPrecise(camAxisTarget, axisTarget, strength, dt, 0.001);
+		this.base.camera.orbit.spherical.setPhi(
+			this.base.camera.orbit.spherical.phi + camAxisTarget,
+		);
 	}
 
 	#updateAnimation() {
@@ -716,8 +707,10 @@ class Player extends BaseEntity {
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
+		if (state.hasJumped) state.hasJumped = !state.playerOnGround;
+
 		this.#checkPlayerPosition(dt);
-		this.#updateCamInertie(dt);
+		this.#updatePlayerCam(dt);
 		this.#updateAnimation();
 
 		this.base.animation.update(dt);
