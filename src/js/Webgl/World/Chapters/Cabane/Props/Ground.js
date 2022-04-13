@@ -18,11 +18,10 @@ const debug = {
 
 export default class Ground extends BaseCollider {
 	constructor(scene) {
-		super();
+		super({ name: 'Map', type: 'walkable' });
 
 		this.scene = scene.instance;
 
-		this.base = {};
 		this.colliders = [];
 
 		/// #if DEBUG
@@ -32,9 +31,9 @@ export default class Ground extends BaseCollider {
 
 	/// #if DEBUG
 	helpers() {
-		this.visualizer = this.setVisualizer(this.base.mesh, 30);
-		this.visualizer.visible = false;
-		this.scene.add(this.visualizer);
+		this.initPhysicsVisualizer(30);
+		this.physicsVisualizer.visible = false;
+		this.scene.add(this.physicsVisualizer);
 
 		const size = 150;
 		const divisions = 40;
@@ -50,9 +49,7 @@ export default class Ground extends BaseCollider {
 	debug() {
 		const gui = debug.instance.addFolder({ title: debug.label });
 
-		gui.addButton({ title: 'bvh' }).on('click', () => {
-			this.visualizer.visible = !this.visualizer.visible;
-		});
+		gui.addInput(this.physicsVisualizer, 'visible', { label: 'BVH' });
 	}
 	/// #endif
 
@@ -72,22 +69,22 @@ export default class Ground extends BaseCollider {
 		planeGeo.rotateX(-Math.PI * 0.5);
 		planeGeo.translate(0, -1, 0);
 		const cubeGeo = new BoxGeometry(10, 10, 10);
-		this.base.geometry = await mergeGeometry([planeGeo, cubeGeo], [sandbox]);
+		const geometry = await mergeGeometry([planeGeo, cubeGeo], [sandbox]);
 
-		const geoOpt = {
-			lazyGeneration: false,
-		};
-		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
-		this.base.geometry.name = 'Map';
-		this.base.geometry.colliderType = 'walkable';
-
-		this.base.material = new BaseToonMaterial({
+		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#d29ddc'),
 		});
 
-		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		this.scene.add(this.base.mesh);
+		const mesh = new Mesh(geometry, material);
+
+		const geoOpt = {
+			lazyGeneration: false,
+		};
+
+		this.initPhysics(mesh, geoOpt);
+
+		this.scene.add(this.physicsMesh);
 	}
 
 	resize() {

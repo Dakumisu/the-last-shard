@@ -30,43 +30,16 @@ const debug = {
 
 export default class Ground extends BaseCollider {
 	constructor(scene) {
-		super();
+		super({ name: 'Map', type: 'walkable' });
 
 		this.scene = scene.instance;
 
-		this.base = {};
 		this.colliders = [];
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
 	}
-
-	/// #if DEBUG
-	helpers() {
-		this.visualizer = this.setVisualizer(this.base.mesh, 30);
-		this.visualizer.visible = false;
-		this.scene.add(this.visualizer);
-
-		const size = 150;
-		const divisions = 40;
-		const colorCenterLine = new Color('#f00');
-		const gridHelper = new GridHelper(size, divisions, colorCenterLine);
-
-		gridHelper.position.x = 40;
-		gridHelper.position.z = -30;
-		gridHelper.position.y = -0.8;
-		this.scene.add(gridHelper);
-	}
-
-	debug() {
-		const gui = debug.instance.addFolder({ title: debug.label });
-
-		gui.addButton({ title: 'bvh' }).on('click', () => {
-			this.visualizer.visible = !this.visualizer.visible;
-		});
-	}
-	/// #endif
 
 	async init() {
 		await this.setGround();
@@ -101,76 +74,75 @@ export default class Ground extends BaseCollider {
 			[],
 		);
 
-		this.base.geometry = await mergeGeometry([plane, platforms], [sandbox]);
+		const geometry = await mergeGeometry([plane, platforms], [sandbox]);
 
 		const geoOpt = {
 			lazyGeneration: false,
 		};
-		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
-		this.base.geometry.name = 'Map';
-		this.base.geometry.colliderType = 'walkable';
 
-		this.base.material = new BaseToonMaterial({
+		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#4e4b37'),
 		});
 
-		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		const mesh = new Mesh(geometry, material);
 
-		this.scene.add(this.base.mesh);
+		this.initPhysics(mesh, geoOpt);
+
+		this.scene.add(this.physicsMesh);
 
 		/// #if DEBUG
 		const mat4 = new Matrix4();
 
-		let testCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
-		testCube.name = 'cube1';
-		testCube.position.set(2, 1, 12);
-		testCube.flag = 'collider';
-		testCube.geometry.colliderType = 'nonWalkable';
-		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
-		testCube.updateWorldMatrix(true, false);
-		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
-		testCube.geometry.matrixWorld = testCube.matrixWorld;
+		const testCube = new BaseCollider({ name: 'cube1', type: 'nonWalkable' });
+		testCube.initPhysics(new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()));
+		testCube.physicsMesh.position.set(2, 1, 12);
 
-		this.colliders.push(testCube);
+		const testCube2 = new BaseCollider({ name: 'cube2', type: 'nonWalkable' });
+		testCube2.initPhysics(new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()));
+		testCube2.physicsMesh.position.set(-6, 1, 12);
 
-		testCube = new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial());
-		testCube.flag = 'collider';
-		testCube.geometry.colliderType = 'nonWalkable';
-		testCube.name = 'cube2';
-		testCube.position.set(-6, 1, 12);
-		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
-		testCube.updateWorldMatrix(true, false);
-		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
-		testCube.geometry.matrixWorld = testCube.matrixWorld;
+		const testCube3 = new BaseCollider({ name: 'cube3', type: 'nonWalkable' });
+		testCube3.initPhysics(new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()));
+		testCube3.physicsMesh.position.set(-3, 1, -20);
 
-		this.colliders.push(testCube);
+		const testCube4 = new BaseCollider({ name: 'cube4', type: 'nonWalkable' });
+		testCube4.initPhysics(new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial()));
+		testCube4.physicsMesh.position.set(-10, 1, 20);
 
-		testCube = new Mesh(new BoxGeometry(3, 30, 3), new MeshNormalMaterial());
-		testCube.flag = 'collider';
-		testCube.geometry.colliderType = 'nonWalkable';
-		testCube.name = 'cube3';
-		testCube.position.set(-3, 1, -20);
-		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
-		testCube.updateWorldMatrix(true, false);
-		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
-		testCube.geometry.matrixWorld = testCube.matrixWorld;
+		this.colliders.push(
+			testCube.physicsMesh,
+			testCube2.physicsMesh,
+			testCube3.physicsMesh,
+			testCube4.physicsMesh,
+		);
 
-		this.colliders.push(testCube);
-
-		testCube = new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial());
-		testCube.flag = 'collider';
-		testCube.geometry.colliderType = 'nonWalkable';
-		testCube.name = 'cube4';
-		testCube.position.set(-10, 1, 20);
-		testCube.geometry.boundsTree = this.setPhysics(testCube.geometry, geoOpt);
-		testCube.updateWorldMatrix(true, false);
-		mat4.multiplyMatrices(testCube.matrixWorld, testCube.matrix);
-		testCube.geometry.matrixWorld = testCube.matrixWorld;
-
-		this.colliders.push(testCube);
 		/// #endif
 	}
+
+	/// #if DEBUG
+	helpers() {
+		this.initPhysicsVisualizer(30);
+		this.physicsVisualizer.visible = false;
+		this.scene.add(this.physicsVisualizer);
+
+		const size = 150;
+		const divisions = 40;
+		const colorCenterLine = new Color('#f00');
+		const gridHelper = new GridHelper(size, divisions, colorCenterLine);
+
+		gridHelper.position.x = 40;
+		gridHelper.position.z = -30;
+		gridHelper.position.y = -0.8;
+		this.scene.add(gridHelper);
+	}
+
+	debug() {
+		const gui = debug.instance.addFolder({ title: debug.label });
+
+		gui.addInput(this.physicsVisualizer, 'visible', { label: 'BVH' });
+	}
+	/// #endif
 
 	resize() {
 		if (!initialized) return;

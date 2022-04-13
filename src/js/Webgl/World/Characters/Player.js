@@ -184,9 +184,6 @@ class Player extends BaseEntity {
 			step: 1,
 		});
 
-		gui.addButton({ title: 'bvh' }).on('click', () => {
-			this.visualizer.visible = !this.visualizer.visible;
-		});
 		gui.addButton({ title: 'broadphase' }).on('click', () => {
 			this.broadphaseHelper.visible = !this.broadphaseHelper.visible;
 		});
@@ -234,9 +231,12 @@ class Player extends BaseEntity {
 	}
 
 	#helpers() {
-		this.visualizer = this.setVisualizer(this.base.mesh, 15);
-		this.visualizer.visible = false;
-		this.scene.add(this.visualizer);
+		this.initPhysicsVisualizer(15);
+		this.physicsVisualizer.visible = false;
+		this.scene.add(this.physicsVisualizer);
+
+		const gui = debug.instance.getFolder(debug.label);
+		gui.addInput(this.physicsVisualizer, 'visible', { label: 'BVH' });
 
 		const axesHelper = new AxesHelper(2);
 		// axesHelper.visible = false;
@@ -286,7 +286,12 @@ class Player extends BaseEntity {
 		this.#setMaterial();
 		this.#setMesh();
 
+		this.initPhysics(this.base.mesh, {
+			lazyGeneration: false,
+		});
+
 		await this.#setModel();
+
 		this.#setAnimation();
 
 		this.#setListeners();
@@ -333,10 +338,6 @@ class Player extends BaseEntity {
 			},
 			segment: new Line3(new Vector3(), new Vector3(0, -1, 0)),
 		};
-
-		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, {
-			lazyGeneration: false,
-		});
 	}
 
 	#setMaterial() {

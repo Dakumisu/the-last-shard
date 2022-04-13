@@ -1,33 +1,43 @@
 import { BufferGeometry, Mesh } from 'three';
 import { acceleratedRaycast, MeshBVH, MeshBVHVisualizer } from 'three-mesh-bvh';
 
-import { getWebgl } from '@webgl/Webgl';
-
-let initialized = false;
-
 // Add the raycast function. Assumes the BVH is available on
 // the `boundsTree` variable
 Mesh.prototype.raycast = acceleratedRaycast;
 
-export default class BasePhysic {
-	constructor() {}
+export default class {
+	constructor() {
+		this.physicsInitialized = false;
+		this.physicsMesh = null;
+	}
 
-	setPhysics(geometry, options = {}) {
-		if (!geometry || !(geometry instanceof BufferGeometry)) {
+	/**
+	 * @param {Mesh} mesh
+	 * @param {Object} options
+	 */
+	initPhysics(mesh, options = {}) {
+		this.physicsMesh = mesh;
+
+		if (!this.physicsMesh.geometry || !(this.physicsMesh.geometry instanceof BufferGeometry)) {
 			console.error('Need geometry');
 			return null;
 		}
 
-		return new MeshBVH(geometry, options);
+		this.physicsMesh.geometry.boundsTree = new MeshBVH(this.physicsMesh.geometry, options);
+
+		this.physicsMesh.updateWorldMatrix(true, false);
+		this.physicsMesh.geometry.matrixWorld = this.physicsMesh.matrixWorld;
+
+		this.physicsInitialized = true;
 	}
 
 	/// #if DEBUG
-	setVisualizer(collider, depth = 20) {
-		if (!collider || !(collider instanceof Mesh)) {
-			console.error('Need collider');
+	initPhysicsVisualizer(depth = 20) {
+		if (!this.physicsMesh || !(this.physicsMesh instanceof Mesh)) {
+			console.error('Need Mesh collider');
 			return null;
 		}
-		return new MeshBVHVisualizer(collider, depth);
+		this.physicsVisualizer = new MeshBVHVisualizer(this.physicsMesh, depth);
 	}
 	/// #endif
 }

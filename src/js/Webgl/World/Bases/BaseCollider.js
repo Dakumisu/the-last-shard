@@ -4,8 +4,16 @@ import BasePhysic from './BasePhysic';
 let initialized = false;
 
 export default class BaseCollider extends BasePhysic {
-	constructor() {
+	constructor({ name, type }) {
 		super();
+		this.name = name;
+		this.type = type;
+	}
+
+	initPhysics(mesh, options = {}) {
+		super.initPhysics(mesh, options);
+		this.physicsMesh.name = this.name;
+		this.physicsMesh.geometry.colliderType = this.type;
 	}
 
 	// addCollider(mesh) {

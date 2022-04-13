@@ -18,43 +18,16 @@ const debug = {
 
 export default class Ground extends BaseCollider {
 	constructor(scene) {
-		super();
+		super({ name: 'Map', type: 'walkable' });
 
 		this.scene = scene.instance;
 
-		this.base = {};
 		this.colliders = [];
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
 	}
-
-	/// #if DEBUG
-	helpers() {
-		this.visualizer = this.setVisualizer(this.base.mesh, 30);
-		this.visualizer.visible = false;
-		this.scene.add(this.visualizer);
-
-		const size = 150;
-		const divisions = 40;
-		const colorCenterLine = new Color('#f00');
-		const gridHelper = new GridHelper(size, divisions, colorCenterLine);
-
-		gridHelper.position.x = 40;
-		gridHelper.position.z = -30;
-		gridHelper.position.y = -0.8;
-		this.scene.add(gridHelper);
-	}
-
-	debug() {
-		const gui = debug.instance.addFolder({ title: debug.label });
-
-		gui.addButton({ title: 'bvh' }).on('click', () => {
-			this.visualizer.visible = !this.visualizer.visible;
-		});
-	}
-	/// #endif
 
 	async init() {
 		await this.setGround();
@@ -72,23 +45,46 @@ export default class Ground extends BaseCollider {
 		planeGeo.rotateX(-Math.PI * 0.5);
 		planeGeo.translate(0, -1, 0);
 		const cubeGeo = new BoxGeometry(10, 10, 10);
-		this.base.geometry = await mergeGeometry([planeGeo, cubeGeo], [sandbox]);
 
-		const geoOpt = {
-			lazyGeneration: false,
-		};
-		this.base.geometry.boundsTree = this.setPhysics(this.base.geometry, geoOpt);
-		this.base.geometry.name = 'Map';
-		this.base.geometry.colliderType = 'walkable';
-
-		this.base.material = new BaseToonMaterial({
+		const geometry = await mergeGeometry([planeGeo, cubeGeo], [sandbox]);
+		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#d29ddc'),
 		});
 
-		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		this.scene.add(this.base.mesh);
+		const geoOpt = {
+			lazyGeneration: false,
+		};
+		const mesh = new Mesh(geometry, material);
+
+		this.initPhysics(mesh, geoOpt);
+
+		this.scene.add(this.physicsMesh);
 	}
+
+	/// #if DEBUG
+	helpers() {
+		this.initPhysicsVisualizer(30);
+		this.physicsVisualizer.visible = false;
+		this.scene.add(this.physicsVisualizer);
+
+		const size = 150;
+		const divisions = 40;
+		const colorCenterLine = new Color('#f00');
+		const gridHelper = new GridHelper(size, divisions, colorCenterLine);
+
+		gridHelper.position.x = 40;
+		gridHelper.position.z = -30;
+		gridHelper.position.y = -0.8;
+		this.scene.add(gridHelper);
+	}
+
+	debug() {
+		const gui = debug.instance.addFolder({ title: debug.label });
+
+		gui.addInput(this.physicsVisualizer, 'visible', { label: 'BVH' });
+	}
+	/// #endif
 
 	resize() {
 		if (!initialized) return;
