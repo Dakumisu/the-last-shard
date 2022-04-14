@@ -666,12 +666,15 @@ class Player extends BaseEntity {
 	update(et, dt) {
 		if (!initialized) return;
 
-		this.updateBroadphase(this.base.mesh.position);
+		this.broadphase.update(this.base.mesh.position);
 
-		if (this.colliders.length)
-			this.colliders.forEach((collider) => {
+		if (this.broadphase.currentObjects.length)
+			this.broadphase.currentObjects.forEach((collider) => {
 				for (let i = 0; i < params.physicsSteps; i++)
-					this.#move(dt / params.physicsSteps / this.colliders.length, collider);
+					this.#move(
+						dt / params.physicsSteps / this.broadphase.currentObjects.length,
+						collider,
+					);
 			});
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);

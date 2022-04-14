@@ -107,8 +107,8 @@ export default class IntroScene extends BaseScene {
 	addTo(mainScene) {
 		super.addTo(mainScene);
 
-		this.player.setMainCollider(this.ground);
-		this.player.setPropsColliders(this.colliders);
+		this.player.broadphase.setMainCollider(this.ground);
+		this.player.broadphase.setPropsColliders(this.colliders);
 
 		this.fog.set();
 	}

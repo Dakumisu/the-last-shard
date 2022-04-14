@@ -1,18 +1,16 @@
 import { BufferGeometry, Mesh } from 'three';
 import { acceleratedRaycast, MeshBVH, MeshBVHVisualizer } from 'three-mesh-bvh';
+import BaseObject from './BaseObject';
 
 // Add the raycast function. Assumes the BVH is available on
 // the `boundsTree` variable
 Mesh.prototype.raycast = acceleratedRaycast;
 
-export default class BasePhysic {
+export default class BasePhysic extends BaseObject {
 	constructor({ mesh = null, name = '' } = {}) {
-		this.physicsInitialized = false;
+		super({ mesh, name });
 
-		this.base = {
-			mesh,
-			name,
-		};
+		this.physicsInitialized = false;
 	}
 
 	/**
@@ -24,7 +22,7 @@ export default class BasePhysic {
 			!this.base.mesh.geometry ||
 			!(this.base.mesh.geometry instanceof BufferGeometry)
 		) {
-			console.error('Need geometry in Mesh');
+			console.error('Need geometry in Mesh, check if this.base.mesh exists');
 			return null;
 		}
 
