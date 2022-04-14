@@ -30,7 +30,6 @@ export default class Ground extends BaseCollider {
 	/// #if DEBUG
 	helpers() {
 		this.initPhysicsVisualizer(30);
-		this.physicsVisualizer.visible = false;
 		this.scene.add(this.physicsVisualizer);
 
 		const size = 150;

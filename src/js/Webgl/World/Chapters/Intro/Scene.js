@@ -15,6 +15,7 @@ import {
 } from 'three';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
+import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
@@ -60,6 +61,7 @@ export default class IntroScene extends BaseScene {
 			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
 			name: 'cube1',
 			type: 'nonWalkable',
+			isInteractable: true,
 		});
 		testCube.initPhysics();
 		testCube.base.mesh.position.set(2, 1, 12);
@@ -68,6 +70,7 @@ export default class IntroScene extends BaseScene {
 			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
 			name: 'cube2',
 			type: 'nonWalkable',
+			isInteractable: true,
 		});
 		testCube2.initPhysics();
 		testCube2.base.mesh.position.set(-6, 1, 12);
@@ -76,6 +79,7 @@ export default class IntroScene extends BaseScene {
 			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
 			name: 'cube3',
 			type: 'nonWalkable',
+			isInteractable: true,
 		});
 		testCube3.initPhysics();
 		testCube3.base.mesh.position.set(-3, 1, -20);
@@ -84,11 +88,17 @@ export default class IntroScene extends BaseScene {
 			mesh: new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial()),
 			name: 'cube4',
 			type: 'nonWalkable',
+			isInteractable: true,
 		});
 		testCube4.initPhysics();
 		testCube4.base.mesh.position.set(-10, 1, 20);
 
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
+
+		this.interactablesBroadphase = new InteractablesBroadphase({
+			radius: 2,
+			objectsToTest: this.colliders,
+		});
 
 		/// #endif
 
@@ -102,6 +112,11 @@ export default class IntroScene extends BaseScene {
 		super.update(et, dt);
 		if (this.ground) this.ground.update(et, dt);
 		if (this.grass) this.grass.update(et, dt);
+
+		/// #if DEBUG
+		if (this.interactablesBroadphase)
+			this.interactablesBroadphase.update(this.player.base.mesh.position);
+		/// #endif
 	}
 
 	addTo(mainScene) {

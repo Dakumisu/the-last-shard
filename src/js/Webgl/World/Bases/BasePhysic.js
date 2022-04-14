@@ -7,15 +7,12 @@ import BaseObject from './BaseObject';
 Mesh.prototype.raycast = acceleratedRaycast;
 
 export default class BasePhysic extends BaseObject {
-	constructor({ mesh = null, name = '' } = {}) {
-		super({ mesh, name });
+	constructor({ mesh = null, name = '', isInteractable = false } = {}) {
+		super({ mesh, name, isInteractable });
 
 		this.physicsInitialized = false;
 	}
 
-	/**
-	 * @param {Object} options
-	 */
 	initPhysics(options = {}) {
 		if (
 			!this.base.mesh ||
@@ -41,6 +38,7 @@ export default class BasePhysic extends BaseObject {
 			return null;
 		}
 		this.physicsVisualizer = new MeshBVHVisualizer(this.base.mesh, depth);
+		this.physicsVisualizer.visible = false;
 	}
 	/// #endif
 }

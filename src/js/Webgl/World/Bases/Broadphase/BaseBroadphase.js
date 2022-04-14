@@ -12,15 +12,17 @@ export default class BaseBroadphase {
 		this.currentObjects = [];
 	}
 
-	#add(object) {
-		if (!this.currentObjects.includes(object)) this.currentObjects.push(object);
+	add(object) {
+		if (!this.currentObjects.includes(object)) {
+			this.currentObjects.push(object);
+		}
 	}
 
-	#remove(object) {
+	remove(object) {
 		if (this.currentObjects.indexOf(object) === -1) return;
 
-		const id = this.currentObjects.indexOf(object);
-		this.currentObjects.splice(id, 1);
+		const index = this.currentObjects.indexOf(object);
+		this.currentObjects.splice(index, 1);
 	}
 
 	update(positionToTest) {
@@ -32,8 +34,8 @@ export default class BaseBroadphase {
 
 			const d = tBox3c.distanceToPoint(positionToTest);
 
-			if (d <= this.radius) this.#add(object);
-			else this.#remove(object);
+			if (d <= this.radius) this.add(object);
+			else this.remove(object);
 		});
 	}
 }

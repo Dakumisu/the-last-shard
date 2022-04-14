@@ -2,13 +2,14 @@ import signal from 'philbin-packages/signal';
 
 import { getGame } from './Game';
 
-const movementKey = {
+const controlsKey = {
 	forward: 'Z',
 	left: 'Q',
 	backward: 'S',
 	right: 'D',
 	space: 'SPACE',
 	shift: 'SHIFT',
+	interact: 'F',
 };
 
 export default class Control {
@@ -30,51 +31,59 @@ export default class Control {
 			right: false,
 			space: false,
 			shift: false,
+			interact: false,
 		};
 	}
 
 	keyDown(key) {
 		switch (key) {
-			case movementKey.forward:
+			case controlsKey.forward:
 				this.keyPressed.forward = true;
 				break;
-			case movementKey.backward:
+			case controlsKey.backward:
 				this.keyPressed.backward = true;
 				break;
-			case movementKey.right:
+			case controlsKey.right:
 				this.keyPressed.right = true;
 				break;
-			case movementKey.left:
+			case controlsKey.left:
 				this.keyPressed.left = true;
 				break;
-			case movementKey.space:
+			case controlsKey.space:
 				this.keyPressed.space = true;
 				break;
-			case movementKey.shift:
+			case controlsKey.shift:
 				this.keyPressed.shift = true;
+				break;
+			case controlsKey.interact:
+				this.keyPressed.interact = true;
+				signal.emit('interact');
 				break;
 		}
 	}
 
 	keyUp(key) {
 		switch (key) {
-			case movementKey.forward:
+			case controlsKey.forward:
 				this.keyPressed.forward = false;
 				break;
-			case movementKey.backward:
+			case controlsKey.backward:
 				this.keyPressed.backward = false;
 				break;
-			case movementKey.right:
+			case controlsKey.right:
 				this.keyPressed.right = false;
 				break;
-			case movementKey.left:
+			case controlsKey.left:
 				this.keyPressed.left = false;
 				break;
-			case movementKey.space:
+			case controlsKey.space:
 				this.keyPressed.space = false;
 				break;
-			case movementKey.shift:
+			case controlsKey.shift:
 				this.keyPressed.shift = false;
+				break;
+			case controlsKey.interact:
+				this.keyPressed.interact = false;
 				break;
 		}
 	}

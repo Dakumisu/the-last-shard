@@ -228,7 +228,6 @@ class Player extends BaseEntity {
 
 	#helpers() {
 		this.initPhysicsVisualizer(15);
-		this.physicsVisualizer.visible = false;
 		this.scene.add(this.physicsVisualizer);
 
 		const gui = debug.instance.getFolder(debug.label);

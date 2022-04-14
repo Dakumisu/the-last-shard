@@ -4,8 +4,8 @@ import BasePhysic from './BasePhysic';
 let initialized = false;
 
 export default class BaseCollider extends BasePhysic {
-	constructor({ mesh = null, name = '', type = '' } = {}) {
-		super({ mesh, name });
+	constructor({ mesh = null, name = '', type = '', isInteractable = false } = {}) {
+		super({ mesh, name, isInteractable });
 
 		this.base.type = type;
 	}
