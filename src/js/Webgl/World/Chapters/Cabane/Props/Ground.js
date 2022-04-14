@@ -22,8 +22,6 @@ export default class Ground extends BaseCollider {
 
 		this.scene = scene.instance;
 
-		this.colliders = [];
-
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif

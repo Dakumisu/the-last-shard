@@ -16,6 +16,8 @@ export default class BaseScene {
 
 		this.player = getPlayer();
 
+		this.colliders = [];
+
 		this.instance = new Group();
 
 		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });

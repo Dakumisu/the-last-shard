@@ -10,12 +10,6 @@ export default class BaseCollider extends BasePhysic {
 		this.type = type;
 	}
 
-	initPhysics(mesh, options = {}) {
-		super.initPhysics(mesh, options);
-		this.physicsMesh.name = this.name;
-		this.physicsMesh.geometry.colliderType = this.type;
-	}
-
 	// addCollider(mesh) {
 	// 	if (!(mesh instanceof Mesh)) {
 	// 		console.error(`Mesh required ❌`);

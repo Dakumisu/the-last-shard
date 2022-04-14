@@ -146,9 +146,6 @@ class Player extends BaseEntity {
 		this.scene = webgl.mainScene.instance;
 		this.cameraController = webgl.cameraController;
 
-		this.colliders = [];
-		this.collidersToTest = [];
-
 		this.base = {};
 		this.base.group = new Group();
 
@@ -474,7 +471,7 @@ class Player extends BaseEntity {
 
 		// adjust player position based on collisions
 		tBox3a.makeEmpty();
-		tMat4a.copy(collider.matrixWorld).invert();
+		tMat4a.copy(collider.physicsMesh.geometry.matrixWorld).invert();
 		tLine3.copy(this.base.capsuleInfo.segment);
 
 		// get the position of the capsule in the local space of the collider
@@ -493,7 +490,7 @@ class Player extends BaseEntity {
 		tBox3b.min.addScalar(-this.base.capsuleInfo.radius.body);
 		tBox3b.max.addScalar(this.base.capsuleInfo.radius.body);
 
-		collider.boundsTree.shapecast({
+		collider.physicsMesh.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3a),
 
 			intersectsTriangle: (tri) => {
@@ -526,14 +523,14 @@ class Player extends BaseEntity {
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
 		// the origin of the player model.
 		const newPosition = tVec3a;
-		newPosition.copy(tLine3.start).applyMatrix4(collider.matrixWorld);
+		newPosition.copy(tLine3.start).applyMatrix4(collider.physicsMesh.geometry.matrixWorld);
 
 		// check how much the collider was moved
 		const deltaVector = tVec3b;
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
-		if (collider.colliderType === 'walkable')
+		if (collider.type === 'walkable')
 			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
 		const offset = Math.max(0, deltaVector.length() - 1e-5);
@@ -572,7 +569,7 @@ class Player extends BaseEntity {
 	}
 
 	#checkPlayerStuck(collider, dt) {
-		collider.boundsTree.shapecast({
+		collider.physicsMesh.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3b),
 
 			intersectsTriangle: (tri) => {
@@ -656,31 +653,6 @@ class Player extends BaseEntity {
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
-	#updateBroadphase() {
-		this.collidersToTest.forEach((object) => {
-			tBox3c.makeEmpty();
-			tBox3c.copy(object.geometry.boundingBox);
-			tMat4b.copy(object.matrixWorld);
-			tBox3c.applyMatrix4(tMat4b);
-
-			const d = tBox3c.distanceToPoint(this.base.mesh.position);
-
-			if (d <= params.broadphaseRadius) this.#addCollider(object);
-			else this.#removeCollider(object);
-		});
-	}
-
-	#addCollider(collider) {
-		if (!this.colliders.includes(collider.geometry)) this.colliders.push(collider.geometry);
-	}
-
-	#removeCollider(collider) {
-		if (this.colliders.indexOf(collider.geometry) === -1) return;
-
-		const id = this.colliders.indexOf(collider.geometry);
-		this.colliders.splice(id, 1);
-	}
-
 	reset() {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
@@ -695,7 +667,7 @@ class Player extends BaseEntity {
 	update(et, dt) {
 		if (!initialized) return;
 
-		this.#updateBroadphase();
+		this.updateBroadphase(this.base.mesh.position);
 
 		if (this.colliders.length)
 			this.colliders.forEach((collider) => {
@@ -717,23 +689,6 @@ class Player extends BaseEntity {
 		this.base.animation.update(dt);
 	}
 
-	setMainCollider(geo) {
-		if (!(geo instanceof BufferGeometry)) {
-			console.error(`BufferGeometry required ❌`);
-			return;
-		}
-		this.colliders = [];
-		this.colliders.push(geo);
-	}
-
-	setPropsColliders(array) {
-		if (!(array instanceof Array)) {
-			console.error(`Array required ❌`);
-			return;
-		}
-		this.collidersToTest = array;
-	}
-
 	setCheckpoint(pos) {
 		this.checkpoint = pos;
 	}
@@ -744,10 +699,18 @@ class Player extends BaseEntity {
 	}
 }
 
+/**
+ *
+ * @returns {Player}
+ */
 const initPlayer = () => {
 	return new Player();
 };
 
+/**
+ *
+ * @returns {Player}
+ */
 const getPlayer = () => {
 	return Player.instance;
 };

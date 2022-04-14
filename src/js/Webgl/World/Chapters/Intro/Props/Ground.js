@@ -34,8 +34,6 @@ export default class Ground extends BaseCollider {
 
 		this.scene = scene.instance;
 
-		this.colliders = [];
-
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
@@ -90,34 +88,6 @@ export default class Ground extends BaseCollider {
 		this.initPhysics(mesh, geoOpt);
 
 		this.scene.add(this.physicsMesh);
-
-		/// #if DEBUG
-		const mat4 = new Matrix4();
-
-		const testCube = new BaseCollider({ name: 'cube1', type: 'nonWalkable' });
-		testCube.initPhysics(new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()));
-		testCube.physicsMesh.position.set(2, 1, 12);
-
-		const testCube2 = new BaseCollider({ name: 'cube2', type: 'nonWalkable' });
-		testCube2.initPhysics(new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()));
-		testCube2.physicsMesh.position.set(-6, 1, 12);
-
-		const testCube3 = new BaseCollider({ name: 'cube3', type: 'nonWalkable' });
-		testCube3.initPhysics(new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()));
-		testCube3.physicsMesh.position.set(-3, 1, -20);
-
-		const testCube4 = new BaseCollider({ name: 'cube4', type: 'nonWalkable' });
-		testCube4.initPhysics(new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial()));
-		testCube4.physicsMesh.position.set(-10, 1, 20);
-
-		this.colliders.push(
-			testCube.physicsMesh,
-			testCube2.physicsMesh,
-			testCube3.physicsMesh,
-			testCube4.physicsMesh,
-		);
-
-		/// #endif
 	}
 
 	/// #if DEBUG
