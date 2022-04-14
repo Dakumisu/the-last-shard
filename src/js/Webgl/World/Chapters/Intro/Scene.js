@@ -73,7 +73,7 @@ export default class IntroScene extends BaseScene {
 			isInteractable: true,
 		});
 		testCube2.initPhysics();
-		testCube2.base.mesh.position.set(-6, 1, 12);
+		testCube2.base.mesh.position.set(-3, 1, 12);
 
 		const testCube3 = new BaseCollider({
 			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
@@ -86,7 +86,7 @@ export default class IntroScene extends BaseScene {
 
 		const testCube4 = new BaseCollider({
 			mesh: new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial()),
-			name: 'cube4',
+			name: 'sphere',
 			type: 'nonWalkable',
 			isInteractable: true,
 		});
@@ -96,7 +96,7 @@ export default class IntroScene extends BaseScene {
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
 
 		this.interactablesBroadphase = new InteractablesBroadphase({
-			radius: 2,
+			radius: 10,
 			objectsToTest: this.colliders,
 		});
 

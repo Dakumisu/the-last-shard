@@ -10,7 +10,8 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 	}
 
 	add(object) {
-		this.currentObjects[0] = null;
+		if (this.currentObjects[0] && this.currentObjects[0] !== object)
+			this.remove(this.currentObjects[0]);
 		super.add(object);
 		if (object.base.isInteractable && !object.isInBroadphaseRange) {
 			/// #if DEBUG
@@ -31,8 +32,8 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 	}
 
 	update(positionToTest) {
-		// Save previous distance
 		let _d;
+		let nearestObject;
 
 		this.objectsToTest.forEach((object) => {
 			tBox3c.makeEmpty();
@@ -43,11 +44,11 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 			const d = tBox3c.distanceToPoint(positionToTest);
 			if (!_d) _d = d;
 
-			// if previous distance is greater than current distance, set current object as interactable
-			if (d <= this.radius && d <= _d) {
-				this.add(object);
-			} else this.remove(object);
+			// if previous distance is greater than current distance, save nearestObject
+			if (d <= this.radius && d <= _d) nearestObject = object;
 		});
-		console.log(this.currentObjects.length);
+
+		if (nearestObject) this.add(nearestObject);
+		else if (this.currentObjects[0]) this.remove(this.currentObjects[0]);
 	}
 }
