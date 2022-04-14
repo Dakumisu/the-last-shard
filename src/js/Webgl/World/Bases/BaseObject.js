@@ -11,15 +11,15 @@ export default class BaseObject {
 
 		if (this.base.isInteractable) {
 			this.isInBroadphaseRange = false;
-			signal.on('interact', this.#interact.bind(this));
+			signal.on('interact', this.interact.bind(this));
 		}
 	}
 
-	#interact() {
+	interact() {
 		if (this.isInBroadphaseRange) {
 			if (this.base.mesh)
 				this.base.mesh.material = new BaseBasicMaterial({ color: '#ff0000' });
-			console.log('interact with :', this);
+			console.log('🎮 Interacting with :', this.base.name);
 		}
 	}
 }

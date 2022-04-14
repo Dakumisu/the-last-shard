@@ -10,13 +10,24 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 	}
 
 	add(object) {
+		this.currentObjects[0] = null;
 		super.add(object);
-		if (object.base.isInteractable) object.isInBroadphaseRange = true;
+		if (object.base.isInteractable && !object.isInBroadphaseRange) {
+			/// #if DEBUG
+			console.log('🎮 Press F to interact');
+			/// #endif
+			object.isInBroadphaseRange = true;
+		}
 	}
 
 	remove(object) {
 		super.remove(object);
-		if (object.base.isInteractable) object.isInBroadphaseRange = false;
+		if (object.base.isInteractable && object.isInBroadphaseRange) {
+			/// #if DEBUG
+			console.log('🎮 Out of range to interact');
+			/// #endif
+			object.isInBroadphaseRange = false;
+		}
 	}
 
 	update(positionToTest) {
@@ -33,10 +44,10 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 			if (!_d) _d = d;
 
 			// if previous distance is greater than current distance, set current object as interactable
-			// console.log(d, _d);
-			if (d <= this.radius && d <= _d) this.add(object);
-			else this.remove(object);
+			if (d <= this.radius && d <= _d) {
+				this.add(object);
+			} else this.remove(object);
 		});
-		// console.log(this.currentObjects);
+		console.log(this.currentObjects.length);
 	}
 }
