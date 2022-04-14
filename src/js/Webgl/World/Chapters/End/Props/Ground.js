@@ -53,11 +53,11 @@ export default class Ground extends BaseCollider {
 		const geoOpt = {
 			lazyGeneration: false,
 		};
-		const mesh = new Mesh(geometry, material);
+		this.base.mesh = new Mesh(geometry, material);
 
-		this.initPhysics(mesh, geoOpt);
+		this.initPhysics(geoOpt);
 
-		this.scene.add(this.physicsMesh);
+		this.scene.add(this.base.mesh);
 	}
 
 	/// #if DEBUG

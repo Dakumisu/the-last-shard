@@ -5,39 +5,44 @@ import { acceleratedRaycast, MeshBVH, MeshBVHVisualizer } from 'three-mesh-bvh';
 // the `boundsTree` variable
 Mesh.prototype.raycast = acceleratedRaycast;
 
-export default class {
-	constructor() {
+export default class BasePhysic {
+	constructor({ mesh = null, name = '' } = {}) {
 		this.physicsInitialized = false;
-		this.physicsMesh = null;
+
+		this.base = {
+			mesh,
+			name,
+		};
 	}
 
 	/**
-	 * @param {Mesh} mesh
 	 * @param {Object} options
 	 */
-	initPhysics(mesh, options = {}) {
-		this.physicsMesh = mesh;
-
-		if (!this.physicsMesh.geometry || !(this.physicsMesh.geometry instanceof BufferGeometry)) {
-			console.error('Need geometry');
+	initPhysics(options = {}) {
+		if (
+			!this.base.mesh ||
+			!this.base.mesh.geometry ||
+			!(this.base.mesh.geometry instanceof BufferGeometry)
+		) {
+			console.error('Need geometry in Mesh');
 			return null;
 		}
 
-		this.physicsMesh.geometry.boundsTree = new MeshBVH(this.physicsMesh.geometry, options);
+		this.base.mesh.geometry.boundsTree = new MeshBVH(this.base.mesh.geometry, options);
 
-		this.physicsMesh.updateWorldMatrix(true, false);
-		this.physicsMesh.geometry.matrixWorld = this.physicsMesh.matrixWorld;
+		this.base.mesh.updateWorldMatrix(true, false);
+		this.base.mesh.geometry.matrixWorld = this.base.mesh.matrixWorld;
 
 		this.physicsInitialized = true;
 	}
 
 	/// #if DEBUG
 	initPhysicsVisualizer(depth = 20) {
-		if (!this.physicsMesh || !(this.physicsMesh instanceof Mesh)) {
+		if (!this.base.mesh || !(this.base.mesh instanceof Mesh)) {
 			console.error('Need Mesh collider');
 			return null;
 		}
-		this.physicsVisualizer = new MeshBVHVisualizer(this.physicsMesh, depth);
+		this.physicsVisualizer = new MeshBVHVisualizer(this.base.mesh, depth);
 	}
 	/// #endif
 }

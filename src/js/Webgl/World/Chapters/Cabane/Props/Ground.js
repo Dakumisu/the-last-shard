@@ -74,15 +74,15 @@ export default class Ground extends BaseCollider {
 			color: new Color('#d29ddc'),
 		});
 
-		const mesh = new Mesh(geometry, material);
+		this.base.mesh = new Mesh(geometry, material);
 
 		const geoOpt = {
 			lazyGeneration: false,
 		};
 
-		this.initPhysics(mesh, geoOpt);
+		this.initPhysics(geoOpt);
 
-		this.scene.add(this.physicsMesh);
+		this.scene.add(this.base.mesh);
 	}
 
 	resize() {

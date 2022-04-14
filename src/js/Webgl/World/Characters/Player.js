@@ -146,7 +146,6 @@ class Player extends BaseEntity {
 		this.scene = webgl.mainScene.instance;
 		this.cameraController = webgl.cameraController;
 
-		this.base = {};
 		this.base.group = new Group();
 
 		this.raycaster = webgl.raycaster;
@@ -283,7 +282,7 @@ class Player extends BaseEntity {
 		this.#setMaterial();
 		this.#setMesh();
 
-		this.initPhysics(this.base.mesh, {
+		this.initPhysics({
 			lazyGeneration: false,
 		});
 
@@ -471,7 +470,7 @@ class Player extends BaseEntity {
 
 		// adjust player position based on collisions
 		tBox3a.makeEmpty();
-		tMat4a.copy(collider.physicsMesh.geometry.matrixWorld).invert();
+		tMat4a.copy(collider.base.mesh.geometry.matrixWorld).invert();
 		tLine3.copy(this.base.capsuleInfo.segment);
 
 		// get the position of the capsule in the local space of the collider
@@ -490,7 +489,7 @@ class Player extends BaseEntity {
 		tBox3b.min.addScalar(-this.base.capsuleInfo.radius.body);
 		tBox3b.max.addScalar(this.base.capsuleInfo.radius.body);
 
-		collider.physicsMesh.geometry.boundsTree.shapecast({
+		collider.base.mesh.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3a),
 
 			intersectsTriangle: (tri) => {
@@ -523,14 +522,14 @@ class Player extends BaseEntity {
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
 		// the origin of the player model.
 		const newPosition = tVec3a;
-		newPosition.copy(tLine3.start).applyMatrix4(collider.physicsMesh.geometry.matrixWorld);
+		newPosition.copy(tLine3.start).applyMatrix4(collider.base.mesh.geometry.matrixWorld);
 
 		// check how much the collider was moved
 		const deltaVector = tVec3b;
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
-		if (collider.type === 'walkable')
+		if (collider.base.type === 'walkable')
 			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
 		const offset = Math.max(0, deltaVector.length() - 1e-5);
@@ -569,7 +568,7 @@ class Player extends BaseEntity {
 	}
 
 	#checkPlayerStuck(collider, dt) {
-		collider.physicsMesh.geometry.boundsTree.shapecast({
+		collider.base.mesh.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3b),
 
 			intersectsTriangle: (tri) => {

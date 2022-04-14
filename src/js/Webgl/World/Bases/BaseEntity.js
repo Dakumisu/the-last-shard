@@ -8,13 +8,11 @@ const tMat4b = new Matrix4();
 const broadphaseRadius = 5;
 
 export default class BaseEntity extends BasePhysic {
-	constructor() {
-		super();
+	constructor({ mesh = null, name = '' } = {}) {
+		super({ mesh, name });
 
 		this.colliders = [];
 		this.collidersToTest = [];
-
-		this.base = {};
 
 		this.params = {
 			gravity: -30,
@@ -54,8 +52,8 @@ export default class BaseEntity extends BasePhysic {
 	updateBroadphase(position) {
 		this.collidersToTest.forEach((collider) => {
 			tBox3c.makeEmpty();
-			tBox3c.copy(collider.physicsMesh.geometry.boundingBox);
-			tMat4b.copy(collider.physicsMesh.matrixWorld);
+			tBox3c.copy(collider.base.mesh.geometry.boundingBox);
+			tMat4b.copy(collider.base.mesh.matrixWorld);
 			tBox3c.applyMatrix4(tMat4b);
 
 			const d = tBox3c.distanceToPoint(position);

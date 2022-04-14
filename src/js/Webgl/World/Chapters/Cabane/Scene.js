@@ -35,8 +35,8 @@ export default class CabaneScene extends BaseScene {
 		await this.ground.init();
 
 		this.instance.add(
-			this.ground.physicsMesh,
-			...this.colliders.map((collider) => collider.physicsMesh),
+			this.ground.base.mesh,
+			...this.colliders.map((collider) => collider.base.mesh),
 		);
 	}
 
