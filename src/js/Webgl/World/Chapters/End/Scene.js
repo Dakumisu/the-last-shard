@@ -33,9 +33,10 @@ export default class EndScene extends BaseScene {
 		this.ground = new Ground(this);
 		await this.ground.init();
 
-		this.propsColliders = [...this.ground.colliders];
-
-		this.instance.add(this.ground.physicsMesh, ...this.propsColliders);
+		this.instance.add(
+			this.ground.physicsMesh,
+			...this.colliders.map((collider) => collider.physicsMesh),
+		);
 	}
 
 	update(et, dt) {
@@ -46,8 +47,8 @@ export default class EndScene extends BaseScene {
 	addTo(mainScene) {
 		super.addTo(mainScene);
 
-		this.player.setMainCollider(this.ground.physicsMesh.geometry);
-		this.player.setPropsColliders(this.propsColliders);
+		this.player.setMainCollider(this.ground);
+		this.player.setPropsColliders(this.colliders);
 
 		this.fog.set();
 	}

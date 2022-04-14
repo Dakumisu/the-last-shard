@@ -48,7 +48,7 @@ export default class CabaneScene extends BaseScene {
 	addTo(mainScene) {
 		super.addTo(mainScene);
 
-		this.player.setMainCollider(this.ground.physicsMesh.geometry);
+		this.player.setMainCollider(this.ground);
 		this.player.setPropsColliders(this.colliders);
 
 		this.fog.set();
