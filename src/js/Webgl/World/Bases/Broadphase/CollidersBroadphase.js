@@ -1,5 +1,5 @@
 import BaseBroadphase from './BaseBroadphase';
-import BaseCollider from './BaseCollider';
+import BaseCollider from '../BaseCollider';
 
 export default class CollidersBroadphase extends BaseBroadphase {
 	constructor({ radius = 5, objectsToTest = [] } = {}) {

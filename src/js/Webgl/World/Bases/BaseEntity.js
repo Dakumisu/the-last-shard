@@ -1,7 +1,7 @@
 import { Box3, Matrix4 } from 'three';
 import BaseCollider from './BaseCollider';
 import BasePhysic from './BasePhysic';
-import CollidersBroadphase from './CollidersBroadPhase';
+import CollidersBroadphase from './Broadphase/CollidersBroadphase';
 
 export default class BaseEntity extends BasePhysic {
 	constructor({ mesh = null, name = '' } = {}) {
