@@ -4,9 +4,9 @@ import wMergeGeo from '@workers/wMergeGeo?worker';
 
 import { loadStaticGLTF as loadGLTF } from '@utils/loaders';
 
-let geometries = [];
-
 export function mergeGeometry(geos = [], models = []) {
+	const geometries = [];
+
 	return new Promise(async (resolve) => {
 		if (!geos.length && !models.length) {
 			console.error('Geometries required 🚫');
@@ -16,19 +16,19 @@ export function mergeGeometry(geos = [], models = []) {
 		geometries.push(...geos);
 
 		if (models.length) {
-			await loadModels(models);
-			geometriesFilter();
-			const g = await mergeGeometries();
+			await loadModels(models, geometries);
+			geometriesFilter(geometries);
+			const g = await mergeGeometries(geometries);
 			resolve(g);
 		} else {
-			geometriesFilter();
-			const g = await mergeGeometries();
+			geometriesFilter(geometries);
+			const g = await mergeGeometries(geometries);
 			resolve(g);
 		}
 	});
 }
 
-function geometriesFilter() {
+function geometriesFilter(geometries) {
 	let count = geometries.length;
 
 	for (let i = 0; i < count; i++) {
@@ -56,7 +56,7 @@ function geometriesFilter() {
 	}
 }
 
-async function loadModels(models) {
+async function loadModels(models, geometries) {
 	let count = 0;
 
 	return new Promise((resolve) => {
@@ -73,7 +73,7 @@ async function loadModels(models) {
 	});
 }
 
-function mergeGeometries() {
+function mergeGeometries(geometries) {
 	return new Promise((resolve) => {
 		mergeBufferGeometries([...geometries]).then((response) => {
 			geometries.forEach((geometry) => {

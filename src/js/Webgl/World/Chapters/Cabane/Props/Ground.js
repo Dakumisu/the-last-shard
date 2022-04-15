@@ -25,6 +25,10 @@ export default class Ground extends BaseCollider {
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
+
+		// Preload
+		this.loadGeometryPromise = null;
+		this.preload();
 	}
 
 	/// #if DEBUG
@@ -50,6 +54,10 @@ export default class Ground extends BaseCollider {
 	}
 	/// #endif
 
+	async preload() {
+		this.loadGeometryPromise = this.loadGeometry();
+	}
+
 	async init() {
 		await this.setGround();
 
@@ -61,13 +69,16 @@ export default class Ground extends BaseCollider {
 		initialized = true;
 	}
 
-	async setGround() {
+	async loadGeometry() {
 		const planeGeo = new PlaneGeometry(200, 200);
 		planeGeo.rotateX(-Math.PI * 0.5);
 		planeGeo.translate(0, -1, 0);
 		const cubeGeo = new BoxGeometry(10, 10, 10);
-		const geometry = await mergeGeometry([planeGeo, cubeGeo], [sandbox]);
+		return await mergeGeometry([planeGeo, cubeGeo], [sandbox]);
+	}
 
+	async setGround() {
+		const geometry = await this.loadGeometryPromise;
 		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#d29ddc'),

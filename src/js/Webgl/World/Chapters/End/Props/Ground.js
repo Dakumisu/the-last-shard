@@ -27,14 +27,12 @@ export default class Ground extends BaseCollider {
 		/// #endif
 
 		// Preload
-		this.preloadPromises = [];
-		this.globalPromise = null;
+		this.loadGeometryPromise = null;
 		this.preload();
 	}
 
 	preload() {
-		// this.preloadPromises.push(this.loadGeometry());
-		this.globalPromise = this.loadGeometry();
+		this.loadGeometryPromise = this.loadGeometry();
 	}
 
 	async init() {
@@ -59,8 +57,7 @@ export default class Ground extends BaseCollider {
 	}
 
 	async setGround() {
-		const geometry = await this.globalPromise;
-		console.log(geometry);
+		const geometry = await this.loadGeometryPromise;
 		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#d29ddc'),
