@@ -28,6 +28,12 @@ export default class IntroScene extends BaseScene {
 				[104.32, 14, -65.342],
 			],
 		});
+
+		this.ground = new Ground(this);
+	}
+
+	async preload() {
+		await loadCubeTexture('envMap1');
 	}
 
 	async init() {
@@ -35,7 +41,6 @@ export default class IntroScene extends BaseScene {
 
 		this.lights = new Lights(this);
 
-		this.ground = new Ground(this);
 		await this.ground.init();
 
 		this.grass = new Grass(this);

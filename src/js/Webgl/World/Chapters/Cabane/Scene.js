@@ -9,10 +9,17 @@ import { loadCubeTexture } from '@utils/loaders/loadAssets';
 export default class CabaneScene extends BaseScene {
 	constructor() {
 		super({ label: 'Cabane', checkpoints: [[0, 10, 0]] });
+
+		this.ground = new Ground(this);
+	}
+
+	async preload() {
+		await loadCubeTexture('envMap2');
 	}
 
 	async init() {
 		super.init();
+		await this.preload();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#ff0000',
@@ -31,7 +38,6 @@ export default class CabaneScene extends BaseScene {
 		console.log('switch');
 		this.lights = new Lights(this);
 
-		this.ground = new Ground(this);
 		await this.ground.init();
 
 		this.instance.add(

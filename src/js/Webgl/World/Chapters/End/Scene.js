@@ -9,10 +9,17 @@ import { loadCubeTexture } from '@utils/loaders/loadAssets';
 export default class EndScene extends BaseScene {
 	constructor() {
 		super({ label: 'End', checkpoints: [[0, 20, 0]] });
+
+		this.ground = new Ground(this);
+	}
+
+	async preload() {
+		await loadCubeTexture('envMap2');
 	}
 
 	async init() {
 		super.init();
+		await this.preload();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#ff0000',
@@ -30,7 +37,6 @@ export default class EndScene extends BaseScene {
 
 		this.lights = new Lights(this);
 
-		this.ground = new Ground(this);
 		await this.ground.init();
 
 		this.instance.add(

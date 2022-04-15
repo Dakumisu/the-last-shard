@@ -88,6 +88,10 @@ export default class BaseScene {
 	}
 	/// #endif
 
+	preload() {
+		console.warn('Override preload() to preload your scene assets');
+	}
+
 	init() {
 		this.initialized = true;
 	}

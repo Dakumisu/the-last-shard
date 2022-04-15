@@ -21,8 +21,10 @@ export default class World {
 		const introScene = new IntroScene();
 
 		const endScene = new EndScene();
+		endScene.preload();
 
 		const cabaneScene = new CabaneScene();
+		cabaneScene.preload();
 
 		this.sceneController.add(introScene, true);
 		this.sceneController.add(endScene);
