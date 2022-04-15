@@ -13,13 +13,14 @@ export default class EndScene extends BaseScene {
 		this.ground = new Ground(this);
 	}
 
-	async preload() {
-		await loadCubeTexture('envMap2');
+	preload() {
+		super.preload();
+		this.preloadPromise = Promise.all([this.ground.preload(), loadCubeTexture('envMap2')]);
 	}
 
 	async init() {
 		super.init();
-		await this.preload();
+		const preloadRestults = await this.preloadPromise;
 
 		this.fog = new BaseFog({
 			fogNearColor: '#ff0000',
@@ -29,7 +30,7 @@ export default class EndScene extends BaseScene {
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
-			background: await loadCubeTexture('envMap2'),
+			background: preloadRestults[1],
 			/// #if DEBUG
 			gui: this.gui,
 			/// #endif

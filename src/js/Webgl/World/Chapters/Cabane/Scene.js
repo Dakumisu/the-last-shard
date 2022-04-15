@@ -13,13 +13,14 @@ export default class CabaneScene extends BaseScene {
 		this.ground = new Ground(this);
 	}
 
-	async preload() {
-		await loadCubeTexture('envMap2');
+	preload() {
+		super.preload();
+		this.preloadPromise = Promise.all([this.ground.preload(), loadCubeTexture('envMap2')]);
 	}
 
 	async init() {
 		super.init();
-		await this.preload();
+		const promiseResults = await this.preloadPromise;
 
 		this.fog = new BaseFog({
 			fogNearColor: '#ff0000',
@@ -29,13 +30,12 @@ export default class CabaneScene extends BaseScene {
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
-			background: await loadCubeTexture('envMap2'),
+			background: promiseResults[1],
 			/// #if DEBUG
 			gui: this.gui,
 			/// #endif
 		});
 
-		console.log('switch');
 		this.lights = new Lights(this);
 
 		await this.ground.init();

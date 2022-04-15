@@ -28,7 +28,6 @@ export default class Ground extends BaseCollider {
 
 		// Preload
 		this.loadGeometryPromise = null;
-		this.preload();
 	}
 
 	/// #if DEBUG

@@ -18,16 +18,14 @@ export default class World {
 	}
 
 	async initScenes() {
-		// No preload because first scene
 		const introScene = new IntroScene();
+		introScene.preload();
 
-		// TODO: preload next scene on switch maybe ?
-
-		// Preload in constructor
 		const endScene = new EndScene();
+		endScene.preload();
 
-		// Preload in constructor
 		const cabaneScene = new CabaneScene();
+		cabaneScene.preload();
 
 		this.sceneController.add(introScene, true);
 		this.sceneController.add(endScene);

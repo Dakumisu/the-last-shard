@@ -32,12 +32,15 @@ export default class IntroScene extends BaseScene {
 		this.ground = new Ground(this);
 	}
 
-	async preload() {
-		await loadCubeTexture('envMap1');
+	preload() {
+		super.preload();
+		this.preloadPromise = loadCubeTexture('envMap1');
 	}
 
 	async init() {
 		super.init();
+
+		const promiseResult = await this.preloadPromise;
 
 		this.lights = new Lights(this);
 
@@ -55,7 +58,7 @@ export default class IntroScene extends BaseScene {
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
-			background: await loadCubeTexture('envMap1'),
+			background: promiseResult,
 			/// #if DEBUG
 			gui: this.gui,
 			/// #endif

@@ -28,7 +28,6 @@ export default class Ground extends BaseCollider {
 
 		// Preload
 		this.loadGeometryPromise = null;
-		this.preload();
 	}
 
 	preload() {
@@ -47,7 +46,6 @@ export default class Ground extends BaseCollider {
 	}
 
 	async loadGeometry() {
-		console.time('start');
 		const planeGeo = new PlaneGeometry(200, 200);
 		planeGeo.rotateX(-Math.PI * 0.5);
 		planeGeo.translate(0, -1, 0);

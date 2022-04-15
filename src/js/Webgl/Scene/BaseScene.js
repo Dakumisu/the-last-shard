@@ -14,6 +14,9 @@ export default class BaseScene {
 	constructor({ label, checkpoints = [] }) {
 		this.label = label;
 
+		this.isPreloaded = false;
+		this.preloadPromise = null;
+
 		this.player = getPlayer();
 
 		this.colliders = [];
@@ -89,7 +92,10 @@ export default class BaseScene {
 	/// #endif
 
 	preload() {
-		console.warn('Override preload() to preload your scene assets');
+		/// #if DEBUG
+		console.log('🔋 Preloading Scene :', this.label);
+		/// #endif
+		this.isPreloaded = true;
 	}
 
 	init() {
