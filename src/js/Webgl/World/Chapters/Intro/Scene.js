@@ -96,7 +96,7 @@ export default class IntroScene extends BaseScene {
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
 
 		this.interactablesBroadphase = new InteractablesBroadphase({
-			radius: 10,
+			radius: 0.7,
 			objectsToTest: this.colliders,
 		});
 
