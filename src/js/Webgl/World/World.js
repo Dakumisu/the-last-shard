@@ -14,7 +14,7 @@ export default class World {
 
 	async init() {
 		await this.setPlayer();
-		await this.initScenes();
+		this.initScenes();
 	}
 
 	async initScenes() {
