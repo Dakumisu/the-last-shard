@@ -6,7 +6,7 @@ precision highp float;
 	#pragma glslify: fxaa = require(philbin-packages/glsl/fxaa/index.glsl)
 #endif
 
-uniform bool POST_PROCESSING;
+uniform float POST_PROCESSING;
 uniform sampler2D uScene;
 uniform vec3 uResolution;
 
@@ -22,9 +22,12 @@ void main() {
 	render = texture2D(uScene, uv).rgb;
 	#endif
 
-	if(POST_PROCESSING) {
-		render = vec3(pow(render.x, 2.));
-	}
+	// POST PROCESSING
+	vec3 postPro = render;
+	postPro = vec3(pow(render.x, 2.));
+	postPro.xyz = filmic(postPro.xyz, 3.);
+
+	render = mix(render, postPro, POST_PROCESSING);
 
 	gl_FragColor = vec4(render, 1.0);
 }

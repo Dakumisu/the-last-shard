@@ -25,7 +25,7 @@ const tVec2 = new Vector2();
 const tVec3 = new Vector3();
 
 const params = {
-	usePostprocess: false,
+	postprocess: 0,
 	useFxaa: true,
 };
 
@@ -67,11 +67,13 @@ export default class PostFX {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addButton({
-			title: 'Toggle Post Processing',
-		}).on('click', () => {
-			this.material.uniforms.POST_PROCESSING.value = params.usePostprocess =
-				!params.usePostprocess;
+		gui.addInput(params, 'postprocess', {
+			label: 'PostProcess level',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		}).on('change', (e) => {
+			this.material.uniforms.POST_PROCESSING.value = e.value;
 		});
 	}
 	/// #endif
@@ -103,7 +105,7 @@ export default class PostFX {
 				FXAA: params.useFxaa,
 			},
 			uniforms: {
-				POST_PROCESSING: { value: params.usePostprocess },
+				POST_PROCESSING: { value: params.postprocess },
 				uScene: { value: this.target.texture },
 				uResolution: { value: tVec3 },
 			},

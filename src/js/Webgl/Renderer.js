@@ -1,9 +1,7 @@
 import signal from 'philbin-packages/signal';
-
 import { NoToneMapping, sRGBEncoding, WebGLRenderer } from 'three';
 
 import { getWebgl } from './Webgl';
-
 import PostFX from './PostFX/PostFX';
 
 import { store } from '@tools/Store';

@@ -28,7 +28,7 @@ export default class Nodes {
 			resolve();
 		});
 
-		return new Promise((resolve) => {
+		await new Promise((resolve) => {
 			for (const key in this.domElements) {
 				if (this.domElements[key].length === 1) {
 					const tmpValue = this.domElements[key][0];
@@ -71,7 +71,7 @@ export default class Nodes {
 			resolve();
 		});
 
-		return new Promise((resolve) => {
+		await new Promise((resolve) => {
 			for (const key in this.shadowElements) {
 				const parent = this.shadowElements[key];
 				for (const key in parent) {
