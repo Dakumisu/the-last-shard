@@ -53,7 +53,7 @@ export default class Ground extends BaseCollider {
 	}
 	/// #endif
 
-	async preload() {
+	preload() {
 		this.loadGeometryPromise = this.loadGeometry();
 	}
 

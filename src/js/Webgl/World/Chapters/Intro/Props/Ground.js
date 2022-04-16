@@ -37,10 +37,17 @@ export default class Ground extends BaseCollider {
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
+
+		// Preload
+		this.loadGeometryPromise = null;
 	}
 
-	async init() {
-		await this.setGround();
+	async preload() {
+		this.loadGeometryPromise = await this.loadGeometry();
+	}
+
+	init() {
+		this.setGround();
 
 		/// #if DEBUG
 		this.helpers();
@@ -50,17 +57,17 @@ export default class Ground extends BaseCollider {
 		initialized = true;
 	}
 
-	async setGround() {
-		let testPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+	async loadGeometry() {
+		const testPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		testPlatform.position.set(20, 3, 20);
 
-		let secondTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+		const secondTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		secondTestPlatform.position.set(-20, 3, 20);
 
-		let aTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+		const aTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		aTestPlatform.position.set(-10, 3, -10);
 
-		let bTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
+		const bTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		bTestPlatform.position.set(3, 3, -20);
 
 		const plane = new PlaneGeometry(200, 200);
@@ -72,8 +79,11 @@ export default class Ground extends BaseCollider {
 			[],
 		);
 
-		const geometry = await mergeGeometry([plane, platforms], [sandbox]);
+		return await mergeGeometry([plane, platforms], [sandbox]);
+	}
 
+	setGround() {
+		const geometry = this.loadGeometryPromise;
 		const geoOpt = {
 			lazyGeneration: false,
 		};

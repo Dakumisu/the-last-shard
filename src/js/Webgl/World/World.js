@@ -18,17 +18,17 @@ export default class World {
 	}
 
 	async initScenes() {
+		// Wait first scene preload before starting other scenes preloading
 		const introScene = new IntroScene();
-		introScene.preload();
+		await introScene.preload();
+		this.sceneController.add(introScene, true);
 
 		const endScene = new EndScene();
 		endScene.preload();
+		this.sceneController.add(endScene);
 
 		const cabaneScene = new CabaneScene();
 		cabaneScene.preload();
-
-		this.sceneController.add(introScene, true);
-		this.sceneController.add(endScene);
 		this.sceneController.add(cabaneScene);
 	}
 
