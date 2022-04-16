@@ -2,7 +2,6 @@ import SceneController from '@webgl/Scene/Controller.js';
 import IntroScene from './Chapters/Intro/Scene.js';
 import EndScene from './Chapters/End/Scene.js';
 import { initPlayer } from './Characters/Player.js';
-import { getGame } from '@game/Game.js';
 import CabaneScene from './Chapters/Cabane/Scene.js';
 
 export default class World {
@@ -14,7 +13,7 @@ export default class World {
 
 	async init() {
 		await this.setPlayer();
-		this.initScenes();
+		await this.initScenes();
 	}
 
 	async initScenes() {
