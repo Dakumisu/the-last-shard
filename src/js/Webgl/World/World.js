@@ -1,8 +1,8 @@
 import SceneController from '@webgl/Scene/Controller.js';
-import IntroScene from './Chapters/Intro/Scene.js';
-import EndScene from './Chapters/End/Scene.js';
+import IntroScene from './Chapters/Intro/IntroScene.js';
+import EndScene from './Chapters/End/EndScene.js';
 import { initPlayer } from './Characters/Player.js';
-import CabaneScene from './Chapters/Cabane/Scene.js';
+import CabaneScene from './Chapters/Cabane/CabaneScene.js';
 
 export default class World {
 	constructor() {

@@ -1,7 +1,6 @@
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Grass from './Props/Grass/Grass';
-import Lights from './Environment/Lights/Lights';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
 import {
@@ -16,6 +15,9 @@ import {
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
+import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
+import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
+import Lights from '@webgl/World/Bases/Lights/Lights';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
@@ -41,7 +43,16 @@ export default class IntroScene extends BaseScene {
 	async init() {
 		super.init();
 
-		this.lights = new Lights(this);
+		// Lights
+		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
+		const directional = new BaseDirectionnal({
+			color: '#45b1e7',
+			intensity: 7,
+			label: 'Directionnal',
+			position: new Vector3(-10, 0, 10),
+		});
+
+		this.lights = new Lights(this, [baseAmbient, directional]);
 
 		await this.ground.init();
 
@@ -58,9 +69,6 @@ export default class IntroScene extends BaseScene {
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
 			background: await this.preloadPromise,
-			/// #if DEBUG
-			gui: this.gui,
-			/// #endif
 		});
 
 		/// #if DEBUG

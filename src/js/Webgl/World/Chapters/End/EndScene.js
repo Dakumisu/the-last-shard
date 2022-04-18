@@ -1,10 +1,12 @@
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
-import Lights from './Environment/Lights/Lights';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import { BoxGeometry, Color, Matrix4, Mesh, PlaneGeometry, SphereGeometry, Vector3 } from 'three';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
+import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
+import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
+import Lights from '@webgl/World/Bases/Lights/Lights';
 
 export default class EndScene extends BaseScene {
 	constructor() {
@@ -31,12 +33,16 @@ export default class EndScene extends BaseScene {
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
 			background: await this.preloadPromise,
-			/// #if DEBUG
-			gui: this.gui,
-			/// #endif
 		});
 
-		this.lights = new Lights(this);
+		const ambient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
+		const directional = new BaseDirectionnal({
+			color: '#fff',
+			intensity: 5,
+			label: 'Directionnal',
+			position: new Vector3(-10, 0, 10),
+		});
+		this.lights = new Lights(this, [ambient, directional]);
 
 		await this.ground.init();
 

@@ -30,9 +30,6 @@ export default class BaseFog {
 		fogNoiseFreq,
 		fogNoiseImpact,
 		background,
-		/// #if DEBUG
-		gui,
-		/// #endif
 	}) {
 		this.webgl = getWebgl();
 		this.scene = this.webgl.mainScene.instance;
