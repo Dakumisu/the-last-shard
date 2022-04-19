@@ -18,6 +18,8 @@ import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/Interactables
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
+import LaserTower from '@webgl/World/Bases/Props/LaserTower';
+import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
@@ -71,7 +73,6 @@ export default class IntroScene extends BaseScene {
 			background: await this.preloadPromise,
 		});
 
-		/// #if DEBUG
 		const testCube = new BaseCollider({
 			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
 			name: 'cube1',
@@ -110,12 +111,41 @@ export default class IntroScene extends BaseScene {
 
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
 
+		// LaserTowers
+		const towerGeometry = new BoxGeometry(1, 4, 1);
+		const towerMaterial = new BaseToonMaterial({ color: '#ff0000' });
+
+		const towerMesh1 = new Mesh(towerGeometry, towerMaterial);
+		towerMesh1.position.set(7, 0, 20);
+		towerMesh1.rotation.y = Math.PI / 3;
+
+		const laserTower1 = new LaserTower({
+			scene: this,
+			mesh: towerMesh1,
+			name: 'laserTower1',
+			towerType: 'first',
+		});
+		laserTower1.initPhysics();
+
+		const towerGeometry2 = new BoxGeometry(1, 4, 1);
+		const towerMaterial2 = new BaseToonMaterial({ color: '#ff0000' });
+		const towerMesh2 = new Mesh(towerGeometry2, towerMaterial2);
+		towerMesh2.position.set(3, 0, 22);
+
+		const laserTower2 = new LaserTower({
+			scene: this,
+			mesh: towerMesh2,
+			name: 'laserTower2',
+			towerType: 'end',
+		});
+		laserTower2.initPhysics();
+
+		this.colliders.push(laserTower1, laserTower2);
+
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 0.7,
 			objectsToTest: this.colliders,
 		});
-
-		/// #endif
 
 		this.instance.add(
 			this.ground.base.mesh,

@@ -2,14 +2,17 @@ import signal from 'philbin-packages/signal';
 
 import { getGame } from './Game';
 
-const controlsKey = {
+export const controlsKeys = {
 	forward: 'Z',
 	left: 'Q',
 	backward: 'S',
 	right: 'D',
 	space: 'SPACE',
 	shift: 'SHIFT',
-	interact: 'F',
+	interact: {
+		default: 'F',
+		rotate: 'R',
+	},
 };
 
 export default class Control {
@@ -37,52 +40,56 @@ export default class Control {
 
 	keyDown(key) {
 		switch (key) {
-			case controlsKey.forward:
+			case controlsKeys.forward:
 				this.keyPressed.forward = true;
 				break;
-			case controlsKey.backward:
+			case controlsKeys.backward:
 				this.keyPressed.backward = true;
 				break;
-			case controlsKey.right:
+			case controlsKeys.right:
 				this.keyPressed.right = true;
 				break;
-			case controlsKey.left:
+			case controlsKeys.left:
 				this.keyPressed.left = true;
 				break;
-			case controlsKey.space:
+			case controlsKeys.space:
 				this.keyPressed.space = true;
 				break;
-			case controlsKey.shift:
+			case controlsKeys.shift:
 				this.keyPressed.shift = true;
 				break;
-			case controlsKey.interact:
+			case controlsKeys.interact.default:
 				this.keyPressed.interact = true;
-				signal.emit('interact');
+				signal.emit('interact', controlsKeys.interact.default);
+				break;
+			case controlsKeys.interact.rotate:
+				this.keyPressed.interact = true;
+				signal.emit('interact', controlsKeys.interact.rotate);
 				break;
 		}
 	}
 
 	keyUp(key) {
 		switch (key) {
-			case controlsKey.forward:
+			case controlsKeys.forward:
 				this.keyPressed.forward = false;
 				break;
-			case controlsKey.backward:
+			case controlsKeys.backward:
 				this.keyPressed.backward = false;
 				break;
-			case controlsKey.right:
+			case controlsKeys.right:
 				this.keyPressed.right = false;
 				break;
-			case controlsKey.left:
+			case controlsKeys.left:
 				this.keyPressed.left = false;
 				break;
-			case controlsKey.space:
+			case controlsKeys.space:
 				this.keyPressed.space = false;
 				break;
-			case controlsKey.shift:
+			case controlsKeys.shift:
 				this.keyPressed.shift = false;
 				break;
-			case controlsKey.interact:
+			case controlsKeys.interact:
 				this.keyPressed.interact = false;
 				break;
 		}
