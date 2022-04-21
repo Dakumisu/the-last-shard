@@ -56,8 +56,8 @@ export default class IntroScene extends BaseScene {
 
 		await this.ground.init();
 
-		this.grass = new Grass(this);
-		this.grass.init();
+		// this.grass = new Grass(this);
+		// this.grass.init();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',
@@ -114,7 +114,6 @@ export default class IntroScene extends BaseScene {
 			radius: 0.7,
 			objectsToTest: this.colliders,
 		});
-
 		/// #endif
 
 		this.instance.add(
