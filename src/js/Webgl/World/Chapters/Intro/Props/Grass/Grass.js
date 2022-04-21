@@ -25,6 +25,7 @@ import {
 	TextureLoader,
 	Vector3,
 	WebGLRenderTarget,
+	Vector2,
 } from 'three';
 import { loadTexture } from '@utils/loaders/loadAssets';
 
@@ -111,6 +112,10 @@ export default class Grass {
 
 		const minBox = this.ground.base.mesh.geometry.boundingBox.min;
 		const maxBox = this.ground.base.mesh.geometry.boundingBox.max;
+		this.maxBox = maxBox;
+		this.minBox = minBox;
+
+		console.log(minBox, maxBox);
 
 		this.rtCamera = new OrthographicCamera(
 			minBox.x / -2,
@@ -118,24 +123,26 @@ export default class Grass {
 			maxBox.x / 2,
 			maxBox.z / -2,
 			1,
-			20,
+			// 50,
+			maxBox.y + Math.abs(minBox.y),
 		);
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
-		this.rtCamera.position.y = 10;
+		// this.rtCamera.position.y = 25;
+		this.rtCamera.position.y = maxBox.y + this.rtCamera.near;
 
 		this.cube = new Mesh(
 			new PlaneBufferGeometry(),
 			new MeshBasicMaterial({
-				map: this.noiseTexture,
+				map: this.depthTexture,
 			}),
 		);
 		this.scene.add(this.cube);
 		this.cube.position.set(12, 3, 10);
 		this.cube.scale.set(4, 4, 4);
 
-		this.testCube = new Mesh(new BoxGeometry(10, 10, 10), new MeshNormalMaterial());
-		this.testCube.position.y = 49;
-		this.scene.add(this.testCube);
+		// this.testCube = new Mesh(new BoxGeometry(10, 10, 10), new MeshNormalMaterial());
+		// this.testCube.position.y = 49;
+		// // this.scene.add(this.testCube);
 	}
 
 	setDefaultGeometry() {
@@ -215,6 +222,8 @@ export default class Grass {
 				uElevationTexture: { value: this.depthTexture },
 				uCamFar: { value: this.rtCamera.far },
 				uCamNear: { value: this.rtCamera.near },
+				uMaxMapBounds: { value: this.maxBox },
+				uMinMapBounds: { value: this.minBox },
 			},
 			transparent: true,
 			vertexShader: vertexShader,
@@ -306,9 +315,6 @@ export default class Grass {
 
 	update(et, dt) {
 		if (!initialized) return;
-
-		this.testCube.rotation.x = et * 0.001;
-		this.testCube.rotation.z = et * 0.001;
 
 		this.renderer.setRenderTarget(this.renderTarget);
 		this.renderer.render(this.scene, this.rtCamera);

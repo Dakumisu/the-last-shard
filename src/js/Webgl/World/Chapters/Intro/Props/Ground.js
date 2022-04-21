@@ -59,7 +59,7 @@ export default class Ground extends BaseCollider {
 
 	async loadGeometry() {
 		const testPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
-		testPlatform.position.set(20, 3, 20);
+		testPlatform.position.set(20, 30, 20);
 
 		const secondTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		secondTestPlatform.position.set(-20, 3, 20);

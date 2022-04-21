@@ -31,7 +31,7 @@ assetsMap.set('envMap2', {
 });
 
 assetsMap.set('noiseTexture', {
-	path: '/assets/image/pattern.jpeg',
+	path: '/assets/image/pattern.png',
 	data: {},
 });
 

@@ -9,17 +9,20 @@ uniform float uNoiseElevationIntensity;
 uniform float uElevationIntensity;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
-uniform sampler2D uNoiseTexture;
+uniform sampler2D uElevationTexture;
+uniform vec3 uMaxMapBounds;
+uniform vec3 uMinMapBounds;
+uniform float uCamFar;
 
 attribute vec3 aScale;
 attribute vec3 aPositions;
 
 varying vec3 vPos;
-varying vec3 vNormal;
-varying vec2 vUv;
 varying float vFade;
 varying float vNoiseMouvement;
 varying float vNoiseElevation;
+
+varying float vElevationTest;
 
 float N(vec2 st) {
 	return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
@@ -42,32 +45,34 @@ float smoothNoise(vec2 ip) {
 	return mix(b, t, lv.y);
 }
 
+float map(float value, float start1, float stop1, float start2, float stop2) {
+	return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+}
+
 void main() {
 	float time = uTime * uSpeed * 0.002;
+	float boxSize = uHalfBoxSize * 2.;
 
 	vec3 pos = position * aScale;
 
-	float displacement = texture2D(uNoiseTexture, uv).r * 100.;
-
-	vUv = uv;
-
 	vPos = pos;
-	vNormal = normal;
 
-	float boxSize = uHalfBoxSize * 2.;
-
-	vec3 translation = vec3(0., pos.y, 0.);
+	vec3 translation = vec3(0., 1., 0.);
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
+
+	vec2 scaledCoords = vec2(translation.x / -18. / 5., translation.z / -20. / 5.) + vec2(0.5, 0.5);
+	float elevation = texture2D(uElevationTexture, scaledCoords).r;
 
 	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
 	vNoiseElevation = smoothstep(0.2, .8, smoothNoise(translation.xz * uNoiseElevationIntensity));
 
-	if(translation.y < 0.) {
-		translation.y = 0.;
-	} else {
-		translation.xz += vNoiseMouvement * uDisplacement;
-	}
+	// if(translation.y < 0.) {
+	// 	translation.y = 0.;
+	// } else {
+	// translation.xz += vNoiseMouvement * uDisplacement;
+	// }
+	translation.xz += vNoiseMouvement * uDisplacement;
 
 	float fade = 1.0 - smoothstep(0., 1., (uMaskRange * distance(uCharaPos.xz, translation.xz)));
 
@@ -75,8 +80,16 @@ void main() {
 
 	pos.y += fade * vNoiseElevation * uElevationIntensity;
 
+	vElevationTest = elevation;
+
+	pos.y += map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
+	// pos.y += map(elevation, 0., 1., -50., 50.);
+	// pos.y += elevation;
+
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
+
 	mv.xyz += pos.xyz;
+
 	gl_Position = projectionMatrix * mv;
 
 }
