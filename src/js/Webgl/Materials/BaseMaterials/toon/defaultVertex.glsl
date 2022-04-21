@@ -37,7 +37,6 @@ void main() {
 	#include <shadowmap_vertex>
 	#include <fog_vertex>
 
-
-	vPositionW = vec3( vec4( position, 1.0 ) * modelMatrix);
-	vNormalW = normalize( vec3( vec4( normal, 0.0 ) * modelMatrix ) );
+	vPositionW = vec3(vec4(position, 1.0) * modelMatrix);
+	vNormalW = normalize(vec3(vec4(normal, 0.0) * modelMatrix));
 }

@@ -8,7 +8,7 @@ varying vec3 vNormal;
 uniform float uWindColorIntensity;
 uniform vec3 uColor;
 uniform vec3 uFogColor;
-uniform sampler2D uNoiseTexture;
+uniform sampler2D uElevationTexture;
 
 void main() {
 	vec3 color = mix(uColor * 0.3, uColor, vPos.y * 2.);
@@ -16,6 +16,6 @@ void main() {
 	vec3 render = mix(uFogColor, color + vNoiseMouvement * uWindColorIntensity, vFade);
 
 	gl_FragColor = vec4(render, vNoiseElevation);
+	gl_FragColor = texture2D(uElevationTexture, vUv);
 	gl_FragColor = vec4(render, 1.0);
-
 }

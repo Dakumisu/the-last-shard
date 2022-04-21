@@ -1,20 +1,31 @@
 import {
 	BoxBufferGeometry,
+	BoxGeometry,
 	BufferAttribute,
 	BufferGeometry,
 	Color,
+	DataTexture,
 	DoubleSide,
+	DepthFormat,
+	UnsignedShortType,
 	InstancedBufferAttribute,
 	InstancedBufferGeometry,
 	MathUtils,
 	Mesh,
+	MeshBasicMaterial,
+	MeshNormalMaterial,
+	DepthTexture,
+	MeshDepthMaterial,
+	OrthographicCamera,
+	PerspectiveCamera,
 	PlaneBufferGeometry,
 	RepeatWrapping,
+	Scene,
 	ShaderMaterial,
 	TextureLoader,
 	Vector3,
+	WebGLRenderTarget,
 } from 'three';
-
 import { loadTexture } from '@utils/loaders/loadAssets';
 
 import { mergeGeometry } from '@utils/webgl';
@@ -22,6 +33,7 @@ import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 import fragmentShader from './Shaders/fragment.glsl';
 import vertexShader from './Shaders/vertex.glsl';
+import { getWebgl } from '@webgl/Webgl';
 
 let initialized = false;
 
@@ -36,6 +48,7 @@ const params = {
 	halfBoxSize: 28,
 	verticeScale: 0.42,
 	count: 300000,
+	// count: 200,
 	color: '#de47ff',
 	fogColor: '#3e2e77',
 };
@@ -49,8 +62,14 @@ const debug = {
 
 export default class Grass {
 	constructor(scene) {
+		const webgl = getWebgl();
 		this.scene = scene.instance;
 		this.player = scene.player;
+		this.ground = scene.ground;
+
+		console.log(this.ground.base.mesh.geometry);
+
+		this.renderer = webgl.renderer.renderer;
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
@@ -66,6 +85,7 @@ export default class Grass {
 
 	async init() {
 		await this.loadTexture();
+		this.setRenderTarget();
 		this.setDefaultGeometry();
 		this.setInstancedGeometry();
 		this.setMaterial();
@@ -76,6 +96,46 @@ export default class Grass {
 		/// #endif
 
 		initialized = true;
+	}
+
+	setRenderTarget() {
+		const rtWidth = 512;
+		const rtHeight = 512;
+		this.renderTarget = new WebGLRenderTarget(rtWidth, rtHeight);
+
+		this.depthTexture = new DepthTexture(rtWidth, rtHeight);
+
+		this.renderTarget.depthTexture = this.depthTexture;
+		this.renderTarget.depthTexture.format = DepthFormat;
+		this.renderTarget.depthTexture.type = UnsignedShortType;
+
+		const minBox = this.ground.base.mesh.geometry.boundingBox.min;
+		const maxBox = this.ground.base.mesh.geometry.boundingBox.max;
+
+		this.rtCamera = new OrthographicCamera(
+			minBox.x / -2,
+			minBox.z / 2,
+			maxBox.x / 2,
+			maxBox.z / -2,
+			1,
+			20,
+		);
+		this.rtCamera.rotation.x = -Math.PI * 0.5;
+		this.rtCamera.position.y = 10;
+
+		this.cube = new Mesh(
+			new PlaneBufferGeometry(),
+			new MeshBasicMaterial({
+				map: this.noiseTexture,
+			}),
+		);
+		this.scene.add(this.cube);
+		this.cube.position.set(12, 3, 10);
+		this.cube.scale.set(4, 4, 4);
+
+		this.testCube = new Mesh(new BoxGeometry(10, 10, 10), new MeshNormalMaterial());
+		this.testCube.position.y = 49;
+		this.scene.add(this.testCube);
 	}
 
 	setDefaultGeometry() {
@@ -106,7 +166,7 @@ export default class Grass {
 	}
 
 	setInstancedGeometry() {
-		this.positions = new Float32Array(params.count * 2);
+		this.positions = new Float32Array(params.count * 3);
 		const scale = new Float32Array(params.count * 1);
 
 		for (let i = 0; i < params.count; i++) {
@@ -152,6 +212,9 @@ export default class Grass {
 				uNoiseTexture: { value: this.noiseTexture },
 				uColor: { value: new Color().set(params.color) },
 				uFogColor: { value: new Color().set(params.fogColor) },
+				uElevationTexture: { value: this.depthTexture },
+				uCamFar: { value: this.rtCamera.far },
+				uCamNear: { value: this.rtCamera.near },
 			},
 			transparent: true,
 			vertexShader: vertexShader,
@@ -244,7 +307,15 @@ export default class Grass {
 	update(et, dt) {
 		if (!initialized) return;
 
+		this.testCube.rotation.x = et * 0.001;
+		this.testCube.rotation.z = et * 0.001;
+
+		this.renderer.setRenderTarget(this.renderTarget);
+		this.renderer.render(this.scene, this.rtCamera);
+		this.renderer.setRenderTarget(null);
+
 		this.charaPos.copy(this.player.base.mesh.position);
+		// this.cube.position.copy(this.player.base.mesh.position);
 
 		this.base.material.uniforms.uTime.value = et;
 	}
