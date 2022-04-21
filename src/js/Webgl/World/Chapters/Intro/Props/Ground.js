@@ -71,14 +71,14 @@ export default class Ground extends BaseCollider {
 
 		const plane = new PlaneGeometry(200, 200);
 		plane.rotateX(-Math.PI * 0.5);
-		plane.translate(0, -1, 0);
+		plane.translate(0, -0.25, 0);
 
 		let platforms = await mergeGeometry(
 			[secondTestPlatform, testPlatform, aTestPlatform, bTestPlatform],
 			[],
 		);
 
-		return await mergeGeometry([plane, platforms], [sandbox]);
+		return await mergeGeometry([], [sandbox]);
 	}
 
 	setGround() {

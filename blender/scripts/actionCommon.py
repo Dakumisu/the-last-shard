@@ -32,9 +32,10 @@ def exportFile(source, dist, name):
         cache.append(distPath)
 
 
-def exportBezier(curves, obj, name, spline):
+def exportBezier(curves, obj, uid, spline):
     data = {}
-    data['type'] = 'BEZIER'
+    data['uid'] = uid
+    data['type'] = 'bezier'
     data['closed'] = spline.use_cyclic_u
     data['points'] = []
     utils.applyTransforms(obj)
@@ -46,13 +47,14 @@ def exportBezier(curves, obj, name, spline):
             handle_right = utils.toThreePos(
                 utils.toNumberList(point.handle_right, 4))
             data['points'].append([] + control + handle_left + handle_right)
-    curves[name] = data
+    curves.append(data)
 
 
 # From Emilien for Kode - will be converted as a catmull3 curve
-def exportNurbs(curves, obj, name, spline):
+def exportNurbs(curves, obj, uid, spline):
     data = {}
-    data['type'] = 'NURBS'
+    data['uid'] = uid
+    data['type'] = 'nurbs'
     data['closed'] = spline.use_cyclic_u
     data['points'] = []
     utils.applyTransforms(obj)
@@ -71,12 +73,13 @@ def exportNurbs(curves, obj, name, spline):
         co = obj.matrix_world @ vertex.co
         pos = utils.toThreePos(utils.toNumberList(co, 4))
         data['points'].append(pos)
-    curves[name] = data
+    curves.append(data)
 
 
-def exportPolyline(curves, obj, name, spline):
+def exportPolyline(curves, obj, uid, spline):
     data = {}
-    data['type'] = 'POLY'
+    data['uid'] = uid
+    data['type'] = 'poly'
     data['closed'] = spline.use_cyclic_u
     data['points'] = []
     utils.applyTransforms(obj)
@@ -84,7 +87,7 @@ def exportPolyline(curves, obj, name, spline):
         for point in spline.points.values():
             pos = utils.toThreePos(utils.toNumberList(point.co, 4))
             data['points'].append(pos)
-    curves[name] = data
+    curves.append(data)
 
 
 # Export entities like npc, assets, helpers, etc
@@ -105,51 +108,33 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         if len(colSeg) < 2:
             continue
 
-        category = colSeg[0].lower().strip()
         type = seg[0].lower().strip()
         uid = rawseg[1].strip()
-        kind = seg[1].strip()
         asset = seg[1].strip()
 
-        if category == 'asset':
-            group = 'props'
-        elif category == 'prop':
-            group = 'props'
+        isInteractable = type == 'interactable'
 
-        # elif category == 'actor':
-        #     group = 'actors'
-        # elif category == 'actors':
-        #     group = 'actors'
-        # elif category == 'npc':
-        #     group = 'actors'
-        # else:
-        #     continue
+        category = 'collider'
+        if isInteractable:
+            category = 'interactable'
 
-        # print('------------------------------------- GROUP')
-        # print(group)
+        if 'assets' not in data:
+            data['assets'] = []
+        if asset not in data['assets']:
+            data['assets'].append(asset)
 
-        isActor = group == 'actors'
-
-        if group == 'props':
-            if 'assets' not in data:
-                data['assets'] = []
-            if asset not in data['assets']:
-                data['assets'].append(asset)
-
-        if group == 'props' and keepProps:
+        if keepProps:
             empty = bpy.data.objects.new('empty', None)
             empty.name = ''
             empty.matrix_world = obj.matrix_world
             empty['asset'] = asset
             props.append(empty)
-            # if obj in traversableObjs:
-            #     traversables.append(empty)
-            # else:
-            #   props.append(empty)
-            # continue
+            if obj in traversableObjs:
+                traversables.append(empty)
 
-        if type not in data:
-            data[type] = []
+        newType = type + 's'
+        if newType not in data:
+            data[newType] = []
 
         # Gather pos / scale / qt
         pos, qt, scale = obj.matrix_world.decompose()
@@ -157,49 +142,50 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         scale = utils.toThreeScale(utils.toNumberList(scale, 8))
         qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
 
-        # Get actors params
-        params = None
-        # if isActor:
-        #     for K in obj.keys():
-        #         if K.startswith('_'):
-        #             continue
-        #         if K == 'hops':
-        #             continue
-        #         v = obj[K]
-        #         if (
-        #             not isinstance(v, str)
-        #             and not isinstance(v, float)
-        #             and not isinstance(v, int)
-        #             and not isinstance(v, bool)
-        #         ):
-        #             continue
-        #         # Do not exports hard ops properties
-        #         # if K == 'hops': continue
-        #         if params == None:
-        #             params = {}
-        #         params[K] = v
+        # Get interactable effect
+        effect = None
+        if isInteractable:
+            for key in obj.keys():
+                if key.startswith('_'):
+                    continue
+                if key != 'effect':
+                    continue
+                v = obj[key]
+                if (
+                    not isinstance(v, str)
+                    and not isinstance(v, float)
+                    and not isinstance(v, int)
+                    and not isinstance(v, bool)
+                ):
+                    continue
+                # Do not exports hard ops properties
+                if effect == None:
+                    effect = v
 
         objData = {}
 
-        if not isActor:
-            objData['asset'] = asset
-        if not isActor and obj in traversableObjs:
-            objData['traversable'] = True
+        objData['asset'] = asset
 
-        if isActor:
+        if obj in traversableObjs:
+            objData['traversable'] = True
+        else:
+            objData['traversable'] = False
+
+        if isInteractable:
             objData['uid'] = uid
-        if isActor:
-            objData['type'] = kind
-        if isActor and params != None:
-            objData['params'] = params
+        if isInteractable and effect != None:
+            objData['effect'] = effect
 
         # Pack transformations
-        objData['transforms'] = {'pos': pos, 'scale': scale, 'qt': qt}
+        objData['type'] = category
+        objData['transforms'] = {}
+        objData['transforms']['pos'] = pos
+        objData['transforms']['scale'] = scale
+        objData['transforms']['qt'] = qt
 
-        data[type].append(objData)
-        # print('------------------------------------- TYPE')
-        # print(type)
-        # print(data[type])
+        data[newType].append(objData)
+        print('------------------------------------- TYPE')
+        print(data[newType])
 
     # Export points
     for obj in objs:
@@ -209,15 +195,17 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         seg = obj.name.split(' - ')
         if len(seg) < 2:
             continue
-        if seg[0].lower().strip() != 'point':
+        type = seg[0].lower().strip()
+        if type.lower().strip() != 'point':
             continue
-        if 'points' not in data:
-            data['points'] = {}
+        if 'datas' not in data:
+            data['datas'] = []
         ptName = seg[1]
         pos, qt, scale = obj.matrix_world.decompose()
         pos = utils.toThreePos(utils.toNumberList(pos, 6))
         qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
-        data['points'][ptName] = {'pos': pos, 'qt': qt}
+        ptData = {'type': type, 'uid': ptName, 'pos': pos, 'qt': qt}
+        data['datas'].append(ptData)
 
     # Export areas
     for obj in objs:
@@ -227,21 +215,22 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         seg = obj.name.split(' - ')
         if len(seg) < 2:
             continue
-        if seg[0].lower().strip() != 'area':
+
+        type = seg[0].lower().strip()
+        if type.lower().strip() != 'area':
             continue
 
-        if 'areas' not in data:
-            data['areas'] = {}
+        if 'datas' not in data:
+            data['datas'] = []
+
         ptName = seg[1]
         pos, qt, scale = obj.matrix_world.decompose()
         pos = utils.toThreePos(utils.toNumberList(pos, 6))
         size = round(obj.empty_display_size, 3)
 
-        area = {}
-        area['position'] = pos
-        area['size'] = size
+        areaData = {'type': type, 'uid': ptName, 'pos': pos, 'size': size}
 
-        data['areas'][ptName] = area
+        data['datas'].append(areaData)
 
     # Export curves
     for obj in objs:
@@ -254,7 +243,8 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         if seg[0].lower().strip() != 'curve':
             continue
         if 'curves' not in data:
-            data['curves'] = {}
+            data['curves'] = []
+
         curves = data['curves']
         curveName = seg[1]
         if len(obj.data.splines) < 1:

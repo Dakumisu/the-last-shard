@@ -32,19 +32,16 @@ def _exportSceneTextures(fp, sceneName):
 
 
 def mergeCollider(objs, colliderType='SceneCollider'):
-    useBase = False
     toMerge = []
     for obj in objs:
         if obj.type == 'CURVE':
             toMerge.append(utils.curveToMesh(obj))
-        elif obj.name.startswith('__USE_BASE__'):
-            useBase = True
         elif obj.type == 'MESH':
             toMerge.append(obj)
     mergedCollider = utils.mergeApply(toMerge)
     if mergedCollider != None:
         mergedCollider['type'] = colliderType
-    return (mergedCollider, useBase)
+    return (mergedCollider)
 
 
 def export(fp, origCol, textureOnly=False):
@@ -94,9 +91,19 @@ def export(fp, origCol, textureOnly=False):
 
         # Base items will be merged
         # Used to define scene bounds
+        print('--------------------------')
+        print(kind)
+        print(subcol.all_objects)
         if kind.startswith('base'):
-            mergedBase = utils.mergeApply(list(subcol.all_objects))
+            meshes = []
+            for obj in subcol.all_objects:
+                meshes.append(obj)
+            print(meshes)
+            print(list(subcol.all_objects))
+            mergedBase = utils.mergeApply(meshes)
             data['bounds'] = [[0, 0, 0], [0, 0, 0]]
+            print('mergedBase')
+            print(mergedBase)
             if mergedBase == None:
                 continue
             mergedBase['type'] = 'SceneBase'
@@ -105,7 +112,7 @@ def export(fp, origCol, textureOnly=False):
 
         # Scene colliders
         elif kind.startswith('colliders'):
-            (mergedCollider, useBase) = mergeCollider(
+            mergedCollider = mergeCollider(
                 list(subcol.all_objects), 'SceneCollider')
             if mergedCollider == None:
                 continue
@@ -113,13 +120,11 @@ def export(fp, origCol, textureOnly=False):
 
         # Props
         elif (
-            kind.startswith('curves')
-            or kind.startswith('props')
+            kind.startswith('objects')
+            or kind.startswith('curves')
             or kind.startswith('datas')
-            or kind.startswith('interactables')
         ):
             entities += list(subcol.all_objects)
-        # Object without colliders
         elif kind.startswith('traversables'):
             entities += list(subcol.all_objects)
             traversableEntities += list(subcol.all_objects)
@@ -158,9 +163,9 @@ def export(fp, origCol, textureOnly=False):
     empty.name = 'TraversableProps'
     col.objects.link(empty)
     toExport.append(empty)
-    for prop in traversables:
-        col.objects.link(prop)
-        prop.parent = empty
+    # for prop in traversables:
+    #     col.objects.link(prop)
+    #     prop.parent = empty
 
     # Export textures
     # debugStep()

@@ -268,6 +268,8 @@ def applyTransforms(obj):
 
 def mergeApply(obj):
     meshes = getAllMeshes(obj)
+    print('meshes')
+    print(meshes)
     if len(meshes) < 1:
         return None
     applyModifiers(meshes)
