@@ -112,35 +112,90 @@ export default class IntroScene extends BaseScene {
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
 
 		// LaserTowers
+		const laserTowers = [];
+
 		const towerGeometry = new BoxGeometry(1, 4, 1);
 		const towerMaterial = new BaseToonMaterial({ color: '#ff0000' });
 
 		const towerMesh1 = new Mesh(towerGeometry, towerMaterial);
-		towerMesh1.position.set(7, 0, 20);
+		towerMesh1.position.set(2, 0, 20);
 		towerMesh1.rotation.y = Math.PI / 3;
 
 		const laserTower1 = new LaserTower({
 			scene: this,
 			mesh: towerMesh1,
 			name: 'laserTower1',
+			direction: [0, 0, 1],
 			towerType: 'first',
+			laserTowers,
+			maxDistance: 10,
 		});
 		laserTower1.initPhysics();
 
 		const towerGeometry2 = new BoxGeometry(1, 4, 1);
 		const towerMaterial2 = new BaseToonMaterial({ color: '#ff0000' });
 		const towerMesh2 = new Mesh(towerGeometry2, towerMaterial2);
-		towerMesh2.position.set(3, 0, 22);
+		towerMesh2.position.set(-2, 0, 22);
 
 		const laserTower2 = new LaserTower({
 			scene: this,
 			mesh: towerMesh2,
 			name: 'laserTower2',
-			towerType: 'end',
+			direction: [1, 0, 0],
+			towerType: 'between',
+			laserTowers,
+			maxDistance: 10,
 		});
 		laserTower2.initPhysics();
 
-		this.colliders.push(laserTower1, laserTower2);
+		const towerGeometry3 = new BoxGeometry(1, 4, 1);
+		const towerMaterial3 = new BaseToonMaterial({ color: '#ff0000' });
+		const towerMesh3 = new Mesh(towerGeometry3, towerMaterial3);
+		towerMesh3.position.set(2, 0, 23);
+
+		const laserTower3 = new LaserTower({
+			scene: this,
+			mesh: towerMesh3,
+			name: 'laserTower3',
+			direction: [0, 0, 1],
+			towerType: 'between',
+			laserTowers,
+			maxDistance: 10,
+		});
+		laserTower3.initPhysics();
+
+		const towerGeometry4 = new BoxGeometry(1, 4, 1);
+		const towerMaterial4 = new BaseToonMaterial({ color: '#ff0000' });
+		const towerMesh4 = new Mesh(towerGeometry4, towerMaterial4);
+		towerMesh4.position.set(-2, 0, 26);
+
+		const laserTower4 = new LaserTower({
+			scene: this,
+			mesh: towerMesh4,
+			name: 'laserTower4',
+			direction: [0, 0, 1],
+			towerType: 'between',
+			laserTowers,
+			maxDistance: 10,
+		});
+		laserTower4.initPhysics();
+
+		const towerGeometry5 = new BoxGeometry(1, 4, 1);
+		const towerMaterial5 = new BaseToonMaterial({ color: '#ff0000' });
+		const towerMesh5 = new Mesh(towerGeometry5, towerMaterial5);
+		towerMesh5.position.set(2, 0, 28);
+
+		const laserTower5 = new LaserTower({
+			scene: this,
+			mesh: towerMesh5,
+			name: 'laserTower5',
+			towerType: 'end',
+			laserTowers,
+			maxDistance: 10,
+		});
+		laserTower5.initPhysics();
+
+		this.colliders.push(...laserTowers);
 
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 0.7,
