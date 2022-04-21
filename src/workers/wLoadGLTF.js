@@ -1,9 +1,13 @@
 import { Matrix4 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { MeshoptDecoder } from 'meshoptimizer/meshopt_decoder.module';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+// import { MeshoptDecoder } from 'meshoptimizer/meshopt_decoder.module';
 
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('../utils/loaders/draco/');
 const gltfLoader = new GLTFLoader();
-gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+gltfLoader.setDRACOLoader(dracoLoader);
+// gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 
 async function loadGLTF(url, opts = {}) {
 	return new Promise((resolve, reject) => {
