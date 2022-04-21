@@ -16,7 +16,6 @@ import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
 
 const sandbox = '/assets/export/Scene_Sandbox.glb';
-const test = '/assets/export/Asset_Coupe.glb';
 const twoPI = Math.PI * 2;
 
 let initialized = false;
@@ -79,7 +78,7 @@ export default class Ground extends BaseCollider {
 			[],
 		);
 
-		return await mergeGeometry([plane, platforms], [sandbox, test]);
+		return await mergeGeometry([plane, platforms], [sandbox]);
 	}
 
 	setGround() {

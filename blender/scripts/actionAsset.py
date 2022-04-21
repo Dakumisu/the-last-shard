@@ -157,7 +157,6 @@ def export(fp, col, textureOnly=False):
         export_yup=True,
         export_materials='NONE',
         export_normals=True,
-        export_colors=False,
         export_skins=False,
         export_texcoords=True,
         export_extras=False,
@@ -165,6 +164,8 @@ def export(fp, col, textureOnly=False):
         export_animations=False,
         export_lights=False,
         export_apply=True,
+        export_apply=True,
+        export_colors=True,
         # export_image_format = 'NONE'
     )
 

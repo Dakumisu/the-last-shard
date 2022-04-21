@@ -17,6 +17,7 @@
     "TreeA",
     "TreeB",
     "Coupe",
+    "TreeC",
     "Coin"
   ],
   "prop": [
@@ -124,6 +125,27 @@
           1.0
         ]
       }
+    },
+    {
+      "asset": "TreeC",
+      "transforms": {
+        "pos": [
+          7.574594,
+          0.0,
+          -8.962122
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
     }
   ],
   "interactable": [
@@ -150,7 +172,7 @@
     }
   ],
   "points": {
-    "Spawn.001": {
+    "Spawn.004": {
       "pos": [
         -10.572475,
         2.060297,
@@ -163,7 +185,7 @@
         1.0
       ]
     },
-    "Checkpoint.001": {
+    "Checkpoint.004": {
       "pos": [
         10.579155,
         2.060297,
@@ -178,7 +200,7 @@
     }
   },
   "curves": {
-    "Helper.001": {
+    "Helper.004": {
       "type": "BEZIER",
       "closed": true,
       "points": [
