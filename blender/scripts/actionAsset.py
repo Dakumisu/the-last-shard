@@ -69,15 +69,17 @@ def export(fp, col, textureOnly=False):
         # Only check first-level items
         if obj.parent:
             continue
+
         seg = obj.name.split(' - ')
         if len(seg) < 2:
             continue
+
         kind = seg[1].lower().strip()
-        if kind.startswith('colliders'):
-            obj['asset'] = name
-            obj['type'] = 'Collider'
-            toMerge.append(obj)
-        elif kind.startswith('rawmesh'):
+        # if kind.startswith('colliders'):
+        #     obj['asset'] = name
+        #     obj['type'] = 'Collider'
+        #     toMerge.append(obj)
+        if kind.startswith('rawmesh'):
             obj['asset'] = name
             obj['type'] = 'RawMesh'
             data['useRawMesh'] = True
@@ -163,7 +165,6 @@ def export(fp, col, textureOnly=False):
         export_cameras=False,
         export_animations=False,
         export_lights=False,
-        export_apply=True,
         export_apply=True,
         export_colors=True,
         # export_image_format = 'NONE'

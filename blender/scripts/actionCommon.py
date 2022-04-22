@@ -112,6 +112,10 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         uid = rawseg[1].strip()
         asset = seg[1].strip()
 
+        # # prevent export other stuff in the collection
+        # if type != 'prop' or 'interactable':
+        #     continue
+
         isInteractable = type == 'interactable'
 
         category = 'collider'
@@ -128,9 +132,10 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
             empty.name = ''
             empty.matrix_world = obj.matrix_world
             empty['asset'] = asset
-            props.append(empty)
             if obj in traversableObjs:
                 traversables.append(empty)
+            else:
+                props.append(empty)
 
         newType = type + 's'
         if newType not in data:
@@ -184,28 +189,29 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         objData['transforms']['qt'] = qt
 
         data[newType].append(objData)
-        print('------------------------------------- TYPE')
-        print(data[newType])
 
     # Export points
     for obj in objs:
         if obj.type != 'EMPTY':
             continue
 
-        seg = obj.name.split(' - ')
-        if len(seg) < 2:
+        seg = utils.removeIncrement(obj.name).split(' - ')
+        rawSeg = obj.name.split(' - ')
+
+        if len(rawSeg) < 2:
             continue
-        type = seg[0].lower().strip()
+        type = rawSeg[0].lower().strip()
         if type.lower().strip() != 'point':
             continue
-        if 'datas' not in data:
-            data['datas'] = []
+        if 'points' not in data:
+            data['points'] = []
         ptName = seg[1]
+        uid = rawSeg[1]
         pos, qt, scale = obj.matrix_world.decompose()
         pos = utils.toThreePos(utils.toNumberList(pos, 6))
         qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
-        ptData = {'type': type, 'uid': ptName, 'pos': pos, 'qt': qt}
-        data['datas'].append(ptData)
+        ptData = {'type': ptName, 'uid': uid, 'pos': pos, 'qt': qt}
+        data['points'].append(ptData)
 
     # Export areas
     for obj in objs:
@@ -220,8 +226,8 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         if type.lower().strip() != 'area':
             continue
 
-        if 'datas' not in data:
-            data['datas'] = []
+        if 'areas' not in data:
+            data['areas'] = []
 
         ptName = seg[1]
         pos, qt, scale = obj.matrix_world.decompose()
@@ -230,7 +236,7 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
 
         areaData = {'type': type, 'uid': ptName, 'pos': pos, 'size': size}
 
-        data['datas'].append(areaData)
+        data['areas'].append(areaData)
 
     # Export curves
     for obj in objs:
@@ -262,68 +268,6 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
             exportNurbs(curves, obj, curveName, spline)
         elif spline.type == 'POLY':
             exportPolyline(curves, obj, curveName, spline)
-
-    # Export Interactables
-    # for obj in objs:
-    #     if obj.type != 'MESH':
-    #         continue
-
-    #     rawSeg = obj.name.split(' - ')
-    #     seg = utils.removeIncrement(obj.name).split(' - ')
-    #     if len(rawSeg) < 2:
-    #         continue
-    #     if rawSeg[0].lower().strip() != 'interactable':
-    #         continue
-    #     if 'interactables' not in data:
-    #         data['interactables'] = {}
-
-    #     name = rawSeg[1]
-    #     kind = seg[1]
-
-    #     if 'assets' not in data:
-    #         data['assets'] = []
-    #     if kind not in data['assets']:
-    #         addToProps(obj, kind, props, data)
-    #         # data['assets'].append(kind)
-    #         # props.append(obj)
-
-    #     pos, qt, scale = obj.matrix_world.decompose()
-    #     pos = utils.toThreePos(utils.toNumberList(pos, 6))
-    #     qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
-    #     scale = utils.toThreeScale(utils.toNumberList(scale, 8))
-    #     data['interactables'][name] = {'pos': pos, 'qt': qt, 'scale': scale}
-
-    # Export Props
-    # for obj in objs:
-    #     if obj.type != 'EMPTY':
-    #         continue
-
-    #     rawSeg = obj.name.split(' - ')
-    #     seg = utils.removeIncrement(obj.name).split(' - ')
-    #     if len(rawSeg) < 2:
-    #         continue
-    #     if rawSeg[0].lower().strip() != 'prop':
-    #         continue
-    #     if 'props' not in data:
-    #         data['props'] = {}
-
-    #     name = rawSeg[1]
-    #     kind = seg[1]
-
-    #     if 'assets' not in data:
-    #         data['assets'] = []
-    #     if kind not in data['assets']:
-    #         addToProps(obj, kind, props, data)
-
-    #         # data['assets'].append(kind)
-    #         # props.append(obj)
-
-    #     print('---------- PROP ' + name + ' ----------')
-    #     pos, qt, scale = obj.matrix_world.decompose()
-    #     pos = utils.toThreePos(utils.toNumberList(pos, 6))
-    #     qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
-    #     scale = utils.toThreeScale(utils.toNumberList(scale, 8))
-    #     data['props'][name] = {'pos': pos, 'qt': qt, 'scale': scale}
 
     if keepProps:
         return (props, traversables)

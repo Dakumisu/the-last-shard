@@ -166,6 +166,11 @@ def deselectAll():
     #     if hasattr(ob, 'select'): ob.select = False
 
 
+# Select all objects
+def selectAll():
+    bpy.ops.object.select_all(action='SELECT')
+
+
 # Remove blender "incremental" suffix in object names
 def removeIncrement(s):
     return re.sub('\.[0-9]+$', '', s.strip())
@@ -257,19 +262,17 @@ def clearParent(obj):
 
 
 # Apply object transforms
-def applyTransforms(obj):
+def applyTransforms(obj, loc=True, rot=True, scale=True):
     if not obj:
         return
     ctx = createSelectionContext(obj)
     bpy.ops.object.transform_apply(
-        ctx, location=True, rotation=True, scale=True)
+        ctx, location=loc, rotation=rot, scale=scale)
     return obj
 
 
-def mergeApply(obj):
+def mergeApply(obj, transform=True, loc=True, rot=True, scale=True):
     meshes = getAllMeshes(obj)
-    print('meshes')
-    print(meshes)
     if len(meshes) < 1:
         return None
     applyModifiers(meshes)
@@ -277,14 +280,15 @@ def mergeApply(obj):
     if not merged:
         return None
     clearParent(merged)
-    applyTransforms(merged)
+    if transform:
+        applyTransforms(merged, loc, rot, scale)
     return merged
 
 
 # Create a copy of a collection into a new scene
 # This is mainly used to easily manipulate linked collection
-def sandboxCollection(origCollection):
-    scn = bpy.data.scenes.new("DEV")
+def sandboxCollection(origCollection, scnName="DEV"):
+    scn = bpy.data.scenes.new(scnName)
     copyCollection(scn.collection, origCollection)
     colname = removeIncrement(origCollection.name)
     collection = findCollection(scn.collection.children, colname)

@@ -38,10 +38,11 @@ def mergeCollider(objs, colliderType='SceneCollider'):
             toMerge.append(utils.curveToMesh(obj))
         elif obj.type == 'MESH':
             toMerge.append(obj)
-    mergedCollider = utils.mergeApply(toMerge)
+
+    mergedCollider = utils.mergeApply(toMerge, False)
     if mergedCollider != None:
         mergedCollider['type'] = colliderType
-    return (mergedCollider)
+    return mergedCollider
 
 
 def export(fp, origCol, textureOnly=False):
@@ -77,6 +78,8 @@ def export(fp, origCol, textureOnly=False):
     bpy.context.window.scene = scn
 
     mergedBase = None
+    mergedCollider = None
+    collidersCol = None
     entities = []
     traversableEntities = []
     toExport = []
@@ -84,26 +87,16 @@ def export(fp, origCol, textureOnly=False):
     # Grab all subcollections
     # Parse them to extract mesh, meshStates, colliders
     for subcol in col.children:
-        # print(col)
         seg = subcol.name
         kind = utils.removeIncrement(seg).lower()
-        # print(kind)
 
         # Base items will be merged
         # Used to define scene bounds
-        print('--------------------------')
-        print(kind)
-        print(subcol.all_objects)
         if kind.startswith('base'):
-            meshes = []
-            for obj in subcol.all_objects:
-                meshes.append(obj)
-            print(meshes)
-            print(list(subcol.all_objects))
-            mergedBase = utils.mergeApply(meshes)
+            mergedBase = utils.mergeApply(
+                list(subcol.all_objects), True, False, False, True)
+            # default base bounds
             data['bounds'] = [[0, 0, 0], [0, 0, 0]]
-            print('mergedBase')
-            print(mergedBase)
             if mergedBase == None:
                 continue
             mergedBase['type'] = 'SceneBase'
@@ -111,21 +104,17 @@ def export(fp, origCol, textureOnly=False):
             toExport.append(mergedBase)
 
         # Scene colliders
-        elif kind.startswith('colliders'):
-            mergedCollider = mergeCollider(
-                list(subcol.all_objects), 'SceneCollider')
-            if mergedCollider == None:
-                continue
-            toExport.append(mergedCollider)
+        elif kind.startswith('objects'):
+            collidersCol = subcol
+            entities += list(subcol.all_objects)
 
         # Props
         elif (
-            kind.startswith('objects')
-            or kind.startswith('curves')
+            kind.startswith('curves')
             or kind.startswith('datas')
         ):
             entities += list(subcol.all_objects)
-        elif kind.startswith('traversables'):
+        elif kind.startswith('traversable'):
             entities += list(subcol.all_objects)
             traversableEntities += list(subcol.all_objects)
 
@@ -140,42 +129,47 @@ def export(fp, origCol, textureOnly=False):
 
     # Export props, commons, datas, interactables, ...
     debugStep()
-    (props, traversables) = actionCommon.exportEntities(
+    # (props, traversables) =
+    actionCommon.exportEntities(
         entities,
         traversableEntities,
         data,
         True
     )
 
-    # Export static props directly into the glb
-    debugStep()
-    empty = bpy.data.objects.new('empty', None)
-    empty.name = 'Props'
-    col.objects.link(empty)
-    toExport.append(empty)
-    for prop in props:
-        col.objects.link(prop)
-        prop.parent = empty
+    if (collidersCol != None):
+        # Gathers all colliders, to be merged later
+        utils.deepSelect(collidersCol.all_objects)
+        bpy.ops.object.duplicates_make_real(
+            use_base_parent=False,
+            use_hierarchy=False
+        )
+        utils.deepSelect(collidersCol.all_objects)
+        bpy.ops.object.make_local(type='SELECT_OBDATA')
+        utils.deselectAll()
 
-    # Export static traversables props directly into the glb
-    debugStep()
-    empty = bpy.data.objects.new('empty', None)
-    empty.name = 'TraversableProps'
-    col.objects.link(empty)
-    toExport.append(empty)
-    # for prop in traversables:
-    #     col.objects.link(prop)
-    #     prop.parent = empty
+        toMerge = []
+        for o in collidersCol.all_objects:
+            if (o.type == 'MESH'):
+                toMerge.append(o)
+
+        mergedCollider = mergeCollider(
+            list(toMerge), 'SceneCollider')
+
+        if mergedCollider == None:
+            utils.log(utils.red('No collider found'))
+        else:
+            toExport.append(mergedCollider)
 
     # Export textures
-    # debugStep()
+    debugStep()
     _exportSceneTextures(fp, sceneName)
 
     # Append data to a json file
     debugStep()
     fname = 'Scene_' + sceneName
-    print('------- EXPORT FINAL -------')
-    print(data)
+    # print('------- EXPORT FINAL -------')
+    # print(data)
     utils.writeJSON(path.join(fp, fname + '.json'), data, True)
 
     # Export glb
@@ -205,4 +199,12 @@ def export(fp, origCol, textureOnly=False):
 
     bpy.context.window.scene = scn
     bpy.ops.scene.delete()
+
+    # setting the scene back to the original scene
+    i = 0
+    for scene in bpy.data.scenes:
+        if scene.name.endswith(sceneName):
+            bpy.context.window.scene = bpy.data.scenes[i]
+        i += 1
+
     utils.success(logMsg + ' done')

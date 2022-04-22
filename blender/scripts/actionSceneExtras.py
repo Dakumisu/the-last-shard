@@ -37,8 +37,6 @@ def export(fp, origCol, textureOnly=False):
 
     # Export entities
     entities = list(col.all_objects)
-    print('HERE')
-    print(entities)
     actionCommon.exportEntities(entities, [], data)
 
     # Append data to a json file
