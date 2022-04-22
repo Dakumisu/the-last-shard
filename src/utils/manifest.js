@@ -35,4 +35,9 @@ assetsMap.set('noiseTexture', {
 	data: {},
 });
 
+assetsMap.set('grassTexture', {
+	path: '/assets/image/grass.png',
+	data: {},
+});
+
 export default assetsMap;

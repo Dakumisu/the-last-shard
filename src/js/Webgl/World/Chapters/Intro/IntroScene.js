@@ -1,6 +1,6 @@
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
-import Grass from './Props/Grass/Grass';
+import Grass from '../../Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
 import {

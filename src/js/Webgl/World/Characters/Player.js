@@ -364,14 +364,15 @@ class Player extends BaseEntity {
 	async #setModel() {
 		const m = await loadGLTF(model);
 
-		m.scene.traverse((object) => {
-			if (object.type === 'SkinnedMesh') {
-				object.material = this.base.material;
-			}
-		});
+		// m.scene.traverse((object) => {
+		// 	if (object.type === 'SkinnedMesh') {
+		// 		object.material = this.base.material;
+		// 	}
+		// });
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
+		this.base.model.scene.scale.set(1.5, 1.5, 1.5);
 		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
 
 		this.base.group.add(this.base.model.scene);
