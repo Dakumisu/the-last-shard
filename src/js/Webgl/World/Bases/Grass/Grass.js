@@ -76,26 +76,13 @@ export default class Grass {
 		/// #endif
 
 		this.base = {};
-
-		this.preloadPromise = null;
-	}
-
-	preload() {}
-
-	async loadTextures() {
-		this.noiseTexture = await loadTexture('noiseTexture');
-		this.noiseTexture.wrapS = this.noiseTexture.wrapT = RepeatWrapping;
-
-		this.grassTexture = await loadTexture('grassTexture');
-		this.grassTexture.encoding = sRGBEncoding;
 	}
 
 	async init() {
-		await this.loadTextures();
 		this.setRenderTarget();
 		this.setDefaultGeometry();
 		this.setInstancedGeometry();
-		this.setMaterial();
+		await this.setMaterial();
 		this.setMesh();
 
 		/// #if DEBUG
@@ -108,6 +95,7 @@ export default class Grass {
 	setRenderTarget() {
 		const rtWidth = 512;
 		const rtHeight = 512;
+
 		this.renderTarget = new WebGLRenderTarget(rtWidth, rtHeight);
 
 		this.depthTexture = new DepthTexture(rtWidth, rtHeight);
@@ -125,11 +113,10 @@ export default class Grass {
 			this.maxBox.x / 2,
 			this.maxBox.z / -2,
 			1,
-			// 50,
 			this.maxBox.y + Math.abs(this.minBox.y),
 		);
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
-		this.rtCamera.position.y = this.maxBox.y + this.rtCamera.near;
+		this.rtCamera.position.y = this.maxBox.y;
 	}
 
 	setDefaultGeometry() {
@@ -187,7 +174,7 @@ export default class Grass {
 		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 3, false));
 	}
 
-	setMaterial() {
+	async setMaterial() {
 		this.charaPos = new Vector3();
 
 		this.base.material = new ShaderMaterial({
@@ -202,12 +189,11 @@ export default class Grass {
 				uNoiseElevationIntensity: { value: params.noiseElevationIntensity },
 				uElevationIntensity: { value: params.elevationIntensity },
 				uHalfBoxSize: { value: params.halfBoxSize },
-				uCharaPos: { value: this.charaPos },
-				uNoiseTexture: { value: this.noiseTexture },
+				uCharaPos: { value: this.player.base.mesh.position },
 				uColor: { value: new Color().set(params.color) },
 				uFogColor: { value: new Color().set(params.fogColor) },
 				uElevationTexture: { value: this.depthTexture },
-				uGrassTexture: { value: this.grassTexture },
+				uGrassTexture: { value: await loadTexture('grassTexture') },
 				uMaxMapBounds: { value: this.maxBox },
 				uMinMapBounds: { value: this.minBox },
 			},
@@ -295,19 +281,12 @@ export default class Grass {
 	}
 	/// #endif
 
-	resize() {
-		if (!initialized) return;
-	}
-
 	update(et, dt) {
 		if (!initialized) return;
 
 		this.renderer.setRenderTarget(this.renderTarget);
 		this.renderer.render(this.scene, this.rtCamera);
 		this.renderer.setRenderTarget(null);
-
-		this.charaPos.copy(this.player.base.mesh.position);
-		// this.cube.position.copy(this.player.base.mesh.position);
 
 		this.base.material.uniforms.uTime.value = et;
 	}

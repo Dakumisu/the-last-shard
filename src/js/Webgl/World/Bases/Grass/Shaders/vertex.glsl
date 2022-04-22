@@ -56,7 +56,7 @@ void main() {
 
 	vPos = pos;
 
-	vec3 translation = vec3(0., 1., 0.);
+	vec3 translation = vec3(0., 0., 0.);
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
