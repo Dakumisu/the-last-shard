@@ -1,60 +1,3 @@
-import {
-	BoxBufferGeometry,
-	BoxGeometry,
-	BufferAttribute,
-	BufferGeometry,
-	Color,
-	DataTexture,
-	DoubleSide,
-	DepthFormat,
-	UnsignedShortType,
-	InstancedBufferAttribute,
-	InstancedBufferGeometry,
-	MathUtils,
-	Mesh,
-	MeshBasicMaterial,
-	MeshNormalMaterial,
-	DepthTexture,
-	MeshDepthMaterial,
-	OrthographicCamera,
-	PerspectiveCamera,
-	PlaneBufferGeometry,
-	RepeatWrapping,
-	Scene,
-	ShaderMaterial,
-	TextureLoader,
-	Vector3,
-	WebGLRenderTarget,
-	Vector2,
-	sRGBEncoding,
-	Box3Helper,
-} from 'three';
-import { loadTexture } from '@utils/loaders/loadAssets';
-
-import { mergeGeometry } from '@utils/webgl';
-import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-
-import fragmentShader from './Shaders/fragment.glsl';
-import vertexShader from './Shaders/vertex.glsl';
-import { getWebgl } from '@webgl/Webgl';
-
-let initialized = false;
-
-const params = {
-	speed: 0.15,
-	displacement: 0.2,
-	windColorIntensity: 0.2,
-	noiseMouvementIntensity: 0.2,
-	noiseElevationIntensity: 0.75,
-	elevationIntensity: 0.25,
-	maskRange: 0.04,
-	halfBoxSize: 28,
-	verticeScale: 0.42,
-	count: 300000,
-	color: '#de47ff',
-	fogColor: '#3e2e77',
-};
-
 /// #if DEBUG
 const debug = {
 	instance: null,
@@ -62,30 +5,61 @@ const debug = {
 };
 /// #endif
 
-export default class Grass {
-	constructor({ scene }) {
-		const webgl = getWebgl();
-		this.scene = scene.instance;
-		this.player = scene.player;
-		this.ground = scene.ground;
+import {
+	BufferAttribute,
+	BufferGeometry,
+	Color,
+	DoubleSide,
+	DepthFormat,
+	UnsignedShortType,
+	InstancedBufferAttribute,
+	InstancedBufferGeometry,
+	MathUtils,
+	Mesh,
+	DepthTexture,
+	OrthographicCamera,
+	ShaderMaterial,
+	WebGLRenderTarget,
+	Texture,
+} from 'three';
+import { loadTexture } from '@utils/loaders/loadAssets';
 
+import fragmentShader from './Shaders/fragment.glsl';
+import vertexShader from './Shaders/vertex.glsl';
+import { getWebgl } from '@webgl/Webgl';
+import BaseScene from '@webgl/Scene/BaseScene';
+import BaseObject from '../BaseObject';
+
+export default class Grass extends BaseObject {
+	/**
+	 *
+	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, elevationIntensity?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, speed?: number, positionsTexture: Texture}}} params0
+	 */
+	constructor({ scene, params }) {
+		super({ name: 'Grass', isInteractable: false });
+
+		this.scene = scene;
+
+		this.params = params;
+
+		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
+
+		this.base.material = null;
+		this.base.geometry = null;
+		this.base.positions = null;
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
 
-		this.base = {
-			geometry: null,
-			material: null,
-			mesh: null,
-		};
+		this.initialized = false;
 	}
 
 	async init() {
 		this.setRenderTarget();
 		this.setDefaultGeometry();
-		this.setInstancedGeometry();
+		this.setGeometry();
 		await this.setMaterial();
 		this.setMesh();
 
@@ -93,12 +67,12 @@ export default class Grass {
 		this.debug();
 		/// #endif
 
-		initialized = true;
+		this.initialized = true;
 	}
 
 	setRenderTarget() {
-		this.minBox = this.ground.base.mesh.geometry.boundingBox.min;
-		this.maxBox = this.ground.base.mesh.geometry.boundingBox.max;
+		this.minBox = this.scene.ground.base.mesh.geometry.boundingBox.min;
+		this.maxBox = this.scene.ground.base.mesh.geometry.boundingBox.max;
 
 		const rtWidth = 512;
 		const rtHeight = 512;
@@ -127,15 +101,15 @@ export default class Grass {
 		this.triangle = new BufferGeometry();
 
 		const vertices = new Float32Array([
-			-0.5 * params.verticeScale,
-			-0.5 * params.verticeScale,
-			0 * params.verticeScale, // bl
-			0.5 * params.verticeScale,
-			-0.5 * params.verticeScale,
-			0 * params.verticeScale, // br
-			0 * params.verticeScale,
-			0.5 * params.verticeScale,
-			0 * params.verticeScale, // tc
+			-0.5 * this.params.verticeScale,
+			-0.5 * this.params.verticeScale,
+			0 * this.params.verticeScale, // bl
+			0.5 * this.params.verticeScale,
+			-0.5 * this.params.verticeScale,
+			0 * this.params.verticeScale, // br
+			0 * this.params.verticeScale,
+			0.5 * this.params.verticeScale,
+			0 * this.params.verticeScale, // tc
 		]);
 
 		const normal = new Float32Array([
@@ -150,13 +124,13 @@ export default class Grass {
 		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
 	}
 
-	setInstancedGeometry() {
-		this.positions = new Float32Array(params.count * 3);
-		const scale = new Float32Array(params.count * 1);
+	setGeometry() {
+		this.base.positions = new Float32Array(this.params.count * 3);
+		const scale = new Float32Array(this.params.count * 1);
 
-		for (let i = 0; i < params.count; i++) {
-			this.positions[i * 3 + 0] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
-			this.positions[i * 3 + 2] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
+		for (let i = 0; i < this.params.count; i++) {
+			this.base.positions[i * 3 + 0] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
+			this.base.positions[i * 3 + 2] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
 
 			const random = MathUtils.randFloat(1, 2);
 			scale[i * 3 + 0] = random;
@@ -173,31 +147,29 @@ export default class Grass {
 
 		this.base.geometry.setAttribute(
 			'aPositions',
-			new InstancedBufferAttribute(this.positions, 3, false),
+			new InstancedBufferAttribute(this.base.positions, 3, false),
 		);
 		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 3, false));
 	}
 
 	async setMaterial() {
-		this.charaPos = new Vector3();
-
 		this.base.material = new ShaderMaterial({
 			side: DoubleSide,
 			uniforms: {
 				uTime: { value: 0 },
-				uSpeed: { value: params.speed },
-				uDisplacement: { value: params.displacement },
-				uWindColorIntensity: { value: params.windColorIntensity },
-				uMaskRange: { value: params.maskRange },
-				uNoiseMouvementIntensity: { value: params.noiseMouvementIntensity },
-				uNoiseElevationIntensity: { value: params.noiseElevationIntensity },
-				uElevationIntensity: { value: params.elevationIntensity },
-				uHalfBoxSize: { value: params.halfBoxSize },
-				uCharaPos: { value: this.player.base.mesh.position },
-				uColor: { value: new Color().set(params.color) },
-				uFogColor: { value: new Color().set(params.fogColor) },
+				uSpeed: { value: this.params.speed },
+				uDisplacement: { value: this.params.displacement },
+				uWindColorIntensity: { value: this.params.windColorIntensity },
+				uMaskRange: { value: this.params.maskRange },
+				uNoiseMouvementIntensity: { value: this.params.noiseMouvementIntensity },
+				uNoiseElevationIntensity: { value: this.params.noiseElevationIntensity },
+				uElevationIntensity: { value: this.params.elevationIntensity },
+				uHalfBoxSize: { value: this.params.halfBoxSize },
+				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uColor: { value: new Color().set(this.params.color) },
+				uFogColor: { value: new Color().set(this.scene.fog.params.fogFarColor) },
 				uElevationTexture: { value: this.depthTexture },
-				uGrassTexture: { value: await loadTexture('grassTexture') },
+				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.maxBox },
 				uMinMapBounds: { value: this.minBox },
 			},
@@ -209,64 +181,78 @@ export default class Grass {
 
 	setMesh() {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		this.scene.add(this.base.mesh);
+		this.scene.instance.add(this.base.mesh);
 		this.base.mesh.frustumCulled = false;
 	}
 
 	/// #if DEBUG
 	debug() {
 		const gui = debug.instance.addFolder({ title: debug.label });
-		gui.addInput(this.base.material.uniforms.uSpeed, 'value', {
+
+		// const texturePlane = new Mesh(
+		// 	new PlaneGeometry(1, 1),
+		// 	new MeshBasicMaterial({ map: this.depthTexture, side: DoubleSide }),
+		// );
+
+		// texturePlane.scale.set(5, 5, 1);
+		// texturePlane.position.copy(this.scene.player.base.mesh.position);
+		// this.scene.instance.add(texturePlane);
+
+		gui.addInput(this.base.mesh.material.uniforms.uSpeed, 'value', {
 			label: 'speed',
 			min: 0,
 			max: 1,
 			step: 0.01,
 		});
-		gui.addInput(this.base.material.uniforms.uDisplacement, 'value', {
+		gui.addInput(this.base.mesh.material.uniforms.uDisplacement, 'value', {
 			label: 'displace',
 			min: 0,
 			max: 1,
 			step: 0.01,
 		});
-		gui.addInput(this.base.material.uniforms.uWindColorIntensity, 'value', {
+		gui.addInput(this.base.mesh.material.uniforms.uWindColorIntensity, 'value', {
 			label: 'windColorI',
 			min: 0,
 			max: 0.5,
 			step: 0.01,
 		});
-		gui.addInput(this.base.material.uniforms.uElevationIntensity, 'value', {
+		gui.addInput(this.base.mesh.material.uniforms.uElevationIntensity, 'value', {
 			label: 'elevationI',
 			min: 0,
 			max: 1,
 			step: 0.01,
 		});
-		gui.addInput(this.base.material.uniforms.uNoiseMouvementIntensity, 'value', {
+		gui.addInput(this.base.mesh.material.uniforms.uNoiseMouvementIntensity, 'value', {
 			label: 'nMouvementI',
 			min: 0,
 			max: 0.5,
 			step: 0.01,
 		});
-		gui.addInput(this.base.material.uniforms.uNoiseElevationIntensity, 'value', {
+		gui.addInput(this.base.mesh.material.uniforms.uNoiseElevationIntensity, 'value', {
 			label: 'nElevationI',
 			min: 0,
 			max: 1,
 			step: 0.01,
 		});
-		gui.addInput(params, 'halfBoxSize', {
+		gui.addInput(this.params, 'halfBoxSize', {
 			label: 'boxSize',
 			min: 1,
 			max: 100,
 			step: 0.01,
 		}).on('change', (size) => {
 			if (!size.last) return;
-			for (let i = 0; i < params.count; i++) {
-				this.positions[i * 3 + 0] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
-				this.positions[i * 3 + 2] = MathUtils.randFloatSpread(params.halfBoxSize * 2);
+			for (let i = 0; i < this.params.count; i++) {
+				this.base.positions[i * 3 + 0] = MathUtils.randFloatSpread(
+					this.params.halfBoxSize * 2,
+				);
+				this.base.positions[i * 3 + 2] = MathUtils.randFloatSpread(
+					this.params.halfBoxSize * 2,
+				);
 			}
 			this.base.material.uniforms.uHalfBoxSize.value = size.value;
 			this.base.geometry.setAttribute(
 				'aPositions',
-				new InstancedBufferAttribute(this.positions, 3, false),
+				new InstancedBufferAttribute(this.base.positions, 3, false),
 			);
 		});
 		gui.addInput(this.base.material.uniforms.uMaskRange, 'value', {
@@ -276,20 +262,23 @@ export default class Grass {
 			step: 0.01,
 		});
 
-		gui.addInput(params, 'color').on('change', (color) => {
+		gui.addInput(this.params, 'color').on('change', (color) => {
 			this.base.material.uniforms.uColor.value.set(color.value);
 		});
-		gui.addInput(params, 'fogColor').on('change', (color) => {
+		gui.addInput(this.scene.fog.params, 'fogFarColor').on('change', (color) => {
 			this.base.material.uniforms.uFogColor.value.set(color.value);
 		});
 	}
 	/// #endif
 
 	update(et, dt) {
-		if (!initialized) return;
+		if (!this.initialized) return;
 
 		this.renderer.setRenderTarget(this.renderTarget);
-		this.renderer.render(this.scene, this.rtCamera);
+
+		// Edit this to render only the Mesh/Group you want to test depth with
+		this.renderer.render(this.scene.ground.base.mesh, this.rtCamera);
+		// this.renderer.render(this.scene.instance, this.rtCamera);
 		this.renderer.setRenderTarget(null);
 
 		this.base.material.uniforms.uTime.value = et;

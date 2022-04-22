@@ -19,7 +19,7 @@ export default class Lights {
 		/// #if DEBUG
 		debug.parentFolder = scene.gui.addFolder({
 			title: debug.label,
-			expanded: true,
+			expanded: false,
 		});
 		/// #endif
 

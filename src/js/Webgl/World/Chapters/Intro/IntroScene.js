@@ -2,22 +2,13 @@ import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
 import Grass from '../../Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
-import { loadCubeTexture } from '@utils/loaders/loadAssets';
-import {
-	BoxGeometry,
-	Color,
-	Matrix4,
-	Mesh,
-	MeshNormalMaterial,
-	SphereGeometry,
-	Vector3,
-} from 'three';
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
-import BaseCollider from '@webgl/World/Bases/BaseCollider';
+import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
+import { BoxGeometry, Mesh, MeshNormalMaterial, SphereGeometry, Vector3 } from 'three';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
+import BaseCollider from '@webgl/World/Bases/BaseCollider';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
@@ -56,20 +47,36 @@ export default class IntroScene extends BaseScene {
 
 		this.ground.init();
 
-		this.grass = new Grass({ scene: this });
-		this.grass.init();
-
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',
 			fogFarColor: '#3e2e77',
 			fogNear: 0,
-			// fogFar: 140,
 			fogFar: 30,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
 			background: await this.preloadPromise,
 		});
+
+		// Init grass after fog
+		this.grass = new Grass({
+			scene: this,
+			params: {
+				color: '#de47ff',
+				count: 300000,
+				verticeScale: 0.42,
+				halfBoxSize: 28,
+				maskRange: 0.04,
+				elevationIntensity: 0.25,
+				noiseElevationIntensity: 0.75,
+				noiseMouvementIntensity: 0.2,
+				windColorIntensity: 0.2,
+				displacement: 0.2,
+				speed: 0.15,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
+		});
+		await this.grass.init();
 
 		/// #if DEBUG
 		const testCube = new BaseCollider({
