@@ -60,8 +60,8 @@ void main() {
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
-	float xScaleCoord = map(translation.x, uMinMapBounds.x * .5, uMaxMapBounds.z * .5, 1., 0.);
-	float zScaleCoord = map(translation.z, uMinMapBounds.z * .5, uMaxMapBounds.x * .5, 1., 0.) - .05;
+	float xScaleCoord = map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, .0, 1.);
+	float zScaleCoord = map(-translation.z, uMinMapBounds.z, uMaxMapBounds.z, .0, 1.);
 
 	vec2 scaledCoords = vec2(xScaleCoord, zScaleCoord);
 

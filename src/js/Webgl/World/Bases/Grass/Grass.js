@@ -27,6 +27,7 @@ import {
 	WebGLRenderTarget,
 	Vector2,
 	sRGBEncoding,
+	Box3Helper,
 } from 'three';
 import { loadTexture } from '@utils/loaders/loadAssets';
 
@@ -50,7 +51,6 @@ const params = {
 	halfBoxSize: 28,
 	verticeScale: 0.42,
 	count: 300000,
-	// count: 200,
 	color: '#de47ff',
 	fogColor: '#3e2e77',
 };
@@ -63,7 +63,7 @@ const debug = {
 /// #endif
 
 export default class Grass {
-	constructor(scene) {
+	constructor({ scene }) {
 		const webgl = getWebgl();
 		this.scene = scene.instance;
 		this.player = scene.player;
@@ -75,7 +75,11 @@ export default class Grass {
 		debug.instance = scene.gui;
 		/// #endif
 
-		this.base = {};
+		this.base = {
+			geometry: null,
+			material: null,
+			mesh: null,
+		};
 	}
 
 	async init() {
@@ -93,8 +97,22 @@ export default class Grass {
 	}
 
 	setRenderTarget() {
+		this.minBox = this.ground.base.mesh.geometry.boundingBox.min;
+		this.maxBox = this.ground.base.mesh.geometry.boundingBox.max;
+
 		const rtWidth = 512;
 		const rtHeight = 512;
+
+		this.rtCamera = new OrthographicCamera(
+			this.minBox.x,
+			this.maxBox.x,
+			this.maxBox.z,
+			this.minBox.z,
+			1,
+			this.maxBox.y + Math.abs(this.minBox.y),
+		);
+		this.rtCamera.rotation.x = -Math.PI * 0.5;
+		this.rtCamera.position.y = this.maxBox.y;
 
 		this.renderTarget = new WebGLRenderTarget(rtWidth, rtHeight);
 
@@ -103,20 +121,6 @@ export default class Grass {
 		this.renderTarget.depthTexture = this.depthTexture;
 		this.renderTarget.depthTexture.format = DepthFormat;
 		this.renderTarget.depthTexture.type = UnsignedShortType;
-
-		this.minBox = this.ground.base.mesh.geometry.boundingBox.min;
-		this.maxBox = this.ground.base.mesh.geometry.boundingBox.max;
-
-		this.rtCamera = new OrthographicCamera(
-			this.minBox.x / -2,
-			this.minBox.z / 2,
-			this.maxBox.x / 2,
-			this.maxBox.z / -2,
-			1,
-			this.maxBox.y + Math.abs(this.minBox.y),
-		);
-		this.rtCamera.rotation.x = -Math.PI * 0.5;
-		this.rtCamera.position.y = this.maxBox.y;
 	}
 
 	setDefaultGeometry() {

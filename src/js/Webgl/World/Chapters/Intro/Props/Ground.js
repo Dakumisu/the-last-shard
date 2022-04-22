@@ -59,7 +59,7 @@ export default class Ground extends BaseCollider {
 
 	async loadGeometry() {
 		const testPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
-		testPlatform.position.set(20, 30, 20);
+		testPlatform.position.set(20, 53, 20);
 
 		const secondTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		secondTestPlatform.position.set(-20, 3, 20);
@@ -70,12 +70,15 @@ export default class Ground extends BaseCollider {
 		const bTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
 		bTestPlatform.position.set(3, 3, -20);
 
+		const cTestPlatform = new Mesh(new BoxGeometry(20, 0.5, 10), new MeshNormalMaterial());
+		bTestPlatform.position.set(102.32, 13.353, -63.462);
+
 		const plane = new PlaneGeometry(200, 200);
 		plane.rotateX(-Math.PI * 0.5);
 		plane.translate(0, -1, 0);
 
 		let platforms = await mergeGeometry(
-			[secondTestPlatform, testPlatform, aTestPlatform, bTestPlatform],
+			[secondTestPlatform, testPlatform, aTestPlatform, bTestPlatform, cTestPlatform],
 			[],
 		);
 

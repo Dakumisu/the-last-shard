@@ -54,9 +54,9 @@ export default class IntroScene extends BaseScene {
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
-		await this.ground.init();
+		this.ground.init();
 
-		this.grass = new Grass(this);
+		this.grass = new Grass({ scene: this });
 		this.grass.init();
 
 		this.fog = new BaseFog({

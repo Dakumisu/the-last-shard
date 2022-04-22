@@ -7,6 +7,7 @@ import { loadCubeTexture } from '@utils/loaders/loadAssets';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
+import Grass from '@webgl/World/Bases/Grass/Grass';
 
 export default class EndScene extends BaseScene {
 	constructor() {
@@ -45,6 +46,9 @@ export default class EndScene extends BaseScene {
 		this.lights = new Lights(this, [ambient, directional]);
 
 		await this.ground.init();
+
+		this.grass = new Grass({ scene: this });
+		this.grass.init();
 
 		this.instance.add(
 			this.ground.base.mesh,
