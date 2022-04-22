@@ -61,7 +61,11 @@ void main() {
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
-	vec2 scaledCoords = vec2(translation.x / -18. / 5., translation.z / -20. / 5.) + vec2(0.5, 0.5);
+	float xScaleCoord = map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 1., 0.);
+	float zScaleCoord = map(translation.z, uMinMapBounds.z, uMaxMapBounds.z, 1., 0.);
+
+	vec2 scaledCoords = vec2(xScaleCoord, zScaleCoord);
+
 	float elevation = texture2D(uElevationTexture, scaledCoords).r;
 
 	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
@@ -82,7 +86,7 @@ void main() {
 
 	vElevationTest = elevation;
 
-	pos.y += map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
+	translation.y += map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
 	// pos.y += map(elevation, 0., 1., -50., 50.);
 	// pos.y += elevation;
 
