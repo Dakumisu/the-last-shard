@@ -47,37 +47,32 @@ export default class LaserTower extends BaseCollider {
 		this.laserTowers.push(this);
 	}
 
-	async activate() {
+	activate() {
 		this.isActivated = true;
-		await wait(200);
 		this.rayHelper.visible = true;
 		this.base.mesh.material.color.set(0x00ff00);
 
-		this.update();
-
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);
+		this.update();
 	}
 
-	async desactivate() {
+	desactivate() {
 		this.isActivated = false;
-		await wait(200);
 		this.rayHelper.visible = false;
 		this.base.mesh.material.color.set(0xff0000);
 
-		this.update();
-
 		if (this.nextTower && this.nextTower.isActivated) {
-			console.log('Desactivate nextTower');
 			this.nextTower.desactivateBy(this);
+			this.nextTower = null;
 		}
+
+		this.update();
 	}
 
 	activateBy(laserTower) {
 		if (this.previousTower === null || this.previousTower === laserTower) {
 			laserTower.nextTower = this;
 			this.previousTower = laserTower;
-
-			console.log('Activating :', this.base.name, 'by :', laserTower.base.name);
 
 			this.activate();
 		}
@@ -86,8 +81,6 @@ export default class LaserTower extends BaseCollider {
 	desactivateBy(laserTower) {
 		if (this.previousTower === laserTower) {
 			this.previousTower = null;
-
-			console.log('Desactivating :', this.base.name, 'by :', laserTower.base.name);
 
 			this.desactivate();
 		}
@@ -105,15 +98,8 @@ export default class LaserTower extends BaseCollider {
 					update: this.update.bind(this),
 				});
 			} else if (key === controlsKeys.interact.default && this.towerType === 'first') {
-				if (this.isActivated) {
-					// if(this.nextTower) this.nextTower.desactivateBy(this);
-					// this.desactivate();
-					this.laserTowers.forEach((laserTower) => {
-						if (laserTower.isActivated) laserTower.desactivate();
-					});
-				} else {
-					this.activate();
-				}
+				if (this.isActivated) this.desactivate();
+				else this.activate();
 			}
 		}
 	}
@@ -142,11 +128,9 @@ export default class LaserTower extends BaseCollider {
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
 			if (rayNextDistance <= 0.5 && !nextLaserTower.isActivated && this.isActivated) {
-				this.nextTower = nextLaserTower;
 				nextLaserTower.activateBy(this);
 			} else if (nextLaserTower.isActivated && rayNextDistance > 0.5) {
 				nextLaserTower.desactivateBy(this);
-				this.nextTower = null;
 			}
 		});
 	}
