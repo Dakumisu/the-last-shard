@@ -172,9 +172,9 @@
           -0.0
         ],
         "scale": [
-          1.0,
-          1.0,
-          1.0
+          0.56505322,
+          0.56505322,
+          0.56505322
         ],
         "qt": [
           0.0,
@@ -258,7 +258,7 @@
     {
       "asset": "Coin",
       "traversable": false,
-      "uid": "Coin.032",
+      "uid": "Coin.084",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -283,7 +283,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.033",
+      "uid": "Coin.085",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -308,7 +308,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.034",
+      "uid": "Coin.086",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -333,7 +333,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.035",
+      "uid": "Coin.087",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -358,7 +358,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.036",
+      "uid": "Coin.088",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -384,7 +384,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.006",
+      "uid": "Spawn.016",
       "pos": [
         -10.572475,
         2.060297,
@@ -399,7 +399,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.024",
+      "uid": "Checkpoint.064",
       "pos": [
         10.579155,
         2.060297,
@@ -414,7 +414,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.025",
+      "uid": "Checkpoint.065",
       "pos": [
         -10.563803,
         2.060297,
@@ -429,7 +429,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.026",
+      "uid": "Checkpoint.066",
       "pos": [
         61.949936,
         2.060297,
@@ -444,7 +444,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.027",
+      "uid": "Checkpoint.067",
       "pos": [
         100.7435,
         13.863754,
@@ -460,7 +460,7 @@
   ],
   "curves": [
     {
-      "uid": "Helper.006",
+      "uid": "Helper.018",
       "type": "bezier",
       "closed": true,
       "points": [
@@ -511,7 +511,7 @@
       ]
     },
     {
-      "uid": "Bot.006",
+      "uid": "Bot.016",
       "type": "nurbs",
       "closed": false,
       "points": [

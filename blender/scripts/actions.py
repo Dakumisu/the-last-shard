@@ -54,6 +54,7 @@ def exportCollection(fp=None, textureOnly=False):
     if textureOnly == False:
         store.setPersistent('mmLastAction', 'Export selected')
     exportCollections(fp, cols, textureOnly)
+    bpy.context.window.scene = scn
 
 
 # Export collections in the current scene
@@ -71,11 +72,13 @@ def exportScene(fp=None, textureOnly=False):
 
 # Export all collections in the file
 def exportAll(fp=None):
+    scn = bpy.context.scene
     utils.log('Export all')
     if fp == None:
         fp = env.paths.temp
     store.setPersistent('mmLastAction', 'Export all')
     exportCollections(fp, bpy.data.collections)
+    bpy.context.window.scene = scn
 
 
 def exportCollectionTextures(fp=None):
