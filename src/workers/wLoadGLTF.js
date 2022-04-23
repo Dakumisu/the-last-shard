@@ -4,7 +4,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 // import { MeshoptDecoder } from 'meshoptimizer/meshopt_decoder.module';
 
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('../utils/loaders/draco/');
+dracoLoader.setDecoderPath('/assets/decoder/draco/');
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 // gltfLoader.setMeshoptDecoder(MeshoptDecoder);

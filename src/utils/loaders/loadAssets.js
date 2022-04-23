@@ -15,7 +15,7 @@ import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 
 const basisLoader = new KTX2Loader();
 let basisLoaderInit = false;
-basisLoader.setTranscoderPath('/assets/basis/');
+basisLoader.setTranscoderPath('/assets/decoder/basis/');
 
 const textureLoader = new TextureLoader();
 const audioLoader = new AudioLoader();
