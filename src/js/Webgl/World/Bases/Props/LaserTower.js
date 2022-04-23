@@ -73,38 +73,38 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	activateBy(laserTower) {
-		if (this.previousTower === null || this.previousTower === laserTower) {
-			laserTower.nextTower = this;
-			this.previousTower = laserTower;
+		if (this.previousTower && this.previousTower !== laserTower) return;
 
-			this.activate();
-		}
+		laserTower.nextTower = this;
+		this.previousTower = laserTower;
+
+		this.activate();
 	}
 
 	desactivateBy(laserTower) {
-		if (this.previousTower === laserTower) {
-			this.previousTower = null;
+		if (this.previousTower !== laserTower) return;
 
-			this.desactivate();
-		}
+		this.previousTower = null;
+
+		this.desactivate();
 	}
 
 	interact(key) {
-		if (this.isInBroadphaseRange) {
-			if (key === controlsKeys.interact.rotate) {
-				const updateHandler = this.towerType === 'end' ? null : this.update.bind(this);
-				if (this.animation && !this.animation.paused) this.animation.pause();
-				this.animation = anime({
-					targets: this.base.mesh.rotation,
-					y: this.base.mesh.rotation.y + Math.PI * 0.05,
-					duration: 300,
-					easing: 'easeOutQuad',
-					update: updateHandler,
-				});
-			} else if (key === controlsKeys.interact.default && this.towerType === 'first') {
-				if (this.isActivated) this.desactivate();
-				else this.activate();
-			}
+		if (!this.isInBroadphaseRange) return;
+
+		if (key === controlsKeys.interact.rotate) {
+			const updateHandler = this.towerType === 'end' ? null : this.update.bind(this);
+			if (this.animation && !this.animation.paused) this.animation.pause();
+			this.animation = anime({
+				targets: this.base.mesh.rotation,
+				y: this.base.mesh.rotation.y + Math.PI * 0.05,
+				duration: 300,
+				easing: 'easeOutQuad',
+				update: updateHandler,
+			});
+		} else if (key === controlsKeys.interact.default && this.towerType === 'first') {
+			if (this.isActivated) this.desactivate();
+			else this.activate();
 		}
 	}
 
