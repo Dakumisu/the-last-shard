@@ -20,6 +20,7 @@ import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 import LaserTower from '@webgl/World/Bases/Props/LaserTower';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
+import LaserGame from '@game/LaserGame';
 
 export default class IntroScene extends BaseScene {
 	constructor() {
@@ -112,23 +113,24 @@ export default class IntroScene extends BaseScene {
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
 
 		// LaserTowers
+
 		const laserTowers = [];
+		const laserGame = new LaserGame({ laserTowers, scene: this });
 
 		const towerGeometry = new BoxGeometry(1, 4, 1);
-		const towerMaterial = new BaseToonMaterial({ color: '#ff0000' });
+		const towerMaterial = new BaseToonMaterial({ color: '#f0f0f0' });
 
 		const towerMesh1 = new Mesh(towerGeometry, towerMaterial);
 		towerMesh1.position.set(2, 0, 20);
 		towerMesh1.rotation.y = Math.PI / 3;
 
 		const laserTower1 = new LaserTower({
-			scene: this,
 			mesh: towerMesh1,
 			name: 'laserTower1',
 			direction: [0, 0, 1],
 			towerType: 'first',
-			laserTowers,
 			maxDistance: 10,
+			game: laserGame,
 		});
 		laserTower1.initPhysics();
 
@@ -138,13 +140,12 @@ export default class IntroScene extends BaseScene {
 		towerMesh2.position.set(-2, 0, 22);
 
 		const laserTower2 = new LaserTower({
-			scene: this,
 			mesh: towerMesh2,
 			name: 'laserTower2',
 			direction: [1, 0, 0],
 			towerType: 'between',
-			laserTowers,
 			maxDistance: 10,
+			game: laserGame,
 		});
 		laserTower2.initPhysics();
 
@@ -154,13 +155,12 @@ export default class IntroScene extends BaseScene {
 		towerMesh3.position.set(2, 0, 23);
 
 		const laserTower3 = new LaserTower({
-			scene: this,
 			mesh: towerMesh3,
 			name: 'laserTower3',
 			direction: [0, 0, 1],
 			towerType: 'between',
-			laserTowers,
 			maxDistance: 10,
+			game: laserGame,
 		});
 		laserTower3.initPhysics();
 
@@ -170,13 +170,12 @@ export default class IntroScene extends BaseScene {
 		towerMesh4.position.set(-2, 0, 26);
 
 		const laserTower4 = new LaserTower({
-			scene: this,
 			mesh: towerMesh4,
 			name: 'laserTower4',
 			direction: [0, 0, 1],
 			towerType: 'between',
-			laserTowers,
 			maxDistance: 10,
+			game: laserGame,
 		});
 		laserTower4.initPhysics();
 
@@ -186,12 +185,11 @@ export default class IntroScene extends BaseScene {
 		towerMesh5.position.set(2, 0, 28);
 
 		const laserTower5 = new LaserTower({
-			scene: this,
 			mesh: towerMesh5,
 			name: 'laserTower5',
 			towerType: 'end',
-			laserTowers,
 			maxDistance: 10,
+			game: laserGame,
 		});
 		laserTower5.initPhysics();
 

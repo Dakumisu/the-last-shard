@@ -1,21 +1,33 @@
 import { controlsKeys } from '@game/Control';
+import LaserGame from '@game/LaserGame';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseScene from '@webgl/Scene/BaseScene';
 import anime from 'animejs';
 import { wait } from 'philbin-packages/misc';
-import { ArrowHelper, BoxGeometry, BoxHelper, Mesh, Ray, Vector3 } from 'three';
+import {
+	ArrowHelper,
+	BoxGeometry,
+	BoxHelper,
+	BufferGeometry,
+	LineBasicMaterial,
+	Mesh,
+	Ray,
+	Vector3,
+} from 'three';
 import BaseCollider from '../BaseCollider';
 
 export default class LaserTower extends BaseCollider {
 	/**
 	 *
-	 * @param {{scene: BaseScene, mesh: Mesh, name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, laserTowers : Array<LaserTower>}} param0
+	 * @param {{mesh: Mesh, name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, game: LaserGame}} param0
 	 */
-	constructor({ scene, mesh, name, towerType, maxDistance = 5, direction, laserTowers = [] }) {
+	constructor({ mesh, name, towerType, maxDistance = 5, direction, game }) {
 		super({ mesh, name, type: 'nonWalkable', isInteractable: true });
 
 		this.towerType = towerType;
 		this.maxDistance = maxDistance;
+
+		this.rayLength = 0;
 
 		this.isActivated = false;
 
@@ -30,27 +42,17 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray.set(this.base.mesh.position, this.direction);
 
-		this.rayHelper = new ArrowHelper(
-			this.direction,
-			this.base.mesh.position,
-			this.maxDistance,
-			0xffff00,
-			0.5,
-			0.2,
-		);
-		this.rayHelper.visible = false;
-		this.rayHelper.position.y += 1;
+		this.animation = null;
 
-		scene.instance.add(this.rayHelper);
-
-		this.laserTowers = laserTowers;
-		this.laserTowers.push(this);
+		this.game = game;
+		this.game.laserTowers.push(this);
 	}
 
 	activate() {
 		this.isActivated = true;
-		this.rayHelper.visible = true;
 		this.base.mesh.material.color.set(0x00ff00);
+
+		this.game.addPointToGeometry(this.base.mesh.position);
 
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);
 		this.update();
@@ -58,8 +60,9 @@ export default class LaserTower extends BaseCollider {
 
 	desactivate() {
 		this.isActivated = false;
-		this.rayHelper.visible = false;
 		this.base.mesh.material.color.set(0xff0000);
+
+		this.game.removePointFromGeometry(this.base.mesh.position);
 
 		if (this.nextTower && this.nextTower.isActivated) {
 			this.nextTower.desactivateBy(this);
@@ -89,13 +92,14 @@ export default class LaserTower extends BaseCollider {
 	interact(key) {
 		if (this.isInBroadphaseRange) {
 			if (key === controlsKeys.interact.rotate) {
-				// const updateHandler = this.towerType === 'end' ? null : this.update.bind(this);
-				anime({
+				const updateHandler = this.towerType === 'end' ? null : this.update.bind(this);
+				if (this.animation && !this.animation.paused) this.animation.pause();
+				this.animation = anime({
 					targets: this.base.mesh.rotation,
 					y: this.base.mesh.rotation.y + Math.PI * 0.05,
-					duration: 500,
-					// easing: 'easeInOutQuad',
-					update: this.update.bind(this),
+					duration: 300,
+					easing: 'easeOutQuad',
+					update: updateHandler,
 				});
 			} else if (key === controlsKeys.interact.default && this.towerType === 'first') {
 				if (this.isActivated) this.desactivate();
@@ -110,9 +114,14 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray.set(this.base.mesh.position, _d);
 
-		this.rayHelper.setDirection(_d);
+		const _newMaxDistance = this.base.mesh.position
+			.clone()
+			.add(_d.multiplyScalar(this.maxDistance));
 
-		this.laserTowers.forEach((nextLaserTower) => {
+		this.game.maxDistancePoint.set(_newMaxDistance.x, _newMaxDistance.y, _newMaxDistance.z);
+		this.game.updateGeometry();
+
+		this.game.laserTowers.forEach((nextLaserTower) => {
 			// Don't test with the first, the same tower and if distance from current is above max
 			const distanceFromCurrent = nextLaserTower.base.mesh.position.distanceTo(
 				this.base.mesh.position,
