@@ -1,3 +1,4 @@
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import BaseScene from '@webgl/Scene/BaseScene';
 import LaserTower from '@webgl/World/Bases/Props/LaserTower';
 import { BufferGeometry, DoubleSide, Line, LineBasicMaterial, Vector3 } from 'three';
@@ -11,7 +12,7 @@ export default class LaserGame {
 		this.laserTowers = laserTowers;
 		this.scene = scene;
 
-		const lineMaterial = new LineBasicMaterial({
+		const lineMaterial = new BaseBasicMaterial({
 			color: 0xffff00,
 			side: DoubleSide,
 		});
