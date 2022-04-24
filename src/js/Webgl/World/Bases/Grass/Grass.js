@@ -75,16 +75,18 @@ export default class Grass extends BaseObject {
 		const rtWidth = 512;
 		const rtHeight = 512;
 
+		const camNear = 1;
+
 		this.rtCamera = new OrthographicCamera(
 			this.minBox.x,
 			this.maxBox.x,
 			this.maxBox.z,
 			this.minBox.z,
-			1,
-			this.maxBox.y + Math.abs(this.minBox.y),
+			camNear,
+			this.maxBox.y + Math.abs(this.minBox.y) + camNear,
 		);
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
-		this.rtCamera.position.y = this.maxBox.y;
+		this.rtCamera.position.y = this.maxBox.y + camNear;
 
 		this.renderTarget = new WebGLRenderTarget(rtWidth, rtHeight);
 
