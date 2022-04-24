@@ -6,7 +6,7 @@ import ifdefRollupPlugin from './ifdef/ifdefRollupPlugin';
 import content from '../src/json/content.json';
 
 export default ({ mode }) => {
-	process.stdout.write('\n\x1b[2mv' + process.env.npm_package_version + '\x1b[22m\n');
+	process.stdout.write('\x1b[2mv' + process.env.npm_package_version + '\x1b[22m\n');
 	process.stdout.write(
 		'\x1b[93m\x1b[1m🍜 Beesly \x1b[22m\x1b[39m' + 'is cooking your code... \n',
 	);
