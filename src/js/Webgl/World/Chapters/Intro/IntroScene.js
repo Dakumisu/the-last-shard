@@ -114,8 +114,7 @@ export default class IntroScene extends BaseScene {
 
 		// LaserTowers
 
-		const laserTowers = [];
-		const laserGame = new LaserGame({ laserTowers, scene: this });
+		const laserGame = new LaserGame({ scene: this });
 
 		const laserTower1 = new LaserTower({
 			name: 'laserTower1',
@@ -164,18 +163,29 @@ export default class IntroScene extends BaseScene {
 
 		const laserTower5 = new LaserTower({
 			name: 'laserTower5',
-			towerType: 'end',
+			direction: [0, 0, 1],
+			towerType: 'between',
 			maxDistance: 10,
 			game: laserGame,
 		});
 		await laserTower5.init();
-		laserTower5.base.mesh.position.set(2, 0, 28);
+		laserTower5.base.mesh.position.set(-4, 0, 30);
 		laserTower5.initPhysics();
 
-		this.colliders.push(...laserTowers);
+		const laserTower6 = new LaserTower({
+			name: 'laserTower6',
+			towerType: 'end',
+			maxDistance: 10,
+			game: laserGame,
+		});
+		await laserTower6.init();
+		laserTower6.base.mesh.position.set(2, 0, 35);
+		laserTower6.initPhysics();
+
+		this.colliders.push(...laserGame.laserTowers);
 
 		this.interactablesBroadphase = new InteractablesBroadphase({
-			radius: 0.7,
+			radius: 1,
 			objectsToTest: this.colliders,
 		});
 

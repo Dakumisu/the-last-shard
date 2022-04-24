@@ -4,7 +4,7 @@ import { loadDynamicGLTF } from '@utils/loaders';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseScene from '@webgl/Scene/BaseScene';
 import anime from 'animejs';
-import { wait } from 'philbin-packages/misc';
+import { wait } from 'philbin-packages/async';
 import {
 	ArrowHelper,
 	BoxGeometry,
@@ -67,18 +67,16 @@ export default class LaserTower extends BaseCollider {
 
 	activate() {
 		this.isActivated = true;
-		this.base.mesh.material.color.set(0x00ff00);
 
-		console.log(this.towerType);
 		this.game.addPointToGeometry(this.base.mesh.position, this.towerType === 'end');
 
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);
+
 		this.update();
 	}
 
 	desactivate() {
 		this.isActivated = false;
-		this.base.mesh.material.color.set(0xff0000);
 
 		this.game.removePointFromGeometry(this.base.mesh.position);
 
@@ -137,8 +135,7 @@ export default class LaserTower extends BaseCollider {
 			.clone()
 			.addScaledVector(_d, this.maxDistance);
 
-		this.game.maxDistancePoint.set(_newMaxDistance.x, _newMaxDistance.y, _newMaxDistance.z);
-		this.game.updateGeometry();
+		this.game.updateMaxDistancePoint(_newMaxDistance);
 
 		this.game.laserTowers.forEach((nextLaserTower) => {
 			// Don't test with the first, the same tower and if distance from current is above max
