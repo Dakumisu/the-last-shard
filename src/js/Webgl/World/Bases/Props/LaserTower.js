@@ -23,7 +23,7 @@ export default class LaserTower extends BaseCollider {
 	 *
 	 * @param {{ name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, game: LaserGame}} param0
 	 */
-	static models = {
+	static geometries = {
 		first: null,
 		between: null,
 		end: null,
@@ -164,17 +164,15 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	static async getModel(type) {
-		let mesh;
+		let geo;
 
-		if (LaserTower.models[type]) mesh = LaserTower.models[type].clone();
+		if (LaserTower.geometries[type]) geo = LaserTower.geometries[type].clone();
 		else {
-			mesh = (await loadDynamicGLTF(`/assets/model/laserTower-${type}.glb`)).scene
-				.children[0];
-			LaserTower.models[type] = mesh;
+			geo = (await loadDynamicGLTF(`/assets/model/laserTower-${type}.glb`)).scene.children[0]
+				.geometry;
+			LaserTower.geometries[type] = geo;
 		}
 
-		mesh.material = new BaseToonMaterial({ color: 0xffffff });
-
-		return mesh;
+		return new Mesh(geo, new BaseToonMaterial({ color: 0xffffff }));
 	}
 }
