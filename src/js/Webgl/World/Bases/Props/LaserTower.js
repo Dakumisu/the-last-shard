@@ -1,5 +1,6 @@
 import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
+import { loadDynamicGLTF } from '@utils/loaders';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseScene from '@webgl/Scene/BaseScene';
 import anime from 'animejs';
@@ -11,6 +12,7 @@ import {
 	BufferGeometry,
 	LineBasicMaterial,
 	Mesh,
+	MeshBasicMaterial,
 	Ray,
 	Vector3,
 } from 'three';
@@ -19,10 +21,10 @@ import BaseCollider from '../BaseCollider';
 export default class LaserTower extends BaseCollider {
 	/**
 	 *
-	 * @param {{mesh: Mesh, name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, game: LaserGame}} param0
+	 * @param {{ name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, game: LaserGame}} param0
 	 */
-	constructor({ mesh, name, towerType, maxDistance = 5, direction, game }) {
-		super({ mesh, name, type: 'nonWalkable', isInteractable: true });
+	constructor({ name, towerType, maxDistance = 5, direction, game }) {
+		super({ mesh: null, name, type: 'nonWalkable', isInteractable: true });
 
 		this.towerType = towerType;
 		this.maxDistance = maxDistance;
@@ -36,16 +38,34 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray = new Ray();
 
+		this.baseDirection = direction;
 		this.direction = new Vector3();
-		if (direction) this.direction.fromArray(direction);
-		else this.base.mesh.getWorldDirection(this.direction);
-
-		this.ray.set(this.base.mesh.position, this.direction);
 
 		this.animation = null;
 
 		this.game = game;
 		this.game.laserTowers.push(this);
+
+		this.initialized = false;
+	}
+
+	async init() {
+		await this.loadModel();
+
+		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
+		else this.base.mesh.getWorldDirection(this.direction);
+
+		this.ray.set(this.base.mesh.position, this.direction);
+
+		this.initialized = true;
+	}
+
+	async loadModel() {
+		const model = (await loadDynamicGLTF('/assets/model/towerTest.glb')).scene;
+		this.base.mesh = model.children[0];
+		this.base.mesh.material = new MeshBasicMaterial({ color: 0xffffff });
+
+		this.base.intersectableMesh = model.children[1];
 	}
 
 	activate() {
@@ -90,7 +110,7 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	interact(key) {
-		if (this.isInBroadphaseRange) {
+		if (this.isInBroadphaseRange && this.initialized) {
 			if (key === controlsKeys.interact.rotate) {
 				const updateHandler = this.towerType === 'end' ? null : this.update.bind(this);
 				if (this.animation && !this.animation.paused) this.animation.pause();
