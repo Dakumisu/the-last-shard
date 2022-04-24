@@ -170,6 +170,7 @@ export default class LaserTower extends BaseCollider {
 		else {
 			geo = (await loadDynamicGLTF(`/assets/model/laserTower-${type}.glb`)).scene.children[0]
 				.geometry;
+			geo.scale(0.5, 0.5, 0.5);
 			LaserTower.geometries[type] = geo;
 		}
 

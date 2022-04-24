@@ -10,7 +10,9 @@ class BaseShaderMaterial extends Material {
 		this.type = 'ShaderMaterial';
 
 		this.defines = {};
-		this.uniforms = {};
+		this.uniforms = {
+			...baseUniforms,
+		};
 
 		this.vertexShader = defaultVertex;
 		this.fragmentShader = defaultFragment;

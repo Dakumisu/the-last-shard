@@ -1,7 +1,19 @@
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
+import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
+import { LaserMaterial } from '@webgl/Materials/Laser/material';
 import BaseScene from '@webgl/Scene/BaseScene';
 import LaserTower from '@webgl/World/Bases/Props/LaserTower';
-import { BufferGeometry, DoubleSide, Line, LineBasicMaterial, Vector3 } from 'three';
+import {
+	BufferGeometry,
+	CatmullRomCurve3,
+	DoubleSide,
+	Line,
+	LineBasicMaterial,
+	Mesh,
+	ShaderMaterial,
+	TubeGeometry,
+	Vector3,
+} from 'three';
 
 export default class LaserGame {
 	/**
@@ -12,17 +24,15 @@ export default class LaserGame {
 		this.laserTowers = laserTowers;
 		this.scene = scene;
 
-		const lineMaterial = new BaseBasicMaterial({
-			color: 0xffff00,
-			side: DoubleSide,
-		});
+		const lineMaterial = new LaserMaterial({});
 
 		this.maxDistancePoint = new Vector3();
 
-		this.linePoints = [this.maxDistancePoint];
-		const lineGeometry = new BufferGeometry();
+		this.curve = new CatmullRomCurve3([this.maxDistancePoint], false, 'catmullrom', 0);
 
-		this.lineMesh = new Line(lineGeometry, lineMaterial);
+		this.dummyGeo = new BufferGeometry();
+
+		this.lineMesh = new Mesh(this.dummyGeo, lineMaterial);
 		this.lineMesh.position.y += 1.5;
 		this.lineMesh.frustumCulled = false;
 		this.scene.instance.add(this.lineMesh);
@@ -32,20 +42,24 @@ export default class LaserGame {
 	 *
 	 * @param {Vector3} point
 	 */
-	addPointToGeometry(point, end) {
-		this.linePoints[this.linePoints.length - 1] = point;
-		if (!end) this.linePoints.push(this.maxDistancePoint);
+	addPointToGeometry(point, end = false) {
+		this.curve.points[this.curve.points.length - 1] = point;
+		if (!end) this.curve.points.push(this.maxDistancePoint);
 		this.updateGeometry();
 	}
 
 	removePointFromGeometry(point) {
-		this.linePoints.splice(this.linePoints.indexOf(point), 1);
-		if (!this.linePoints.includes(this.maxDistancePoint))
-			this.linePoints.push(this.maxDistancePoint);
+		this.curve.points.splice(this.curve.points.indexOf(point), 1);
+		if (!this.curve.points.includes(this.maxDistancePoint))
+			this.curve.points.push(this.maxDistancePoint);
 		this.updateGeometry();
 	}
 
 	updateGeometry() {
-		this.lineMesh.geometry.setFromPoints(this.linePoints);
+		// this.lineMesh.geometry.setFromPoints(this.curve.points);
+		this.lineMesh.geometry =
+			this.curve.points.length > 1
+				? new TubeGeometry(this.curve, 20, 0.05, 10, false)
+				: this.dummyGeo;
 	}
 }
