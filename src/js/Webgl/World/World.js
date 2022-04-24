@@ -17,6 +17,8 @@ export default class World {
 	}
 
 	async initScenes() {
+		// TODO: load all scenes from manifest
+
 		// Wait first scene preload before starting other scenes preloading
 		const introScene = new IntroScene();
 		await introScene.preload();
