@@ -31,11 +31,11 @@ import { mergeGeometry } from '@utils/webgl';
 import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
-import { PlayerMaterial } from '@webgl/Materials/Player/material';
+import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
 import AnimationController from '@webgl/Animation/Controller';
-import DebugMaterial from '@webgl/Materials/debug/material';
+import DebugMaterial from '@webgl/Materials/Debug/material';
 import BaseEntity from '../Bases/BaseEntity';
-import { wait } from 'philbin-packages/misc';
+import { wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 

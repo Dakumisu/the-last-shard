@@ -86,12 +86,21 @@ void main() {
 
 	pos.y += fade * vNoiseElevation * uElevationIntensity;
 
-	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
-	translation.y += translationOffset;
-
 	// pos.y *= vGrassPresent;
 	// pos.y += map(elevation, 0., 1., -50., 50.);
 	// pos.y += elevation;
+
+	// Apply height map
+	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
+	translation.y += translationOffset;
+
+	// Player trail
+	float trailIntensity = mix(0.0, .5, smoothstep(2.5, 0., distance(uCharaPos, translation.xyz)));
+	vec2 trailDirection = normalize(uCharaPos.xz - translation.xz);
+
+	translation.x -= trailIntensity * trailDirection.x;
+	translation.y -= trailIntensity;
+	translation.z -= trailIntensity * trailDirection.y;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 

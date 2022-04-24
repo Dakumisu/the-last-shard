@@ -22,13 +22,11 @@ import {
 	WebGLRenderTarget,
 	Texture,
 } from 'three';
-import { loadTexture } from '@utils/loaders/loadAssets';
 
-import fragmentShader from './Shaders/fragment.glsl';
-import vertexShader from './Shaders/vertex.glsl';
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import BaseObject from '../BaseObject';
+import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 
 export default class Grass extends BaseObject {
 	/**
@@ -153,7 +151,7 @@ export default class Grass extends BaseObject {
 	}
 
 	async setMaterial() {
-		this.base.material = new ShaderMaterial({
+		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
 				uTime: { value: 0 },
@@ -174,8 +172,6 @@ export default class Grass extends BaseObject {
 				uMinMapBounds: { value: this.minBox },
 			},
 			transparent: true,
-			vertexShader: vertexShader,
-			fragmentShader: fragmentShader,
 		});
 	}
 
