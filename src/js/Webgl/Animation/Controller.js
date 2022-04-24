@@ -1,5 +1,5 @@
 import { AnimationMixer, LoopOnce, LoopRepeat } from 'three';
-import { wait } from 'philbin-packages/misc';
+import { wait } from 'philbin-packages/async';
 
 import { getWebgl } from '@webgl/Webgl';
 

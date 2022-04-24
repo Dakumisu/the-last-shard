@@ -11,6 +11,7 @@ import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from './Checkpoints';
 import { loadJSON } from 'philbin-packages/loader';
 import { Quaternion } from 'three';
+import { deferredPromise } from 'philbin-packages/async';
 
 export default class BaseScene {
 	constructor({ label, checkpoints = [] }) {
@@ -18,7 +19,8 @@ export default class BaseScene {
 
 		this.manifest = {};
 
-		this.isPreloaded = false;
+		// this.isPreloaded = false;
+		this.isPreloaded = deferredPromise();
 		this.preloadPromise = null;
 
 		this.player = getPlayer();
@@ -38,12 +40,14 @@ export default class BaseScene {
 	}
 
 	/// #if DEBUG
-	devtool() {
+	async devtool() {
 		this.gui = debug.instance.getTab('Scene', this.label).addFolder({
 			title: this.label ? this.label : 'noname',
 			hidden: true,
 		});
 
+		await this.isPreloaded;
+		console.log('here');
 		// const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
 
 		// const checkpointsOptions = [];
@@ -96,14 +100,16 @@ export default class BaseScene {
 	/// #endif
 
 	async preload() {
-		/// #if DEBUG
-		console.log('🔋 Preloading Scene :', this.label);
-		/// #endif
 		const path = `assets/export/Scene_${this.label}.json`;
 		this.manifest = await loadJSON(path);
+
+		/// #if DEBUG
+		console.log('🔋 Preloading Scene :', this.label);
 		console.log(`🔋 Manifest Scene_${this.label}`);
 		console.log(this.manifest);
-		this.isPreloaded = true;
+		/// #endif
+
+		this.isPreloaded.resolve();
 	}
 
 	init() {
@@ -164,6 +170,8 @@ export default class BaseScene {
 	}
 
 	update(et, dt) {
+		if (!this.initialized) return;
+
 		if (this.checkpoints) this.checkpoints.update(et, dt);
 	}
 }
