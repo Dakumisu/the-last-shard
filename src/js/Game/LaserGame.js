@@ -23,7 +23,7 @@ export default class LaserGame {
 		const lineGeometry = new BufferGeometry();
 
 		this.lineMesh = new Line(lineGeometry, lineMaterial);
-		this.lineMesh.position.y += 1;
+		this.lineMesh.position.y += 1.5;
 		this.lineMesh.frustumCulled = false;
 		this.scene.instance.add(this.lineMesh);
 	}
@@ -32,14 +32,16 @@ export default class LaserGame {
 	 *
 	 * @param {Vector3} point
 	 */
-	addPointToGeometry(point) {
+	addPointToGeometry(point, end) {
 		this.linePoints[this.linePoints.length - 1] = point;
-		this.linePoints.push(this.maxDistancePoint);
+		if (!end) this.linePoints.push(this.maxDistancePoint);
 		this.updateGeometry();
 	}
 
 	removePointFromGeometry(point) {
 		this.linePoints.splice(this.linePoints.indexOf(point), 1);
+		if (!this.linePoints.includes(this.maxDistancePoint))
+			this.linePoints.push(this.maxDistancePoint);
 		this.updateGeometry();
 	}
 

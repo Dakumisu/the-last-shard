@@ -23,7 +23,12 @@ export default class LaserTower extends BaseCollider {
 	 *
 	 * @param {{ name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, game: LaserGame}} param0
 	 */
-	constructor({ name, towerType, maxDistance = 5, direction, game }) {
+	static models = {
+		first: null,
+		between: null,
+		end: null,
+	};
+	constructor({ name, towerType, maxDistance = 5, direction = null, game }) {
 		super({ mesh: null, name, type: 'nonWalkable', isInteractable: true });
 
 		this.towerType = towerType;
@@ -50,7 +55,7 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	async init() {
-		await this.loadModel();
+		this.base.mesh = await LaserTower.getModel(this.towerType);
 
 		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
 		else this.base.mesh.getWorldDirection(this.direction);
@@ -60,19 +65,12 @@ export default class LaserTower extends BaseCollider {
 		this.initialized = true;
 	}
 
-	async loadModel() {
-		const model = (await loadDynamicGLTF('/assets/model/towerTest.glb')).scene;
-		this.base.mesh = model.children[0];
-		this.base.mesh.material = new MeshBasicMaterial({ color: 0xffffff });
-
-		this.base.intersectableMesh = model.children[1];
-	}
-
 	activate() {
 		this.isActivated = true;
 		this.base.mesh.material.color.set(0x00ff00);
 
-		this.game.addPointToGeometry(this.base.mesh.position);
+		console.log(this.towerType);
+		this.game.addPointToGeometry(this.base.mesh.position, this.towerType === 'end');
 
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);
 		this.update();
@@ -93,38 +91,39 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	activateBy(laserTower) {
-		if (this.previousTower === null || this.previousTower === laserTower) {
-			laserTower.nextTower = this;
-			this.previousTower = laserTower;
+		if (this.previousTower && this.previousTower !== laserTower) return;
 
-			this.activate();
-		}
+		laserTower.nextTower = this;
+		this.previousTower = laserTower;
+
+		this.activate();
 	}
 
 	desactivateBy(laserTower) {
-		if (this.previousTower === laserTower) {
-			this.previousTower = null;
+		if (this.previousTower !== laserTower) return;
 
-			this.desactivate();
-		}
+		this.previousTower = null;
+
+		this.desactivate();
 	}
 
 	interact(key) {
-		if (this.isInBroadphaseRange && this.initialized) {
-			if (key === controlsKeys.interact.rotate) {
-				const updateHandler = this.towerType === 'end' ? null : this.update.bind(this);
-				if (this.animation && !this.animation.paused) this.animation.pause();
-				this.animation = anime({
-					targets: this.base.mesh.rotation,
-					y: this.base.mesh.rotation.y + Math.PI * 0.05,
-					duration: 300,
-					easing: 'easeOutQuad',
-					update: updateHandler,
-				});
-			} else if (key === controlsKeys.interact.default && this.towerType === 'first') {
-				if (this.isActivated) this.desactivate();
-				else this.activate();
-			}
+		if (!this.isInBroadphaseRange) return;
+
+		if (key === controlsKeys.interact.rotate && this.towerType !== 'end') {
+			if (this.animation && !this.animation.paused) this.animation.pause();
+			let yOffset = this.base.mesh.rotation.y + Math.PI * 0.05;
+			if (this.nextTower) yOffset += Math.PI * 0.05;
+			this.animation = anime({
+				targets: this.base.mesh.rotation,
+				y: yOffset,
+				duration: 300,
+				easing: 'easeOutQuad',
+				update: this.update.bind(this),
+			});
+		} else if (key === controlsKeys.interact.default && this.towerType === 'first') {
+			if (this.isActivated) this.desactivate();
+			else this.activate();
 		}
 	}
 
@@ -156,15 +155,26 @@ export default class LaserTower extends BaseCollider {
 			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.base.mesh.position);
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
-			if (rayNextDistance <= 0.5 && !nextLaserTower.isActivated && this.isActivated) {
-				if (this.animation && !this.animation.paused) {
-					console.log('animation is paused');
-					this.animation.pause();
-				}
+			if (rayNextDistance <= 0.3 && !nextLaserTower.isActivated && this.isActivated) {
+				if (this.animation && !this.animation.paused) this.animation.pause();
 				nextLaserTower.activateBy(this);
-			} else if (nextLaserTower.isActivated && rayNextDistance > 0.5) {
+			} else if (nextLaserTower.isActivated && rayNextDistance > 0.3)
 				nextLaserTower.desactivateBy(this);
-			}
 		});
+	}
+
+	static async getModel(type) {
+		let mesh;
+
+		if (LaserTower.models[type]) mesh = LaserTower.models[type].clone();
+		else {
+			mesh = (await loadDynamicGLTF(`/assets/model/laserTower-${type}.glb`)).scene
+				.children[0];
+			LaserTower.models[type] = mesh;
+		}
+
+		mesh.material = new BaseToonMaterial({ color: 0xffffff });
+
+		return mesh;
 	}
 }
