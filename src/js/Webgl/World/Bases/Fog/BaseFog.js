@@ -48,7 +48,7 @@ export default class BaseFog {
 		/// #if DEBUG
 		if (!debug.instance) {
 			debug.instance = this.webgl.debug;
-			this.setDebug();
+			this.setdevtool();
 		}
 		/// #endif
 	}
@@ -65,7 +65,7 @@ export default class BaseFog {
 	}
 
 	/// #if DEBUG
-	setDebug() {
+	setdevtool() {
 		debug.instance.setFolder(debug.label, debug.tab, true);
 		const gui = debug.instance.getFolder(debug.label);
 		gui.addInput(this.params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(

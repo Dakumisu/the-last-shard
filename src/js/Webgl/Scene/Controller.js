@@ -19,7 +19,7 @@ export default class SceneController {
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.initDebug();
+		this.devtool();
 		/// #endif
 	}
 
@@ -28,7 +28,7 @@ export default class SceneController {
 	}
 
 	/// #if DEBUG
-	initDebug() {
+	devtool() {
 		debug.instance.setFolder(debug.label);
 	}
 

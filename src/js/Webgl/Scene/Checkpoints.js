@@ -1,9 +1,11 @@
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { Color, Mesh, SphereGeometry, Vector3 } from 'three';
 import signal from 'philbin-packages/signal';
+import { Quaternion } from 'three';
 
 const radius = 2;
-const _pVec3 = new Vector3();
+const tVec3 = new Vector3();
+const tQuat = new Quaternion();
 
 export default class Checkpoints {
 	constructor({ points = [], scene }) {
@@ -14,6 +16,7 @@ export default class Checkpoints {
 		this.isInside = false;
 
 		this.nextCheckpointPos = new Vector3();
+		this.nextCheckpointQt = new Quaternion();
 
 		this.initialized = false;
 
@@ -30,42 +33,49 @@ export default class Checkpoints {
 	init() {
 		this.initialized = true;
 
-		this.nextCheckpointPos.fromArray(this.points[1]);
+		this.nextCheckpointPos.copy(this.points[1].pos);
+		this.nextCheckpointQt.copy(this.points[1].qt);
 
 		/// #if DEBUG
 		this.checkpointMesh.position.copy(this.nextCheckpointPos);
+		this.checkpointMesh.quaternion.copy(this.nextCheckpointQt);
 		this.scene.instance.add(this.checkpointMesh);
 		/// #endif
 	}
 
 	getCurrent() {
-		return _pVec3.fromArray(this.points[this.checkpointsIndex - 1]);
+		return {
+			pos: tVec3.copy(this.points[this.checkpointsIndex - 1].pos),
+			qt: tQuat.copy(this.points[this.checkpointsIndex - 1].qt),
+		};
 	}
 
 	update(et, dt) {
 		if (!this.initialized) return;
-		if (this.checkpointsIndex !== this.points.length) {
-			const inRange =
-				this.scene.player.base.mesh.position.distanceTo(this.nextCheckpointPos) < radius;
+		if (this.checkpointsIndex >= this.points.length) return;
 
-			if (!this.isInside && inRange) {
-				this.isInside = true;
+		const inRange =
+			this.scene.player.base.mesh.position.distanceTo(this.nextCheckpointPos) < radius;
 
-				this.checkpointsIndex++;
+		if (!this.isInside && inRange) {
+			this.isInside = true;
 
+			this.checkpointsIndex++;
+
+			/// #if DEBUG
+			console.log('👊 Checkpoint reached');
+			/// #endif
+			signal.emit('checkpoint', this.getCurrent());
+
+			// Tp mesh to next checkpoint to collide
+			if (this.points[this.checkpointsIndex]) {
+				this.nextCheckpointPos.copy(this.points[this.checkpointsIndex].pos);
+				this.nextCheckpointQt.copy(this.points[this.checkpointsIndex].qt);
 				/// #if DEBUG
-				console.log('👊 Checkpoint reached');
+				this.checkpointMesh.position.copy(this.nextCheckpointPos);
+				this.checkpointMesh.quaternion.copy(this.nextCheckpointQt);
 				/// #endif
-				signal.emit('checkpoint', this.getCurrent());
-
-				// Tp mesh to next checkpoint to collide
-				if (this.points[this.checkpointsIndex]) {
-					this.nextCheckpointPos.fromArray(this.points[this.checkpointsIndex]);
-					/// #if DEBUG
-					this.checkpointMesh.position.copy(this.nextCheckpointPos);
-					/// #endif
-				}
-			} else if (!inRange && this.isInside) this.isInside = false;
-		}
+			}
+		} else if (!inRange && this.isInside) this.isInside = false;
 	}
 }

@@ -22,13 +22,13 @@ import Lights from '@webgl/World/Bases/Lights/Lights';
 export default class IntroScene extends BaseScene {
 	constructor() {
 		super({
-			label: 'Intro',
-			checkpoints: [
-				[0, 3, 30],
-				[-6.5303, 11, -27.421],
-				[15, 2, -60],
-				[104.32, 14, -65.342],
-			],
+			label: 'Sandbox',
+			// checkpoints: [
+			// 	[0, 3, 30],
+			// 	[-6.5303, 11, -27.421],
+			// 	[15, 2, -60],
+			// 	[104.32, 14, -65.342],
+			// ],
 		});
 
 		this.ground = new Ground(this);

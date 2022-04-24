@@ -18,12 +18,16 @@ class Spherical {
 		this.radius = radius;
 		this.phi = phi;
 		this.theta = theta;
+
+		return this;
 	}
 
 	add(radius = 0, phi = 0, theta = 0) {
 		this.radius += radius;
 		this.phi += phi;
 		this.theta += theta;
+
+		return this;
 	}
 
 	equals(spherical) {
@@ -32,22 +36,41 @@ class Spherical {
 			this.phi === spherical.phi &&
 			this.theta === spherical.theta
 		);
+
+		return this;
 	}
 
 	copy(spherical) {
 		this.radius = spherical.radius;
 		this.phi = spherical.phi;
 		this.theta = spherical.theta;
+
+		return this;
 	}
 
 	setRadius(radius) {
 		this.radius = radius;
+
+		return this;
 	}
+
 	setPhi(phi) {
 		this.phi = phi;
+
+		return this;
 	}
+
 	setTheta(theta) {
 		this.theta = theta;
+
+		return this;
+	}
+
+	makeSafe() {
+		const EPS = 0.000001;
+		this.phi = Math.max(EPS, Math.min(Math.PI - EPS, this.phi));
+
+		return this;
 	}
 }
 

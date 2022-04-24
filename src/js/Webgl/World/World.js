@@ -22,13 +22,13 @@ export default class World {
 		await introScene.preload();
 		this.sceneController.add(introScene, true);
 
-		const endScene = new EndScene();
-		endScene.preload();
-		this.sceneController.add(endScene);
+		// const endScene = new EndScene();
+		// endScene.preload();
+		// this.sceneController.add(endScene);
 
-		const cabaneScene = new CabaneScene();
-		cabaneScene.preload();
-		this.sceneController.add(cabaneScene);
+		// const cabaneScene = new CabaneScene();
+		// cabaneScene.preload();
+		// this.sceneController.add(cabaneScene);
 	}
 
 	async setPlayer() {

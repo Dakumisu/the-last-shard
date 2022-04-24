@@ -64,7 +64,7 @@ export default class Grass {
 
 	/// #if DEBUG
 
-	debug() {
+	devtool() {
 		const gui = debug.instance.addFolder({ title: debug.label });
 	}
 	/// #endif
@@ -73,7 +73,7 @@ export default class Grass {
 		this.setGrass();
 
 		/// #if DEBUG
-		this.debug();
+		this.devtool();
 		/// #endif
 
 		initialized = true;

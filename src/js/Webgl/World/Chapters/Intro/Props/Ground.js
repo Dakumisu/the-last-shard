@@ -50,7 +50,7 @@ export default class Ground extends BaseCollider {
 
 		/// #if DEBUG
 		this.helpers();
-		this.debug();
+		this.devtool();
 		/// #endif
 
 		initialized = true;
@@ -116,7 +116,7 @@ export default class Ground extends BaseCollider {
 		this.scene.add(gridHelper);
 	}
 
-	debug() {
+	devtool() {
 		const gui = debug.instance.addFolder({ title: debug.label });
 
 		gui.addInput(this.physicsVisualizer, 'visible', { label: 'BVH' });

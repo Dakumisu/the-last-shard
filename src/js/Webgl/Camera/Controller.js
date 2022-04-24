@@ -19,7 +19,7 @@ export default class CameraController {
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
-		this.initDebug();
+		this.devtool();
 		/// #endif
 	}
 
@@ -28,7 +28,7 @@ export default class CameraController {
 	}
 
 	/// #if DEBUG
-	initDebug() {
+	devtool() {
 		debug.instance.setFolder(debug.label);
 	}
 

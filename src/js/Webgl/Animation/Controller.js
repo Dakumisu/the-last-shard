@@ -27,12 +27,12 @@ export default class AnimationController {
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		debug.parentLabel = this.name;
-		this.debug();
+		this.devtool();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	debug() {
+	devtool() {
 		const parentGui = debug.instance.getFolder(debug.parentLabel);
 		const gui = parentGui.addFolder({
 			title: debug.label,

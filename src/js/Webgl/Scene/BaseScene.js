@@ -9,10 +9,14 @@ const debug = {
 import { Color, Group, Mesh, SphereGeometry, Vector3 } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from './Checkpoints';
+import { loadJSON } from 'philbin-packages/loader';
+import { Quaternion } from 'three';
 
 export default class BaseScene {
 	constructor({ label, checkpoints = [] }) {
 		this.label = label;
+
+		this.manifest = {};
 
 		this.isPreloaded = false;
 		this.preloadPromise = null;
@@ -23,83 +27,131 @@ export default class BaseScene {
 
 		this.instance = new Group();
 
-		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
+		// this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
 
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		debug.debugCam = webgl.debugOrbitCam;
-		this.initDebug();
+		this.devtool();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	initDebug() {
+	devtool() {
 		this.gui = debug.instance.getTab('Scene', this.label).addFolder({
 			title: this.label ? this.label : 'noname',
 			hidden: true,
 		});
 
-		const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
+		// const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
 
-		const checkpointsOptions = [];
-		for (let i = 0; i < this.checkpoints.points.length; i++) {
-			checkpointsOptions.push({
-				text: i + '',
-				value: i,
-			});
-		}
-		checkpointsFolder
-			.addBlade({
-				view: 'list',
-				label: 'Tp debugCam',
-				options: checkpointsOptions,
-				value: 0,
-			})
-			.on('change', (e) => {
-				debug.debugCam.camObject.orbit.targetOffset.fromArray(
-					this.checkpoints.points[e.value],
-				);
-			});
+		// const checkpointsOptions = [];
+		// for (let i = 0; i < this.checkpoints.points.length; i++) {
+		// 	checkpointsOptions.push({
+		// 		text: i + '',
+		// 		value: i,
+		// 	});
+		// }
+		// checkpointsFolder
+		// 	.addBlade({
+		// 		view: 'list',
+		// 		label: 'Tp debugCam',
+		// 		options: checkpointsOptions,
+		// 		value: 0,
+		// 	})
+		// 	.on('change', (e) => {
+		// 		debug.debugCam.camObject.orbit.targetOffset.fromArray(
+		// 			this.checkpoints.points[e.value],
+		// 		);
+		// 	});
 
-		checkpointsFolder.addButton({ title: 'Tp debugCam to current' }).on('click', () => {
-			console.log('🪄 Tp debugCam to current');
-			debug.debugCam.camObject.orbit.targetOffset.copy(this.checkpoints.getCurrent());
-		});
+		// checkpointsFolder.addButton({ title: 'Tp debugCam to current' }).on('click', () => {
+		// 	console.log('🪄 Tp debugCam to current');
+		// 	debug.debugCam.camObject.orbit.targetOffset.copy(this.checkpoints.getCurrent());
+		// });
 
-		checkpointsFolder.addSeparator();
+		// checkpointsFolder.addSeparator();
 
-		checkpointsFolder
-			.addBlade({
-				view: 'list',
-				label: 'Tp player',
-				options: checkpointsOptions,
-				value: 0,
-			})
-			.on('change', (e) => {
-				this.player.base.mesh.position.fromArray(this.checkpoints.points[e.value]);
-			});
+		// checkpointsFolder
+		// 	.addBlade({
+		// 		view: 'list',
+		// 		label: 'Tp player',
+		// 		options: checkpointsOptions,
+		// 		value: 0,
+		// 	})
+		// 	.on('change', (e) => {
+		// 		this.player.base.mesh.position.fromArray(this.checkpoints.points[e.value]);
+		// 	});
 
-		checkpointsFolder.addButton({ title: 'Tp player to current' }).on('click', () => {
-			console.log('🪄 Tp player to current');
-			this.player.base.mesh.position.copy(this.checkpoints.getCurrent());
-		});
+		// checkpointsFolder.addButton({ title: 'Tp player to current' }).on('click', () => {
+		// 	console.log('🪄 Tp player to current');
+		// 	this.player.base.mesh.position.copy(this.checkpoints.getCurrent());
+		// });
 
-		checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
-			label: 'Sphere',
-		});
+		// checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
+		// 	label: 'Sphere',
+		// });
 	}
 	/// #endif
 
-	preload() {
+	async preload() {
 		/// #if DEBUG
 		console.log('🔋 Preloading Scene :', this.label);
 		/// #endif
+		const path = `assets/export/Scene_${this.label}.json`;
+		this.manifest = await loadJSON(path);
+		console.log(`🔋 Manifest Scene_${this.label}`);
+		console.log(this.manifest);
 		this.isPreloaded = true;
 	}
 
 	init() {
+		this.loadManifest();
+
 		this.initialized = true;
+	}
+
+	async loadManifest() {
+		if (!this.isPreloaded) await this.preload();
+
+		this._loadProps(this.manifest.props);
+		this._loadInteractables(this.manifest.interactables);
+		this._loadCurves(this.manifest.curves);
+		this._loadPoints(this.manifest.points);
+	}
+
+	async _loadProps(props) {
+		console.log(props);
+	}
+
+	async _loadInteractables(interactables) {
+		console.log(interactables);
+	}
+
+	async _loadCurves(curves) {
+		console.log(curves);
+	}
+
+	async _loadPoints(points) {
+		const checkpoints = [];
+
+		points.forEach((point) => {
+			const _t = point.type.toLowerCase();
+
+			if (_t === 'checkpoint') {
+				const pos = new Vector3().fromArray(point.pos);
+				const qt = new Quaternion().fromArray(point.qt);
+				checkpoints.push({ pos, qt });
+			}
+			if (_t === 'spawn') {
+				const pos = new Vector3().fromArray(point.pos);
+				const qt = new Quaternion().fromArray(point.qt);
+				checkpoints.unshift({ pos, qt });
+			}
+		});
+
+		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
 	}
 
 	addTo(mainScene) {

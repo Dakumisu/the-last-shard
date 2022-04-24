@@ -51,12 +51,12 @@ export default class Renderer {
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.debug();
+		this.devtool();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	debug() {
+	devtool() {
 		if (debug.instance.stats) {
 			this.stats = debug.instance.stats;
 			this.context = this.renderer.getContext();

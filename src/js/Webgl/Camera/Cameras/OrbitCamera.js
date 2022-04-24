@@ -43,12 +43,12 @@ export default class OrbitCamera {
 		debug.instance = webgl.debug;
 		debug.scene = webgl.mainScene.instance;
 		debug.cameraController = webgl.cameraController;
-		this.initDebug();
+		this.devtool();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	initDebug() {
+	devtool() {
 		this.camHelper = new CameraHelper(this.camObject.camera);
 		this.camHelper.visible = false;
 		debug.scene.add(this.camHelper);

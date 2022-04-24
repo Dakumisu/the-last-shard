@@ -158,7 +158,7 @@ class Player extends BaseEntity {
 	}
 
 	/// #if DEBUG
-	#debug() {
+	#devtool() {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
@@ -265,7 +265,7 @@ class Player extends BaseEntity {
 
 	async beforeInit() {
 		/// #if DEBUG
-		this.#debug();
+		this.#devtool();
 		/// #endif
 
 		await this.#init();
@@ -548,11 +548,7 @@ class Player extends BaseEntity {
 		}
 
 		// adjust the camera
-		this.base.camera.orbit.targetOffset.set(
-			this.base.mesh.position.x,
-			this.base.mesh.position.y,
-			this.base.mesh.position.z,
-		);
+		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
@@ -608,7 +604,7 @@ class Player extends BaseEntity {
 
 	#updatePlayerCam(dt) {
 		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
-		this.base.camera.orbit.spherical.setRadius(camParams.radius + camInertie);
+		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + camInertie);
 
 		let axisTarget = 0;
 		let strength = 0;
@@ -618,9 +614,9 @@ class Player extends BaseEntity {
 			strength = state.isDowning || state.isMounting ? 0.03 : 0.2;
 		}
 		camAxisTarget = dampPrecise(camAxisTarget, axisTarget, strength, dt, 0.001);
-		this.base.camera.orbit.spherical.setPhi(
-			this.base.camera.orbit.spherical.phi + camAxisTarget,
-		);
+		this.base.camera.orbit.spherical
+			.setPhi(this.base.camera.orbit.spherical.phi + camAxisTarget)
+			.makeSafe();
 	}
 
 	#updateAnimation() {
@@ -647,15 +643,17 @@ class Player extends BaseEntity {
 			}
 			this.base.animation.playOnce(player.anim);
 		}
-		// console.log(player.anim.name);
+
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
 	reset() {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
-		this.base.mesh.position.copy(this.checkpoint);
+		this.base.mesh.position.copy(this.checkpoint.pos);
+		this.base.mesh.quaternion.copy(this.checkpoint.qt);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
+		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y);
 	}
 
 	resize() {
@@ -690,13 +688,15 @@ class Player extends BaseEntity {
 		this.base.animation.update(dt);
 	}
 
-	setCheckpoint(pos) {
-		this.checkpoint = pos;
+	setCheckpoint({ pos, qt }) {
+		this.checkpoint = { pos, qt };
 	}
 
-	setStartPosition(pos) {
-		this.base.mesh.position.copy(pos);
-		this.setCheckpoint(pos);
+	setStartPosition(point) {
+		this.base.mesh.position.copy(point.pos);
+		this.base.mesh.quaternion.copy(point.qt);
+
+		this.setCheckpoint({ pos: point.pos, qt: point.qt });
 	}
 }
 

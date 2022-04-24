@@ -72,7 +72,7 @@ export default class Grass {
 		this.setMesh();
 
 		/// #if DEBUG
-		this.debug();
+		this.devtool();
 		/// #endif
 
 		initialized = true;
@@ -166,7 +166,7 @@ export default class Grass {
 	}
 
 	/// #if DEBUG
-	debug() {
+	devtool() {
 		const gui = debug.instance.addFolder({ title: debug.label });
 		gui.addInput(this.base.material.uniforms.uSpeed, 'value', {
 			label: 'speed',

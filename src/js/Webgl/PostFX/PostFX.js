@@ -58,12 +58,12 @@ export default class PostFX {
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.debug();
+		this.devtool();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	debug() {
+	devtool() {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 

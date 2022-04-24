@@ -86,12 +86,12 @@ export default class PerfomanceMonitor {
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
-		this.debug();
+		this.devtool();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	debug() {
+	devtool() {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
