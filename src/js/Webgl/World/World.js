@@ -15,7 +15,7 @@ export default class World {
 		this.sceneController = new SceneController();
 
 		this.manifest = [];
-		this.scenes = {};
+		this.sceneClasses = {};
 
 		this.init();
 	}
@@ -27,17 +27,17 @@ export default class World {
 	}
 
 	async getScenes() {
-		const modules = await import.meta.glob('./Chapters/*/Scene.js');
+		const sceneClasses = await import.meta.glob('./Chapters/*/Scene.js');
 
-		for (const path in modules) {
+		for (const path in sceneClasses) {
 			// Get the class
-			const _c = await modules[path]();
+			const _c = await sceneClasses[path]();
 			// Get the name of the folder where the scene is
 			const _n = path.split('/')[2];
 			// Assign the class to the scenes
-			this.scenes[_n] = _c.default;
+			this.sceneClasses[_n] = _c.default;
 		}
-		console.log(this.scenes);
+		console.log(this.sceneClasses);
 	}
 
 	async initScenes() {
@@ -45,7 +45,7 @@ export default class World {
 		this.manifest = await loadJSON(manifestPath);
 
 		await this.manifest.forEach((datas, i) => {
-			const newScene = this.scenes[datas.name];
+			const newScene = this.sceneClasses[datas.name];
 			const _scene = new newScene(datas);
 			_scene.preload();
 

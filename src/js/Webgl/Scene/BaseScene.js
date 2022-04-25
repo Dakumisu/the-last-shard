@@ -8,10 +8,11 @@ const debug = {
 
 import { Color, Group, Mesh, SphereGeometry, Vector3 } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
-import Checkpoints from './Checkpoints';
+import Checkpoints from '@webgl/World/Props/Checkpoints';
 import { loadJSON } from 'philbin-packages/loader';
 import { Quaternion } from 'three';
 import { deferredPromise } from 'philbin-packages/async';
+import Curves from '@webgl/World/Props/Curves';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -140,7 +141,7 @@ export default class BaseScene {
 	}
 
 	async _loadCurves(curves) {
-		console.log(curves);
+		this.curves = new Curves({ curves, scene: this });
 	}
 
 	async _loadPoints(points) {
