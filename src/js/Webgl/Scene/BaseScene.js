@@ -14,20 +14,22 @@ import { Quaternion } from 'three';
 import { deferredPromise } from 'philbin-packages/async';
 
 export default class BaseScene {
-	constructor({ label, checkpoints = [] }) {
+	constructor({ label, manifest }) {
 		this.label = label;
 
-		this.manifest = {};
+		this.manifest = manifest || {};
 
 		// this.isPreloaded = false;
 		this.isPreloaded = deferredPromise();
-		this.preloadPromise = null;
 
 		this.player = getPlayer();
 
 		this.colliders = [];
 
 		this.instance = new Group();
+
+		this.manifestLoaded = deferredPromise();
+		this.initialized = false;
 
 		// this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
 
@@ -47,7 +49,7 @@ export default class BaseScene {
 		});
 
 		await this.isPreloaded;
-		console.log('here');
+
 		// const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
 
 		// const checkpointsOptions = [];
@@ -100,20 +102,20 @@ export default class BaseScene {
 	/// #endif
 
 	async preload() {
-		const path = `assets/export/Scene_${this.label}.json`;
-		this.manifest = await loadJSON(path);
-
 		/// #if DEBUG
 		console.log('🔋 Preloading Scene :', this.label);
-		console.log(`🔋 Manifest Scene_${this.label}`);
+		console.log(`🔋 Manifest of ${this.label}`);
 		console.log(this.manifest);
 		/// #endif
 
 		this.isPreloaded.resolve();
 	}
 
-	init() {
+	async init() {
 		this.loadManifest();
+		await this.manifestLoaded;
+
+		console.log('🔋 Scene initialized :', this.label);
 
 		this.initialized = true;
 	}
@@ -125,6 +127,8 @@ export default class BaseScene {
 		this._loadInteractables(this.manifest.interactables);
 		this._loadCurves(this.manifest.curves);
 		this._loadPoints(this.manifest.points);
+
+		this.manifestLoaded.resolve(true);
 	}
 
 	async _loadProps(props) {
@@ -158,6 +162,7 @@ export default class BaseScene {
 		});
 
 		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
+		console.log('🔋 Checkpoints loaded');
 	}
 
 	addTo(mainScene) {

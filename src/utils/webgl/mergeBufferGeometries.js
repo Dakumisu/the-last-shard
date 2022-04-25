@@ -87,7 +87,7 @@ function mergeGeometries(geometries) {
 }
 
 function mergeBufferGeometries(datas) {
-	const worker = wMergeGeo();
+	const worker = new wMergeGeo();
 
 	const bufferGeometries = [];
 	const buffers = [];
@@ -114,15 +114,15 @@ function mergeBufferGeometries(datas) {
 		);
 
 		worker.addEventListener('message', (response) => {
-			const geo = response.data;
+			const attributes = response.data;
 
 			const bufferGeo = new BufferGeometry();
 
 			// Conversion des attributes mergés en geometry
-			bufferGeo.setIndex(new BufferAttribute(geo.index, 1, false));
-			bufferGeo.setAttribute('position', new BufferAttribute(geo.pos, 3, false));
-			bufferGeo.setAttribute('normal', new BufferAttribute(geo.normal, 3, false));
-			bufferGeo.setAttribute('uv', new BufferAttribute(geo.uv, 2, false));
+			bufferGeo.setIndex(new BufferAttribute(attributes.index, 1, false));
+			bufferGeo.setAttribute('position', new BufferAttribute(attributes.pos, 3, false));
+			bufferGeo.setAttribute('normal', new BufferAttribute(attributes.normal, 3, false));
+			bufferGeo.setAttribute('uv', new BufferAttribute(attributes.uv, 2, false));
 
 			worker.terminate();
 			resolve(bufferGeo);

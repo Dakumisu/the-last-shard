@@ -14,6 +14,7 @@ import {
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
+import { loadGLTF } from '@utils/loaders/loadStaticGLTF';
 
 const sandbox = '/assets/export/Scene_Sandbox.glb';
 const twoPI = Math.PI * 2;
@@ -32,21 +33,16 @@ export default class Ground extends BaseCollider {
 		super({ name: 'Map', type: 'walkable' });
 
 		this.scene = scene.instance;
+		this.manifest = scene.manifest;
+		this.label = scene.label;
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
-
-		// Preload
-		this.loadGeometryPromise = null;
 	}
 
-	async preload() {
-		this.loadGeometryPromise = await this.loadGeometry();
-	}
-
-	init() {
-		this.setGround();
+	async init() {
+		await this.setGround();
 
 		/// #if DEBUG
 		this.helpers();
@@ -57,52 +53,39 @@ export default class Ground extends BaseCollider {
 	}
 
 	async loadGeometry() {
-		const testPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
-		testPlatform.position.set(20, 3, 20);
+		const modelPath = `/assets/export/Scene_${this.label}.glb`;
+		const base = await loadGLTF(modelPath);
+		const baseMerged = await mergeGeometry([base], []);
 
-		const secondTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
-		secondTestPlatform.position.set(-20, 3, 20);
-
-		const aTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
-		aTestPlatform.position.set(-10, 3, -10);
-
-		const bTestPlatform = new Mesh(new BoxGeometry(10, 0.5, 10), new MeshNormalMaterial());
-		bTestPlatform.position.set(3, 3, -20);
-
-		const plane = new PlaneGeometry(200, 200);
-		plane.rotateX(-Math.PI * 0.5);
-		plane.translate(0, -0.25, 0);
-
-		let platforms = await mergeGeometry(
-			[secondTestPlatform, testPlatform, aTestPlatform, bTestPlatform],
-			[],
-		);
-
-		return await mergeGeometry([], [sandbox]);
+		return { base, baseMerged };
 	}
 
-	setGround() {
-		const geometry = this.loadGeometryPromise;
-		const geoOpt = {
-			lazyGeneration: false,
-		};
+	async setGround() {
+		const { base, baseMerged } = await this.loadGeometry();
 
 		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#4e4b37'),
 		});
 
-		this.base.mesh = new Mesh(geometry, material);
+		this.base.mesh = new Mesh(baseMerged);
 
+		// console.log(this.base.meshGround);
+		// this.base.meshGround = base;
+		// this.base.meshGround.material = new MeshNormalMaterial();
+
+		// this.scene.add(this.base.meshGround);
+
+		const geoOpt = {
+			lazyGeneration: false,
+		};
 		this.initPhysics(geoOpt);
-
-		this.scene.add(this.base.mesh);
 	}
 
 	/// #if DEBUG
 	helpers() {
 		this.initPhysicsVisualizer(30);
-		this.physicsVisualizer.visible = false;
+		this.physicsVisualizer.visible = true;
 		this.scene.add(this.physicsVisualizer);
 
 		const size = 150;

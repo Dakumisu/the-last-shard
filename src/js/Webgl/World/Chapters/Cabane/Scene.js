@@ -8,9 +8,9 @@ import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 
-export default class EndScene extends BaseScene {
+export default class CabaneScene extends BaseScene {
 	constructor() {
-		super({ label: 'End', checkpoints: [[0, 20, 0]] });
+		super({ label: 'Cabane' });
 
 		this.ground = new Ground(this);
 	}
@@ -60,7 +60,7 @@ export default class EndScene extends BaseScene {
 	addTo(mainScene) {
 		super.addTo(mainScene);
 
-		this.player.broadphase.setMainCollider(this.ground);
+		this.player.broadphase.setGroundCollider(this.ground);
 		this.player.broadphase.setPropsColliders(this.colliders);
 
 		this.fog.set();

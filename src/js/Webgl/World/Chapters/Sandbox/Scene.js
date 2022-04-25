@@ -19,24 +19,18 @@ import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 
-export default class IntroScene extends BaseScene {
-	constructor() {
+export default class SandboxScene extends BaseScene {
+	constructor(manifest) {
 		super({
 			label: 'Sandbox',
-			// checkpoints: [
-			// 	[0, 3, 30],
-			// 	[-6.5303, 11, -27.421],
-			// 	[15, 2, -60],
-			// 	[104.32, 14, -65.342],
-			// ],
+			manifest: manifest,
 		});
 
-		this.ground = new Ground(this);
+		this.manifest = manifest;
 	}
 
 	async preload() {
 		super.preload();
-		await this.ground.preload();
 		this.preloadPromise = await loadCubeTexture('envMap1');
 	}
 
@@ -54,6 +48,7 @@ export default class IntroScene extends BaseScene {
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
+		this.ground = new Ground(this);
 		await this.ground.init();
 
 		// this.grass = new Grass(this);
@@ -116,10 +111,9 @@ export default class IntroScene extends BaseScene {
 		});
 		/// #endif
 
-		this.instance.add(
-			this.ground.base.mesh,
-			...this.colliders.map((collider) => collider.base.mesh),
-		);
+		this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
+
+		// TODO: find a way to add base ground and merged ground cleanly
 	}
 
 	update(et, dt) {
@@ -136,7 +130,7 @@ export default class IntroScene extends BaseScene {
 	addTo(mainScene) {
 		super.addTo(mainScene);
 
-		this.player.broadphase.setMainCollider(this.ground);
+		this.player.broadphase.setGroundCollider(this.ground);
 		this.player.broadphase.setPropsColliders(this.colliders);
 
 		this.fog.set();

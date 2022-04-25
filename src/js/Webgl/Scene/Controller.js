@@ -79,7 +79,7 @@ export default class SceneController {
 
 	get(label) {
 		if (this.scenes[label]) return this.scenes[label];
-		console.error('Scene does not exists');
+		console.error(`${label} does not exists`);
 		return;
 	}
 

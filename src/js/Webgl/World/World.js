@@ -1,36 +1,66 @@
 import SceneController from '@webgl/Scene/Controller.js';
-import IntroScene from './Chapters/Intro/IntroScene.js';
-import EndScene from './Chapters/End/EndScene.js';
+import Sandbox from './Chapters/Sandbox/Scene.js';
+import End from './Chapters/End/Scene.js';
+import Cabane from './Chapters/Cabane/Scene.js';
+// import Scenes from './Chapters/*/Scene.js';
+import { loadJSON } from 'philbin-packages/loader';
 import { initPlayer } from './Characters/Player.js';
-import CabaneScene from './Chapters/Cabane/CabaneScene.js';
+import BaseScene from '@webgl/Scene/BaseScene.js';
+import { deferredPromise, wait } from 'philbin-packages/async';
+
+const manifestPath = 'assets/export/Scenes.json';
 
 export default class World {
 	constructor() {
 		this.sceneController = new SceneController();
+
+		this.manifest = [];
+		this.scenes = {};
 
 		this.init();
 	}
 
 	async init() {
 		await this.setPlayer();
+		await this.getScenes();
 		await this.initScenes();
 	}
 
+	async getScenes() {
+		const modules = await import.meta.glob('./Chapters/*/Scene.js');
+
+		for (const path in modules) {
+			// Get the class
+			const _c = await modules[path]();
+			// Get the name of the folder where the scene is
+			const _n = path.split('/')[2];
+			// Assign the class to the scenes
+			this.scenes[_n] = _c.default;
+		}
+		console.log(this.scenes);
+	}
+
 	async initScenes() {
+		const scenesCreated = deferredPromise();
+
 		// TODO: load all scenes from manifest
+		this.manifest = await loadJSON(manifestPath);
 
-		// Wait first scene preload before starting other scenes preloading
-		const introScene = new IntroScene();
-		await introScene.preload();
-		this.sceneController.add(introScene, true);
+		this.manifest.forEach(async (datas, i) => {
+			const newScene = this.scenes[datas.name];
+			const _scene = new newScene(datas);
+			_scene.preload();
 
-		// const endScene = new EndScene();
-		// endScene.preload();
-		// this.sceneController.add(endScene);
+			this.sceneController.add(_scene);
 
-		// const cabaneScene = new CabaneScene();
-		// cabaneScene.preload();
-		// this.sceneController.add(cabaneScene);
+			if (i === this.manifest.length - 1) scenesCreated.resolve();
+		});
+
+		await scenesCreated;
+
+		// TODO: get saved scene from localStorage
+		// await this.sceneController.get('Sandbox').preload();
+		this.sceneController.switch('Sandbox');
 	}
 
 	async setPlayer() {

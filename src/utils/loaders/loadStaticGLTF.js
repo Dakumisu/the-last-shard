@@ -9,19 +9,15 @@ import {
 
 import wLoadGLTF from '@workers/wLoadGLTF?worker';
 
-export function loadGLTF(model) {
-	return new Promise((resolve) => {
-		load(model).then((response) => {
-			const geometries = [...response];
+export async function loadGLTF(model) {
+	const _g = await load(model);
+	const geometries = [..._g];
+	const _m = await setMesh(geometries);
 
-			setMesh(geometries).then((response) => {
-				resolve(response);
-			});
-		});
-	});
+	return _m;
 }
 
-function load(src) {
+async function load(src) {
 	const worker = wLoadGLTF();
 
 	const geometries = [];
@@ -32,7 +28,7 @@ function load(src) {
 		});
 
 		worker.addEventListener('message', (e) => {
-			const geo = e.data;
+			const geo = e.data.attributes;
 
 			geo.forEach((attributes) => {
 				const bufferGeo = new BufferGeometry();
@@ -52,21 +48,19 @@ function load(src) {
 	});
 }
 
-function setMesh(geometries) {
-	return new Promise((resolve) => {
-		const group = new Group();
+async function setMesh(geometries) {
+	const group = new Group();
 
-		const material = new MeshNormalMaterial({
-			side: DoubleSide,
-		});
-
-		geometries.forEach((geometry) => {
-			const mesh = new Mesh(geometry, material);
-			mesh.frustumCulled = false;
-
-			group.add(mesh);
-		});
-
-		resolve(group);
+	const material = new MeshNormalMaterial({
+		side: DoubleSide,
 	});
+
+	await geometries.forEach((geometry) => {
+		const mesh = new Mesh(geometry, material);
+		mesh.frustumCulled = false;
+
+		group.add(mesh);
+	});
+
+	return group;
 }

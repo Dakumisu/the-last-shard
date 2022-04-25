@@ -23,50 +23,55 @@ async function loadGLTF(url, opts = {}) {
 	});
 }
 
-onmessage = function (e) {
+onmessage = async function (e) {
 	const url = e.data.url;
 
-	getModelGeometryAttributes(url).then((response) => {
-		const attributes = response;
+	const { attributes, buffers } = await getModelGeometryAttributes(url);
 
-		postMessage(attributes);
-	});
+	postMessage(
+		{
+			attributes: attributes,
+		},
+		[...new Set(buffers)],
+	);
 };
 
-function getModelGeometryAttributes(url) {
-	return new Promise((resolve) => {
-		loadGLTF(url).then((e) => {
-			parseModel(e).then((response) => {
-				resolve(response);
-			});
-		});
-	});
+async function getModelGeometryAttributes(url) {
+	const _m = await loadGLTF(url);
+	const _a = await parseModel(_m);
+	return _a;
 }
 
-function parseModel(model) {
-	const geosAttributes = [];
+async function parseModel(model) {
+	const attributes = [];
+	const buffers = [];
 	const mat4 = new Matrix4();
 
-	return new Promise((resolve) => {
-		model.scene.traverse((mesh) => {
-			if (mesh.geometry) {
-				const geo = mesh.geometry;
+	// return new Promise((resolve) => {
+	await model.scene.traverse((mesh, i) => {
+		if (mesh.geometry) {
+			const geo = mesh.geometry;
 
-				mesh.updateWorldMatrix(true, false);
-				mat4.multiplyMatrices(mesh.matrixWorld, mesh.matrix);
-				geo.applyMatrix4(mesh.matrixWorld);
+			mesh.updateWorldMatrix(true, false);
+			mat4.multiplyMatrices(mesh.matrixWorld, mesh.matrix);
+			geo.applyMatrix4(mesh.matrixWorld);
 
-				let index = geo.index.array;
-				let pos = geo.attributes.position.array;
-				let normal = geo.attributes.normal.array;
-				let uv = geo.attributes.uv.array;
+			let index = geo.index.array;
+			let pos = geo.attributes.position.array;
+			let normal = geo.attributes.normal.array;
+			let uv = geo.attributes.uv.array;
 
-				const geoAttributes = { index, pos, normal, uv };
+			const geoAttributes = { index, pos, normal, uv };
 
-				geosAttributes.push(geoAttributes);
-			}
-		});
+			buffers.push(index.buffer);
+			buffers.push(pos.buffer);
+			buffers.push(normal.buffer);
+			buffers.push(uv.buffer);
 
-		resolve(geosAttributes);
+			attributes.push(geoAttributes);
+		}
 	});
+
+	return { attributes, buffers };
+	// });
 }

@@ -261,34 +261,35 @@ const BufferGeometryUtils = {
 	},
 };
 
-onmessage = function (e) {
+onmessage = async function (e) {
 	const geos = e.data.geometries;
-	const mergedGeoAttributes = getMergedGeometries(geos);
+
+	const mergedGeoAttributes = await getMergedGeometries(geos);
 
 	postMessage(mergedGeoAttributes);
 };
 
-function setGeo(geo) {
+function setGeo(attr) {
 	const bufferGeo = new BufferGeometry();
 
-	bufferGeo.setIndex(new BufferAttribute(geo.index, 1, false));
-	bufferGeo.setAttribute('position', new BufferAttribute(geo.position, 3, false));
-	bufferGeo.setAttribute('normal', new BufferAttribute(geo.normal, 3, false));
-	bufferGeo.setAttribute('uv', new BufferAttribute(geo.uv, 2, false));
+	bufferGeo.setIndex(new BufferAttribute(attr.index, 1, false));
+	bufferGeo.setAttribute('position', new BufferAttribute(attr.position, 3, false));
+	bufferGeo.setAttribute('normal', new BufferAttribute(attr.normal, 3, false));
+	bufferGeo.setAttribute('uv', new BufferAttribute(attr.uv, 2, false));
 
 	bufferGeo.morphTargetsRelative = true;
 
 	return bufferGeo;
 }
 
-function mergeGeo(geo) {
-	const mergedGeo = BufferGeometryUtils.mergeBufferGeometries(geo, false);
+async function mergeGeo(geo) {
+	const mergedGeo = await BufferGeometryUtils.mergeBufferGeometries(geo, false);
 	mergedGeo.morphTargetsRelative = true;
 
 	return mergedGeo;
 }
 
-function getMergedGeometries(geos) {
+async function getMergedGeometries(geos) {
 	const geometries = geos;
 	const count = geometries.length;
 
@@ -298,7 +299,7 @@ function getMergedGeometries(geos) {
 		geosToMerge.push(setGeo(geometries[i]));
 	}
 
-	const mergedGeo = mergeGeo(geosToMerge);
+	const mergedGeo = await mergeGeo(geosToMerge);
 
 	let index = mergedGeo.index.array;
 	let pos = mergedGeo.attributes.position.array;
