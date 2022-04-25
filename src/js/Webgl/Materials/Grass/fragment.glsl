@@ -1,6 +1,5 @@
 varying float vFade;
 varying float vNoiseMouvement;
-varying float vGrassPresent;
 varying vec3 vPos;
 
 uniform float uWindColorIntensity;
@@ -18,7 +17,7 @@ void main() {
 	// if(vGrassPresent > .8)
 	// 	discard;
 
-	gl_FragColor = vec4(render, 1. - vGrassPresent);
+	gl_FragColor = vec4(render, vFade);
 
 	// gl_FragColor = vec4(vec3(1. - vElevationTest, 0., 0.), 1.0);
 }

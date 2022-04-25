@@ -19,7 +19,6 @@ attribute vec3 aPositions;
 
 varying vec3 vPos;
 varying float vFade;
-varying float vGrassPresent;
 varying float vNoiseMouvement;
 varying float vNoiseElevation;
 
@@ -60,12 +59,11 @@ void main() {
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
-	float xScaleCoord = map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, .0, 1.);
-	float zScaleCoord = map(-translation.z, uMinMapBounds.z, uMaxMapBounds.z, .0, 1.);
+	// Map position to the elevation texture coordinates using the map bounds
+	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, .0, 1.), map(-translation.z, uMinMapBounds.z, uMaxMapBounds.z, .0, 1.));
 
-	vec2 scaledCoords = vec2(xScaleCoord, zScaleCoord);
-
-	vGrassPresent = texture2D(uGrassTexture, scaledCoords).r;
+	float scaleFromTexture = texture2D(uGrassTexture, scaledCoords).r;
+	pos *= 1. - scaleFromTexture;
 
 	float elevation = texture2D(uElevationTexture, scaledCoords).r;
 
@@ -98,9 +96,10 @@ void main() {
 	float trailIntensity = mix(0.0, .5, smoothstep(2.5, 0., distance(uCharaPos, translation.xyz)));
 	vec2 trailDirection = normalize(uCharaPos.xz - translation.xz);
 
-	translation.x -= trailIntensity * trailDirection.x;
-	translation.y -= trailIntensity;
-	translation.z -= trailIntensity * trailDirection.y;
+	// Grass displacement according to player trail
+	translation.x -= trailIntensity * trailDirection.x * .7;
+	pos.y *= 1. - trailIntensity;
+	translation.z -= trailIntensity * trailDirection.y * .7;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 

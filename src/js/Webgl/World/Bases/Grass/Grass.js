@@ -18,9 +18,10 @@ import {
 	Mesh,
 	DepthTexture,
 	OrthographicCamera,
-	ShaderMaterial,
 	WebGLRenderTarget,
 	Texture,
+	Vector2,
+	Vector3,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
@@ -47,6 +48,17 @@ export default class Grass extends BaseObject {
 		this.base.geometry = null;
 		this.base.positions = null;
 
+		this.triangle = null;
+
+		this.minBox = new Vector3();
+		this.maxBox = new Vector3();
+
+		this.rtCamera = null;
+		const textureSize = 512;
+		this.renderTarget = new WebGLRenderTarget(textureSize, textureSize);
+		this.depthTexture = new DepthTexture(textureSize, textureSize);
+		this.renderTargetRendered = false;
+
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
@@ -69,11 +81,8 @@ export default class Grass extends BaseObject {
 	}
 
 	setRenderTarget() {
-		this.minBox = this.scene.ground.base.mesh.geometry.boundingBox.min;
-		this.maxBox = this.scene.ground.base.mesh.geometry.boundingBox.max;
-
-		const rtWidth = 512;
-		const rtHeight = 512;
+		this.minBox.copy(this.scene.ground.base.mesh.geometry.boundingBox.min);
+		this.maxBox.copy(this.scene.ground.base.mesh.geometry.boundingBox.max);
 
 		const camNear = 1;
 
@@ -87,10 +96,6 @@ export default class Grass extends BaseObject {
 		);
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
 		this.rtCamera.position.y = this.maxBox.y + camNear;
-
-		this.renderTarget = new WebGLRenderTarget(rtWidth, rtHeight);
-
-		this.depthTexture = new DepthTexture(rtWidth, rtHeight);
 
 		this.renderTarget.depthTexture = this.depthTexture;
 		this.renderTarget.depthTexture.format = DepthFormat;
@@ -272,7 +277,10 @@ export default class Grass extends BaseObject {
 	update(et, dt) {
 		if (!this.initialized) return;
 
-		this.renderer.setRenderTarget(this.renderTarget);
+		if (!this.renderTargetRendered) {
+			this.renderer.setRenderTarget(this.renderTarget);
+			this.renderTargetRendered = true;
+		}
 
 		// Edit this to render only the Mesh/Group you want to test depth with
 		this.renderer.render(this.scene.ground.base.mesh, this.rtCamera);
