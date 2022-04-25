@@ -27,7 +27,6 @@ export default class BaseAmbient {
 		});
 
 		gui.addInput(debug, 'color').on('change', (color) => {
-			console.log(color.value);
 			this.light.color.set(color.value);
 		});
 		gui.addInput(this.light, 'intensity', {
