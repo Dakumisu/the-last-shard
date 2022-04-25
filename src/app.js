@@ -2,11 +2,11 @@ import '@scss/main.scss';
 
 import signal from 'philbin-packages/signal';
 
-import Dom from '@dom/Dom';
+import { initDom } from '@dom/Dom';
 import { initWebgl } from '@webgl/Webgl';
 import { initGame } from '@game/Game';
 
-const dom = new Dom();
+const dom = initDom();
 
 signal.once('domLoaded', () => {
 	const game = initGame();

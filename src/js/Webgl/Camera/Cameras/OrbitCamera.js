@@ -28,6 +28,8 @@ export default class OrbitCamera {
 			}),
 		};
 
+		console.log(this.camObject.orbit);
+
 		this.camObject.camera.rotation.reorder('YXZ');
 
 		this.camObject.orbit.sphericalTarget.set(

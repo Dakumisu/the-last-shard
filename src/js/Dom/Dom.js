@@ -6,13 +6,13 @@ import Views from './Views';
 
 let initialized = false;
 
-export default class Dom {
+class Dom {
+	/**
+	 * @type {Dom}
+	 */
 	static instance;
 
 	constructor() {
-		if (Dom.instance) {
-			return Dom.instance;
-		}
 		Dom.instance = this;
 
 		this.init();
@@ -35,3 +35,13 @@ export default class Dom {
 		delete this.views;
 	}
 }
+
+const initDom = () => {
+	return new Dom();
+};
+
+const getDom = () => {
+	return Dom.instance;
+};
+
+export { initDom, getDom };

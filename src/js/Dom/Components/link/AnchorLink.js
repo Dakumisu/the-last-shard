@@ -1,4 +1,4 @@
-import Dom from '@dom/Dom';
+import { getDom } from '@dom/Dom';
 
 import html from './template.html?raw';
 import style from './style.scss';
@@ -35,7 +35,7 @@ export default class AnchorLink extends HTMLElement {
 		console.log(`Element ${this.localName} removed from page.`);
 		/// #endif
 
-		const dom = new Dom();
+		const dom = getDom();
 		dom.nodes.delete(this.dataset.ref);
 	}
 
@@ -84,20 +84,13 @@ export default class AnchorLink extends HTMLElement {
 	updateStyle() {
 		if (import.meta.hot) {
 			import.meta.hot.on('vite:beforeUpdate', async () => {
-				const composentScssUrl = new URL(
-					'./style.scss',
-					import.meta.url,
-				).href;
-				const composentScssFile = await fetch(composentScssUrl).then(
-					(response) => response.text(),
+				const composentScssUrl = new URL('./style.scss', import.meta.url).href;
+				const composentScssFile = await fetch(composentScssUrl).then((response) =>
+					response.text(),
 				);
 
 				const composentScss = JSON.parse(
-					`"${
-						composentScssFile.match(
-							/__vite__css = "((?:.|\n)+?[^\\])"\n/i,
-						)[1]
-					}"`,
+					`"${composentScssFile.match(/__vite__css = "((?:.|\n)+?[^\\])"\n/i)[1]}"`,
 				);
 
 				this.styleNode.data = composentScss;
