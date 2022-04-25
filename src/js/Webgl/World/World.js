@@ -41,25 +41,18 @@ export default class World {
 	}
 
 	async initScenes() {
-		const scenesCreated = deferredPromise();
-
 		// TODO: load all scenes from manifest
 		this.manifest = await loadJSON(manifestPath);
 
-		this.manifest.forEach(async (datas, i) => {
+		await this.manifest.forEach((datas, i) => {
 			const newScene = this.scenes[datas.name];
 			const _scene = new newScene(datas);
 			_scene.preload();
 
 			this.sceneController.add(_scene);
-
-			if (i === this.manifest.length - 1) scenesCreated.resolve();
 		});
 
-		await scenesCreated;
-
 		// TODO: get saved scene from localStorage
-		// await this.sceneController.get('Sandbox').preload();
 		this.sceneController.switch('Sandbox');
 	}
 
