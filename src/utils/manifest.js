@@ -31,7 +31,12 @@ assetsMap.set('envMap2', {
 });
 
 assetsMap.set('noiseTexture', {
-	path: '/assets/image/perlinNoise.jpeg',
+	path: '/assets/image/pattern.png',
+	data: {},
+});
+
+assetsMap.set('grassTexture', {
+	path: '/assets/image/grass.png',
 	data: {},
 });
 

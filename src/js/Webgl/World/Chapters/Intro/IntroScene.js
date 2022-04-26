@@ -1,10 +1,10 @@
 import BaseScene from '../../../Scene/BaseScene';
 import Ground from './Props/Ground';
-import Grass from './Props/Grass/Grass';
+import Grass from '../../Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
-import { loadCubeTexture } from '@utils/loaders/loadAssets';
 import { BoxGeometry, Mesh, MeshNormalMaterial, SphereGeometry, Vector3 } from 'three';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
+import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
@@ -47,22 +47,38 @@ export default class IntroScene extends BaseScene {
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
-		await this.ground.init();
-
-		this.grass = new Grass(this);
-		this.grass.init();
+		this.ground.init();
 
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',
 			fogFarColor: '#3e2e77',
 			fogNear: 0,
-			// fogFar: 140,
 			fogFar: 30,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
 			background: await this.preloadPromise,
 		});
+
+		// Init grass after fog
+		this.grass = new Grass({
+			scene: this,
+			params: {
+				color: '#de47ff',
+				count: 300000,
+				verticeScale: 0.42,
+				halfBoxSize: 28,
+				maskRange: 0.04,
+				elevationIntensity: 0.25,
+				noiseElevationIntensity: 0.75,
+				noiseMouvementIntensity: 0.2,
+				windColorIntensity: 0.2,
+				displacement: 0.2,
+				speed: 0.15,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
+		});
+		await this.grass.init();
 
 		const testCube = new BaseCollider({
 			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
@@ -190,10 +206,8 @@ export default class IntroScene extends BaseScene {
 		if (this.ground) this.ground.update(et, dt);
 		if (this.grass) this.grass.update(et, dt);
 
-		/// #if DEBUG
 		if (this.interactablesBroadphase)
 			this.interactablesBroadphase.update(this.player.base.mesh.position);
-		/// #endif
 	}
 
 	addTo(mainScene) {

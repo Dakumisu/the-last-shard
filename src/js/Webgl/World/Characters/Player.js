@@ -18,6 +18,7 @@ import {
 	LineBasicMaterial,
 	Line,
 	Box3Helper,
+	MeshNormalMaterial,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -30,9 +31,9 @@ import { mergeGeometry } from '@utils/webgl';
 import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
-import { PlayerMaterial } from '@webgl/Materials/Player/material';
+import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
 import AnimationController from '@webgl/Animation/Controller';
-import DebugMaterial from '@webgl/Materials/debug/material';
+import DebugMaterial from '@webgl/Materials/Debug/DebugMaterial';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
@@ -338,11 +339,12 @@ class Player extends BaseEntity {
 	#setMaterial() {
 		this.base.material = new DebugMaterial();
 
-		this.base.material = new PlayerMaterial({
-			color: new Color('#d29ddc'),
-			transparent: true,
-			opacity: 0.3,
-		});
+		// this.base.material = new PlayerMaterial({
+		// 	color: new Color('#d29ddc'),
+		// 	transparent: true,
+		// 	opacity: 0.3,
+		// });
+		this.base.material = new MeshNormalMaterial();
 	}
 
 	#setMesh() {
@@ -362,14 +364,15 @@ class Player extends BaseEntity {
 	async #setModel() {
 		const m = await loadGLTF(model);
 
-		m.scene.traverse((object) => {
-			if (object.type === 'SkinnedMesh') {
-				object.material = this.base.material;
-			}
-		});
+		// m.scene.traverse((object) => {
+		// 	if (object.type === 'SkinnedMesh') {
+		// 		object.material = this.base.material;
+		// 	}
+		// });
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
+		this.base.model.scene.scale.set(1.5, 1.5, 1.5);
 		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
 
 		this.base.group.add(this.base.model.scene);
