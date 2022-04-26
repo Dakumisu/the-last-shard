@@ -80,44 +80,6 @@ export default class IntroScene extends BaseScene {
 		});
 		await this.grass.init();
 
-		const testCube = new BaseCollider({
-			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
-			name: 'cube1',
-			type: 'nonWalkable',
-			isInteractable: true,
-		});
-		testCube.initPhysics();
-		testCube.base.mesh.position.set(2, 1, 12);
-
-		const testCube2 = new BaseCollider({
-			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
-			name: 'cube2',
-			type: 'nonWalkable',
-			isInteractable: true,
-		});
-		testCube2.initPhysics();
-		testCube2.base.mesh.position.set(-3, 1, 12);
-
-		const testCube3 = new BaseCollider({
-			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
-			name: 'cube3',
-			type: 'nonWalkable',
-			isInteractable: true,
-		});
-		testCube3.initPhysics();
-		testCube3.base.mesh.position.set(-3, 1, -20);
-
-		const testCube4 = new BaseCollider({
-			mesh: new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial()),
-			name: 'sphere',
-			type: 'nonWalkable',
-			isInteractable: true,
-		});
-		testCube4.initPhysics();
-		testCube4.base.mesh.position.set(-10, 1, 20);
-
-		this.colliders.push(testCube, testCube2, testCube3, testCube4);
-
 		// LaserTowers
 
 		const laserGame = new LaserGame({ scene: this });
