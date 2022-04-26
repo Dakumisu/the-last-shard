@@ -14,7 +14,7 @@ const debug = {
 };
 /// #endif
 
-// Edit fog chunks on time
+// Edit fog chunks one time
 ShaderChunk.fog_pars_vertex = fogParsVert;
 ShaderChunk.fog_vertex = fogVert;
 ShaderChunk.fog_pars_fragment = fogParsFrag;

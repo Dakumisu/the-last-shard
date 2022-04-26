@@ -60,7 +60,6 @@ export default class CabaneScene extends BaseScene {
 				noiseMouvementIntensity: 0.2,
 				windColorIntensity: 0.2,
 				displacement: 0.2,
-				speed: 0.15,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});

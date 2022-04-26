@@ -1,15 +1,43 @@
+/// #if DEBUG
+const debug = {
+	instance: null,
+	label: 'Uniforms',
+	tab: 'Env',
+};
+import { getWebgl } from '@webgl/Webgl.js';
+/// #endif
+
 import SceneController from '@webgl/Scene/Controller.js';
 import IntroScene from './Chapters/Intro/IntroScene.js';
 import EndScene from './Chapters/End/EndScene.js';
 import { initPlayer } from './Characters/Player.js';
 import CabaneScene from './Chapters/Cabane/CabaneScene.js';
+import baseUniforms from '@webgl/Materials/baseUniforms.js';
 
 export default class World {
 	constructor() {
 		this.sceneController = new SceneController();
 
 		this.init();
+
+		/// #if DEBUG
+		if (!debug.instance) {
+			debug.instance = getWebgl().debug;
+			this.setDebug();
+		}
+		/// #endif
 	}
+
+	/// #if DEBUG
+	setDebug() {
+		debug.instance.setFolder(debug.label, debug.tab, true);
+		const gui = debug.instance.getFolder(debug.label);
+
+		gui.addInput(baseUniforms.uWindSpeed, 'value', { label: 'windSpeed' });
+
+		// add other global uniforms here
+	}
+	/// #endif
 
 	async init() {
 		await this.setPlayer();

@@ -1,7 +1,7 @@
 #pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
 
 uniform float uTime;
-uniform float uSpeed;
+uniform float uWindSpeed;
 uniform float uMaskRange;
 uniform float uDisplacement;
 uniform float uNoiseMouvementIntensity;
@@ -48,8 +48,8 @@ float map(float value, float start1, float stop1, float start2, float stop2) {
 }
 
 void main() {
-	float time = uTime * uSpeed * 0.002;
 	float boxSize = uHalfBoxSize * 2.;
+	float time = uTime * uWindSpeed * 0.002;
 
 	vec3 pos = position * aScale;
 
@@ -59,50 +59,62 @@ void main() {
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
+	// Scale down out of range grass
+	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
+	pos.y += scaleFromRange * .35;
+	pos *= scaleFromRange;
+
 	// Map position to the elevation texture coordinates using the map bounds
 	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, .0, 1.), map(-translation.z, uMinMapBounds.z, uMaxMapBounds.z, .0, 1.));
-
-	float scaleFromTexture = texture2D(uGrassTexture, scaledCoords).r;
-	pos *= 1. - scaleFromTexture;
-
 	float elevation = texture2D(uElevationTexture, scaledCoords).r;
 
-	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
-	vNoiseElevation = smoothstep(0.2, .8, smoothNoise(translation.xz * uNoiseElevationIntensity));
-
-	// if(translation.y < 0.) {
-	// 	translation.y = 0.;
-	// } else {
-	// translation.xz += vNoiseMouvement * uDisplacement;
-	// }
-
-	translation.xz += vNoiseMouvement * uDisplacement;
-
-	float fade = 1.0 - smoothstep(0., 1., (uMaskRange * distance(uCharaPos.xz, translation.xz)));
-
-	vFade = fade;
-
-	pos.y += fade * vNoiseElevation * uElevationIntensity;
-
-	// pos.y *= vGrassPresent;
-	// pos.y += map(elevation, 0., 1., -50., 50.);
-	// pos.y += elevation;
+	float scaleFromTexture = texture2D(uGrassTexture, scaledCoords).r;
+	scaleFromTexture = smoothstep(1., .3, scaleFromTexture);
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
 	translation.y += translationOffset;
 
 	// Player trail
-	float trailIntensity = mix(0.0, .5, smoothstep(2.5, 0., distance(uCharaPos, translation.xyz)));
+	float trailIntensity = smoothstep(2.5, 0., distance(uCharaPos, translation.xyz));
 	vec2 trailDirection = normalize(uCharaPos.xz - translation.xz);
 
 	// Grass displacement according to player trail
-	translation.x -= trailIntensity * trailDirection.x * .7;
-	pos.y *= 1. - trailIntensity;
-	translation.z -= trailIntensity * trailDirection.y * .7;
+	// translation.x -= trailIntensity * trailDirection.x * .7;
+	// pos.y *= 1. - trailIntensity;
+	// translation.z -= trailIntensity * trailDirection.y * .7;
+
+	// pos *= 1. - scaleFromTexture;
+	// pos *= scaleFromTexture;
+	// translation.y *= scaleFromTexture;
+
+	// vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
+
+	// vNoiseElevation = smoothstep(0.2, .8, smoothNoise(translation.xz * uNoiseElevationIntensity));
+
+	// if(translation.y < 0.) {
+	// 	translation.y = 0.;
+	// } else {
+	// 	translation.xz += vNoiseMouvement * uDisplacement;
+	// }
+
+	// translation.xz += vNoiseMouvement * uDisplacement;
+
+	// float fade = 1.0 - smoothstep(0., 1., (uMaskRange * distance(uCharaPos, translation.xyz)));
+
+	// vFade = fade;
+
+	// pos.y += fade * vNoiseElevation * uElevationIntensity;
+
+	// pos.y *= vGrassPresent;
+	// pos.y += map(elevation, 0., 1., -50., 50.);
+	// pos.y += elevation;
+
+	// translation.y += uElevationIntensity;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 
+	// mv.xyz += pos.xyz;
 	mv.xyz += pos.xyz;
 
 	gl_Position = projectionMatrix * mv;

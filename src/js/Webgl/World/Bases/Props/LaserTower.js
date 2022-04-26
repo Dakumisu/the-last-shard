@@ -140,10 +140,10 @@ export default class LaserTower extends BaseCollider {
 			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.base.mesh.position);
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
-			if (rayNextDistance <= 0.05 && !nextLaserTower.isActivated && this.isActivated) {
+			if (rayNextDistance <= 0.1 && !nextLaserTower.isActivated && this.isActivated) {
 				if (this.animation && !this.animation.paused) this.animation.pause();
 				nextLaserTower.activateBy(this);
-			} else if (nextLaserTower.isActivated && rayNextDistance > 0.05)
+			} else if (nextLaserTower.isActivated && rayNextDistance > 0.1)
 				nextLaserTower.desactivateBy(this);
 		});
 	}

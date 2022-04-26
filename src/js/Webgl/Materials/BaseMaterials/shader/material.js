@@ -11,8 +11,11 @@ class BaseShaderMaterial extends Material {
 
 		this.defines = {};
 		this.uniforms = {
+			...parameters.uniforms,
 			...baseUniforms,
 		};
+
+		delete parameters.uniforms;
 
 		this.vertexShader = defaultVertex;
 		this.fragmentShader = defaultFragment;
@@ -55,6 +58,8 @@ class BaseShaderMaterial extends Material {
 
 			this.setValues(parameters);
 		}
+
+		// this.uniforms.uWindSpeed = { value: 0.0 };
 	}
 
 	copy(source) {

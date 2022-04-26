@@ -32,7 +32,7 @@ import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 export default class Grass extends BaseObject {
 	/**
 	 *
-	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, elevationIntensity?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, speed?: number, positionsTexture: Texture}}} params0
+	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, elevationIntensity?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}} params0
 	 */
 	constructor({ scene, params }) {
 		super({ name: 'Grass', isInteractable: false });
@@ -161,8 +161,6 @@ export default class Grass extends BaseObject {
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
-				uTime: { value: 0 },
-				uSpeed: { value: this.params.speed },
 				uDisplacement: { value: this.params.displacement },
 				uWindColorIntensity: { value: this.params.windColorIntensity },
 				uMaskRange: { value: this.params.maskRange },
@@ -201,12 +199,6 @@ export default class Grass extends BaseObject {
 		// texturePlane.position.copy(this.scene.player.base.mesh.position);
 		// this.scene.instance.add(texturePlane);
 
-		gui.addInput(this.base.mesh.material.uniforms.uSpeed, 'value', {
-			label: 'speed',
-			min: 0,
-			max: 1,
-			step: 0.01,
-		});
 		gui.addInput(this.base.mesh.material.uniforms.uDisplacement, 'value', {
 			label: 'displace',
 			min: 0,
@@ -286,7 +278,5 @@ export default class Grass extends BaseObject {
 		this.renderer.render(this.scene.ground.base.mesh, this.rtCamera);
 		// this.renderer.render(this.scene.instance, this.rtCamera);
 		this.renderer.setRenderTarget(null);
-
-		this.base.material.uniforms.uTime.value = et;
 	}
 }
