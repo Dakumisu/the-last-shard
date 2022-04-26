@@ -27,7 +27,7 @@ export default class World {
 	}
 
 	async getScenes() {
-		const sceneClasses = await import.meta.glob('./Chapters/*/Scene.js');
+		const sceneClasses = import.meta.glob('./Chapters/*/Scene.js');
 
 		for (const path in sceneClasses) {
 			// Get the class

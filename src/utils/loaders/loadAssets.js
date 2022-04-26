@@ -1,6 +1,7 @@
 import { store } from '@tools/Store';
 import manifest from '@utils/manifest';
 import { getWebgl } from '@webgl/Webgl';
+import { Group } from 'three';
 import {
 	AudioLoader,
 	CubeTexture,
@@ -12,6 +13,7 @@ import {
 	TextureLoader,
 } from 'three';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
+import { loadGLTF } from './loadStaticGLTF';
 
 const basisLoader = new KTX2Loader();
 let basisLoaderInit = false;
@@ -92,5 +94,30 @@ export async function loadAudio(key) {
 		loadedAudio = await audioLoader.loadAsync(path);
 		store.loadedAssets.audios.set(key, loadedAudio);
 	}
+
 	return loadedAudio;
+}
+
+/**
+ *
+ * @param {string} key
+ * @returns {Promise<Group | null>}
+ */
+export async function loadModels(key) {
+	const path = manifest.get(key)?.path;
+	if (!path) {
+		/// #if DEBUG
+		console.error(`Model ${key} not found`);
+		/// #endif
+		return;
+	}
+
+	let loadedModel = store.loadedAssets.models.get(key);
+	if (!loadedModel) {
+		await loadGLTF(path);
+		loadedModel = await loadGLTF(path);
+		store.loadedAssets.models.set(key, loadedModel);
+	}
+
+	return loadedModel.clone();
 }

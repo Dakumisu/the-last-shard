@@ -35,4 +35,21 @@ assetsMap.set('noiseTexture', {
 	data: {},
 });
 
+const assetsPath = import.meta.glob('../../public/assets/export/*.glb');
+console.log(assetsPath);
+for (const path in assetsPath) {
+	const _p = assetsPath[path].name.split('../../public').pop();
+
+	const _n = assetsPath[path].name
+		.split('../../public/assets/export/')
+		.pop()
+		.split('.glb')
+		.shift();
+
+	assetsMap.set(_n, {
+		path: _p,
+		data: {},
+	});
+}
+
 export default assetsMap;

@@ -101,7 +101,7 @@ export default class SandboxScene extends BaseScene {
 			isInteractable: true,
 		});
 		testCube4.initPhysics();
-		testCube4.base.mesh.position.set(-10, 1, 20);
+		testCube4.base.mesh.position.set(-20, 1, 20);
 
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
 

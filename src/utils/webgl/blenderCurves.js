@@ -10,15 +10,15 @@ function catmullPath(blenderPath, { closed = false, curveType, tension, uid = ''
 function beziersPath(blenderBeziers, { closed = false, uid = '' } = {}) {
 	const curve = new CurvePath();
 	curve.uid = uid;
-	for (let i = 0, l = blenderBeziers.length - 1; i < l; i++) {
-		// Le cubic bezier demande 4 valeurs
-		// alors que blender exporte une curve à 3 valeurs
+
+	for (let i = 0, l = blenderBeziers.length; i < l; i++) {
+		// Le cubic bezier demande 4 valeurs alors que blender exporte une curve à 3 valeurs
 		// ([control, left, right])
 		// Seulement ça ne représente pas la courbe, mais seulement les points de control
-		// On build la courbe en lui donnant
-		// un 1er point et celui qui suit, avec un de leur control
+		// On build la courbe en lui donnant un 1er point et celui qui suit, avec un de leur control
 		const startPoint = blenderBeziers[i];
-		const endPoint = blenderBeziers[i + 1];
+		const endPoint = blenderBeziers[(i + 1) % l];
+
 		curve.add(
 			new CubicBezierCurve3(
 				new Vector3().fromArray(startPoint, 0),

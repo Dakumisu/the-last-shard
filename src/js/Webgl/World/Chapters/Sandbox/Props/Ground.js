@@ -15,6 +15,7 @@ import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
 import { loadGLTF } from '@utils/loaders/loadStaticGLTF';
+import { loadModels } from '@utils/loaders/loadAssets';
 
 const sandbox = '/assets/export/Scene_Sandbox.glb';
 const twoPI = Math.PI * 2;
@@ -53,8 +54,8 @@ export default class Ground extends BaseCollider {
 	}
 
 	async loadGeometry() {
-		const modelPath = `/assets/export/Scene_${this.label}.glb`;
-		const base = await loadGLTF(modelPath);
+		const base = await loadModels('Scene_' + this.label);
+
 		const baseMerged = await mergeGeometry([base], []);
 
 		return { base, baseMerged };

@@ -6,12 +6,10 @@ import ifdefRollupPlugin from './ifdef/ifdefRollupPlugin';
 import content from '../src/json/content.json';
 
 export default ({ mode }) => {
-	process.stdout.write('\x1b[2mv' + process.env.npm_package_version + '\x1b[22m\n');
-	process.stdout.write(
-		'\x1b[93m\x1b[1m🍜 Beesly \x1b[22m\x1b[39m' + 'is cooking your code... \n',
-	);
-	process.stdout.write('\n✨ Project : ' + process.env.npm_package_name);
-	process.stdout.write('\n🏓 Environnement : ' + mode + '\n\n');
+	console.log('\n\x1b[2mv' + process.env.npm_package_version + '\x1b[22m\n');
+	console.log('\x1b[93m\x1b[1m🍜 Beesly \x1b[22m\x1b[39m' + 'is cooking your code... \n');
+	console.log('\n✨ Project : ' + process.env.npm_package_name);
+	console.log('\n🏓 Environnement : ' + mode + '\n\n');
 
 	const debug = mode ? mode != 'production' : true;
 	const define = {

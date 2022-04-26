@@ -1,16 +1,10 @@
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
-import { Color, Mesh, SphereGeometry, Vector3 } from 'three';
 import signal from 'philbin-packages/signal';
-import { Quaternion } from 'three';
 import { Group } from 'three';
 import { beziersPath, catmullPath } from '@utils/webgl/blenderCurves';
 import { LineBasicMaterial } from 'three';
 import { Line } from 'three';
 import { BufferGeometry } from 'three';
-
-const radius = 2;
-const tVec3 = new Vector3();
-const tQuat = new Quaternion();
 
 export default class Curves {
 	constructor({ curves = [], scene }) {
