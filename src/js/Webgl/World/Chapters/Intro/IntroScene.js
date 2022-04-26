@@ -3,23 +3,13 @@ import Ground from './Props/Ground';
 import Grass from './Props/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { loadCubeTexture } from '@utils/loaders/loadAssets';
-import {
-	BoxGeometry,
-	Color,
-	Matrix4,
-	Mesh,
-	MeshNormalMaterial,
-	SphereGeometry,
-	Vector3,
-} from 'three';
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
+import { BoxGeometry, Mesh, MeshNormalMaterial, SphereGeometry, Vector3 } from 'three';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 import LaserTower from '@webgl/World/Bases/Props/LaserTower';
-import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import LaserGame from '@game/LaserGame';
 
 export default class IntroScene extends BaseScene {

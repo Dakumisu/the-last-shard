@@ -2,26 +2,14 @@ import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
 import { loadDynamicGLTF } from '@utils/loaders';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import BaseScene from '@webgl/Scene/BaseScene';
 import anime from 'animejs';
-import { wait } from 'philbin-packages/async';
-import {
-	ArrowHelper,
-	BoxGeometry,
-	BoxHelper,
-	BufferGeometry,
-	LineBasicMaterial,
-	Mesh,
-	MeshBasicMaterial,
-	Ray,
-	Vector3,
-} from 'three';
+import { Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 
 export default class LaserTower extends BaseCollider {
 	/**
 	 *
-	 * @param {{ name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, game: LaserGame}} param0
+	 * @param {{ name: string, towerType: 'first' | 'between' | 'end', maxDistance?: number, direction?: Array<number>, laserYOffset: number, game: LaserGame}} param0
 	 */
 	static geometries = {
 		first: null,

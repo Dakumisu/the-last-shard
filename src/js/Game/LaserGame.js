@@ -1,20 +1,6 @@
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
-import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
 import { LaserMaterial } from '@webgl/Materials/Laser/material';
 import BaseScene from '@webgl/Scene/BaseScene';
-import LaserTower from '@webgl/World/Bases/Props/LaserTower';
-import { wait } from 'philbin-packages/async';
-import {
-	BufferGeometry,
-	CatmullRomCurve3,
-	DoubleSide,
-	Line,
-	LineBasicMaterial,
-	Mesh,
-	ShaderMaterial,
-	TubeGeometry,
-	Vector3,
-} from 'three';
+import { BufferGeometry, CatmullRomCurve3, Mesh, TubeGeometry, Vector3 } from 'three';
 
 export default class LaserGame {
 	/**
@@ -34,7 +20,7 @@ export default class LaserGame {
 		this.dummyGeo = new BufferGeometry();
 
 		this.lineMesh = new Mesh(this.dummyGeo, lineMaterial);
-		this.lineMesh.position.y += 1.5;
+		this.lineMesh.position.y += 1.3;
 
 		this.scene.instance.add(this.lineMesh);
 	}
