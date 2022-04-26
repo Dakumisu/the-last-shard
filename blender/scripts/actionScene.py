@@ -118,15 +118,6 @@ def export(fp, origCol, textureOnly=False):
             entities += list(subcol.all_objects)
             traversableEntities += list(subcol.all_objects)
 
-    # Exports items
-    # Normalize name for exportable meshes
-    debugStep()
-    for obj in toExport:
-        if obj == None:
-            continue
-        objName = obj['type']
-        obj.name = objName
-
     # Export props, commons, datas, interactables, ...
     debugStep()
     # (props, traversables) =
@@ -160,6 +151,17 @@ def export(fp, origCol, textureOnly=False):
             utils.log(utils.red('No collider found'))
         else:
             toExport.append(mergedCollider)
+
+    # Exports items
+    # Normalize name for exportable meshes
+    debugStep()
+    for obj in toExport:
+        if obj == None:
+            continue
+        objName = obj['type']
+        obj.name = objName
+        # obj.data.name = objName
+        # obj.data['type'] = objName
 
     # Export textures
     debugStep()

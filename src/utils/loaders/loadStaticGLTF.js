@@ -9,8 +9,10 @@ import {
 
 import wLoadGLTF from '@workers/wLoadGLTF?worker';
 
-export async function loadGLTF(model) {
-	const _g = await load(model);
+const names = [];
+
+export async function loadGLTF(path) {
+	const _g = await load(path);
 	const geometries = [..._g];
 	const _m = await setMesh(geometries);
 
@@ -21,6 +23,7 @@ async function load(src) {
 	const worker = wLoadGLTF();
 
 	const geometries = [];
+	names.length = 0;
 
 	return new Promise((resolve) => {
 		worker.postMessage({
@@ -31,6 +34,8 @@ async function load(src) {
 			const geo = e.data.attributes;
 
 			geo.forEach((attributes) => {
+				names.push(attributes.name);
+
 				const bufferGeo = new BufferGeometry();
 
 				// Conversion des attributes du model en geometry
@@ -55,8 +60,9 @@ async function setMesh(geometries) {
 		side: DoubleSide,
 	});
 
-	await geometries.forEach((geometry) => {
+	await geometries.forEach((geometry, i) => {
 		const mesh = new Mesh(geometry, material);
+		mesh.name = names[i];
 		mesh.frustumCulled = false;
 
 		group.add(mesh);

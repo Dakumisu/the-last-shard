@@ -1,6 +1,7 @@
 import { Matrix4 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { Mesh } from 'three';
 // import { MeshoptDecoder } from 'meshoptimizer/meshopt_decoder.module';
 
 const dracoLoader = new DRACOLoader();
@@ -47,8 +48,11 @@ async function parseModel(model) {
 	const buffers = [];
 	const mat4 = new Matrix4();
 
-	// return new Promise((resolve) => {
+	let name = '';
+
 	await model.scene.traverse((mesh, i) => {
+		if (mesh.name && mesh instanceof Mesh) name = mesh.name;
+
 		if (mesh.geometry) {
 			const geo = mesh.geometry;
 
@@ -61,7 +65,7 @@ async function parseModel(model) {
 			let normal = geo.attributes.normal.array;
 			let uv = geo.attributes.uv.array;
 
-			const geoAttributes = { index, pos, normal, uv };
+			const geoAttributes = { index, pos, normal, uv, name };
 
 			buffers.push(index.buffer);
 			buffers.push(pos.buffer);
@@ -73,5 +77,4 @@ async function parseModel(model) {
 	});
 
 	return { attributes, buffers };
-	// });
 }

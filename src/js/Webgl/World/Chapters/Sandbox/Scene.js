@@ -31,7 +31,7 @@ export default class SandboxScene extends BaseScene {
 
 	async preload() {
 		super.preload();
-		this.preloadPromise = await loadCubeTexture('envMap1');
+		this.envMapTexture = await loadCubeTexture('envMap1');
 	}
 
 	async init() {
@@ -48,8 +48,8 @@ export default class SandboxScene extends BaseScene {
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
-		this.ground = new Ground(this);
-		await this.ground.init();
+		// this.ground = new Ground(this);
+		// await this.ground.init();
 
 		// this.grass = new Grass(this);
 		// this.grass.init();
@@ -63,7 +63,7 @@ export default class SandboxScene extends BaseScene {
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
-			background: await this.preloadPromise,
+			background: await this.envMapTexture,
 		});
 
 		/// #if DEBUG
@@ -106,7 +106,7 @@ export default class SandboxScene extends BaseScene {
 		this.colliders.push(testCube, testCube2, testCube3, testCube4);
 
 		this.interactablesBroadphase = new InteractablesBroadphase({
-			radius: 0.7,
+			radius: 2,
 			objectsToTest: this.colliders,
 		});
 		/// #endif
@@ -129,9 +129,6 @@ export default class SandboxScene extends BaseScene {
 
 	addTo(mainScene) {
 		super.addTo(mainScene);
-
-		this.player.broadphase.setGroundCollider(this.ground);
-		this.player.broadphase.setPropsColliders(this.colliders);
 
 		this.fog.set();
 	}

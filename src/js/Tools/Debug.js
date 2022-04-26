@@ -20,11 +20,12 @@ export default class Debug {
 
 		this.initTab();
 
-		/// #if DEBUG
+		this.gui.hidden = localStorage.getItem('debug_hide');
 		signal.on('keyup', (key) => {
-			if (key === 'H') this.gui.hidden = !this.gui.hidden;
+			if (key !== 'H') return;
+			this.gui.hidden = !this.gui.hidden;
+			localStorage.setItem('debug_hide', this.gui.hidden);
 		});
-		/// #endif
 	}
 
 	setFolder(folderLabel, tabLabel = tabList[0], expanded = true) {

@@ -16,7 +16,7 @@ export function mergeGeometry(geos = [], models = []) {
 		geometries.push(...geos);
 
 		if (models.length) {
-			await loadModels(models, geometries);
+			await loadModel(models, geometries);
 			geometriesFilter(geometries);
 			const g = await mergeGeometries(geometries);
 			resolve(g);
@@ -56,7 +56,7 @@ function geometriesFilter(geometries) {
 	}
 }
 
-async function loadModels(models, geometries) {
+async function loadModel(models, geometries) {
 	let count = 0;
 
 	return new Promise((resolve) => {

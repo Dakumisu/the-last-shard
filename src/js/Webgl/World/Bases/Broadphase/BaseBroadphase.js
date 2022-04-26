@@ -7,6 +7,8 @@ export default class BaseBroadphase {
 	constructor({ radius = 5, objectsToTest = [] } = {}) {
 		this.radius = radius;
 
+		console.log(this.radius);
+
 		this.objectsToTest = objectsToTest;
 
 		this.currentObjects = [];

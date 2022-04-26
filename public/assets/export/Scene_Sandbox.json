@@ -258,7 +258,7 @@
     {
       "asset": "Coin",
       "traversable": false,
-      "uid": "Coin.018",
+      "uid": "Coin.013",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -283,7 +283,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.019",
+      "uid": "Coin.014",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -308,7 +308,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.020",
+      "uid": "Coin.015",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -333,7 +333,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.021",
+      "uid": "Coin.016",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -358,7 +358,7 @@
     {
       "asset": "Coin",
       "traversable": true,
-      "uid": "Coin.022",
+      "uid": "Coin.017",
       "effect": "collect",
       "type": "interactable",
       "transforms": {
@@ -384,7 +384,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.004",
+      "uid": "Spawn.003",
       "pos": [
         -10.572475,
         2.060297,
@@ -399,7 +399,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.016",
+      "uid": "Checkpoint.012",
       "pos": [
         10.579155,
         2.060297,
@@ -414,7 +414,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.017",
+      "uid": "Checkpoint.013",
       "pos": [
         -10.563803,
         2.060297,
@@ -429,7 +429,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.018",
+      "uid": "Checkpoint.014",
       "pos": [
         61.949936,
         2.060297,
@@ -444,7 +444,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.019",
+      "uid": "Checkpoint.015",
       "pos": [
         100.7435,
         13.863754,
@@ -460,7 +460,7 @@
   ],
   "curves": [
     {
-      "uid": "Helper.004",
+      "uid": "Helper.003",
       "type": "bezier",
       "closed": true,
       "points": [
@@ -511,7 +511,7 @@
       ]
     },
     {
-      "uid": "Bot.004",
+      "uid": "Bot.003",
       "type": "nurbs",
       "closed": false,
       "points": [

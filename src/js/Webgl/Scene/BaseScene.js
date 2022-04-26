@@ -11,11 +11,12 @@ import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from '@webgl/World/Props/Checkpoints';
 import { loadJSON } from 'philbin-packages/loader';
 import { Quaternion } from 'three';
-import { deferredPromise } from 'philbin-packages/async';
+import { deferredPromise, wait } from 'philbin-packages/async';
 import Curves from '@webgl/World/Props/Curves';
 import Props from '@webgl/World/Props/Props';
-import { loadModels } from '@utils/loaders/loadAssets';
+import { loadModel } from '@utils/loaders/loadAssets';
 import Interactables from '@webgl/World/Props/Interactables';
+import Ground from '@webgl/World/Props/Ground';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -32,7 +33,8 @@ export default class BaseScene {
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
-		this.initialized = false;
+		this.initialized = deferredPromise();
+		this.isInitialized = false;
 
 		/// #if DEBUG
 		const webgl = getWebgl();
@@ -123,26 +125,33 @@ export default class BaseScene {
 
 		console.log('🔋 Scene initialized :', this.label);
 
-		this.initialized = true;
+		this.isInitialized = this.initialized.resolve(true);
 	}
 
 	async loadManifest() {
 		if (!this.isPreloaded) await this.preload();
 
-		this._loadBase();
-		this._loadProps(this.manifest.props);
-		this._loadInteractables(this.manifest.interactables);
-		this._loadCurves(this.manifest.curves);
-		this._loadPoints(this.manifest.points);
+		await this._loadBase();
+		await this._loadProps(this.manifest.props);
+		await this._loadInteractables(this.manifest.interactables);
+		await this._loadCurves(this.manifest.curves);
+		await this._loadPoints(this.manifest.points);
 
 		this.manifestLoaded.resolve(true);
 	}
 
 	async _loadBase() {
-		const model = await loadModels('Scene_' + this.label);
-		console.log('base', model);
-		this.instance.add(model.children[1]);
-		console.log(model);
+		console.log(this);
+		this.ground = new Ground(this);
+		await this.ground.init();
+
+		// const _asset = 'Scene_' + this.label;
+		// const model = await loadModel(_asset.toLowerCase());
+
+		// console.log('base', model);
+		// const base = model.children.find((m) => m.name.includes('SceneBase'));
+		// console.log(base);
+		// this.instance.add(base);
 	}
 
 	async _loadProps(props) {
@@ -189,6 +198,9 @@ export default class BaseScene {
 	addTo(mainScene) {
 		mainScene.add(this.instance);
 		this.player.setStartPosition(this.checkpoints.getCurrent());
+
+		this.player.broadphase.setGroundCollider(this.ground);
+		// this.player.broadphase.setPropsColliders(this.ground);
 	}
 
 	removeFrom(mainScene) {

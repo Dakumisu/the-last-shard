@@ -5,7 +5,7 @@ export default class BaseEntity extends BasePhysic {
 	constructor({ mesh = null, name = '', isInteractable = false } = {}) {
 		super({ mesh, name, isInteractable });
 
-		this.broadphase = new CollidersBroadphase({ radius: 5 });
+		this.broadphase = new CollidersBroadphase({ radius: 10 });
 
 		this.params = {
 			gravity: -30,

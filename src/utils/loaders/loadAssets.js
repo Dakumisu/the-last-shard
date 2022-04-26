@@ -103,7 +103,7 @@ export async function loadAudio(key) {
  * @param {string} key
  * @returns {Promise<Group | null>}
  */
-export async function loadModels(key) {
+export async function loadModel(key) {
 	const path = manifest.get(key)?.path;
 	if (!path) {
 		/// #if DEBUG
@@ -112,12 +112,13 @@ export async function loadModels(key) {
 		return;
 	}
 
+	// if (manifest.get(key).isLoading) await manifest.get(key).promise;
+
 	let loadedModel = store.loadedAssets.models.get(key);
 	if (!loadedModel) {
-		await loadGLTF(path);
 		loadedModel = await loadGLTF(path);
 		store.loadedAssets.models.set(key, loadedModel);
 	}
 
-	return loadedModel.clone();
+	return loadedModel.clone(true);
 }

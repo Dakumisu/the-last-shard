@@ -64,7 +64,7 @@ const params = {
 	upVector: new Vector3().set(0, 1, 0),
 	defaultPos: [0, 3, 30],
 
-	broadphaseRadius: 5,
+	broadphaseRadius: 10,
 };
 
 const camParams = {
@@ -469,7 +469,7 @@ class Player extends BaseEntity {
 
 		// adjust player position based on collisions
 		tBox3a.makeEmpty();
-		tMat4a.copy(collider.base.mesh.geometry.matrixWorld).invert();
+		tMat4a.copy(collider.mesh.geometry.matrixWorld).invert();
 		tLine3.copy(this.base.capsuleInfo.segment);
 
 		// get the position of the capsule in the local space of the collider
@@ -488,7 +488,7 @@ class Player extends BaseEntity {
 		tBox3b.min.addScalar(-this.base.capsuleInfo.radius.body);
 		tBox3b.max.addScalar(this.base.capsuleInfo.radius.body);
 
-		collider.base.mesh.geometry.boundsTree.shapecast({
+		collider.mesh.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3a),
 
 			intersectsTriangle: (tri) => {
@@ -521,14 +521,14 @@ class Player extends BaseEntity {
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
 		// the origin of the player model.
 		const newPosition = tVec3a;
-		newPosition.copy(tLine3.start).applyMatrix4(collider.base.mesh.geometry.matrixWorld);
+		newPosition.copy(tLine3.start).applyMatrix4(collider.mesh.geometry.matrixWorld);
 
 		// check how much the collider was moved
 		const deltaVector = tVec3b;
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
-		if (collider.base.type === 'walkable')
+		if (collider.type === 'walkable')
 			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
 		const offset = Math.max(0, deltaVector.length() - 1e-5);
@@ -563,7 +563,7 @@ class Player extends BaseEntity {
 	}
 
 	#checkPlayerStuck(collider, dt) {
-		collider.base.mesh.geometry.boundsTree.shapecast({
+		collider.mesh.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3b),
 
 			intersectsTriangle: (tri) => {

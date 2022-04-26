@@ -7,9 +7,10 @@ import { beziersPath, catmullPath } from '@utils/webgl/blenderCurves';
 import { LineBasicMaterial } from 'three';
 import { Line } from 'three';
 import { BufferGeometry } from 'three';
-import { loadModels } from '@utils/loaders/loadAssets';
+import { loadModel } from '@utils/loaders/loadAssets';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import { DoubleSide } from 'three';
+import anime from 'animejs';
 
 const tVec3 = new Vector3();
 const tQuat = new Quaternion();
@@ -19,7 +20,7 @@ export default class Props {
 		this.scene = scene;
 
 		this.props = props || [];
-		this.group = new Group();
+		this.instance = new Group();
 
 		this.initialized = false;
 	}
@@ -29,9 +30,7 @@ export default class Props {
 
 		this.initialized = true;
 
-		/// #if DEBUG
-		this.scene.instance.add(this.group);
-		/// #endif
+		this.scene.instance.add(this.instance);
 	}
 
 	async loadProps() {
@@ -43,22 +42,33 @@ export default class Props {
 		console.log(this.props);
 
 		await this.props.forEach(async (prop) => {
-			const _asset = prop.asset;
-			const model = await loadModels('Asset_' + _asset);
+			const _asset = 'Asset_' + prop.asset;
+			const model = await loadModel(_asset.toLowerCase());
+
 			const material = new BaseToonMaterial({
 				side: DoubleSide,
-				color: new Color('#4e4b37'),
+				color: new Color('#ED4646'),
 			});
 			model.traverse((obj) => {
 				if (obj.material) obj.material = material;
 			});
 			model.position.fromArray(prop.transforms.pos);
 			model.quaternion.fromArray(prop.transforms.qt);
-			model.scale.fromArray(prop.transforms.scale);
+			model.scale.setScalar(0.00001);
+
 			model.propType = prop.type;
 			model.traversable = prop.traversable;
-			console.log(_asset, model);
-			this.group.add(model);
+			// console.log(_asset, model);
+			this.instance.add(model);
+
+			anime({
+				targets: model.scale,
+				easing: 'spring(1, 190, 10, 1)',
+				duration: 1000,
+				x: [0.00001, prop.transforms.scale[0]],
+				y: [0.00001, prop.transforms.scale[1]],
+				z: [0.00001, prop.transforms.scale[2]],
+			});
 		});
 	}
 
