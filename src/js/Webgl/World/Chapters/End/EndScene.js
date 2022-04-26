@@ -56,7 +56,6 @@ export default class EndScene extends BaseScene {
 				verticeScale: 0.42,
 				halfBoxSize: 28,
 				maskRange: 0.04,
-				elevationIntensity: 0.25,
 				noiseElevationIntensity: 0.75,
 				noiseMouvementIntensity: 0.2,
 				windColorIntensity: 0.2,

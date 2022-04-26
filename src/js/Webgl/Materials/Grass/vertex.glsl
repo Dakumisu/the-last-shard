@@ -2,11 +2,11 @@
 
 uniform float uTime;
 uniform float uWindSpeed;
-uniform float uMaskRange;
+// uniform float uMaskRange;
 uniform float uDisplacement;
 uniform float uNoiseMouvementIntensity;
-uniform float uNoiseElevationIntensity;
-uniform float uElevationIntensity;
+// uniform float uNoiseElevationIntensity;
+// uniform float uElevationIntensity;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
 uniform sampler2D uElevationTexture;
@@ -18,9 +18,9 @@ attribute vec3 aScale;
 attribute vec3 aPositions;
 
 varying vec3 vPos;
-varying float vFade;
+// varying float vFade;
 varying float vNoiseMouvement;
-varying float vNoiseElevation;
+// varying float vNoiseElevation;
 
 float N(vec2 st) {
 	return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
@@ -53,9 +53,11 @@ void main() {
 
 	vec3 pos = position * aScale;
 
+	vec3 instancedPos = pos + aPositions;
+
 	vPos = pos;
 
-	vec3 translation = vec3(0., 0., 0.);
+	vec3 translation = vec3(0.);
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
@@ -80,15 +82,16 @@ void main() {
 	vec2 trailDirection = normalize(uCharaPos.xz - translation.xz);
 
 	// Grass displacement according to player trail
-	// translation.x -= trailIntensity * trailDirection.x * .7;
-	// pos.y *= 1. - trailIntensity;
-	// translation.z -= trailIntensity * trailDirection.y * .7;
+	translation.x -= trailIntensity * trailDirection.x * .7;
+	pos.y *= 1. - trailIntensity;
+	translation.z -= trailIntensity * trailDirection.y * .7;
 
-	// pos *= 1. - scaleFromTexture;
+	pos *= scaleFromTexture;
+
 	// pos *= scaleFromTexture;
 	// translation.y *= scaleFromTexture;
 
-	// vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
+	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
 
 	// vNoiseElevation = smoothstep(0.2, .8, smoothNoise(translation.xz * uNoiseElevationIntensity));
 
@@ -97,6 +100,10 @@ void main() {
 	// } else {
 	// 	translation.xz += vNoiseMouvement * uDisplacement;
 	// }
+
+	if(instancedPos.y > 0.) {
+		translation.xz += vNoiseMouvement * uDisplacement;
+	}
 
 	// translation.xz += vNoiseMouvement * uDisplacement;
 
@@ -110,12 +117,12 @@ void main() {
 	// pos.y += map(elevation, 0., 1., -50., 50.);
 	// pos.y += elevation;
 
-	// translation.y += uElevationIntensity;
+	// translation.y *= uElevationIntensity;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 
 	// mv.xyz += pos.xyz;
-	mv.xyz += pos.xyz;
+	mv.xyz += pos;
 
 	gl_Position = projectionMatrix * mv;
 

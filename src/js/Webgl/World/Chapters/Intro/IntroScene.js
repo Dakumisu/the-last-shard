@@ -52,8 +52,8 @@ export default class IntroScene extends BaseScene {
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',
 			fogFarColor: '#3e2e77',
-			fogNear: 0,
-			fogFar: 30,
+			fogNear: 30,
+			fogFar: 50,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
@@ -69,7 +69,6 @@ export default class IntroScene extends BaseScene {
 				verticeScale: 0.42,
 				halfBoxSize: 30,
 				maskRange: 0.04,
-				elevationIntensity: 0.25,
 				noiseElevationIntensity: 0.75,
 				noiseMouvementIntensity: 0.2,
 				windColorIntensity: 0.2,

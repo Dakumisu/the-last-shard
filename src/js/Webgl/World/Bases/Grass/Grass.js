@@ -32,7 +32,7 @@ import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 export default class Grass extends BaseObject {
 	/**
 	 *
-	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, elevationIntensity?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}} params0
+	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}} params0
 	 */
 	constructor({ scene, params }) {
 		super({ name: 'Grass', isInteractable: false });
@@ -166,7 +166,6 @@ export default class Grass extends BaseObject {
 				uMaskRange: { value: this.params.maskRange },
 				uNoiseMouvementIntensity: { value: this.params.noiseMouvementIntensity },
 				uNoiseElevationIntensity: { value: this.params.noiseElevationIntensity },
-				uElevationIntensity: { value: this.params.elevationIntensity },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
 				uColor: { value: new Color().set(this.params.color) },
@@ -211,12 +210,7 @@ export default class Grass extends BaseObject {
 			max: 0.5,
 			step: 0.01,
 		});
-		gui.addInput(this.base.mesh.material.uniforms.uElevationIntensity, 'value', {
-			label: 'elevationI',
-			min: 0,
-			max: 1,
-			step: 0.01,
-		});
+
 		gui.addInput(this.base.mesh.material.uniforms.uNoiseMouvementIntensity, 'value', {
 			label: 'nMouvementI',
 			min: 0,
