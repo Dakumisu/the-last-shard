@@ -71,7 +71,8 @@ void main() {
 	float elevation = texture2D(uElevationTexture, scaledCoords).r;
 
 	float scaleFromTexture = texture2D(uGrassTexture, scaledCoords).r;
-	scaleFromTexture = smoothstep(1., .3, scaleFromTexture);
+	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	pos *= scaleFromTexture;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
@@ -79,14 +80,12 @@ void main() {
 
 	// Player trail
 	float trailIntensity = smoothstep(2.5, 0., distance(uCharaPos, translation.xyz));
-	vec2 trailDirection = normalize(uCharaPos.xz - translation.xz);
+	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
 
 	// Grass displacement according to player trail
 	translation.x -= trailIntensity * trailDirection.x * .7;
 	pos.y *= 1. - trailIntensity;
 	translation.z -= trailIntensity * trailDirection.y * .7;
-
-	pos *= scaleFromTexture;
 
 	// pos *= scaleFromTexture;
 	// translation.y *= scaleFromTexture;

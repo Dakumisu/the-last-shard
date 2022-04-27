@@ -22,6 +22,8 @@ import {
 	Texture,
 	Vector2,
 	Vector3,
+	PlaneGeometry,
+	MeshBasicMaterial,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
