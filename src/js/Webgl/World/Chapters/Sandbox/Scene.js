@@ -1,23 +1,14 @@
 import BaseScene from '../../../Scene/BaseScene';
-import Ground from './Props/Ground';
-import Grass from './Props/Grass/Grass';
+import Grass from '../../Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
-import { loadCubeTexture } from '@utils/loaders/loadAssets';
-import {
-	BoxGeometry,
-	Color,
-	Matrix4,
-	Mesh,
-	MeshNormalMaterial,
-	SphereGeometry,
-	Vector3,
-} from 'three';
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
-import BaseCollider from '@webgl/World/Bases/BaseCollider';
+import { Vector3 } from 'three';
+import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
+import LaserTower from '@webgl/World/Bases/Props/LaserTower';
+import LaserGame from '@game/LaserGame';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -39,7 +30,7 @@ export default class SandboxScene extends BaseScene {
 	async init() {
 		super.init();
 
-		await this.isPreloaded;
+		await this.manifestLoaded;
 
 		// Lights
 		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
@@ -52,72 +43,114 @@ export default class SandboxScene extends BaseScene {
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
-		// this.ground = new Ground(this);
-		// await this.ground.init();
-
-		// this.grass = new Grass(this);
-		// this.grass.init();
-
 		this.fog = new BaseFog({
 			fogNearColor: '#844bb8',
 			fogFarColor: '#3e2e77',
-			fogNear: 0,
-			// fogFar: 140,
-			fogFar: 30,
+			fogNear: 30,
+			fogFar: 50,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
 			background: await this.envMapTexture,
 		});
 
-		console.log(this.fog);
-
-		/// #if DEBUG
-		const testCube = new BaseCollider({
-			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
-			name: 'cube1',
-			type: 'nonWalkable',
-			isInteractable: true,
+		// Init grass after fog
+		this.grass = new Grass({
+			scene: this,
+			params: {
+				color: '#de47ff',
+				count: 300000,
+				verticeScale: 0.42,
+				halfBoxSize: 30,
+				maskRange: 0.04,
+				noiseElevationIntensity: 0.75,
+				noiseMouvementIntensity: 0.2,
+				windColorIntensity: 0.2,
+				displacement: 0.2,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
 		});
-		testCube.initPhysics();
-		testCube.base.mesh.position.set(2, 1, 12);
+		await this.grass.init();
 
-		const testCube2 = new BaseCollider({
-			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
-			name: 'cube2',
-			type: 'nonWalkable',
-			isInteractable: true,
+		// LaserTowers
+
+		const laserGame = new LaserGame({ scene: this });
+
+		const laserTower1 = new LaserTower({
+			name: 'laserTower1',
+			direction: [0, 0, 1],
+			towerType: 'first',
+			maxDistance: 10,
+			game: laserGame,
 		});
-		testCube2.initPhysics();
-		testCube2.base.mesh.position.set(-3, 1, 12);
+		await laserTower1.init();
+		laserTower1.base.mesh.position.set(2, 0, 20);
+		laserTower1.base.mesh.rotation.y = Math.PI / 3;
+		laserTower1.initPhysics();
 
-		const testCube3 = new BaseCollider({
-			mesh: new Mesh(new BoxGeometry(3, 20, 3), new MeshNormalMaterial()),
-			name: 'cube3',
-			type: 'nonWalkable',
-			isInteractable: true,
+		const laserTower2 = new LaserTower({
+			name: 'laserTower2',
+			direction: [1, 0, 0],
+			towerType: 'between',
+			maxDistance: 10,
+			game: laserGame,
 		});
-		testCube3.initPhysics();
-		testCube3.base.mesh.position.set(-3, 1, -20);
+		await laserTower2.init();
+		laserTower2.base.mesh.position.set(-2, 0, 22);
+		laserTower2.initPhysics();
 
-		const testCube4 = new BaseCollider({
-			mesh: new Mesh(new SphereGeometry(3, 30, 30), new MeshNormalMaterial()),
-			name: 'sphere',
-			type: 'nonWalkable',
-			isInteractable: true,
+		const laserTower3 = new LaserTower({
+			name: 'laserTower3',
+			direction: [0, 0, 1],
+			towerType: 'between',
+			maxDistance: 10,
+			game: laserGame,
 		});
-		testCube4.initPhysics();
-		testCube4.base.mesh.position.set(-20, 1, 20);
+		await laserTower3.init();
+		laserTower3.base.mesh.position.set(2, 0, 23);
+		laserTower3.initPhysics();
 
-		this.colliders.push(testCube, testCube2, testCube3, testCube4);
-
-		this.interactablesBroadphase = new InteractablesBroadphase({
-			radius: 2,
-			objectsToTest: this.colliders,
+		const laserTower4 = new LaserTower({
+			name: 'laserTower4',
+			direction: [0, 0, 1],
+			towerType: 'between',
+			maxDistance: 10,
+			game: laserGame,
 		});
-		/// #endif
+		await laserTower4.init();
+		laserTower4.base.mesh.position.set(-2, 0, 26);
+		laserTower4.initPhysics();
+
+		const laserTower5 = new LaserTower({
+			name: 'laserTower5',
+			direction: [0, 0, 1],
+			towerType: 'between',
+			maxDistance: 10,
+			game: laserGame,
+		});
+		await laserTower5.init();
+		laserTower5.base.mesh.position.set(-4, 0, 30);
+		laserTower5.initPhysics();
+
+		const laserTower6 = new LaserTower({
+			name: 'laserTower6',
+			towerType: 'end',
+			maxDistance: 10,
+			game: laserGame,
+		});
+		await laserTower6.init();
+		laserTower6.base.mesh.position.set(2, 0, 35);
+		laserTower6.initPhysics();
+
+		this.colliders.push(...laserGame.laserTowers);
+
+		// this.interactablesBroadphase = new InteractablesBroadphase({
+		// 	radius: 2,
+		// 	objectsToTest: this.colliders,
+		// });
 
 		this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
+		this.initialized.resolve(true);
 	}
 
 	update(et, dt) {
@@ -125,10 +158,8 @@ export default class SandboxScene extends BaseScene {
 		if (this.ground) this.ground.update(et, dt);
 		if (this.grass) this.grass.update(et, dt);
 
-		// /// #if DEBUG
 		// if (this.interactablesBroadphase)
 		// 	this.interactablesBroadphase.update(this.player.base.mesh.position);
-		// /// #endif
 	}
 
 	addTo(mainScene) {

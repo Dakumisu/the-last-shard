@@ -1,12 +1,16 @@
+/// #if DEBUG
+const debug = {
+	instance: null,
+	label: 'Uniforms',
+	tab: 'Env',
+};
+import { getWebgl } from '@webgl/Webgl.js';
+/// #endif
+
 import SceneController from '@webgl/Scene/Controller.js';
-import Sandbox from './Chapters/Sandbox/Scene.js';
-import End from './Chapters/End/Scene.js';
-import Cabane from './Chapters/Cabane/Scene.js';
-// import Scenes from './Chapters/*/Scene.js';
 import { loadJSON } from 'philbin-packages/loader';
 import { initPlayer } from './Characters/Player.js';
-import BaseScene from '@webgl/Scene/BaseScene.js';
-import { deferredPromise, wait } from 'philbin-packages/async';
+import baseUniforms from '@webgl/Materials/baseUniforms.js';
 
 const manifestPath = 'assets/export/Scenes.json';
 
@@ -18,7 +22,25 @@ export default class World {
 		this.sceneClasses = {};
 
 		this.init();
+
+		/// #if DEBUG
+		if (!debug.instance) {
+			debug.instance = getWebgl().debug;
+			this.setDebug();
+		}
+		/// #endif
 	}
+
+	/// #if DEBUG
+	setDebug() {
+		debug.instance.setFolder(debug.label, debug.tab, true);
+		const gui = debug.instance.getFolder(debug.label);
+
+		gui.addInput(baseUniforms.uWindSpeed, 'value', { label: 'windSpeed' });
+
+		// add other global uniforms here
+	}
+	/// #endif
 
 	async init() {
 		await this.setPlayer();

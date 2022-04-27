@@ -6,19 +6,15 @@ const debug = {
 };
 /// #endif
 
-import { Color, Group, Mesh, SphereGeometry, Vector3 } from 'three';
+import { Group, Vector3 } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
-import Checkpoints from '@webgl/World/Props/Checkpoints';
-import { loadJSON } from 'philbin-packages/loader';
+import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
-import { deferredPromise, wait } from 'philbin-packages/async';
-import Curve from '@webgl/World/Props/Curve';
-import Prop from '@webgl/World/Props/Prop';
-import { loadModel } from '@utils/loaders/loadAssets';
-import Interactable from '@webgl/World/Props/Interactable';
-import Ground from '@webgl/World/Props/Ground';
-import { catmullPath, beziersPath } from '@utils/webgl/blenderCurves';
-import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
+import { deferredPromise } from 'philbin-packages/async';
+import Curve from '@webgl/World/Bases/Props/Curve';
+import Prop from '@webgl/World/Bases/Props/Prop';
+import Interactable from '@webgl/World/Bases/Props/Interactable';
+import Ground from '@webgl/World/Bases/Props/Ground';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -125,8 +121,6 @@ export default class BaseScene {
 		await this.manifestLoaded;
 
 		console.log('🔋 Scene initialized :', this.label);
-
-		this.isInitialized = this.initialized.resolve(true);
 	}
 
 	async loadManifest() {
@@ -151,14 +145,6 @@ export default class BaseScene {
 		console.log(this);
 		this.ground = new Ground(this);
 		await this.ground.init();
-
-		// const _asset = 'Scene_' + this.label;
-		// const model = await loadModel(_asset.toLowerCase());
-
-		// console.log('base', model);
-		// const base = model.children.find((m) => m.name.includes('SceneBase'));
-		// console.log(base);
-		// this.instance.add(base);
 	}
 
 	async _loadProps(props) {

@@ -94,6 +94,7 @@ export default class Renderer {
 			antialias: false,
 			powerPreference: 'high-performance',
 			premultipliedAlpha: false,
+			autoClear: false,
 		});
 
 		this.renderer.setSize(store.resolution.width, store.resolution.height);
