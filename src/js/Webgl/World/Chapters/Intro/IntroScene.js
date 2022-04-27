@@ -65,7 +65,7 @@ export default class IntroScene extends BaseScene {
 			scene: this,
 			params: {
 				color: '#de47ff',
-				count: 200000,
+				count: 300000,
 				verticeScale: 0.42,
 				halfBoxSize: 30,
 				maskRange: 0.04,

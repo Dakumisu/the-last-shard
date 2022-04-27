@@ -269,11 +269,10 @@ export default class Grass extends BaseObject {
 		if (!this.renderTargetRendered) {
 			this.renderer.setRenderTarget(this.renderTarget);
 			this.renderTargetRendered = true;
+			// Edit this to render only the Mesh/Group you want to test depth with
+			this.renderer.render(this.scene.ground.base.mesh, this.rtCamera);
+			// this.renderer.render(this.scene.instance, this.rtCamera);
+			this.renderer.setRenderTarget(null);
 		}
-
-		// Edit this to render only the Mesh/Group you want to test depth with
-		this.renderer.render(this.scene.ground.base.mesh, this.rtCamera);
-		// this.renderer.render(this.scene.instance, this.rtCamera);
-		this.renderer.setRenderTarget(null);
 	}
 }
