@@ -178,14 +178,13 @@ export default class BaseScene {
 			}),
 		);
 
-		this.interactablesBroadphase = new InteractablesBroadphase({
-			radius: 2,
-			objectsToTest: this.interactables,
-		});
+		// this.interactablesBroadphase = new InteractablesBroadphase({
+		// 	radius: 2,
+		// 	objectsToTest: this.interactables,
+		// });
 
-		console.log(this.interactablesBroadphase);
+		// console.log(this.interactablesBroadphase);
 
-		console.log(this.interactables);
 		this.instance.add(this.interactables);
 	}
 

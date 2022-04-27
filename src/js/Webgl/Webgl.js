@@ -5,18 +5,19 @@ import Keyboard from '@tools/Keyboard';
 import Mouse from '@tools/Mouse';
 import PerformanceMonitor from '@tools/PerformanceMonitor';
 import Raf from '@tools/Raf';
-import Size from '@tools/Size';
-import Renderer from './Renderer';
 import Raycast from '@tools/Raycast';
-import World from './World/World';
-import MainCamera from './Camera/MainCamera';
+import Size from '@tools/Size';
+
 import CameraController from './Camera/Controller';
+import MainCamera from './Camera/MainCamera';
 import baseUniforms from './Materials/baseUniforms';
+import Renderer from './Renderer';
 import MainScene from './Scene/MainScene';
+import World from './World/World';
 
 /// #if DEBUG
-import Debug from '@tools/Debug';
-import OrbitCamera from './Camera/Cameras/OrbitCamera';
+import Debug from '@tools/Debug?debug';
+import OrbitCamera from './Camera/Cameras/OrbitCamera?debug';
 /// #endif
 
 let initialized = false;

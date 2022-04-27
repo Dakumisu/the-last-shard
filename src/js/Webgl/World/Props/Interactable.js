@@ -1,18 +1,16 @@
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
-import { Color, Mesh, SphereGeometry, Vector3 } from 'three';
-import signal from 'philbin-packages/signal';
-import { Quaternion } from 'three';
-import { Group } from 'three';
-import { beziersPath, catmullPath } from '@utils/webgl/blenderCurves';
-import { LineBasicMaterial } from 'three';
-import { Line } from 'three';
-import { BufferGeometry } from 'three';
-import { loadModel } from '@utils/loaders/loadAssets';
-import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
-import { DoubleSide } from 'three';
 import anime from 'animejs';
-import InteractablesBroadphase from '../Bases/Broadphase/InteractablesBroadphase';
 import { deferredPromise } from 'philbin-packages/async';
+import signal from 'philbin-packages/signal';
+import { Color, Mesh, SphereGeometry, Vector3 } from 'three';
+import { BufferGeometry, DoubleSide, Group, Line, LineBasicMaterial, Quaternion } from 'three';
+
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
+import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
+
+import { loadModel } from '@utils/loaders/loadAssets';
+import { beziersPath, catmullPath } from '@utils/webgl/blenderCurves';
+
+import InteractablesBroadphase from '../Bases/Broadphase/InteractablesBroadphase';
 
 const tVec3 = new Vector3();
 const tQuat = new Quaternion();
