@@ -93,18 +93,19 @@ export default class Grass extends BaseObject {
 	// }
 
 	setRenderTarget() {
-		this.scene.ground.base.mesh.geometry.computeBoundingBox();
-
-		const boundingBoxGeo = this.scene.ground.base.mesh.geometry.boundingBox;
-
-		console.log(boundingBoxGeo.min, boundingBoxGeo.max);
-
 		this.minBox.fromArray(this.scene.manifest.bounds[0]);
 		this.maxBox.fromArray(this.scene.manifest.bounds[1]);
 
-		console.log(this.minBox, this.maxBox);
-
 		const boundingBox = new Box3(this.minBox, this.maxBox);
+
+		const center = new Vector3();
+		boundingBox.getCenter(center);
+
+		this.minBox.z -= center.z;
+		this.maxBox.z -= center.z;
+		// this.minBox.x -= center.x;
+		// // this.maxBox.x -= center.x;
+
 		this.scene.instance.add(new Box3Helper(boundingBox, new Color(0x00ff00)));
 
 		const camNear = 1;
@@ -123,7 +124,7 @@ export default class Grass extends BaseObject {
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
 		this.rtCamera.position.y = this.maxBox.y + camNear;
 
-		this.scene.instance.add(new CameraHelper(this.rtCamera));
+		// this.scene.instance.add(new CameraHelper(this.rtCamera));
 
 		this.renderTarget.depthTexture = this.depthTexture;
 		this.renderTarget.depthTexture.format = DepthFormat;
