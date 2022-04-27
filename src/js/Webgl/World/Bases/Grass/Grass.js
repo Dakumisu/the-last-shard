@@ -218,14 +218,14 @@ export default class Grass extends BaseObject {
 	debug() {
 		const gui = debug.instance.addFolder({ title: debug.label });
 
-		const texturePlane = new Mesh(
-			new PlaneGeometry(1, 1),
-			new MeshBasicMaterial({ map: this.depthTexture, side: DoubleSide }),
-		);
+		// const texturePlane = new Mesh(
+		// 	new PlaneGeometry(1, 1),
+		// 	new MeshBasicMaterial({ map: this.depthTexture, side: DoubleSide }),
+		// );
 
-		texturePlane.scale.set(5, 5, 1);
-		texturePlane.position.copy(this.scene.player.base.mesh.position);
-		this.scene.instance.add(texturePlane);
+		// texturePlane.scale.set(5, 5, 1);
+		// texturePlane.position.copy(this.scene.player.base.mesh.position);
+		// this.scene.instance.add(texturePlane);
 
 		gui.addInput(this.base.mesh.material.uniforms.uDisplacement, 'value', {
 			label: 'displace',
