@@ -7,8 +7,6 @@ export default class BaseBroadphase {
 	constructor({ radius = 5, objectsToTest = [] } = {}) {
 		this.radius = radius;
 
-		console.log(this.radius);
-
 		this.objectsToTest = objectsToTest;
 
 		this.currentObjects = [];
@@ -30,6 +28,8 @@ export default class BaseBroadphase {
 	update(positionToTest) {
 		this.objectsToTest.forEach((object) => {
 			tBox3c.makeEmpty();
+			if (!object.base.mesh.geometry.boundingBox)
+				object.base.mesh.geometry.computeBoundingBox();
 			tBox3c.copy(object.base.mesh.geometry.boundingBox);
 			tMat4b.copy(object.base.mesh.matrixWorld);
 			tBox3c.applyMatrix4(tMat4b);

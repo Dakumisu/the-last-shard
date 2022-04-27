@@ -112,8 +112,6 @@ export default class SandboxScene extends BaseScene {
 		/// #endif
 
 		this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
-
-		// TODO: find a way to add base ground and merged ground cleanly
 	}
 
 	update(et, dt) {
@@ -121,10 +119,10 @@ export default class SandboxScene extends BaseScene {
 		if (this.ground) this.ground.update(et, dt);
 		if (this.grass) this.grass.update(et, dt);
 
-		/// #if DEBUG
-		if (this.interactablesBroadphase)
-			this.interactablesBroadphase.update(this.player.base.mesh.position);
-		/// #endif
+		// /// #if DEBUG
+		// if (this.interactablesBroadphase)
+		// 	this.interactablesBroadphase.update(this.player.base.mesh.position);
+		// /// #endif
 	}
 
 	addTo(mainScene) {

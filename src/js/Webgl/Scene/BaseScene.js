@@ -12,11 +12,13 @@ import Checkpoints from '@webgl/World/Props/Checkpoints';
 import { loadJSON } from 'philbin-packages/loader';
 import { Quaternion } from 'three';
 import { deferredPromise, wait } from 'philbin-packages/async';
-import Curves from '@webgl/World/Props/Curves';
-import Props from '@webgl/World/Props/Props';
+import Curve from '@webgl/World/Props/Curve';
+import Prop from '@webgl/World/Props/Prop';
 import { loadModel } from '@utils/loaders/loadAssets';
-import Interactables from '@webgl/World/Props/Interactables';
+import Interactable from '@webgl/World/Props/Interactable';
 import Ground from '@webgl/World/Props/Ground';
+import { catmullPath, beziersPath } from '@utils/webgl/blenderCurves';
+import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -27,8 +29,9 @@ export default class BaseScene {
 		this.instance = new Group();
 
 		this.manifest = manifest || {};
-		this.props = null;
-		this.curves = null;
+		this.props = new Group();
+		this.interactables = new Group();
+		this.curves = new Group();
 		this.checkpoints = null;
 
 		this.isPreloaded = deferredPromise();
@@ -131,11 +134,17 @@ export default class BaseScene {
 	async loadManifest() {
 		if (!this.isPreloaded) await this.preload();
 
+		let i = 0;
 		await this._loadBase();
+		console.log(i++);
 		await this._loadProps(this.manifest.props);
+		console.log(i++);
 		await this._loadInteractables(this.manifest.interactables);
+		console.log(i++);
 		await this._loadCurves(this.manifest.curves);
+		console.log(i++);
 		await this._loadPoints(this.manifest.points);
+		console.log(i++);
 
 		this.manifestLoaded.resolve(true);
 	}
@@ -155,22 +164,41 @@ export default class BaseScene {
 	}
 
 	async _loadProps(props) {
-		console.log('props');
-		console.log(props);
+		await Promise.all(
+			props.map(async (prop) => {
+				const _prop = new Prop({ prop, group: this.props });
+			}),
+		);
 
-		this.props = new Props({ props, scene: this });
-		await this.props.init();
+		this.instance.add(this.props);
 	}
 
 	async _loadInteractables(interactables) {
-		console.log(interactables);
+		await Promise.all(
+			interactables.map(async (interactable) => {
+				const _interactable = new Interactable({ interactable, group: this.interactables });
+			}),
+		);
 
-		this.interactables = new Interactables({ interactables, scene: this });
-		await this.interactables.init();
+		this.interactablesBroadphase = new InteractablesBroadphase({
+			radius: 2,
+			objectsToTest: this.interactables,
+		});
+
+		console.log(this.interactablesBroadphase);
+
+		console.log(this.interactables);
+		this.instance.add(this.interactables);
 	}
 
 	async _loadCurves(curves) {
-		this.curves = new Curves({ curves, scene: this });
+		await Promise.all(
+			curves.map(async (curve) => {
+				const _curve = new Curve({ curve, group: this.curves });
+			}),
+		);
+
+		this.instance.add(this.curves);
 	}
 
 	async _loadPoints(points) {
