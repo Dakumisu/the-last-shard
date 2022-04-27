@@ -34,6 +34,7 @@ export default class Grass extends BaseObject {
 	 *
 	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}} params0
 	 */
+
 	constructor({ scene, params }) {
 		super({ name: 'Grass', isInteractable: false });
 
