@@ -20,7 +20,7 @@ export default class Debug {
 
 		this.initTab();
 
-		this.gui.hidden = localStorage.getItem('debug_hide');
+		this.gui.hidden = JSON.parse(localStorage.getItem('debug_hide'));
 		signal.on('keyup', (key) => {
 			if (key !== 'H') return;
 			this.gui.hidden = !this.gui.hidden;
