@@ -118,8 +118,6 @@ export default class BaseScene {
 		console.log(`🔋 Manifest of ${this.label}`);
 		console.log(this.manifest);
 		/// #endif
-
-		this.isPreloaded.resolve();
 	}
 
 	async init() {
@@ -132,7 +130,7 @@ export default class BaseScene {
 	}
 
 	async loadManifest() {
-		if (!this.isPreloaded) await this.preload();
+		await this.isPreloaded;
 
 		let i = 0;
 		await this._loadBase();

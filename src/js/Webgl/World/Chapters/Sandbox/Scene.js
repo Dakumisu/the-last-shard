@@ -32,10 +32,14 @@ export default class SandboxScene extends BaseScene {
 	async preload() {
 		super.preload();
 		this.envMapTexture = await loadCubeTexture('envMap1');
+
+		this.isPreloaded.resolve();
 	}
 
 	async init() {
 		super.init();
+
+		await this.isPreloaded;
 
 		// Lights
 		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
@@ -65,6 +69,8 @@ export default class SandboxScene extends BaseScene {
 			fogNoiseImpact: 0.1,
 			background: await this.envMapTexture,
 		});
+
+		console.log(this.fog);
 
 		/// #if DEBUG
 		const testCube = new BaseCollider({
