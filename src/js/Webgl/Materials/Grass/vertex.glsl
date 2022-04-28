@@ -2,11 +2,8 @@
 
 uniform float uTime;
 uniform float uWindSpeed;
-// uniform float uMaskRange;
 uniform float uDisplacement;
 uniform float uNoiseMouvementIntensity;
-// uniform float uNoiseElevationIntensity;
-// uniform float uElevationIntensity;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
 uniform sampler2D uElevationTexture;
@@ -18,9 +15,8 @@ attribute vec3 aScale;
 attribute vec3 aPositions;
 
 varying vec3 vPos;
-// varying float vFade;
+varying float vFade;
 varying float vNoiseMouvement;
-// varying float vNoiseElevation;
 
 float N(vec2 st) {
 	return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
@@ -61,16 +57,21 @@ void main() {
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
+	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
+	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
+
 	// Scale down out of range grass
 	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
 	pos.y += scaleFromRange * .35;
 	pos *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds
-	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, .0, 1.), map(-translation.z, uMinMapBounds.z, uMaxMapBounds.z, .0, 1.));
-	float elevation = texture2D(uElevationTexture, scaledCoords).r;
+	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
+	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
 
-	float scaleFromTexture = texture2D(uGrassTexture, scaledCoords).r;
+	vFade = elevation;
+
+	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).r;
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	// pos *= scaleFromTexture;
 
@@ -93,12 +94,6 @@ void main() {
 	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
 
 	// vNoiseElevation = smoothstep(0.2, .8, smoothNoise(translation.xz * uNoiseElevationIntensity));
-
-	// if(translation.y < 0.) {
-	// 	translation.y = 0.;
-	// } else {
-	// 	translation.xz += vNoiseMouvement * uDisplacement;
-	// }
 
 	if(instancedPos.y > 0.) {
 		translation.xz += vNoiseMouvement * uDisplacement;
