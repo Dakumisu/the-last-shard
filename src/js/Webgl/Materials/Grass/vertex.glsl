@@ -73,7 +73,7 @@ void main() {
 
 	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).r;
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	// pos *= scaleFromTexture;
+	pos *= scaleFromTexture;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);

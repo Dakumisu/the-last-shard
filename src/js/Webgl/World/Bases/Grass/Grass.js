@@ -115,9 +115,6 @@ export default class Grass extends BaseObject {
 
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
 
-		this.scene.instance.add(new Box3Helper(boundingBox, new Color(0x00ff00)));
-		this.scene.instance.add(new CameraHelper(this.rtCamera));
-
 		this.renderTarget.depthTexture = this.depthTexture;
 		this.renderTarget.depthTexture.format = DepthFormat;
 		this.renderTarget.depthTexture.type = UnsignedShortType;
