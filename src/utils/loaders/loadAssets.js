@@ -114,8 +114,13 @@ export async function loadModel(key) {
 
 	let loadedModel = store.loadedAssets.models.get(key);
 	if (!loadedModel) {
-		loadedModel = await loadGLTF(path);
-		loadedModel = loadedModel.scene;
+		let _loadedModel = await loadGLTF(path);
+		_loadedModel = _loadedModel.scene;
+		_loadedModel.traverse((child) => {
+			if (child.isMesh) {
+				loadedModel = child;
+			}
+		});
 		store.loadedAssets.models.set(key, loadedModel);
 	}
 

@@ -37,9 +37,7 @@ export default class BaseObject {
 			return;
 		}
 
-		let effect;
 		const { asset, transforms, type, traversable } = this.base.asset;
-		if (this.isInteractable) effect = this.base.asset.effect;
 
 		const _model = await loadModel(asset);
 
@@ -64,10 +62,10 @@ export default class BaseObject {
 		this.base.mesh.scale.setScalar(0.00001);
 		this.base.mesh.name = asset;
 		this.base.name = asset;
-		this.base.mesh.isInteractable = this.isInteractable;
-		if (this.isInteractable) this.base.mesh.effect = effect;
+		this.base.mesh.isInteractable = this.base.isInteractable;
 
-		this.base.mesh.propType = type;
+		if (this.base.isInteractable) this.base.mesh.userData.interact = this.base.asset.effect;
+
 		this.base.mesh.traversable = traversable;
 		this.base.group.add(this.base.mesh);
 

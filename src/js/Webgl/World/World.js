@@ -59,7 +59,6 @@ export default class World {
 			// Assign the class to the scenes
 			this.sceneClasses[_n] = _c.default;
 		}
-		console.log(this.sceneClasses);
 	}
 
 	async initScenes() {

@@ -7,8 +7,6 @@ import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/Interactables
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
-import LaserTower from '@webgl/World/Bases/Props/LaserTower';
-import LaserGame from '@game/LaserGame';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {

@@ -13,10 +13,12 @@ import { Quaternion } from 'three';
 import { deferredPromise, wait } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
 import Prop from '@webgl/World/Bases/Props/Prop';
-import Interactable from '@webgl/World/Bases/Props/Interactable';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
+import LaserGame from '@game/LaserGame';
+
+import LaserTower from '../World/Bases/Interactables/LaserTower';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -168,28 +170,42 @@ export default class BaseScene {
 
 	async _loadInteractables(interactables) {
 		const t = [];
+		const laserGames = [];
 		await Promise.all(
 			interactables.map(async (interactable) => {
-				// const { type } = interactable.params
+				const { asset, params } = interactable;
 
-				const _interactable = new BaseObject({
-					isInteractable: true,
-					asset: interactable,
-					group: this.interactables,
-				});
-				await _interactable.init();
-				t.push(_interactable);
+				if (asset.includes('LaserTower')) {
+					if (!laserGames[params.gameId]) {
+						const _laserGame = new LaserGame({ scene: this });
+						laserGames.push(_laserGame);
+					}
+
+					const _interactable = new LaserTower({
+						asset: interactable,
+						game: laserGames[params.gameId],
+						group: this.interactables,
+					});
+					await _interactable.init();
+					t.push(_interactable);
+				}
+
+				if (asset.includes('Coin')) {
+					// const _interactable = new Coin({
+					// 	asset: interactable,
+					// 	group: this.interactables,
+					// });
+					// await _interactable.init();
+					// t.push(_interactable);
+				}
 			}),
 		);
 
 		console.log(t);
-
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 2,
 			objectsToTest: t,
 		});
-
-		// console.log(this.interactablesBroadphase);
 
 		this.instance.add(this.interactables);
 	}
