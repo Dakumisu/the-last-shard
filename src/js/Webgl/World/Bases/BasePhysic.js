@@ -7,8 +7,8 @@ import BaseObject from './BaseObject';
 Mesh.prototype.raycast = acceleratedRaycast;
 
 export default class BasePhysic extends BaseObject {
-	constructor({ mesh = null, name = '', isInteractable = false } = {}) {
-		super({ mesh, name, isInteractable });
+	constructor({ name = '', isInteractable = false } = {}) {
+		super({ name, isInteractable });
 
 		this.physicsInitialized = false;
 	}

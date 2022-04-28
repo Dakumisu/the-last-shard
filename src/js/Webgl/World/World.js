@@ -49,11 +49,11 @@ export default class World {
 	}
 
 	async getScenes() {
-		const sceneClasses = import.meta.glob('./Chapters/*/Scene.js');
+		const sceneClasses = import.meta.globEager('./Chapters/*/Scene.js');
 
 		for (const path in sceneClasses) {
 			// Get the class
-			const _c = await sceneClasses[path]();
+			const _c = await sceneClasses[path];
 			// Get the name of the folder where the scene is
 			const _n = path.split('/')[2];
 			// Assign the class to the scenes
@@ -63,7 +63,6 @@ export default class World {
 	}
 
 	async initScenes() {
-		// TODO: load all scenes from manifest
 		this.manifest = await loadJSON(manifestPath);
 
 		await this.manifest.forEach((datas, i) => {

@@ -32,21 +32,26 @@ export default class Interactables {
 			return;
 		}
 
+		let model = null;
+
 		const { asset, transforms, type, traversable, effect } = this.interactable;
 
 		const _asset = 'Asset_' + asset;
-		const model = await loadModel(_asset.toLowerCase());
+		const _model = await loadModel(_asset.toLowerCase());
 		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#ED4646'),
 		});
 
-		model.traverse((obj) => {
+		_model.traverse((obj) => {
 			if (obj.material) obj.material = material;
 			// TODO: get bounding box from blender
 			// ça prend sur le perf
 			if (obj.geometry) obj.geometry.computeBoundingBox();
+			if (obj.isMesh) model = obj;
 		});
+
+		if (!model) return;
 
 		model.position.fromArray(transforms.pos);
 		model.quaternion.fromArray(transforms.qt);

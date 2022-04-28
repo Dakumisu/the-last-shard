@@ -37,7 +37,7 @@ import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 export default class Grass extends BaseObject {
 	/**
 	 *
-	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}} params0
+	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}}
 	 */
 
 	constructor({ scene, params }) {
@@ -96,7 +96,10 @@ export default class Grass extends BaseObject {
 		this.minBox.fromArray(this.scene.manifest.bounds[0]);
 		this.maxBox.fromArray(this.scene.manifest.bounds[1]);
 
-		const boundingBox = new Box3(this.minBox, this.maxBox);
+		this.scene.ground.base.realMesh.updateMatrixWorld();
+		const boundingBox = new Box3(this.minBox, this.maxBox).applyMatrix4(
+			this.scene.ground.base.realMesh.matrixWorld,
+		);
 
 		const center = new Vector3();
 		boundingBox.getCenter(center);

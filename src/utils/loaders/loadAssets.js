@@ -13,7 +13,7 @@ import {
 	TextureLoader,
 } from 'three';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
-import { loadGLTF } from './loadStaticGLTF';
+import { loadGLTF } from './loadDynamicGLTF';
 
 const basisLoader = new KTX2Loader();
 let basisLoaderInit = false;
@@ -112,11 +112,10 @@ export async function loadModel(key) {
 		return;
 	}
 
-	// if (manifest.get(key).isLoading) await manifest.get(key).promise;
-
 	let loadedModel = store.loadedAssets.models.get(key);
 	if (!loadedModel) {
 		loadedModel = await loadGLTF(path);
+		loadedModel = loadedModel.scene;
 		store.loadedAssets.models.set(key, loadedModel);
 	}
 

@@ -10,11 +10,13 @@ import { Group, Vector3 } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
-import { deferredPromise } from 'philbin-packages/async';
+import { deferredPromise, wait } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
 import Prop from '@webgl/World/Bases/Props/Prop';
 import Interactable from '@webgl/World/Bases/Props/Interactable';
 import Ground from '@webgl/World/Bases/Props/Ground';
+import BaseObject from '@webgl/World/Bases/BaseObject';
+import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -150,24 +152,42 @@ export default class BaseScene {
 	async _loadProps(props) {
 		await Promise.all(
 			props.map(async (prop) => {
-				const _prop = new Prop({ prop, group: this.props });
+				const _prop = new BaseObject({
+					isInteractable: false,
+					asset: prop,
+					group: this.props,
+				});
+				await _prop.init();
 			}),
 		);
+
+		console.log('🔋 Props loaded');
 
 		this.instance.add(this.props);
 	}
 
 	async _loadInteractables(interactables) {
+		const t = [];
 		await Promise.all(
 			interactables.map(async (interactable) => {
-				const _interactable = new Interactable({ interactable, group: this.interactables });
+				// const { type } = interactable.params
+
+				const _interactable = new BaseObject({
+					isInteractable: true,
+					asset: interactable,
+					group: this.interactables,
+				});
+				await _interactable.init();
+				t.push(_interactable);
 			}),
 		);
 
-		// this.interactablesBroadphase = new InteractablesBroadphase({
-		// 	radius: 2,
-		// 	objectsToTest: this.interactables,
-		// });
+		console.log(t);
+
+		this.interactablesBroadphase = new InteractablesBroadphase({
+			radius: 2,
+			objectsToTest: t,
+		});
 
 		// console.log(this.interactablesBroadphase);
 
@@ -222,5 +242,7 @@ export default class BaseScene {
 		if (!this.initialized) return;
 
 		if (this.checkpoints) this.checkpoints.update(et, dt);
+		if (this.interactablesBroadphase)
+			this.interactablesBroadphase.update(this.player.base.mesh.position);
 	}
 }

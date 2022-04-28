@@ -70,7 +70,7 @@ export default class SandboxScene extends BaseScene {
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
-		await this.grass.init();
+		// await this.grass.init();
 
 		// LaserTowers
 
