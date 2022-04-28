@@ -7,6 +7,8 @@ import { Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { loadModel } from '@utils/loaders/loadAssets';
 import { Group } from 'three';
+import { DoubleSide } from 'three';
+import { Color } from 'three';
 
 export default class LaserTower extends BaseCollider {
 	/**
@@ -63,18 +65,17 @@ export default class LaserTower extends BaseCollider {
 
 		const { asset, transforms, type, traversable } = this.asset;
 
-		// const material = new BaseToonMaterial({
-		// 	side: DoubleSide,
-		// 	color: new Color('#ED4646'),
-		// });
+		const material = new BaseToonMaterial({
+			side: DoubleSide,
+			color: new Color('#ED4646'),
+		});
 
-		// model.traverse((obj) => {
-		// 	if (obj.material) obj.material = material;
-		// });
+		this.base.mesh.material = material;
 
 		this.base.mesh.position.fromArray(transforms.pos);
 		this.base.mesh.quaternion.fromArray(transforms.qt);
-		this.base.mesh.scale.setScalar(0.00001);
+		this.base.mesh.scale.fromArray(transforms.scale);
+		// this.base.mesh.scale.setScalar(0.00001);
 		this.base.mesh.name = asset;
 
 		this.base.mesh.propType = type;
@@ -82,14 +83,14 @@ export default class LaserTower extends BaseCollider {
 
 		this.group.add(this.base.mesh);
 
-		anime({
-			targets: this.base.mesh.scale,
-			easing: 'spring(1, 190, 10, 1)',
-			duration: 1000,
-			x: [0.00001, transforms.scale[0]],
-			y: [0.00001, transforms.scale[1]],
-			z: [0.00001, transforms.scale[2]],
-		});
+		// anime({
+		// 	targets: this.base.mesh.scale,
+		// 	easing: 'spring(1, 190, 10, 1)',
+		// 	duration: 1000,
+		// 	x: [0.00001, transforms.scale[0]],
+		// 	y: [0.00001, transforms.scale[1]],
+		// 	z: [0.00001, transforms.scale[2]],
+		// });
 	}
 
 	activate() {
@@ -193,7 +194,6 @@ export default class LaserTower extends BaseCollider {
 		if (LaserTower.geometries[type]) geo = LaserTower.geometries[type].clone();
 		else {
 			geo = (await loadModel(asset)).geometry;
-			geo.scale(0.5, 0.5, 0.5);
 			LaserTower.geometries[type] = geo;
 		}
 

@@ -33,7 +33,7 @@ import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
 import AnimationController from '@webgl/Animation/Controller';
-// import DebugMaterial from '@webgl/Materials/debug/DebugMaterial';
+import DebugMaterial from '@webgl/Materials/Debug/DebugMaterial';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
@@ -341,10 +341,7 @@ class Player extends BaseEntity {
 
 		this.base.material = new PlayerMaterial({
 			color: new Color('#d29ddc'),
-			transparent: true,
-			opacity: 0.3,
 		});
-		this.base.material = new MeshNormalMaterial();
 	}
 
 	#setMesh() {
@@ -364,11 +361,11 @@ class Player extends BaseEntity {
 	async #setModel() {
 		const m = await loadGLTF(model);
 
-		// m.scene.traverse((object) => {
-		// 	if (object.type === 'SkinnedMesh') {
-		// 		object.material = this.base.material;
-		// 	}
-		// });
+		m.scene.traverse((object) => {
+			if (object.type === 'SkinnedMesh') {
+				object.material = this.base.material;
+			}
+		});
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
