@@ -41,7 +41,8 @@ function geometriesFilter(geometries) {
 				if (child.geometry) {
 					const mat4 = new Matrix4();
 
-					child.updateWorldMatrix(true, false);
+					// child.updateWorldMatrix(true, false);
+					child.updateMatrixWorld(true, false);
 					mat4.multiplyMatrices(child.matrixWorld, child.matrix);
 					child.geometry.applyMatrix4(child.matrixWorld);
 
