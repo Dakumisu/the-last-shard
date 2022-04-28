@@ -1,4 +1,4 @@
-// varying float vFade;
+varying float vFade;
 varying float vNoiseMouvement;
 varying vec3 vPos;
 
@@ -15,7 +15,7 @@ void main() {
 	// gl_FragColor = vec4(render, vNoiseElevation);
 	// gl_FragColor = texture2D(uElevationTexture, vUv);
 
-	// if(vGrassPresent > .8)
+	// if(vFade == .0)
 	// 	discard;
 
 	// gl_FragColor = vec4(render, vFade);

@@ -18,7 +18,7 @@ attribute vec3 aScale;
 attribute vec3 aPositions;
 
 varying vec3 vPos;
-// varying float vFade;
+varying float vFade;
 varying float vNoiseMouvement;
 // varying float vNoiseElevation;
 
@@ -69,6 +69,8 @@ void main() {
 	// Map position to the elevation texture coordinates using the map bounds
 	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, .0, 1.), map(-translation.z, uMinMapBounds.z, uMaxMapBounds.z, .0, 1.));
 	float elevation = texture2D(uElevationTexture, scaledCoords).r;
+
+	vFade = elevation;
 
 	float scaleFromTexture = texture2D(uGrassTexture, scaledCoords).r;
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
