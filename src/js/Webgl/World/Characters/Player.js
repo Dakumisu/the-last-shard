@@ -33,7 +33,7 @@ import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
 import AnimationController from '@webgl/Animation/Controller';
-import DebugMaterial from '@webgl/Materials/debug/DebugMaterial';
+// import DebugMaterial from '@webgl/Materials/debug/DebugMaterial';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
@@ -337,13 +337,13 @@ class Player extends BaseEntity {
 	}
 
 	#setMaterial() {
-		this.base.material = new DebugMaterial();
+		// this.base.material = new DebugMaterial();
 
-		// this.base.material = new PlayerMaterial({
-		// 	color: new Color('#d29ddc'),
-		// 	transparent: true,
-		// 	opacity: 0.3,
-		// });
+		this.base.material = new PlayerMaterial({
+			color: new Color('#d29ddc'),
+			transparent: true,
+			opacity: 0.3,
+		});
 		this.base.material = new MeshNormalMaterial();
 	}
 
