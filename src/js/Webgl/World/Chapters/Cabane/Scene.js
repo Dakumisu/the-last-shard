@@ -8,10 +8,10 @@ import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 
-export default class SandboxScene extends BaseScene {
+export default class CabaneScene extends BaseScene {
 	constructor(manifest) {
 		super({
-			label: 'Sandbox',
+			label: 'Cabane',
 			manifest: manifest,
 		});
 
@@ -20,7 +20,6 @@ export default class SandboxScene extends BaseScene {
 
 	async preload() {
 		super.preload();
-		this.envMapTexture = await loadCubeTexture('envMap1');
 
 		this.isPreloaded.resolve();
 	}
@@ -41,36 +40,37 @@ export default class SandboxScene extends BaseScene {
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
-		this.fog = new BaseFog({
-			fogNearColor: '#844bb8',
-			fogFarColor: '#3e2e77',
-			fogNear: 30,
-			fogFar: 50,
-			fogNoiseSpeed: 0.003,
-			fogNoiseFreq: 0.125,
-			fogNoiseImpact: 0.1,
-			background: await this.envMapTexture,
-		});
+		// this.fog = new BaseFog({
+		// 	fogNearColor: '#844bb8',
+		// 	fogFarColor: '#3e2e77',
+		// 	fogNear: 30,
+		// 	fogFar: 50,
+		// 	fogNoiseSpeed: 0.003,
+		// 	fogNoiseFreq: 0.125,
+		// 	fogNoiseImpact: 0.1,
+		// 	background: await this.envMapTexture,
+		// });
 
 		// Init grass after fog
-		this.grass = new Grass({
-			scene: this,
-			params: {
-				color: '#de47ff',
-				verticeScale: 0.42,
-				halfBoxSize: 30,
-				maskRange: 0.04,
-				noiseElevationIntensity: 0.75,
-				noiseMouvementIntensity: 0.2,
-				windColorIntensity: 0.2,
-				displacement: 0.2,
-				positionsTexture: await loadTexture('grassTexture'),
-			},
-		});
-		await this.grass.init();
+		// this.grass = new Grass({
+		// 	scene: this,
+		// 	params: {
+		// 		color: '#de47ff',
+		// 		verticeScale: 0.42,
+		// 		halfBoxSize: 30,
+		// 		maskRange: 0.04,
+		// 		noiseElevationIntensity: 0.75,
+		// 		noiseMouvementIntensity: 0.2,
+		// 		windColorIntensity: 0.2,
+		// 		displacement: 0.2,
+		// 		positionsTexture: await loadTexture('grassTexture'),
+		// 	},
+		// });
+		// await this.grass.init();
 
 		// this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
 		this.initialized.resolve(true);
+
 		this.isInitialized = true;
 	}
 
@@ -82,6 +82,6 @@ export default class SandboxScene extends BaseScene {
 	addTo(mainScene) {
 		super.addTo(mainScene);
 
-		this.fog.set();
+		// this.fog.set();
 	}
 }

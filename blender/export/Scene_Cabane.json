@@ -1,0 +1,196 @@
+{
+  "name": "Cabane",
+  "bounds": [
+    [
+      -34.984299,
+      -1.00198,
+      -34.984299
+    ],
+    [
+      34.984299,
+      0.0,
+      34.984299
+    ]
+  ],
+  "assets": [
+    "Coupe"
+  ],
+  "props": [
+    {
+      "asset": "Coupe",
+      "uid": "Coupe.007",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -11.623943,
+          -2e-06,
+          22.338173
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Coupe",
+      "uid": "Coupe.008",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -12.816853,
+          0.0,
+          -11.870169
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Coupe",
+      "uid": "Coupe.009",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          19.143753,
+          -2e-06,
+          16.239445
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Coupe",
+      "uid": "Coupe.010",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          22.164558,
+          2e-06,
+          -9.697027
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Coupe",
+      "uid": "Coupe.011",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          24.496576,
+          -4e-06,
+          5.306082
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Coupe",
+      "uid": "Coupe.012",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -24.461765,
+          0.0,
+          9.069407
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    }
+  ],
+  "points": [
+    {
+      "type": "Spawn",
+      "uid": "Spawn.001",
+      "pos": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "qt": [
+        0.0,
+        0.0,
+        -0.0,
+        1.0
+      ]
+    },
+    {
+      "type": "Checkpoint",
+      "uid": "Checkpoint.001",
+      "pos": [
+        2.813732,
+        1.331321,
+        21.173613
+      ],
+      "qt": [
+        0.0,
+        0.0,
+        -0.0,
+        1.0
+      ]
+    }
+  ]
+}

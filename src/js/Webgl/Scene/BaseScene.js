@@ -151,56 +151,59 @@ export default class BaseScene {
 	}
 
 	async _loadProps(props) {
-		await Promise.all(
-			props.map(async (prop) => {
-				const _prop = new BaseObject({
-					isInteractable: false,
-					asset: prop,
-					group: this.props,
-				});
-				await _prop.init();
-			}),
-		);
+		if (!props) return;
 
-		console.log('🔋 Props loaded');
+		// await Promise.all(
+		props.map(async (prop) => {
+			const _prop = new BaseObject({
+				isInteractable: false,
+				asset: prop,
+				group: this.props,
+			});
+			await _prop.init();
+		}),
+			// );
+
+			console.log('🔋 Props loaded');
 
 		this.instance.add(this.props);
 	}
 
 	async _loadInteractables(interactables) {
+		if (!interactables) return;
 		const t = [];
 		const laserGames = [];
-		await Promise.all(
-			interactables.map(async (interactable) => {
-				const { asset, params } = interactable;
+		// await Promise.all(
+		interactables.map(async (interactable) => {
+			const { asset, params } = interactable;
 
-				if (asset.includes('LaserTower')) {
-					if (!laserGames[params.gameId]) {
-						const _laserGame = new LaserGame({ scene: this });
-						laserGames.push(_laserGame);
-					}
-
-					const _interactable = new LaserTower({
-						asset: interactable,
-						game: laserGames[params.gameId],
-						group: this.interactables,
-					});
-					await _interactable.init();
-					t.push(_interactable);
+			if (asset.includes('LaserTower')) {
+				if (!laserGames[params.gameId]) {
+					const _laserGame = new LaserGame({ scene: this });
+					laserGames.push(_laserGame);
 				}
 
-				if (asset.includes('Coin')) {
-					// const _interactable = new Coin({
-					// 	asset: interactable,
-					// 	group: this.interactables,
-					// });
-					// await _interactable.init();
-					// t.push(_interactable);
-				}
-			}),
-		);
+				const _interactable = new LaserTower({
+					asset: interactable,
+					game: laserGames[params.gameId],
+					group: this.interactables,
+				});
+				await _interactable.init();
+				t.push(_interactable);
+			}
 
-		console.log(t);
+			if (asset.includes('Coin')) {
+				// const _interactable = new Coin({
+				// 	asset: interactable,
+				// 	group: this.interactables,
+				// });
+				// await _interactable.init();
+				// t.push(_interactable);
+			}
+		}),
+			// );
+
+			console.log(t);
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 2,
 			objectsToTest: t,
@@ -210,6 +213,8 @@ export default class BaseScene {
 	}
 
 	async _loadCurves(curves) {
+		if (!curves) return;
+
 		await Promise.all(
 			curves.map(async (curve) => {
 				const _curve = new Curve({ curve, group: this.curves });
@@ -220,6 +225,8 @@ export default class BaseScene {
 	}
 
 	async _loadPoints(points) {
+		if (!points) return;
+
 		const checkpoints = [];
 
 		points.forEach((point) => {
