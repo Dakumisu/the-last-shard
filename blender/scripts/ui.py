@@ -135,6 +135,33 @@ class MM_OT_export_scene(bpy.types.Operator):
             return {'CANCELLED'}
 
 
+class MM_OT_export_scenes(bpy.types.Operator):
+    """Export on your disk resources from the scenes"""
+    bl_idname = 'mm.export_scenes'
+    bl_label = 'Choose folder'
+    directory: bpy.props.StringProperty(subtype='DIR_PATH', default='NONE')
+
+    def invoke(self, context, _event):
+        self.directory = env.paths.output
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+    def execute(self, context):
+        try:
+            env.registerOutputPath(self.directory)
+            actions.exportScene(self.directory)
+            return {'FINISHED'}
+        except BaseException as err:
+            msg = ''
+            errType = type(err)
+            if hasattr(errType, '__name__'):
+                msg += errType.__name__ + ' - '
+            if hasattr(err, '__str__'):
+                msg += err.__str__()
+            self.report({'ERROR'}, msg)
+            return {'CANCELLED'}
+
+
 class MM_OT_export_all(bpy.types.Operator):
     """Export on your disk all resources from the current file"""
     bl_idname = 'mm.export_all'
@@ -202,6 +229,12 @@ class MM_MT_menu(bpy.types.Menu):
         )
         layout.separator()
         layout.operator(
+            "mm.export_scenes",
+            text="Export scenes",
+            icon="UGLYPACKAGE"
+        )
+        layout.separator()
+        layout.operator(
             "mm.export_all",
             text="Export all resources",
             icon="UGLYPACKAGE"
@@ -222,6 +255,7 @@ classes = [
     MM_OT_export_collection,
     MM_OT_export_scene_texture,
     MM_OT_export_scene,
+    MM_OT_export_scenes,
     MM_OT_export_all,
     MM_MT_menu
 ]
