@@ -1,3 +1,4 @@
+import { store } from '@tools/Store';
 import { loadJSON } from 'philbin-packages/loader';
 
 /**
@@ -42,20 +43,41 @@ assetsMap.set('grassTexture', {
 	data: {},
 });
 
-export async function loadManifestAssets() {
-	const manifestPath = 'assets/export/Scenes.json';
-	const scenesManifest = await loadJSON(manifestPath);
+export async function loadManifest() {
+	const scenesManifest = import.meta.globEager('../../blender/export/Scene_*.json', {
+		as: 'raw',
+	});
 
-	for (const key in scenesManifest) {
-		const _assets = scenesManifest[key].assets;
+	const manifest = [];
 
-		_assets.forEach((asset) => {
-			assetsMap.set(asset, {
-				path: '/assets/export/Asset_' + asset + '.glb',
-				data: {},
-			});
+	for (const path in scenesManifest) {
+		const _c = await scenesManifest[path];
+		const _jsonPath = path.split('../../').pop();
+		const _json = await loadJSON(_jsonPath);
+		const _n = path.split('/').pop().split('.')[0];
+
+		assetsMap.set(_n, {
+			path: '../../blender/export/' + _n + '.glb',
+			data: {},
 		});
+
+		for (const key in scenesManifest) {
+			const _assets = scenesManifest[key].assets;
+
+			_assets.forEach((asset) => {
+				if (assetsMap.get(asset)) return;
+
+				assetsMap.set(asset, {
+					path: '../../blender/export/Asset_' + asset + '.glb',
+					data: {},
+				});
+			});
+		}
+
+		manifest.push(_json);
 	}
+
+	store.manifest = manifest;
 }
 
 export default assetsMap;

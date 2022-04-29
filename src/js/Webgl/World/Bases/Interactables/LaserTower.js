@@ -193,7 +193,7 @@ export default class LaserTower extends BaseCollider {
 
 		if (LaserTower.geometries[type]) geo = LaserTower.geometries[type].clone();
 		else {
-			geo = (await loadModel(asset)).geometry;
+			geo = (await loadModel(asset)).children[1].geometry;
 			LaserTower.geometries[type] = geo;
 		}
 

@@ -12,7 +12,6 @@ import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
 import { deferredPromise, wait } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
-import Prop from '@webgl/World/Bases/Props/Prop';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';

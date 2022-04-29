@@ -11,14 +11,15 @@ import SceneController from '@webgl/Scene/Controller.js';
 import { loadJSON } from 'philbin-packages/loader';
 import { initPlayer } from './Characters/Player.js';
 import baseUniforms from '@webgl/Materials/baseUniforms.js';
-
-const manifestPath = 'assets/export/Scenes.json';
+import { store } from '@tools/Store.js';
+import assetsMap from '@utils/manifest.js';
 
 export default class World {
 	constructor() {
 		this.sceneController = new SceneController();
 
-		this.manifest = [];
+		this.manifest = store.manifest;
+
 		this.sceneClasses = {};
 
 		this.init();
@@ -62,8 +63,6 @@ export default class World {
 	}
 
 	async initScenes() {
-		this.manifest = await loadJSON(manifestPath);
-
 		await this.manifest.forEach((datas, i) => {
 			const newScene = this.sceneClasses[datas.name];
 			const _scene = new newScene(datas);

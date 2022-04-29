@@ -13,14 +13,12 @@ import time
 import actionAsset as asset
 import actionScene as scene
 import actionSceneExtras as sceneExtras
-import actionScenes as scenes
 
 import actionCommon as common
 
 importlib.reload(asset)
 importlib.reload(scene)
 importlib.reload(sceneExtras)
-importlib.reload(scenes)
 
 importlib.reload(common)
 
@@ -72,19 +70,6 @@ def exportScene(fp=None, textureOnly=False):
     exportCollections(fp, scn.collection.children, textureOnly)
 
 
-# Export scenes
-def exportScenes(fp=None, textureOnly=False):
-    utils.log('Export Current Scene')
-    scn = bpy.context.scene
-    if fp == None:
-        fp = env.paths.temp
-    if not scn:
-        return
-    if textureOnly == False:
-        store.setPersistent('mmLastAction', 'Export scenes')
-    exportCollections(fp, scn.collection.children, textureOnly)
-
-
 # Export all collections in the file
 def exportAll(fp=None):
     scn = bpy.context.scene
@@ -121,7 +106,6 @@ def exportCol(fp, col, textureOnly=False):
     else:
         cache.append(cacheName)
 
-    print(kind)
     # Handle different collection types
     if kind == 'asset' and count == 2:
         asset.export(fp, col, textureOnly)
@@ -129,8 +113,6 @@ def exportCol(fp, col, textureOnly=False):
         scene.export(fp, col, textureOnly)
     elif kind == 'sceneextras' and count == 2:
         sceneExtras.export(fp, col, textureOnly)
-    elif kind == 'scenes' and count == 2:
-        scenes.export(fp, col, textureOnly)
     time.sleep(0.1)
     gc.collect()
     time.sleep(0.1)
@@ -170,6 +152,5 @@ actionTypes = {
     'Export selected textures': exportCollectionTextures,
     'Export scene': exportScene,
     'Export scene textures': exportSceneTextures,
-    'Export scenes': exportScenes,
     'Export all': exportAll,
 }
