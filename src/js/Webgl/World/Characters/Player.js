@@ -11,8 +11,6 @@ import {
 	CapsuleGeometry,
 	Vector2,
 	BufferGeometry,
-	IcosahedronGeometry,
-	Object3D,
 	MeshBasicMaterial,
 	CircleGeometry,
 	LineBasicMaterial,
@@ -361,11 +359,11 @@ class Player extends BaseEntity {
 	async #setModel() {
 		const m = await loadGLTF(model);
 
-		m.scene.traverse((object) => {
-			if (object.type === 'SkinnedMesh') {
-				object.material = this.base.material;
-			}
-		});
+		// m.scene.traverse((object) => {
+		// 	if (object.type === 'SkinnedMesh') {
+		// 		object.material = this.base.material;
+		// 	}
+		// });
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
