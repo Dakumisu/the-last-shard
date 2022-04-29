@@ -93,7 +93,7 @@ export default class LaserTower extends BaseCollider {
 
 	activate() {
 		this.isActivated = true;
-
+		if (this.type === 'end') this.base.mesh.material.color.set('green');
 		this.game.addPointToGeometry(this.base.mesh.position, this.type === 'end');
 
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);

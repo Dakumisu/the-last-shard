@@ -5,9 +5,9 @@ import { BufferGeometry, CatmullRomCurve3, Mesh, TubeGeometry, Vector3 } from 't
 export default class LaserGame {
 	/**
 	 *
-	 * @param {{scene: BaseScene}} param0
+	 * @param {{scene: BaseScene, yOffset?: number}} param0
 	 */
-	constructor({ scene }) {
+	constructor({ scene, yOffset = 2 }) {
 		this.laserTowers = [];
 		this.scene = scene;
 
@@ -20,7 +20,7 @@ export default class LaserGame {
 		this.dummyGeo = new BufferGeometry();
 
 		this.lineMesh = new Mesh(this.dummyGeo, lineMaterial);
-		this.lineMesh.position.y += 1.5;
+		this.lineMesh.position.y += yOffset;
 
 		this.scene.instance.add(this.lineMesh);
 	}
