@@ -20,7 +20,7 @@ export default class LaserGame {
 		this.dummyGeo = new BufferGeometry();
 
 		this.lineMesh = new Mesh(this.dummyGeo, lineMaterial);
-		this.lineMesh.position.y += 1.3;
+		this.lineMesh.position.y += 1.5;
 
 		this.scene.instance.add(this.lineMesh);
 	}
@@ -50,7 +50,7 @@ export default class LaserGame {
 	updateGeometry() {
 		this.lineMesh.geometry =
 			this.curve.points.length > 1
-				? new TubeGeometry(this.curve, 20, 0.05, 10, false)
+				? new TubeGeometry(this.curve, 30, 0.05, 10, false)
 				: this.dummyGeo;
 	}
 }

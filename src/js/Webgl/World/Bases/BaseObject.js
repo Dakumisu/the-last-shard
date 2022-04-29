@@ -2,7 +2,7 @@ import { loadModel } from '@utils/loaders/loadAssets';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import signal from 'philbin-packages/signal';
-import { Color } from 'three';
+import { Color, Group } from 'three';
 import { DoubleSide } from 'three';
 import { Mesh } from 'three';
 import anime from 'animejs';
@@ -10,7 +10,7 @@ import anime from 'animejs';
 export default class BaseObject {
 	/**
 	 *
-	 * @param {{name: string, isInteractable: boolean}} param0
+	 * @param {{name?: string, isInteractable: boolean, asset?: Object, group?: Group}} param0
 	 */
 	constructor({ name = '', isInteractable = false, asset = null, group = null }) {
 		this.base = {

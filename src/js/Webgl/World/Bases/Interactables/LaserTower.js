@@ -21,15 +21,13 @@ export default class LaserTower extends BaseCollider {
 		end: null,
 	};
 	constructor({ asset = {}, direction = null, game, group }) {
-		super({ mesh: null, name, type: 'nonWalkable', isInteractable: true });
+		super({ type: 'nonWalkable', isInteractable: true });
 
 		this.asset = asset;
 		this.group = group;
 
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
-
-		this.rayLength = 0;
 
 		this.isActivated = false;
 
@@ -140,12 +138,13 @@ export default class LaserTower extends BaseCollider {
 			if (this.animation && !this.animation.paused) this.animation.pause();
 			let yOffset = this.base.mesh.rotation.y + Math.PI * 0.05;
 			if (this.nextTower) yOffset += Math.PI * 0.05;
+			const updateHandler = this.isActivated ? this.update.bind(this) : null;
 			this.animation = anime({
 				targets: this.base.mesh.rotation,
 				y: yOffset,
 				duration: 300,
 				easing: 'easeOutQuad',
-				update: this.update.bind(this),
+				update: updateHandler,
 			});
 		} else if (key === controlsKeys.interact.default && this.type === 'start') {
 			if (this.isActivated) this.desactivate();
@@ -157,7 +156,8 @@ export default class LaserTower extends BaseCollider {
 		const _d = this.direction.clone();
 		_d.applyQuaternion(this.base.mesh.quaternion);
 
-		this.ray.set(this.base.mesh.position, _d);
+		this.ray.direction.copy(_d);
+		// this.ray.set(this.base.mesh.position, _d);
 
 		const _newMaxDistance = this.base.mesh.position
 			.clone()

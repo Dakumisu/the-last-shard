@@ -14,9 +14,9 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 			this.remove(this.currentObjects[0]);
 		super.add(object);
 		if (object.base.isInteractable && !object.isInBroadphaseRange) {
-			/// #if DEBUG
-			console.log('🎮 Press F to interact');
-			/// #endif
+			// /// #if DEBUG
+			// console.log('🎮 Press F to interact');
+			// /// #endif
 			object.isInBroadphaseRange = true;
 		}
 	}
@@ -24,9 +24,9 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 	remove(object) {
 		super.remove(object);
 		if (object.base.isInteractable && object.isInBroadphaseRange) {
-			/// #if DEBUG
-			console.log('🎮 Out of range to interact');
-			/// #endif
+			// /// #if DEBUG
+			// console.log('🎮 Out of range to interact');
+			// /// #endif
 			object.isInBroadphaseRange = false;
 		}
 	}
