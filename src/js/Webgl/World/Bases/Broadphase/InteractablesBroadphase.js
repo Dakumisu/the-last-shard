@@ -13,7 +13,7 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 		if (this.currentObjects[0] && this.currentObjects[0] !== object)
 			this.remove(this.currentObjects[0]);
 		super.add(object);
-		if (object.isInteractable && !object.isInBroadphaseRange) {
+		if (object.base.isInteractable && !object.isInBroadphaseRange) {
 			/// #if DEBUG
 			console.log('🎮 Press F to interact');
 			/// #endif
@@ -23,7 +23,7 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 
 	remove(object) {
 		super.remove(object);
-		if (object.isInteractable && object.isInBroadphaseRange) {
+		if (object.base.isInteractable && object.isInBroadphaseRange) {
 			/// #if DEBUG
 			console.log('🎮 Out of range to interact');
 			/// #endif
@@ -38,8 +38,8 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 		this.objectsToTest.forEach((object) => {
 			tBox3c.makeEmpty();
 			// temporary
-			tBox3c.copy(object.children[0].geometry.boundingBox);
-			tMat4b.copy(object.children[0].matrixWorld);
+			tBox3c.copy(object.base.mesh.geometry.boundingBox);
+			tMat4b.copy(object.base.mesh.matrixWorld);
 			tBox3c.applyMatrix4(tMat4b);
 
 			const d = tBox3c.distanceToPoint(positionToTest);

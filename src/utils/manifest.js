@@ -1,3 +1,5 @@
+import { loadJSON } from 'philbin-packages/loader';
+
 /**
  * Assets es6 Map
  * @type {Map<string, {path: string | string[], data: any}>}
@@ -40,23 +42,20 @@ assetsMap.set('grassTexture', {
 	data: {},
 });
 
-const assetsPath = import.meta.glob('../../public/assets/export/*.glb');
+export async function loadManifestAssets() {
+	const manifestPath = 'assets/export/Scenes.json';
+	const scenesManifest = await loadJSON(manifestPath);
 
-for (const path in assetsPath) {
-	const _p = assetsPath[path].name.split('../../public').pop();
+	for (const key in scenesManifest) {
+		const _assets = scenesManifest[key].assets;
 
-	const _n = assetsPath[path].name
-		.split('../../public/assets/export/')
-		.pop()
-		.split('.glb')
-		.shift()
-		.toLowerCase();
-
-	assetsMap.set(_n, {
-		path: _p,
-		data: {},
-		isLoading: false,
-	});
+		_assets.forEach((asset) => {
+			assetsMap.set(asset, {
+				path: '/assets/export/Asset_' + asset + '.glb',
+				data: {},
+			});
+		});
+	}
 }
 
 export default assetsMap;

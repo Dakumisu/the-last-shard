@@ -10,11 +10,15 @@ import { Group, Vector3 } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
-import { deferredPromise } from 'philbin-packages/async';
+import { deferredPromise, wait } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
 import Prop from '@webgl/World/Bases/Props/Prop';
-import Interactable from '@webgl/World/Bases/Props/Interactable';
 import Ground from '@webgl/World/Bases/Props/Ground';
+import BaseObject from '@webgl/World/Bases/BaseObject';
+import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
+import LaserGame from '@game/LaserGame';
+
+import LaserTower from '../World/Bases/Interactables/LaserTower';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -150,26 +154,58 @@ export default class BaseScene {
 	async _loadProps(props) {
 		await Promise.all(
 			props.map(async (prop) => {
-				const _prop = new Prop({ prop, group: this.props });
+				const _prop = new BaseObject({
+					isInteractable: false,
+					asset: prop,
+					group: this.props,
+				});
+				await _prop.init();
 			}),
 		);
+
+		console.log('🔋 Props loaded');
 
 		this.instance.add(this.props);
 	}
 
 	async _loadInteractables(interactables) {
+		const t = [];
+		const laserGames = [];
 		await Promise.all(
 			interactables.map(async (interactable) => {
-				const _interactable = new Interactable({ interactable, group: this.interactables });
+				const { asset, params } = interactable;
+
+				if (asset.includes('LaserTower')) {
+					if (!laserGames[params.gameId]) {
+						const _laserGame = new LaserGame({ scene: this });
+						laserGames.push(_laserGame);
+					}
+
+					const _interactable = new LaserTower({
+						asset: interactable,
+						game: laserGames[params.gameId],
+						group: this.interactables,
+					});
+					await _interactable.init();
+					t.push(_interactable);
+				}
+
+				if (asset.includes('Coin')) {
+					// const _interactable = new Coin({
+					// 	asset: interactable,
+					// 	group: this.interactables,
+					// });
+					// await _interactable.init();
+					// t.push(_interactable);
+				}
 			}),
 		);
 
-		// this.interactablesBroadphase = new InteractablesBroadphase({
-		// 	radius: 2,
-		// 	objectsToTest: this.interactables,
-		// });
-
-		// console.log(this.interactablesBroadphase);
+		console.log(t);
+		this.interactablesBroadphase = new InteractablesBroadphase({
+			radius: 2,
+			objectsToTest: t,
+		});
 
 		this.instance.add(this.interactables);
 	}
@@ -222,5 +258,7 @@ export default class BaseScene {
 		if (!this.initialized) return;
 
 		if (this.checkpoints) this.checkpoints.update(et, dt);
+		if (this.interactablesBroadphase)
+			this.interactablesBroadphase.update(this.player.base.mesh.position);
 	}
 }

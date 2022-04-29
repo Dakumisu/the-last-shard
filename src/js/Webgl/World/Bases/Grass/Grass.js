@@ -22,6 +22,9 @@ import {
 	Texture,
 	Vector3,
 	Box3,
+	BoxHelper,
+	Box3Helper,
+	CameraHelper,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
@@ -32,7 +35,7 @@ import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 export default class Grass extends BaseObject {
 	/**
 	 *
-	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}} params0
+	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}}
 	 */
 
 	constructor({ scene, params }) {
@@ -83,7 +86,7 @@ export default class Grass extends BaseObject {
 	}
 
 	setRenderTarget() {
-		const boundingBox = new Box3().setFromObject(this.scene.ground.base.mesh);
+		const boundingBox = new Box3().setFromObject(this.scene.ground.base.realMesh);
 
 		this.minBox = boundingBox.min;
 		this.maxBox = boundingBox.max;
@@ -105,6 +108,9 @@ export default class Grass extends BaseObject {
 		);
 
 		this.rtCamera.position.set(center.x, this.maxBox.y + camNear, center.z);
+
+		// this.scene.instance.add(new Box3Helper(boundingBox, new Color(0x00ff00)));
+		// this.scene.instance.add(new CameraHelper(this.rtCamera));
 
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
 

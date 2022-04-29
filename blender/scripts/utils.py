@@ -143,6 +143,18 @@ class dotobject(dict):
 #### Blender ####
 #################
 
+# Create a bounding box
+def createBoundingBox(obj):
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
+    bpy.ops.mesh.primitive_cube_add()
+    bound_box = bpy.context.active_object
+    bound_box.dimensions = obj.dimensions
+    bound_box.location = obj.location
+    bound_box.rotation_euler = obj.rotation_euler
+
+    return bound_box
+
+
 # Set blender context to object mode
 def forceObjectMode():
     if not bpy.context.mode == 'OBJECT':

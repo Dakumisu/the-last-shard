@@ -1,3 +1,4 @@
+from multiprocessing.dummy import Array
 import store
 import env
 import utils
@@ -148,13 +149,13 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
 
         # Get interactable effect
-        effect = None
+        params = {}
         if isInteractable:
             for key in obj.keys():
                 if key.startswith('_'):
                     continue
-                if key != 'effect':
-                    continue
+                # if key != 'effect':
+                #     continue
                 v = obj[key]
                 if (
                     not isinstance(v, str)
@@ -164,25 +165,25 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
                 ):
                     continue
                 # Do not exports hard ops properties
-                if effect == None:
-                    effect = v
+                params[key] = v
 
+        print('----------------------------------')
+        print(params)
         objData = {}
 
         objData['asset'] = asset
+        objData['uid'] = uid
+        objData['type'] = category
 
         if obj in traversableObjs:
             objData['traversable'] = True
         else:
             objData['traversable'] = False
 
-        if isInteractable:
-            objData['uid'] = uid
-        if isInteractable and effect != None:
-            objData['effect'] = effect
+        if (isInteractable and params != None):
+            objData['params'] = params
 
         # Pack transformations
-        objData['type'] = category
         objData['transforms'] = {}
         objData['transforms']['pos'] = pos
         objData['transforms']['scale'] = scale

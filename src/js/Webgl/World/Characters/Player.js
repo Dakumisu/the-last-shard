@@ -335,14 +335,11 @@ class Player extends BaseEntity {
 	}
 
 	#setMaterial() {
-		this.base.material = new DebugMaterial();
+		// this.base.material = new DebugMaterial();
 
-		// this.base.material = new PlayerMaterial({
-		// 	color: new Color('#d29ddc'),
-		// 	transparent: true,
-		// 	opacity: 0.3,
-		// });
-		this.base.material = new MeshNormalMaterial();
+		this.base.material = new PlayerMaterial({
+			color: new Color('#d29ddc'),
+		});
 	}
 
 	#setMesh() {

@@ -19,6 +19,7 @@ import { loadGLTF } from '@utils/loaders/loadStaticGLTF';
 import { loadModel } from '@utils/loaders/loadAssets';
 import { Group } from 'three';
 import { wait } from 'philbin-packages/async';
+import { loadDynamicGLTF } from '@utils/loaders';
 
 Cache.enabled = true;
 
@@ -63,8 +64,8 @@ export default class Ground extends BaseCollider {
 	}
 
 	async loadGround() {
-		const _asset = 'Scene_' + this.label;
-		const model = await loadModel(_asset.toLowerCase());
+		const _asset = '/assets/export/Scene_' + this.label + '.glb';
+		const model = (await loadDynamicGLTF(_asset)).scene;
 
 		const base = model.children.find((m) => m.name.includes('SceneBase'));
 
@@ -82,8 +83,7 @@ export default class Ground extends BaseCollider {
 		this.instance.add(base);
 
 		// cloning issue with the model
-		const modelToMergePath = '/assets/export/' + _asset + '.glb';
-		const baseMerged = await mergeGeometry([], [modelToMergePath]);
+		const baseMerged = await mergeGeometry([], [_asset]);
 
 		this.base.mesh = new Mesh(baseMerged);
 		this.colliders.push(this.base);

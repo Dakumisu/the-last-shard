@@ -20,13 +20,17 @@
     "TreeC",
     "Urne",
     "Wall",
+    "LaserTowerBetween",
+    "LaserTowerEnd",
+    "LaserTowerStart",
     "Coin"
   ],
   "props": [
     {
       "asset": "Stairs",
-      "traversable": false,
+      "uid": "Stairs.013",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           0.0,
@@ -48,8 +52,9 @@
     },
     {
       "asset": "Coupe",
-      "traversable": false,
+      "uid": "Coupe.025",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           10.248463,
@@ -71,8 +76,9 @@
     },
     {
       "asset": "Coupe",
-      "traversable": false,
+      "uid": "Coupe.026",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           -10.281237,
@@ -94,8 +100,9 @@
     },
     {
       "asset": "TreeA",
-      "traversable": false,
+      "uid": "TreeA.013",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           -10.177802,
@@ -117,8 +124,9 @@
     },
     {
       "asset": "TreeB",
-      "traversable": false,
+      "uid": "TreeB.013",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           9.632267,
@@ -140,8 +148,9 @@
     },
     {
       "asset": "TreeC",
-      "traversable": false,
+      "uid": "TreeC.013",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           7.574594,
@@ -163,8 +172,9 @@
     },
     {
       "asset": "Urne",
-      "traversable": false,
+      "uid": "Urne.013",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           -6.419702,
@@ -186,8 +196,9 @@
     },
     {
       "asset": "Wall",
-      "traversable": false,
+      "uid": "Wall.037",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           17.693586,
@@ -209,8 +220,9 @@
     },
     {
       "asset": "Wall",
-      "traversable": false,
+      "uid": "Wall.038",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           -17.67111,
@@ -232,8 +244,9 @@
     },
     {
       "asset": "Wall",
-      "traversable": false,
+      "uid": "Wall.039",
       "type": "collider",
+      "traversable": false,
       "transforms": {
         "pos": [
           -0.281851,
@@ -256,16 +269,186 @@
   ],
   "interactables": [
     {
-      "asset": "Coin",
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.042",
+      "type": "interactable",
       "traversable": false,
-      "uid": "Coin.013",
-      "effect": "collect",
-      "type": "interactable",
+      "params": {
+        "distance": 15.0,
+        "gameId": 0
+      },
       "transforms": {
         "pos": [
-          7.270568,
-          -2e-06,
-          30.403847
+          14.749718,
+          0.0,
+          -59.954124
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.043",
+      "type": "interactable",
+      "traversable": false,
+      "params": {
+        "distance": 20.0,
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          0.73148,
+          -4e-06,
+          -66.43795
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.044",
+      "type": "interactable",
+      "traversable": false,
+      "params": {
+        "distance": 10.0,
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          15.445206,
+          0.0,
+          -70.070023
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.045",
+      "type": "interactable",
+      "traversable": false,
+      "params": {
+        "distance": 15.0,
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          7.533895,
+          7e-06,
+          -74.952652
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.046",
+      "type": "interactable",
+      "traversable": false,
+      "params": {
+        "distance": 10.0,
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          -10.997105,
+          0.0,
+          -59.422939
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerEnd",
+      "uid": "LaserTowerEnd.010",
+      "type": "interactable",
+      "traversable": false,
+      "params": {
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          -7.771252,
+          0.0,
+          -50.995636
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerStart",
+      "uid": "LaserTowerStart.010",
+      "type": "interactable",
+      "traversable": false,
+      "params": {
+        "distance": 10.0,
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          12.376774,
+          -4e-06,
+          -51.624771
         ],
         "scale": [
           1.0,
@@ -282,15 +465,15 @@
     },
     {
       "asset": "Coin",
-      "traversable": true,
-      "uid": "Coin.014",
-      "effect": "collect",
+      "uid": "Coin.058",
       "type": "interactable",
+      "traversable": true,
+      "params": {},
       "transforms": {
         "pos": [
-          8.023505,
-          0.400346,
-          36.200005
+          8.273476,
+          0.0,
+          26.356146
         ],
         "scale": [
           1.0,
@@ -307,15 +490,15 @@
     },
     {
       "asset": "Coin",
-      "traversable": true,
-      "uid": "Coin.015",
-      "effect": "collect",
+      "uid": "Coin.059",
       "type": "interactable",
+      "traversable": true,
+      "params": {},
       "transforms": {
         "pos": [
-          4.042785,
-          0.400346,
-          29.24486
+          12.398232,
+          0.0,
+          29.133286
         ],
         "scale": [
           1.0,
@@ -332,15 +515,15 @@
     },
     {
       "asset": "Coin",
-      "traversable": true,
-      "uid": "Coin.016",
-      "effect": "collect",
+      "uid": "Coin.060",
       "type": "interactable",
+      "traversable": true,
+      "params": {},
       "transforms": {
         "pos": [
-          11.302372,
-          0.400346,
-          28.836365
+          7.60354,
+          -1e-06,
+          32.825523
         ],
         "scale": [
           1.0,
@@ -357,15 +540,15 @@
     },
     {
       "asset": "Coin",
-      "traversable": true,
-      "uid": "Coin.017",
-      "effect": "collect",
+      "uid": "Coin.061",
       "type": "interactable",
+      "traversable": true,
+      "params": {},
       "transforms": {
         "pos": [
-          3.936479,
-          0.400346,
-          35.901531
+          11.483891,
+          1e-06,
+          34.182568
         ],
         "scale": [
           1.0,
@@ -384,7 +567,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.003",
+      "uid": "Spawn.012",
       "pos": [
         -10.572475,
         2.060297,
@@ -399,7 +582,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.012",
+      "uid": "Checkpoint.048",
       "pos": [
         10.579155,
         2.060297,
@@ -414,7 +597,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.013",
+      "uid": "Checkpoint.049",
       "pos": [
         -10.563803,
         2.060297,
@@ -429,7 +612,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.014",
+      "uid": "Checkpoint.050",
       "pos": [
         61.949936,
         2.060297,
@@ -444,7 +627,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.015",
+      "uid": "Checkpoint.051",
       "pos": [
         100.7435,
         13.863754,
@@ -460,7 +643,7 @@
   ],
   "curves": [
     {
-      "uid": "Helper.003",
+      "uid": "Helper.013",
       "type": "bezier",
       "closed": true,
       "points": [
@@ -511,7 +694,7 @@
       ]
     },
     {
-      "uid": "Bot.003",
+      "uid": "Bot.012",
       "type": "nurbs",
       "closed": false,
       "points": [
