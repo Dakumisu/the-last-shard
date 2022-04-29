@@ -22,9 +22,6 @@ import {
 	Texture,
 	Vector3,
 	Box3,
-	BoxHelper,
-	Box3Helper,
-	CameraHelper,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
