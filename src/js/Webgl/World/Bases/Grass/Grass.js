@@ -20,15 +20,8 @@ import {
 	OrthographicCamera,
 	WebGLRenderTarget,
 	Texture,
-	Vector2,
 	Vector3,
-	PlaneGeometry,
-	MeshBasicMaterial,
 	Box3,
-	Box3Helper,
-	CameraHelper,
-	ClampToEdgeWrapping,
-	Matrix4,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
@@ -289,8 +282,8 @@ export default class Grass extends BaseObject {
 		if (!this.initialized) return;
 
 		if (!this.renderTargetRendered) {
-			this.renderer.setRenderTarget(this.renderTarget);
 			this.renderTargetRendered = true;
+			this.renderer.setRenderTarget(this.renderTarget);
 			// Edit this to render only the Mesh/Group you want to test depth with
 			this.renderer.render(this.scene.ground.base.realMesh, this.rtCamera);
 			// this.renderer.render(this.scene.instance, this.rtCamera);

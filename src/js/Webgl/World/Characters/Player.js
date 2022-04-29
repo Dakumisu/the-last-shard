@@ -11,8 +11,6 @@ import {
 	CapsuleGeometry,
 	Vector2,
 	BufferGeometry,
-	IcosahedronGeometry,
-	Object3D,
 	MeshBasicMaterial,
 	CircleGeometry,
 	LineBasicMaterial,
