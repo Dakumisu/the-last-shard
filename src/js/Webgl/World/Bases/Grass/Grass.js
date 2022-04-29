@@ -87,10 +87,11 @@ export default class Grass extends BaseObject {
 
 	setRenderTarget() {
 		const boundingBox = new Box3().setFromObject(this.scene.ground.base.realMesh);
-		boundingBox.min.z -= 1;
-		boundingBox.max.z += 1;
-		boundingBox.min.x -= 1;
-		boundingBox.max.x += 1;
+		boundingBox.min.z -= 0.5;
+		boundingBox.max.z += 0.5;
+		boundingBox.min.x -= 0.5;
+		boundingBox.max.x += 0.5;
+		boundingBox.max.y += 0.5;
 
 		this.minBox = boundingBox.min;
 		this.maxBox = boundingBox.max;
