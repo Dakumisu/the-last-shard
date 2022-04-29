@@ -201,7 +201,6 @@ export default class BaseScene {
 			}),
 		);
 
-		console.log(t);
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 2,
 			objectsToTest: t,
