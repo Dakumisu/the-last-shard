@@ -136,8 +136,8 @@ class Webgl {
 		if (!initialized) return;
 
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
-		if (this.camera) this.camera.update();
 		if (this.renderer) this.renderer.render();
+		if (this.camera) this.camera.update();
 	}
 
 	resize() {

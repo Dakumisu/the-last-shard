@@ -110,6 +110,7 @@ function orbitController(
 	// current position in sphericalTarget coordinates
 	const sphericalDelta = new Spherical();
 	const sphericalTarget = new Spherical();
+	console.log('sphericalTarget', sphericalTarget);
 	const spherical = new Spherical();
 	const panDelta = new Vec3();
 
@@ -132,6 +133,7 @@ function orbitController(
 
 	function updatePosition() {
 		// apply rotation to offset
+
 		const sinPhiRadius = spherical.radius * Math.sin(Math.max(0.000001, spherical.phi));
 		offset.x = sinPhiRadius * Math.sin(spherical.theta);
 		offset.y = spherical.radius * Math.cos(spherical.phi);
@@ -147,26 +149,37 @@ function orbitController(
 		if (autoRotate) {
 			handleAutoRotate();
 		}
+		// console.log('beforeDelta', spherical.radius);
 
 		// apply delta
+		console.log('beforeApplyDelta', sphericalTarget.radius);
 		sphericalTarget.radius *= sphericalDelta.radius;
+		// console.log('afterApplyDelta', sphericalTarget.radius, sphericalDelta.radius);
 		sphericalTarget.theta += sphericalDelta.theta;
 		sphericalTarget.phi += sphericalDelta.phi;
 
+		// console.log('beforeBoundaries', spherical.radius);
+
+		// console.log('beforeClamp', sphericalTarget.radius, minDistance, maxDistance);
 		// apply boundaries
 		sphericalTarget.theta = clamp(sphericalTarget.theta, minAzimuthAngle, maxAzimuthAngle);
 		sphericalTarget.phi = clamp(sphericalTarget.phi, minPolarAngle, maxPolarAngle);
 		sphericalTarget.radius = clamp(sphericalTarget.radius, minDistance, maxDistance);
+
+		// console.log('beforeEase', spherical.radius, sphericalTarget.radius, ease);
 
 		// ease values
 		spherical.phi += (sphericalTarget.phi - spherical.phi) * ease;
 		spherical.theta += (sphericalTarget.theta - spherical.theta) * ease;
 		spherical.radius += (sphericalTarget.radius - spherical.radius) * ease;
 
+		// console.log('afterEase', spherical.radius);
 		// apply pan to target. As offset is relative to target, it also shifts
 		targetOffset.add(panDelta);
 
 		updatePosition();
+
+		console.log('afterUpdatePos', sphericalTarget.radius);
 
 		// Apply inertia to values
 		sphericalDelta.theta *= inertia;
@@ -203,6 +216,8 @@ function orbitController(
 
 		targetOffset.add(zKeyDelta);
 		zKeyDelta.multiplyScalar(inertia * 1.13);
+
+		console.log('afterMultiply', sphericalTarget.radius);
 	}
 
 	function offsetToSpherical(offset, spherical) {
