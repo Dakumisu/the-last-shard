@@ -1,5 +1,5 @@
 import baseUniforms from '@webgl/Materials/baseUniforms';
-import { Material, ShaderLib, UniformsUtils } from 'three';
+import { Material, UniformsUtils } from 'three';
 import defaultFragment from './defaultFragment.glsl';
 import defaultVertex from './defaultVertex.glsl';
 

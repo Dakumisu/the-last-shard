@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "vite -m development -c config/vite.config.js",
     "build": "vite build -m production -c config/vite.config.js",
-    "staging": "vite build -m staging -c config/vite.config.js"
+    "staging": "vite build -m staging -c config/vite.config.js",
+    "preview": "vite preview -c config/vite.config.js"
   },
   "dependencies": {
     "animejs": "^3.2.1",

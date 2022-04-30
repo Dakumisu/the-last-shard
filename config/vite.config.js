@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite';
+import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import glslify from 'vite-plugin-glslify';
 import handlebars from 'vite-plugin-handlebars';
 import ifdefRollupPlugin from './ifdef/ifdefRollupPlugin';
-
+import rollupConfig from './rollup.config';
 import content from '../src/json/content.json';
 
 export default ({ mode }) => {
@@ -28,6 +28,7 @@ export default ({ mode }) => {
 		},
 
 		plugins: [
+			splitVendorChunkPlugin(),
 			glslify(),
 			ifdefRollupPlugin(define),
 			handlebars({
@@ -95,6 +96,10 @@ export default ({ mode }) => {
 					outputStyle: 'compressed',
 				},
 			},
+		},
+
+		build: {
+			rollupOptions: rollupConfig,
 		},
 	});
 };

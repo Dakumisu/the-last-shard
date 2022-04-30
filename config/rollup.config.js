@@ -1,11 +1,13 @@
 export default {
-	input: 'src/app.js',
 	output: {
-		file: 'app.js',
-		format: 'cjs',
+		dir: 'dist',
+		format: 'es',
+		manualChunks: {
+			three: ['three'],
+		},
 	},
 	treeshake: {
-		moduleSideEffects: false,
+		// moduleSideEffects: false,
 		tryCatchDeoptimization: true,
 		propertyReadSideEffects: true,
 		unknownGlobalSideEffects: true,
