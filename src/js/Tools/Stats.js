@@ -35,9 +35,8 @@ export default class StatsJs {
 			typeof WebGL2RenderingContext !== 'undefined' &&
 			_context instanceof WebGL2RenderingContext;
 
-		if (!webGL2 || !this.render.extension) {
-			this.desactivate();
-		}
+		if (!webGL2) this.desactivate();
+		else if (!this.render.extension) this.stats.showPanel(0);
 	}
 
 	beforeRender() {
