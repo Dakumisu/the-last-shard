@@ -150,7 +150,7 @@ export default class Grass extends BaseObject {
 
 	setGeometry() {
 		this.base.positions = new Float32Array(this.params.count * 3);
-		const scale = new Float32Array(this.params.count * 3);
+		const scale = new Float32Array(this.params.count * 1);
 
 		for (let i = 0; i < this.params.count; i++) {
 			this.base.positions[i * 3 + 0] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
@@ -173,7 +173,7 @@ export default class Grass extends BaseObject {
 			'aPositions',
 			new InstancedBufferAttribute(this.base.positions, 3, false),
 		);
-		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 3, false));
+		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 1, false));
 	}
 
 	async setMaterial() {

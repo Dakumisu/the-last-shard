@@ -11,7 +11,7 @@ uniform sampler2D uGrassTexture;
 uniform vec3 uMaxMapBounds;
 uniform vec3 uMinMapBounds;
 
-attribute vec3 aScale;
+attribute float aScale;
 attribute vec3 aPositions;
 
 varying vec3 vPos;

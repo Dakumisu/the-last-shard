@@ -57,7 +57,7 @@ export default class SandboxScene extends BaseScene {
 			scene: this,
 			params: {
 				color: '#de47ff',
-				count: 300000,
+				count: 100000,
 				verticeScale: 0.42,
 				halfBoxSize: 30,
 				maskRange: 0.04,
