@@ -40,7 +40,7 @@ export default class StatsJs {
 	}
 
 	beforeRender() {
-		if (!this.active) return;
+		if (!this.active && !this.render.extension) return;
 
 		// Setup
 		this.queryCreated = false;
@@ -83,7 +83,7 @@ export default class StatsJs {
 	}
 
 	afterRender() {
-		if (!this.active) return;
+		if (!this.active && !this.render.extension) return;
 
 		// End the query (result will be available "later")
 		if (this.queryCreated) {
