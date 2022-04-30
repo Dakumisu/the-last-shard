@@ -38,7 +38,7 @@ assetsMap.set('noiseTexture', {
 });
 
 assetsMap.set('grassTexture', {
-	path: '/assets/image/grass.png',
+	path: '/assets/image/grass.ktx2',
 	data: {},
 });
 

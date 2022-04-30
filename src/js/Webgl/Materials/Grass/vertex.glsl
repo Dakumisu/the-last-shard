@@ -71,7 +71,7 @@ void main() {
 
 	vFade = elevation;
 
-	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).r;
+	float scaleFromTexture = 1. - texture2D(uGrassTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	pos *= scaleFromTexture;
 
