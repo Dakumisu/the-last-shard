@@ -1,5 +1,5 @@
 import { getWebgl } from '../Webgl';
-import signal from 'philbin-packages/signal/Signal';
+import signal from 'philbin-packages/signal';
 
 /// #if DEBUG
 import { CameraHelper } from 'three';

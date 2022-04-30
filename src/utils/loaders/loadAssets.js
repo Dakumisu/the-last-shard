@@ -32,7 +32,7 @@ export async function loadTexture(key) {
 	const path = manifest.get(key)?.path;
 	if (!path) {
 		/// #if DEBUG
-		console.error('Texture key not found');
+		console.error(`Texture ${key} not found`);
 		/// #endif
 		return;
 	}
@@ -62,7 +62,7 @@ export async function loadCubeTexture(key) {
 	const path = manifest.get(key)?.path;
 	if (!path) {
 		/// #if DEBUG
-		console.error('Texture key not found');
+		console.error(`Texture ${key} not found`);
 		/// #endif
 		return;
 	}
@@ -84,7 +84,7 @@ export async function loadAudio(key) {
 	const path = manifest.get(key)?.path;
 	if (!path) {
 		/// #if DEBUG
-		console.error('Audio key not found');
+		console.error(`Audio ${key} not found`);
 		/// #endif
 		return;
 	}

@@ -1,6 +1,7 @@
 import { store } from '@tools/Store';
 import { getWebgl } from '@webgl/Webgl';
 import { PerspectiveCamera } from 'three';
+import signal from 'philbin-packages/signal';
 
 export default class MainCamera {
 	constructor() {
@@ -13,6 +14,14 @@ export default class MainCamera {
 		webgl.mainScene.instance.add(this.instance);
 
 		this.cameraController = webgl.cameraController;
+
+		signal.on('keydown', (key) => {
+			if (key === 'C') {
+				console.log('📹 Cameras :', this.cameraController.cameras);
+				console.log('📹 Current Camera :', this.cameraController.currentCamera);
+				console.log('📹 Main Camera :', this);
+			}
+		});
 	}
 
 	resize() {
