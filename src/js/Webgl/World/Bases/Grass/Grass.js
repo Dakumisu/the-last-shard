@@ -150,7 +150,7 @@ export default class Grass extends BaseObject {
 
 	setGeometry() {
 		this.base.positions = new Float32Array(this.params.count * 3);
-		const scale = new Float32Array(this.params.count * 1);
+		const scale = new Float32Array(this.params.count * 3);
 
 		for (let i = 0; i < this.params.count; i++) {
 			this.base.positions[i * 3 + 0] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
