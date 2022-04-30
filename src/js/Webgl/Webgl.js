@@ -16,8 +16,8 @@ import MainScene from './Scene/MainScene';
 import World from './World/World';
 
 /// #if DEBUG
-import Debug from '@tools/Debug?debug';
-import OrbitCamera from './Camera/Cameras/OrbitCamera?debug';
+import Debug from '@tools/Debug';
+import OrbitCamera from './Camera/Cameras/OrbitCamera';
 /// #endif
 
 let initialized = false;

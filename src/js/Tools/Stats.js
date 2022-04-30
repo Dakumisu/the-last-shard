@@ -8,6 +8,12 @@ export default class StatsJs {
 		this.stats = new Stats();
 		this.stats.showPanel(3);
 
+		this.render = {
+			context: null,
+			extension: null,
+			panel: null,
+		};
+
 		this.active = false;
 
 		this.activate();
@@ -26,10 +32,9 @@ export default class StatsJs {
 	}
 
 	setRenderPanel(_context) {
-		this.render = {};
-		this.render.context = _context;
-		this.render.extension = this.render.context.getExtension('EXT_disjoint_timer_query_webgl2');
-		this.render.panel = this.stats.addPanel(new Stats.Panel('Render (ms)', '#f8f', '#212'));
+		(this.render.context = _context),
+			(this.render.extension = _context.getExtension('EXT_disjoint_timer_query_webgl2'));
+		this.render.panel = this.stats.addPanel(new Stats.Panel('Render', '#ff8', '#221'));
 
 		const webGL2 =
 			typeof WebGL2RenderingContext !== 'undefined' &&
