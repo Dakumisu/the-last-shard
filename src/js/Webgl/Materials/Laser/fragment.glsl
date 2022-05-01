@@ -9,34 +9,52 @@ varying vec3 vNormal;
 
 void main() {
 
-  float time = uTime * 0.0001;
+  float time = uTime * 0.00025;
 
   vec3 normal = vNormal;
 
+  float noiseFactor = 2.;
 
+  // Uv repeat with noise
   vec2 uv = vUv;
-  uv += sin(uv);
-  uv =  fract(uv + time);
 
-  float noiseUv = abs(cnoise(uv * 2. + time));
+  uv += uv;
+  uv = fract(uv + time);
+
+  float noiseUv = (cnoise(uv * noiseFactor + time));
+  float noiseUvHigh = abs(cnoise(uv * noiseFactor * 2. + time));
 
   float textUv = texture2D(uTexture, uv).r;
 
+  // Pos repeat with noise
   vec3 pos = vPos;
-  pos.xz += sin(uv);
-  pos =  fract(pos + time);
 
-  float noisePos = abs(cnoise(pos.xz * 2. + time));
+  pos.xz += uv;
+  pos = fract(pos + time);
+
+  float noisePos = (cnoise(pos.xz * noiseFactor + time));
+  float noisePosHigh = abs(cnoise(pos.xz * noiseFactor * 2. + time));
 
   float textPos = texture2D(uTexture, pos.xz).r;
 
-  float render = mix(textPos, textUv, noiseUv / noisePos);
-  float render2 = mix(textUv, textPos, noiseUv / noisePos);
+  // RGB
+  float firstMix = mix(textPos, textUv, noiseUv / noisePos);
+  float lastMix = mix(textPos, textUv, noiseUvHigh / noisePosHigh);
 
-  float sStart = smoothstep(0., 0.25, vUv.x);
-  float sEnd = smoothstep(0., 0.25, 1.0 - vUv.x);
-  float sEdges = sStart * sEnd;
+  vec3 color = vec3(0.5, 0.5, 1.);
+  vec3 color2 = vec3(1.0, 0., 0.);
 
-  gl_FragColor = vec4(vec3(vNormal), sEdges);
-  gl_FragColor = vec4(vec3(render), sEdges);
+  vec3 firstRender = mix(vec3(firstMix), color2, noiseUv * noisePos);
+  vec3 lastRender = mix(vec3(lastMix), color, noiseUvHigh * noisePosHigh);
+
+  vec3 globalRender = firstRender + lastRender;
+  globalRender *= color;
+
+  // Alpha
+  float smoothUvStart = 1.0 - smoothstep(noiseUvHigh * noisePosHigh, 1., uv).r;
+  float smoothUvEnd = 1.0 - smoothstep(noiseUvHigh * noisePosHigh, 1., 1.0 - uv).r;
+  float SmoothUv = smoothUvStart * smoothUvEnd;
+
+
+  gl_FragColor = vec4(globalRender, (firstMix / lastMix));
 }

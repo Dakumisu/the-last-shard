@@ -29,6 +29,7 @@ export default class LaserGame {
 		const texture = await loadTexture('laserTexture');
 		texture.wrapS = RepeatWrapping;
 		texture.wrapT = RepeatWrapping;
+
 		const lineMaterial = new LaserMaterial({
 			transparent: true,
 			side: DoubleSide,
@@ -75,7 +76,7 @@ export default class LaserGame {
 	updateGeometry() {
 		this.lineMesh.geometry =
 			this.curve.points.length > 1
-				? new TubeGeometry(this.curve, 30, 0.25, 30, false)
+				? new TubeGeometry(this.curve, 30, 0.05, 30, false)
 				: this.dummyGeo;
 	}
 }
