@@ -42,6 +42,11 @@ assetsMap.set('grassTexture', {
 	data: {},
 });
 
+assetsMap.set('laserTexture', {
+	path: '/assets/image/laser.png',
+	data: {},
+});
+
 export async function loadManifestAssets() {
 	const manifestPath = 'assets/export/Scenes.json';
 	const scenesManifest = await loadJSON(manifestPath);

@@ -21,14 +21,12 @@ export default class LaserTower extends BaseCollider {
 		between: null,
 		end: null,
 	};
-	static laserMaterial = new LaserMaterial();
-	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 10, 5, false)
-		.rotateZ(Math.PI / 2)
-		.rotateY(Math.PI / 2)
-		.translate(0, 2, 0.5);
 
 	constructor({ asset = {}, direction = null, game, group }) {
 		super({ type: 'nonWalkable', isInteractable: true });
+
+		this.game = game;
+		this.game.laserTowers.push(this);
 
 		this.asset = asset;
 		this.group = group;
@@ -36,10 +34,7 @@ export default class LaserTower extends BaseCollider {
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
 
-		this.laserMesh = new Mesh(LaserTower.laserGeometry, LaserTower.laserMaterial);
-		this.laserMesh.scale.set(1, 1, this.maxDistance);
-
-		this.laserMesh.visible = false;
+		this.laserMesh = null;
 
 		this.isActivated = false;
 
@@ -53,9 +48,6 @@ export default class LaserTower extends BaseCollider {
 
 		this.animation = null;
 
-		this.game = game;
-		this.game.laserTowers.push(this);
-
 		this.initialized = false;
 	}
 
@@ -67,6 +59,11 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray.set(this.base.mesh.position, this.direction);
 
+		this.laserMesh = new Mesh(this.game.laserGeometry, this.game.laserMaterial);
+		console.log(this.laserMesh);
+		this.laserMesh.scale.set(1, 1, this.maxDistance);
+
+		this.laserMesh.visible = false;
 		this.base.mesh.add(this.laserMesh);
 
 		this.initialized = true;
