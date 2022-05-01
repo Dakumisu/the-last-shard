@@ -16,14 +16,14 @@ import { LaserMaterial } from '@webgl/Materials/Laser/material';
 
 export default class LaserGame {
 	static laserMaterial;
-	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 20, 5, false)
+	static laserGeometry = new CylinderGeometry(0.05, 0.05, 1, 20, 5, false)
 		.rotateZ(Math.PI / 2)
 		.rotateY(Math.PI / 2)
 		.translate(0, 2, 0.5);
 
 	/**
 	 *
-	 * @param {{scene: BaseScene, yOffset?: number}} param0
+	 * @param {{scene: BaseScene}} param0
 	 */
 	constructor({ scene }) {
 		this.laserTowers = [];

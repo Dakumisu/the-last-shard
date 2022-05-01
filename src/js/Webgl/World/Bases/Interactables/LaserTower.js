@@ -170,6 +170,8 @@ export default class LaserTower extends BaseCollider {
 		_d.applyQuaternion(this.base.mesh.quaternion);
 
 		this.ray.direction.copy(_d);
+
+		if (this.laserMesh.scale.z !== this.maxDistance) this.laserMesh.scale.z = this.maxDistance;
 		// this.ray.set(this.base.mesh.position, _d);
 
 		this.game.laserTowers.forEach((nextLaserTower) => {
