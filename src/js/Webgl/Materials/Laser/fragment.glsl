@@ -9,7 +9,7 @@ varying vec3 vNormal;
 
 void main() {
 
-  float time = uTime * 0.00025;
+  float time = -uTime * 0.00025;
 
   vec3 normal = vNormal;
 
