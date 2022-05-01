@@ -40,20 +40,18 @@ void main() {
   // RGB
   float firstMix = mix(textPos, textUv, noiseUv / noisePos);
   float lastMix = mix(textPos, textUv, noiseUvHigh / noisePosHigh);
+  float mixRender = firstMix + lastMix;
 
-  vec3 color = vec3(0.5, 0.5, 1.);
-  vec3 color2 = vec3(1.0, 0., 0.);
+  vec3 color = vec3(0.0, 0.5, 1.0);
+  vec3 render = vec3(mixRender) * color;
 
-  vec3 firstRender = mix(vec3(firstMix), color2, noiseUv * noisePos);
+  vec3 firstRender = mix(vec3(firstMix), color, noiseUv * noisePos);
   vec3 lastRender = mix(vec3(lastMix), color, noiseUvHigh * noisePosHigh);
 
-  vec3 globalRender = firstRender + lastRender;
-  globalRender *= color;
-
   // Alpha
-  float smoothUvStart = 1.0 - smoothstep(noiseUvHigh * noisePosHigh, 1., uv).r;
-  float smoothUvEnd = 1.0 - smoothstep(noiseUvHigh * noisePosHigh, 1., 1.0 - uv).r;
+  float smoothUvStart = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, uv).r;
+  float smoothUvEnd = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, 1.0 - uv).r;
   float SmoothUv = smoothUvStart * smoothUvEnd;
 
-  gl_FragColor = vec4(globalRender, (firstMix / lastMix));
+  gl_FragColor = vec4(render, mixRender);
 }
