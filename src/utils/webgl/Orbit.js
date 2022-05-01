@@ -152,7 +152,7 @@ function orbitController(
 		// console.log('beforeDelta', spherical.radius);
 
 		// apply delta
-		console.log('beforeApplyDelta', sphericalTarget.radius);
+		// console.log('beforeApplyDelta', sphericalTarget.radius);
 		sphericalTarget.radius *= sphericalDelta.radius;
 		// console.log('afterApplyDelta', sphericalTarget.radius, sphericalDelta.radius);
 		sphericalTarget.theta += sphericalDelta.theta;
@@ -179,7 +179,7 @@ function orbitController(
 
 		updatePosition();
 
-		console.log('afterUpdatePos', sphericalTarget.radius);
+		// console.log('afterUpdatePos', sphericalTarget.radius);
 
 		// Apply inertia to values
 		sphericalDelta.theta *= inertia;
@@ -217,7 +217,7 @@ function orbitController(
 		targetOffset.add(zKeyDelta);
 		zKeyDelta.multiplyScalar(inertia * 1.13);
 
-		console.log('afterMultiply', sphericalTarget.radius);
+		// console.log('afterMultiply', sphericalTarget.radius);
 	}
 
 	function offsetToSpherical(offset, spherical) {
