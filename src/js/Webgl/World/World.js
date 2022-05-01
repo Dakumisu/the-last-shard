@@ -68,7 +68,7 @@ export default class World {
 			const _scene = new newScene(datas);
 			_scene.preload();
 
-			this.sceneController.add(_scene, i === 0);
+			this.sceneController.add(_scene, i === 1);
 		});
 
 		// TODO: get saved scene from localStorage

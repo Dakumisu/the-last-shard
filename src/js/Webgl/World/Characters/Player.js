@@ -120,7 +120,6 @@ let camInertie = 0;
 let camAxisTarget = 0;
 
 /// #if DEBUG
-
 const debug = {
 	instance: null,
 	label: 'Player',
@@ -650,8 +649,8 @@ class Player extends BaseEntity {
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.copy(this.checkpoint.pos);
 		this.base.mesh.quaternion.copy(this.checkpoint.qt);
-		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y);
+		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position || this.checkpoint.pos);
+		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y || 0);
 	}
 
 	resize() {
