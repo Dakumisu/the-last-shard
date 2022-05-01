@@ -4,7 +4,7 @@ import defaultFragment from './defaultFragment.glsl';
 import defaultVertex from './defaultVertex.glsl';
 
 class BaseShaderMaterial extends Material {
-	constructor(parameters) {
+	constructor(parameters = {}) {
 		super();
 
 		this.type = 'ShaderMaterial';
