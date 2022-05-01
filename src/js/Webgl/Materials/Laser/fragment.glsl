@@ -41,8 +41,9 @@ void main() {
   float firstMix = mix(textPos, textUv, noiseUv / noisePos);
   float lastMix = mix(textPos, textUv, noiseUvHigh / noisePosHigh);
   float mixRender = firstMix + lastMix;
+  float mixRenderAlpha = firstMix / lastMix;
 
-  vec3 color = vec3(0.0, 0.5, 1.0);
+  vec3 color = vec3(0.5, 0.5, 1.0);
   vec3 render = vec3(mixRender) * color;
 
   vec3 firstRender = mix(vec3(firstMix), color, noiseUv * noisePos);

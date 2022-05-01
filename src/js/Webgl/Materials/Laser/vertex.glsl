@@ -17,17 +17,15 @@ void main() {
 	newUv += newUv;
 	newUv = fract(newUv + time);
 
-	float textUv = texture2D(uTexture, position.xz + time).r;
+	float textUv = texture2D(uTexture, newUv + time).r;
 
 	vec3 newPos = position;
 
-	newPos.xz += uv;
+	newPos += newPos;
 	newPos = fract(newPos + time);
 	float textPos = texture2D(uTexture, newPos.xz).r;
 
-	vec3 fPos = position;
-
-	fPos += normal * textPos;
+	vec3 fPos = position + normal * textPos * 0.2;
 
 	vUv = uv;
 	vPos = position;

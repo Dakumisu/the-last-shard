@@ -5,7 +5,7 @@ import { LaserMaterial } from '@webgl/Materials/Laser/material';
 
 export default class LaserGame {
 	static laserMaterial;
-	static laserGeometry = new CylinderGeometry(0.05, 0.05, 1, 30, 50, true)
+	static laserGeometry = new CylinderGeometry(0.05, 0.05, 1, 128, 128, true)
 		.rotateZ(Math.PI / 2)
 		.rotateY(Math.PI / 2)
 		.translate(0, 2, 0.5);
