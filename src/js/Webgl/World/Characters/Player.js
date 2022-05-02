@@ -245,19 +245,14 @@ class Player extends BaseEntity {
 		const material = new LineBasicMaterial({
 			color: '#ffffff',
 		});
+
 		const points = [];
-		// console.log(tLine3);
 		points.push(new Vector3(0, tLine3.start.y, 0));
 		points.push(new Vector3(0, tLine3.end.y, 0));
 		const geometry = new BufferGeometry().setFromPoints(points);
-		// console.log(geometry);
 
 		this.capsuleHelper = new Line(geometry, material);
 		this.base.group.add(this.capsuleHelper);
-
-		this.boxHelperA = new Box3Helper(tBox3a, 0xffffff);
-		this.boxHelperB = new Box3Helper(tBox3b, 0xffffff);
-		// this.scene.add(this.boxHelperA, this.boxHelperB);
 	}
 	/// #endif
 
@@ -600,6 +595,11 @@ class Player extends BaseEntity {
 	}
 
 	#updatePlayerCam(dt) {
+		if (this.base.camera.orbit.sphericalTarget.radius === NaN) {
+			console.log(this.base.camera.orbit.sphericalTarget);
+			console.log(camInertie);
+			debugger;
+		}
 		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
 		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + camInertie);
 

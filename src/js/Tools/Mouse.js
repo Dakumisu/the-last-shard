@@ -12,9 +12,9 @@ export default class Mouse {
 		const webgl = getWebgl();
 		this.camera = webgl.camera.instance;
 
-		document.addEventListener('mousemove', this.getMousesPositions.bind(this));
-
 		this.initMouses();
+
+		document.addEventListener('mousemove', this.getMousesPositions.bind(this));
 	}
 
 	initMouses() {
