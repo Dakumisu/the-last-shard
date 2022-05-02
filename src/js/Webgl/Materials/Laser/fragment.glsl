@@ -15,7 +15,7 @@ void main() {
 // Global
 	float time = -uTime * uTimeIntensity;
 	float noiseFactor = 2.;
-	float globalNoise = 0.4;
+	float globalNoise = 0.35;
 
   // Uv repeat with noise
 	vec2 uv = vUv;

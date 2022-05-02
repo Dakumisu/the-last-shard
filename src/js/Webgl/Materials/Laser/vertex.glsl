@@ -15,10 +15,10 @@ void main() {
 	float time = -uTime * uTimeIntensity;
 
 // Noise
-	float noise = cnoise(position.xz * 20. + time * 2.);
+	float noise = cnoise(position.xz * 20. + time * 10.);
 
 // Render
-	vec3 pos = position + normal * (noise) * 0.075;
+	vec3 pos = position + normal * abs(noise) * 0.035;
 
 // Varying
 	vNoise = noise;
