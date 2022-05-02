@@ -1,17 +1,7 @@
 import { store } from '@tools/Store';
 import manifest from '@utils/manifest';
 import { getWebgl } from '@webgl/Webgl';
-import { Group } from 'three';
-import {
-	AudioLoader,
-	CubeTexture,
-	CubeTextureLoader,
-	LoadingManager,
-	RGBAFormat,
-	sRGBEncoding,
-	Texture,
-	TextureLoader,
-} from 'three';
+import { AudioLoader, CubeTexture, CubeTextureLoader, Group, Texture, TextureLoader } from 'three';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 import { loadGLTF } from './loadDynamicGLTF';
 
@@ -39,8 +29,7 @@ export async function loadTexture(key) {
 	let loader = textureLoader;
 	if (path.includes('.ktx2')) {
 		if (!basisLoaderInit) {
-			basisLoader.detectSupport(getWebgl().renderer.renderer);
-			basisLoaderInit = true;
+			detectBasisSupport();
 		}
 		loader = basisLoader;
 	}
@@ -69,7 +58,25 @@ export async function loadCubeTexture(key) {
 
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
-		loadedTexture = await cubeTextureLoader.loadAsync(path);
+		if (Array.isArray(path) && path[0].includes('.ktx2')) {
+			if (!basisLoaderInit) {
+				detectBasisSupport();
+			}
+			console.log('loadCubeTexture', path);
+			const textures = [];
+			for (let i = 0; i < path.length; i++) {
+				textures.push(await basisLoader.loadAsync(path[i]));
+			}
+			loadedTexture = new CubeTexture(textures);
+			loadedTexture.minFilter = textures[0].minFilter;
+			loadedTexture.magFilter = textures[0].magFilter;
+			loadedTexture.format = textures[0].format;
+			loadedTexture.encoding = textures[0].encoding;
+			loadedTexture.type = textures[0].type;
+			loadedTexture.needsUpdate = true;
+			console.log(loadedTexture);
+		} else loadedTexture = await cubeTextureLoader.loadAsync(path);
+
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
@@ -125,4 +132,9 @@ export async function loadModel(key) {
 	}
 
 	return loadedModel.clone(true);
+}
+
+function detectBasisSupport() {
+	basisLoader.detectSupport(getWebgl().renderer.renderer);
+	basisLoaderInit = true;
 }
