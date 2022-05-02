@@ -9,7 +9,6 @@ import { loadModel } from '@utils/loaders/loadAssets';
 import { Group } from 'three';
 import { DoubleSide } from 'three';
 import { Color } from 'three';
-import { LaserMaterial } from '@webgl/Materials/Laser/material';
 
 export default class LaserTower extends BaseCollider {
 	/**
@@ -34,7 +33,7 @@ export default class LaserTower extends BaseCollider {
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
 
-		this.laserMesh = null;
+		this.laserGroup = new Group();
 
 		this.isActivated = false;
 
@@ -59,11 +58,18 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray.set(this.base.mesh.position, this.direction);
 
-		this.laserMesh = new Mesh(this.game.laserGeometry, this.game.laserMaterial);
-		this.laserMesh.scale.set(1, 1, this.maxDistance);
-		this.laserMesh.visible = false;
+		this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterial);
+		this.outerLaser = new Mesh(
+			this.game.laserGeometry,
+			new BaseToonMaterial({ color: 0xffffff }),
+		);
+		this.outerLaser.scale.setScalar(1.1);
 
-		this.base.mesh.add(this.laserMesh);
+		this.laserGroup.scale.set(1, 1, this.maxDistance);
+		this.laserGroup.add(this.innerLaser, this.outerLaser);
+		this.laserGroup.visible = false;
+
+		this.base.mesh.add(this.laserGroup);
 
 		this.initialized = true;
 	}
@@ -105,7 +111,7 @@ export default class LaserTower extends BaseCollider {
 		this.isActivated = true;
 		if (this.type === 'end') this.game.endEvent();
 
-		this.laserMesh.visible = true;
+		this.laserGroup.visible = true;
 
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);
 
@@ -115,8 +121,8 @@ export default class LaserTower extends BaseCollider {
 	desactivate() {
 		this.isActivated = false;
 
-		this.laserMesh.visible = false;
-		this.laserMesh.scale.z = this.maxDistance;
+		this.laserGroup.visible = false;
+		this.laserGroup.scale.z = this.maxDistance;
 
 		if (this.nextTower && this.nextTower.isActivated) {
 			this.nextTower.desactivateBy(this);
@@ -170,7 +176,8 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray.direction.copy(_d);
 
-		if (this.laserMesh.scale.z !== this.maxDistance) this.laserMesh.scale.z = this.maxDistance;
+		if (this.laserGroup.scale.z !== this.maxDistance)
+			this.laserGroup.scale.z = this.maxDistance;
 		// this.ray.set(this.base.mesh.position, _d);
 
 		this.game.laserTowers.forEach((nextLaserTower) => {
@@ -190,7 +197,7 @@ export default class LaserTower extends BaseCollider {
 			// If the current tower is activated, activate the next one, if not, desactivate it
 			if (rayNextDistance <= 0.1 && !nextLaserTower.isActivated && this.isActivated) {
 				if (this.animation && !this.animation.paused) this.animation.pause();
-				this.laserMesh.scale.z = distanceFromCurrent;
+				this.laserGroup.scale.z = distanceFromCurrent;
 				nextLaserTower.activateBy(this);
 			} else if (nextLaserTower.isActivated && rayNextDistance > 0.1) {
 				nextLaserTower.desactivateBy(this);
