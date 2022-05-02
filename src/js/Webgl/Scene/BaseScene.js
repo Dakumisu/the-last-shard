@@ -155,6 +155,7 @@ export default class BaseScene {
 
 		// await Promise.all(
 		props.map(async (prop) => {
+			console.log(prop);
 			const _prop = new BaseObject({
 				isInteractable: false,
 				asset: prop,

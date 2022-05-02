@@ -44,7 +44,7 @@ assetsMap.set('grassTexture', {
 });
 
 export async function loadManifest() {
-	const scenesManifest = import.meta.globEager('../../blender/export/Scene_*.json', {
+	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json', {
 		as: 'raw',
 	});
 
@@ -57,7 +57,7 @@ export async function loadManifest() {
 		const _n = path.split('/').pop().split('.')[0];
 
 		assetsMap.set(_n, {
-			path: '../../blender/export/' + _n + '.glb',
+			path: '../../public/assets/export/' + _n + '.glb',
 			data: {},
 		});
 
@@ -68,7 +68,7 @@ export async function loadManifest() {
 				if (assetsMap.get(asset)) return;
 
 				assetsMap.set(asset, {
-					path: '../../blender/export/Asset_' + asset + '.glb',
+					path: '../../public/assets/export/Asset_' + asset + '.glb',
 					data: {},
 				});
 			});

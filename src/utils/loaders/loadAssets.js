@@ -105,6 +105,7 @@ export async function loadAudio(key) {
  */
 export async function loadModel(key) {
 	const path = manifest.get(key)?.path;
+	console.log(path);
 	if (!path) {
 		/// #if DEBUG
 		console.error(`Model ${key} not found`);

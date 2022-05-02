@@ -19,6 +19,9 @@ export default ({ mode }) => {
 	};
 
 	return defineConfig({
+		logLevel: 'error',
+		clearScreen: false,
+
 		server: {
 			port: '8080',
 			https: true,
