@@ -5,7 +5,7 @@ import { LaserMaterial } from '@webgl/Materials/Laser/material';
 
 export default class LaserGame {
 	static laserMaterial;
-	static laserGeometry = new CylinderGeometry(0.05, 0.05, 1, 128, 128, true)
+	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 256, 256, true)
 		.rotateZ(Math.PI / 2)
 		.rotateY(Math.PI / 2)
 		.translate(0, 2, 0.5);
@@ -39,10 +39,13 @@ export default class LaserGame {
 				side: DoubleSide,
 				uniforms: {
 					uTexture: { value: texture },
+					uTimeIntensity: { value: 0.0005 },
 				},
 			});
 		}
-		this.laserMaterial = LaserGame.laserMaterial;
 		this.laserGeometry = LaserGame.laserGeometry;
+		// this.laserGeometry.computeTangents();
+		this.laserMaterial = LaserGame.laserMaterial;
+		// this.laserMaterial.defines.USE_TANGENT = '';
 	}
 }

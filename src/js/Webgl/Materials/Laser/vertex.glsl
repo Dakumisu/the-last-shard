@@ -1,37 +1,31 @@
-uniform float uTime;
-uniform sampler2D uTexture;
+#pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
 
+uniform float uTime;
+uniform float uTimeIntensity;
+
+varying float vNoise;
 varying vec2 vUv;
 varying vec3 vPos;
 varying vec3 vNormal;
+varying vec3 vEye;
 
 void main() {
 
-	float time = -uTime * 0.00025;
+// Global
+	float time = -uTime * uTimeIntensity;
 
-	// newPos.x += sin(uTime * newPos.y * 50.) * 0.0035;
-	// newPos.y += sin(uTime * newPos.z * 50.) * 0.0035;
-	// newPos.z += sin(uTime * newPos.z * 50.) * 0.0035;
+// Noise
+	float noise = cnoise(position.xz * 20. + time * 2.);
 
-	vec2 newUv = uv;
-	newUv += newUv;
-	newUv = fract(newUv + time);
+// Render
+	vec3 pos = position + normal * (noise) * 0.075;
 
-	float textUv = texture2D(uTexture, newUv + time).r;
-
-	vec3 newPos = position;
-
-	newPos += newPos;
-	newPos = fract(newPos + time);
-	float textPos = texture2D(uTexture, newPos.xz).r;
-
-	vec3 fPos = position + normal * textPos * 0.2;
-
+// Varying
+	vNoise = noise;
 	vUv = uv;
 	vPos = position;
-	vNormal = normal;
+	vNormal = normalize(normalMatrix * normal);
+	vEye = normalize(vec3(modelViewMatrix * vec4(position, 1.0)).xyz);
 
-
-	
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(fPos, 1.0);
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
