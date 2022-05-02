@@ -48,16 +48,17 @@ export async function loadManifest() {
 		as: 'raw',
 	});
 
+	console.log(scenesManifest);
+
 	const manifest = [];
 
 	for (const path in scenesManifest) {
 		const _c = await scenesManifest[path];
-		const _jsonPath = path.split('../../').pop();
-		const _json = await loadJSON(_jsonPath);
+		const _json = _c.default;
 		const _n = path.split('/').pop().split('.')[0];
 
 		assetsMap.set(_n, {
-			path: '../../public/assets/export/' + _n + '.glb',
+			path: '../../assets/export/' + _n + '.glb',
 			data: {},
 		});
 
@@ -68,7 +69,7 @@ export async function loadManifest() {
 				if (assetsMap.get(asset)) return;
 
 				assetsMap.set(asset, {
-					path: '../../public/assets/export/Asset_' + asset + '.glb',
+					path: '../../assets/export/Asset_' + asset + '.glb',
 					data: {},
 				});
 			});
