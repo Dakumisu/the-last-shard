@@ -39,7 +39,10 @@ export default class BaseObject {
 
 		const { asset, transforms, type, traversable } = this.base.asset;
 
-		const _model = (await loadModel(asset)).children[1];
+		let _model = (await loadModel(asset)).children[1];
+
+		// if (_model.type === 'Object3D') _model = _model.parent;
+		console.log(asset, _model);
 
 		// define material in function of the type of the object
 		const material = new BaseToonMaterial({

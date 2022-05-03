@@ -58,7 +58,7 @@ export async function loadManifest() {
 		const _n = path.split('/').pop().split('.')[0];
 
 		assetsMap.set(_n, {
-			path: '../../assets/export/' + _n + '.glb',
+			path: '/assets/export/' + _n + '.glb',
 			data: {},
 		});
 
@@ -69,7 +69,7 @@ export async function loadManifest() {
 				if (assetsMap.get(asset)) return;
 
 				assetsMap.set(asset, {
-					path: '../../assets/export/Asset_' + asset + '.glb',
+					path: '/assets/export/Asset_' + asset + '.glb',
 					data: {},
 				});
 			});

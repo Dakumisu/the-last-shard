@@ -155,7 +155,6 @@ export default class BaseScene {
 
 		// await Promise.all(
 		props.map(async (prop) => {
-			console.log(prop);
 			const _prop = new BaseObject({
 				isInteractable: false,
 				asset: prop,
@@ -174,7 +173,6 @@ export default class BaseScene {
 		if (!interactables) return;
 		const t = [];
 		const laserGames = [];
-		// await Promise.all(
 		interactables.map(async (interactable) => {
 			const { asset, params } = interactable;
 
@@ -200,10 +198,15 @@ export default class BaseScene {
 				// });
 				// await _interactable.init();
 				// t.push(_interactable);
+			} else {
+				const _interactable = new BaseObject({
+					isInteractable: false,
+					asset: interactable,
+					group: this.interactables,
+				});
+				await _interactable.init();
 			}
 		}),
-			// );
-
 			console.log(t);
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 2,
