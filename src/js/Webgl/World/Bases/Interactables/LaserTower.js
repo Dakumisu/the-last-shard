@@ -58,12 +58,8 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray.set(this.base.mesh.position, this.direction);
 
-		this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterial);
-		this.outerLaser = new Mesh(
-			this.game.laserGeometry,
-			new BaseToonMaterial({ color: 0xffffff }),
-		);
-		this.outerLaser.scale.setScalar(1.1);
+		this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialInner);
+		this.outerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialOuter);
 
 		this.laserGroup.scale.set(1, 1, this.maxDistance);
 		this.laserGroup.add(this.innerLaser, this.outerLaser);

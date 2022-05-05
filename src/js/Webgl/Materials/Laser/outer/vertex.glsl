@@ -17,8 +17,15 @@ void main() {
 // Noise
 	float noise = cnoise(position.xz * 20. + time * 10.);
 
+// Edges elevation
+	float smoothUvStart = 1.0 - smoothstep(0., 1.0, uv.y);
+	float smoothUvEnd = 1.0 - smoothstep(0., 1.0, 1.0 - uv.y);
+	float smoothUvEdges = smoothUvStart * smoothUvEnd;
+
 // Render
-	vec3 pos = position + normal * abs(noise) * 0.035;
+	vec3 pos = position + normal * abs(noise) * 0.0175;
+	pos.xy += normal.xy * 0.125;
+	pos += normal * smoothUvEdges * abs(sin(time + noise * 0.05)) * 0.4;
 
 // Varying
 	vNoise = noise;

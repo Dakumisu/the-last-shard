@@ -60,9 +60,14 @@ void main() {
 	vec3 render = mix(innerRender, outsideRender, a);
 
   // Alpha
-	float smoothUvStart = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, uv).r;
-	float smoothUvEnd = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, 1.0 - uv).r;
-	float SmoothUv = smoothUvStart * smoothUvEnd;
+	float aStart = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, uv.x);
+	float aEnd = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, 1.0 - uv.x);
+	float aMix = aStart * aEnd;
+	float smoothUvStart = 1.0 - smoothstep(.0, 1.0, vUv.y);
+	float smoothUvEnd = 1.0 - smoothstep(.0, 1.0, 1.0 - vUv.y);
+	float smoothUvEdges = smoothUvStart * smoothUvEnd;
 
-	gl_FragColor = vec4(render, mixRender / a);
+	gl_FragColor.rgb = render;
+	gl_FragColor.a = 1.0 - (a / smoothUvEdges * aMix * 0.025);
+	gl_FragColor.a = (mixRender / a / aMix) * smoothUvEdges;
 }

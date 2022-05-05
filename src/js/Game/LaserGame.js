@@ -1,10 +1,12 @@
 import BaseScene from '@webgl/Scene/BaseScene';
-import { RepeatWrapping, DoubleSide, CylinderGeometry } from 'three';
+import { DoubleSide, CylinderGeometry, AdditiveBlending } from 'three';
 import { loadTexture } from '@utils/loaders';
-import { LaserMaterial } from '@webgl/Materials/Laser/material';
+import { LaserMaterialInner } from '@webgl/Materials/Laser/inner/material';
+import { LaserMaterialOuter } from '@webgl/Materials/Laser/outer/material';
 
 export default class LaserGame {
-	static laserMaterial;
+	static laserMaterialInner;
+	static laserMaterialOuter;
 	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 256, 256, true)
 		.rotateZ(Math.PI / 2)
 		.rotateY(Math.PI / 2)
@@ -29,23 +31,29 @@ export default class LaserGame {
 	}
 
 	async init() {
-		if (!LaserGame.laserMaterial) {
-			const texture = await loadTexture('laserTexture');
-			// texture.wrapS = RepeatWrapping;
-			// texture.wrapT = RepeatWrapping;
+		const texture = await loadTexture('laserTexture');
 
-			LaserGame.laserMaterial = new LaserMaterial({
-				transparent: true,
-				side: DoubleSide,
-				uniforms: {
-					uTexture: { value: texture },
-					uTimeIntensity: { value: 0.0005 },
-				},
-			});
-		}
+		LaserGame.laserMaterialInner = new LaserMaterialInner({
+			transparent: true,
+			side: DoubleSide,
+			uniforms: {
+				uTexture: { value: texture },
+				uTimeIntensity: { value: 0.001 },
+			},
+		});
+
+		LaserGame.laserMaterialOuter = new LaserMaterialOuter({
+			transparent: true,
+			side: DoubleSide,
+			blending: AdditiveBlending,
+			uniforms: {
+				uTimeIntensity: { value: 0.001 },
+			},
+		});
+
 		this.laserGeometry = LaserGame.laserGeometry;
-		// this.laserGeometry.computeTangents();
-		this.laserMaterial = LaserGame.laserMaterial;
-		// this.laserMaterial.defines.USE_TANGENT = '';
+		this.laserMaterialInner = LaserGame.laserMaterialInner;
+		this.laserMaterialOuter = LaserGame.laserMaterialOuter;
+		// this.laserMaterial.defines.USE_TANGENT = ''
 	}
 }
