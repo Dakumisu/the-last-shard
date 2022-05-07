@@ -17,6 +17,7 @@ export default class BaseObject {
 			mesh: null,
 			name,
 			isInteractable,
+			isRawMesh: false,
 			asset,
 			group,
 		};
@@ -39,24 +40,37 @@ export default class BaseObject {
 
 		const { asset, transforms, type, traversable } = this.base.asset;
 
-		let _model = (await loadModel(asset)).children[1];
-
-		// if (_model.type === 'Object3D') _model = _model.parent;
-		console.log(asset, _model);
+		let _model = await loadModel(asset);
 
 		// define material in function of the type of the object
-		const material = new BaseToonMaterial({
+		const materials = {};
+		materials.collider = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#ED4646'),
 		});
+		materials.interactable = new BaseToonMaterial({
+			side: DoubleSide,
+			color: new Color('#224646'),
+		});
 
 		_model.traverse((obj) => {
-			if (obj.material) obj.material = material;
-			// TODO: get bounding box from blender
-			// ça prend sur le perf
+			if (obj.material)
+				obj.material = this.base.isInteractable
+					? materials.interactable
+					: materials.collider;
+
 			if (obj.geometry) obj.geometry.computeBoundingBox();
-			if (obj.isMesh) this.base.mesh = obj;
+
+			if (obj.userData.name) {
+				if (obj.userData.name.includes('RawMesh')) {
+					this.base.mesh = obj;
+					this.base.isRawMesh = true;
+				}
+			}
+			if (obj.isMesh && !this.base.isRawMesh) this.base.mesh = obj;
 		});
+
+		// console.log('🎮 Loaded :', asset, this.base.mesh);
 
 		if (!this.base.mesh) return;
 
@@ -72,10 +86,11 @@ export default class BaseObject {
 		this.base.mesh.traversable = traversable;
 		this.base.group.add(this.base.mesh);
 
-		this.show(transforms.scale);
+		this.show();
 	}
 
-	show(scale) {
+	show() {
+		const { scale } = this.base.asset.transforms;
 		anime({
 			targets: this.base.mesh.scale,
 			easing: 'spring(1, 190, 10, 1)',
@@ -91,9 +106,9 @@ export default class BaseObject {
 			targets: this.base.mesh.scale,
 			easing: 'spring(1, 190, 10, 1)',
 			duration: 1000,
-			x: ['', 0.00001],
-			y: ['', 0.00001],
-			z: ['', 0.00001],
+			x: ['', 0.001],
+			y: ['', 0.001],
+			z: ['', 0.001],
 		});
 	}
 

@@ -20,11 +20,11 @@ export default class LaserTower extends BaseCollider {
 		between: null,
 		end: null,
 	};
-	constructor({ asset = {}, direction = null, game, group }) {
+	constructor({ asset = null, direction = null, game, group }) {
 		super({ mesh: null, name, type: 'nonWalkable', isInteractable: true });
 
-		this.asset = asset;
-		this.group = group;
+		this.base.asset = asset;
+		this.base.group = group;
 
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
@@ -50,7 +50,7 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	async init() {
-		await this.loadAsset();
+		await super.init();
 
 		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
 		else this.base.mesh.getWorldDirection(this.direction);
@@ -58,39 +58,6 @@ export default class LaserTower extends BaseCollider {
 		this.ray.set(this.base.mesh.position, this.direction);
 
 		this.initialized = true;
-	}
-
-	async loadAsset() {
-		this.base.mesh = await LaserTower.getModel(this.type, this.asset.asset);
-
-		const { asset, transforms, type, traversable } = this.asset;
-
-		const material = new BaseToonMaterial({
-			side: DoubleSide,
-			color: new Color('#ED4646'),
-		});
-
-		this.base.mesh.material = material;
-
-		this.base.mesh.position.fromArray(transforms.pos);
-		this.base.mesh.quaternion.fromArray(transforms.qt);
-		this.base.mesh.scale.fromArray(transforms.scale);
-		// this.base.mesh.scale.setScalar(0.00001);
-		this.base.mesh.name = asset;
-
-		this.base.mesh.propType = type;
-		this.base.mesh.traversable = traversable;
-
-		this.group.add(this.base.mesh);
-
-		// anime({
-		// 	targets: this.base.mesh.scale,
-		// 	easing: 'spring(1, 190, 10, 1)',
-		// 	duration: 1000,
-		// 	x: [0.00001, transforms.scale[0]],
-		// 	y: [0.00001, transforms.scale[1]],
-		// 	z: [0.00001, transforms.scale[2]],
-		// });
 	}
 
 	activate() {
@@ -154,6 +121,8 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	update() {
+		if (!this.initialized) return;
+
 		const _d = this.direction.clone();
 		_d.applyQuaternion(this.base.mesh.quaternion);
 
@@ -186,17 +155,5 @@ export default class LaserTower extends BaseCollider {
 			} else if (nextLaserTower.isActivated && rayNextDistance > 0.1)
 				nextLaserTower.desactivateBy(this);
 		});
-	}
-
-	static async getModel(type, asset) {
-		let geo;
-
-		if (LaserTower.geometries[type]) geo = LaserTower.geometries[type].clone();
-		else {
-			geo = (await loadModel(asset)).children[1].geometry;
-			LaserTower.geometries[type] = geo;
-		}
-
-		return new Mesh(geo, new BaseToonMaterial({ color: 0xffffff }));
 	}
 }

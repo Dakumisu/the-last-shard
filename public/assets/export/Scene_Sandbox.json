@@ -270,7 +270,7 @@
   "interactables": [
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.047",
+      "uid": "LaserTowerBetween.005",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -298,7 +298,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.048",
+      "uid": "LaserTowerBetween.006",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -326,7 +326,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.049",
+      "uid": "LaserTowerBetween.007",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -354,7 +354,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.050",
+      "uid": "LaserTowerBetween.008",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -382,7 +382,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.051",
+      "uid": "LaserTowerBetween.009",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -410,7 +410,7 @@
     },
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.011",
+      "uid": "LaserTowerEnd.002",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -437,7 +437,7 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.011",
+      "uid": "LaserTowerStart.002",
       "type": "interactable",
       "traversable": false,
       "params": {

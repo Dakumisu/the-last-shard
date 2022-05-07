@@ -44,7 +44,7 @@ def export(fp, col, textureOnly=False):
     # Create data dict
     # Will be exported as a json file next to the glb one
     data = {
-        'name': name
+        'name': name,
     }
 
     if textureOnly:
@@ -121,7 +121,7 @@ def export(fp, col, textureOnly=False):
     # Normalize name for exportable meshes
     for obj in toExport:
         objName = obj['type']
-        obj.pop('asset')
+        # obj.pop('asset')
         obj.name = objName
 
     # Add bounds directly to the glb
@@ -135,11 +135,13 @@ def export(fp, col, textureOnly=False):
         objName += str(b[1][1]) + '|'
         objName += str(b[1][2])
         objName += '_'
-        obj = bpy.data.objects.new(objName, None)
-        copyCol.objects.link(obj)
-        toExport.append(obj)
 
-    # Also append data to a json file
+    # objName = name
+    # obj = bpy.data.objects.new(objName, None)
+    # copyCol.objects.link(obj)
+    # toExport.append(obj)
+
+    # Filename for the glb file
     fname = 'Asset_' + name
 
     # Export textures

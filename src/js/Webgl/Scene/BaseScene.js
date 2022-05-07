@@ -18,6 +18,7 @@ import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/Interactables
 import LaserGame from '@game/LaserGame';
 
 import LaserTower from '../World/Bases/Interactables/LaserTower';
+import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -171,8 +172,10 @@ export default class BaseScene {
 
 	async _loadInteractables(interactables) {
 		if (!interactables) return;
+
 		const t = [];
 		const laserGames = [];
+
 		interactables.map(async (interactable) => {
 			const { asset, params } = interactable;
 
@@ -189,25 +192,33 @@ export default class BaseScene {
 				});
 				await _interactable.init();
 				t.push(_interactable);
-			}
-
-			if (asset.includes('Coin')) {
+			} else if (asset.includes('Coin')) {
 				// const _interactable = new Coin({
+				// 	isInteractable: true,
 				// 	asset: interactable,
 				// 	group: this.interactables,
 				// });
 				// await _interactable.init();
 				// t.push(_interactable);
-			} else {
-				const _interactable = new BaseObject({
-					isInteractable: false,
+			} else if (asset.includes('Fragment')) {
+				const _interactable = new Fragment({
+					isInteractable: true,
 					asset: interactable,
 					group: this.interactables,
 				});
 				await _interactable.init();
+				t.push(_interactable);
+			} else {
+				const _interactable = new BaseObject({
+					isInteractable: true,
+					asset: interactable,
+					group: this.interactables,
+				});
+				await _interactable.init();
+				// t.push(_interactable);
 			}
-		}),
-			console.log(t);
+		});
+
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 2,
 			objectsToTest: t,

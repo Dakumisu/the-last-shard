@@ -23,7 +23,6 @@
     "BookB",
     "CandleA",
     "Fountain",
-    "Fragment",
     "ParkourPlatformA",
     "ParkourPlatformB",
     "ParkourPlatformC",
@@ -39,12 +38,13 @@
     "VaseB",
     "WallA",
     "LostTemple",
-    "Bridge"
+    "Bridge",
+    "Fragment"
   ],
   "interactables": [
     {
       "asset": "Generator",
-      "uid": "Generator.010",
+      "uid": "Generator.012",
       "type": "interactable",
       "traversable": false,
       "params": {},
@@ -69,7 +69,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.010",
+      "uid": "LaserTowerBetween.012",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -97,7 +97,7 @@
     },
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.010",
+      "uid": "LaserTowerEnd.012",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -124,7 +124,7 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.010",
+      "uid": "LaserTowerStart.012",
       "type": "interactable",
       "traversable": false,
       "params": {
@@ -149,12 +149,37 @@
           1.0
         ]
       }
+    },
+    {
+      "asset": "Fragment",
+      "uid": "Fragment.002",
+      "type": "interactable",
+      "traversable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -4.143486,
+          4.078583,
+          -33.034557
+        ],
+        "scale": [
+          1.6431514,
+          1.6431514,
+          1.6431514
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
     }
   ],
   "props": [
     {
       "asset": "Barrel",
-      "uid": "Barrel.118",
+      "uid": "Barrel.144",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -178,7 +203,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.119",
+      "uid": "Barrel.145",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -202,7 +227,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.120",
+      "uid": "Barrel.146",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -226,7 +251,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.121",
+      "uid": "Barrel.147",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -250,7 +275,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.122",
+      "uid": "Barrel.148",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -274,7 +299,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.123",
+      "uid": "Barrel.149",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -298,7 +323,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.124",
+      "uid": "Barrel.150",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -322,7 +347,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.125",
+      "uid": "Barrel.151",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -346,7 +371,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.126",
+      "uid": "Barrel.152",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -370,7 +395,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.127",
+      "uid": "Barrel.153",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -394,7 +419,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.128",
+      "uid": "Barrel.154",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -418,7 +443,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.129",
+      "uid": "Barrel.155",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -442,7 +467,7 @@
     },
     {
       "asset": "Barrel",
-      "uid": "Barrel.130",
+      "uid": "Barrel.156",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -466,7 +491,7 @@
     },
     {
       "asset": "Block",
-      "uid": "Block.019",
+      "uid": "Block.023",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -490,7 +515,7 @@
     },
     {
       "asset": "Block",
-      "uid": "Block.020",
+      "uid": "Block.024",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -514,7 +539,7 @@
     },
     {
       "asset": "BookA",
-      "uid": "BookA.037",
+      "uid": "BookA.045",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -538,7 +563,7 @@
     },
     {
       "asset": "BookA",
-      "uid": "BookA.038",
+      "uid": "BookA.046",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -562,7 +587,7 @@
     },
     {
       "asset": "BookA",
-      "uid": "BookA.039",
+      "uid": "BookA.047",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -586,7 +611,7 @@
     },
     {
       "asset": "BookA",
-      "uid": "BookA.040",
+      "uid": "BookA.048",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -610,7 +635,7 @@
     },
     {
       "asset": "BookB",
-      "uid": "BookB.046",
+      "uid": "BookB.056",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -634,7 +659,7 @@
     },
     {
       "asset": "BookB",
-      "uid": "BookB.047",
+      "uid": "BookB.057",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -658,7 +683,7 @@
     },
     {
       "asset": "BookB",
-      "uid": "BookB.048",
+      "uid": "BookB.058",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -682,7 +707,7 @@
     },
     {
       "asset": "BookB",
-      "uid": "BookB.049",
+      "uid": "BookB.059",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -706,7 +731,7 @@
     },
     {
       "asset": "BookB",
-      "uid": "BookB.050",
+      "uid": "BookB.060",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -730,7 +755,7 @@
     },
     {
       "asset": "CandleA",
-      "uid": "CandleA.028",
+      "uid": "CandleA.034",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -754,7 +779,7 @@
     },
     {
       "asset": "CandleA",
-      "uid": "CandleA.029",
+      "uid": "CandleA.035",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -778,7 +803,7 @@
     },
     {
       "asset": "CandleA",
-      "uid": "CandleA.030",
+      "uid": "CandleA.036",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -802,7 +827,7 @@
     },
     {
       "asset": "Fountain",
-      "uid": "Fountain.010",
+      "uid": "Fountain.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -825,32 +850,8 @@
       }
     },
     {
-      "asset": "Fragment",
-      "uid": "Fragment.010",
-      "type": "collider",
-      "traversable": false,
-      "transforms": {
-        "pos": [
-          -4.58106,
-          4.538636,
-          -33.156105
-        ],
-        "scale": [
-          3.43408942,
-          3.43408942,
-          3.43408942
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
       "asset": "ParkourPlatformA",
-      "uid": "ParkourPlatformA.046",
+      "uid": "ParkourPlatformA.056",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -874,7 +875,7 @@
     },
     {
       "asset": "ParkourPlatformA",
-      "uid": "ParkourPlatformA.047",
+      "uid": "ParkourPlatformA.057",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -898,7 +899,7 @@
     },
     {
       "asset": "ParkourPlatformA",
-      "uid": "ParkourPlatformA.048",
+      "uid": "ParkourPlatformA.058",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -922,7 +923,7 @@
     },
     {
       "asset": "ParkourPlatformB",
-      "uid": "ParkourPlatformB.019",
+      "uid": "ParkourPlatformB.023",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -946,7 +947,7 @@
     },
     {
       "asset": "ParkourPlatformB",
-      "uid": "ParkourPlatformB.020",
+      "uid": "ParkourPlatformB.024",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -970,7 +971,7 @@
     },
     {
       "asset": "ParkourPlatformC",
-      "uid": "ParkourPlatformC.010",
+      "uid": "ParkourPlatformC.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -994,7 +995,7 @@
     },
     {
       "asset": "ParkourPlatformA",
-      "uid": "ParkourPlatformA.049",
+      "uid": "ParkourPlatformA.059",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1018,7 +1019,7 @@
     },
     {
       "asset": "ParkourPlatformA",
-      "uid": "ParkourPlatformA.050",
+      "uid": "ParkourPlatformA.060",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1042,7 +1043,7 @@
     },
     {
       "asset": "Pillar",
-      "uid": "Pillar.037",
+      "uid": "Pillar.045",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1066,7 +1067,7 @@
     },
     {
       "asset": "Pillar",
-      "uid": "Pillar.038",
+      "uid": "Pillar.046",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1090,7 +1091,7 @@
     },
     {
       "asset": "Pillar",
-      "uid": "Pillar.039",
+      "uid": "Pillar.047",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1114,7 +1115,7 @@
     },
     {
       "asset": "Pillar",
-      "uid": "Pillar.040",
+      "uid": "Pillar.048",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1138,7 +1139,7 @@
     },
     {
       "asset": "Podium",
-      "uid": "Podium.010",
+      "uid": "Podium.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1162,7 +1163,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.105",
+      "uid": "Ramp.137",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1186,7 +1187,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.106",
+      "uid": "Ramp.138",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1210,7 +1211,7 @@
     },
     {
       "asset": "Skull",
-      "uid": "Skull.019",
+      "uid": "Skull.023",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1234,7 +1235,7 @@
     },
     {
       "asset": "Skull",
-      "uid": "Skull.020",
+      "uid": "Skull.024",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1258,7 +1259,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.053",
+      "uid": "Stairs.069",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1282,7 +1283,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.107",
+      "uid": "Ramp.139",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1306,7 +1307,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.108",
+      "uid": "Ramp.140",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1330,7 +1331,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.054",
+      "uid": "Stairs.070",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1354,7 +1355,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.109",
+      "uid": "Ramp.141",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1378,7 +1379,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.110",
+      "uid": "Ramp.142",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1402,7 +1403,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.055",
+      "uid": "Stairs.071",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1426,7 +1427,7 @@
     },
     {
       "asset": "Stool",
-      "uid": "Stool.010",
+      "uid": "Stool.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1450,7 +1451,7 @@
     },
     {
       "asset": "Table",
-      "uid": "Table.010",
+      "uid": "Table.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1474,7 +1475,7 @@
     },
     {
       "asset": "TempleGateA",
-      "uid": "TempleGateA.010",
+      "uid": "TempleGateA.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1498,7 +1499,7 @@
     },
     {
       "asset": "VaseA",
-      "uid": "VaseA.010",
+      "uid": "VaseA.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1522,7 +1523,7 @@
     },
     {
       "asset": "VaseB",
-      "uid": "VaseB.010",
+      "uid": "VaseB.012",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1546,7 +1547,7 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.019",
+      "uid": "WallA.023",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1570,7 +1571,7 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.020",
+      "uid": "WallA.024",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1594,7 +1595,7 @@
     },
     {
       "asset": "LostTemple",
-      "uid": "LostTemple.006",
+      "uid": "LostTemple.008",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1618,7 +1619,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.111",
+      "uid": "Ramp.143",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1642,7 +1643,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.112",
+      "uid": "Ramp.144",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1666,7 +1667,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.113",
+      "uid": "Ramp.145",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1690,7 +1691,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.114",
+      "uid": "Ramp.146",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1714,7 +1715,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.115",
+      "uid": "Ramp.147",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1738,7 +1739,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.116",
+      "uid": "Ramp.148",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1762,7 +1763,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.117",
+      "uid": "Ramp.149",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1786,7 +1787,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.118",
+      "uid": "Ramp.150",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1810,7 +1811,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.119",
+      "uid": "Ramp.151",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1834,7 +1835,7 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.120",
+      "uid": "Ramp.152",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1858,7 +1859,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.056",
+      "uid": "Stairs.072",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1882,7 +1883,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.057",
+      "uid": "Stairs.073",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1906,7 +1907,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.058",
+      "uid": "Stairs.074",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1930,7 +1931,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.059",
+      "uid": "Stairs.075",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1954,7 +1955,7 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.060",
+      "uid": "Stairs.076",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -1978,7 +1979,7 @@
     },
     {
       "asset": "Bridge",
-      "uid": "Bridge.003",
+      "uid": "Bridge.005",
       "type": "collider",
       "traversable": false,
       "transforms": {
@@ -2004,7 +2005,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.010",
+      "uid": "Spawn.001",
       "pos": [
         0.0,
         2.621131,
@@ -2019,7 +2020,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.028",
+      "uid": "Checkpoint.001",
       "pos": [
         48.781921,
         2.0,
@@ -2034,7 +2035,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.029",
+      "uid": "Checkpoint.038",
       "pos": [
         -40.388245,
         1.000001,
@@ -2049,7 +2050,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.030",
+      "uid": "Checkpoint.039",
       "pos": [
         40.6231,
         2.0,
@@ -2064,7 +2065,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.031",
+      "uid": "Checkpoint.040",
       "pos": [
         -68.11544,
         2.0,
@@ -2079,7 +2080,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.032",
+      "uid": "Checkpoint.041",
       "pos": [
         -25.319645,
         9.77367,

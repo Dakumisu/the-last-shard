@@ -152,6 +152,14 @@ class Player extends BaseEntity {
 		debug.instance = webgl.debug;
 		/// #endif
 
+		signal.on('keyup', (e) => {
+			if (e === 'W') {
+				console.log(this.base.camera.orbit.sphericalTarget);
+				console.log(this.base.camera.orbit.spherical);
+				console.log(camInertie);
+			}
+		});
+
 		this.beforeInit();
 	}
 
@@ -595,13 +603,8 @@ class Player extends BaseEntity {
 	}
 
 	#updatePlayerCam(dt) {
-		if (this.base.camera.orbit.sphericalTarget.radius === NaN) {
-			console.log(this.base.camera.orbit.sphericalTarget);
-			console.log(camInertie);
-			debugger;
-		}
 		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
-		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + camInertie);
+		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + (camInertie || 0));
 
 		let axisTarget = 0;
 		let strength = 0;
