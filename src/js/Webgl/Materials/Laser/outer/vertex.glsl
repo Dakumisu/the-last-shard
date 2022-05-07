@@ -24,8 +24,8 @@ void main() {
 
 // Render
 	vec3 pos = position + normal * abs(noise) * 0.0175;
-	pos.xy += normal.xy * 0.09;
-	pos += normal * smoothUvEdges * 0.25;
+	pos.xy += normal.xy * 0.05;
+	// pos += normal * smoothUvEdges * 0.25;
 
 // Varying
 	vNoise = noise;
