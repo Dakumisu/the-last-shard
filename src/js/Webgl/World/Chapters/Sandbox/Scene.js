@@ -7,6 +7,7 @@ import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/Interactables
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
+import Particle from '@webgl/World/Bases/Particle/Particle';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -69,6 +70,16 @@ export default class SandboxScene extends BaseScene {
 			},
 		});
 		await this.grass.init();
+
+		this.particle = new Particle({
+			scene: this,
+			params: {
+				count: 50000,
+				size: 20,
+				halfBoxSize: 30,
+			},
+		});
+		await this.particle.init();
 
 		// LaserTowers
 
