@@ -45,8 +45,6 @@ assetsMap.set('grassTexture', {
 export async function loadManifest() {
 	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
 
-	console.log(scenesManifest);
-
 	const manifest = [];
 
 	for (const key in scenesManifest) {

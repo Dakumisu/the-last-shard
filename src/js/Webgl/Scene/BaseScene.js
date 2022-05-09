@@ -130,17 +130,11 @@ export default class BaseScene {
 	async loadManifest() {
 		await this.isPreloaded;
 
-		let i = 0;
 		await this._loadBase();
-		console.log(i++);
 		await this._loadProps(this.manifest.props);
-		console.log(i++);
 		await this._loadInteractables(this.manifest.interactables);
-		console.log(i++);
 		await this._loadCurves(this.manifest.curves);
-		console.log(i++);
 		await this._loadPoints(this.manifest.points);
-		console.log(i++);
 
 		this.manifestLoaded.resolve(true);
 	}
@@ -154,7 +148,6 @@ export default class BaseScene {
 	async _loadProps(props) {
 		if (!props) return;
 
-		// await Promise.all(
 		props.map(async (prop) => {
 			const _prop = new BaseObject({
 				isInteractable: false,
@@ -162,10 +155,8 @@ export default class BaseScene {
 				group: this.props,
 			});
 			await _prop.init();
-		}),
-			// );
-
-			console.log('🔋 Props loaded');
+		});
+		console.log('🔋 Props loaded');
 
 		this.instance.add(this.props);
 	}
