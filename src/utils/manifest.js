@@ -1,5 +1,4 @@
 import { store } from '@tools/Store';
-import { loadJSON } from 'philbin-packages/loader';
 
 /**
  * Assets es6 Map
