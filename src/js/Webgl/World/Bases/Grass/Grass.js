@@ -28,6 +28,9 @@ import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import BaseObject from '../BaseObject';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
+import signal from 'philbin-packages/signal';
+
+const twigsCountList = [0, 0, 80000, 100000, 300000, 400000];
 
 export default class Grass extends BaseObject {
 	/**
@@ -39,7 +42,6 @@ export default class Grass extends BaseObject {
 		super({ name: 'Grass', isInteractable: false });
 
 		this.scene = scene;
-
 		this.params = params;
 
 		const webgl = getWebgl();
@@ -47,7 +49,7 @@ export default class Grass extends BaseObject {
 
 		this.base.material = null;
 		this.base.geometry = null;
-		this.base.positions = null;
+		this.attributes = {};
 
 		this.triangle = null;
 
@@ -61,22 +63,30 @@ export default class Grass extends BaseObject {
 
 		this.renderTargetRendered = false;
 
+		this.count = twigsCountList[5];
+
+		signal.on('quality', (quality) => {
+			this.count = twigsCountList[quality];
+			this.updateAttributes();
+		});
+
+		this.initialized = false;
+
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
-
-		this.initialized = false;
 	}
 
 	async init() {
 		this.setRenderTarget();
 		this.setDefaultGeometry();
+		this.setAttributes();
 		this.setGeometry();
-		await this.setMaterial();
+		this.setMaterial();
 		this.setMesh();
 
 		/// #if DEBUG
-		this.debug();
+		this.devtools();
 		/// #endif
 
 		this.initialized = true;
@@ -148,20 +158,26 @@ export default class Grass extends BaseObject {
 		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
 	}
 
-	setGeometry() {
-		this.base.positions = new Float32Array(this.params.count * 3);
-		const scale = new Float32Array(this.params.count * 1);
+	setAttributes() {
+		this.attributes.position = new Float32Array(this.count * 3);
+		this.attributes.scale = new Float32Array(this.count * 1);
 
-		for (let i = 0; i < this.params.count; i++) {
-			this.base.positions[i * 3 + 0] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
-			this.base.positions[i * 3 + 2] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
+		for (let i = 0; i < this.count; i++) {
+			this.attributes.position[i * 3 + 0] = MathUtils.randFloatSpread(
+				this.params.halfBoxSize * 2,
+			);
+			this.attributes.position[i * 3 + 2] = MathUtils.randFloatSpread(
+				this.params.halfBoxSize * 2,
+			);
 
 			const random = MathUtils.randFloat(1, 2);
-			scale[i * 3 + 0] = random;
-			scale[i * 3 + 1] = random;
-			scale[i * 3 + 2] = random;
+			this.attributes.scale[i * 3 + 0] = random;
+			this.attributes.scale[i * 3 + 1] = random;
+			this.attributes.scale[i * 3 + 2] = random;
 		}
+	}
 
+	setGeometry() {
 		this.base.geometry = new InstancedBufferGeometry();
 
 		this.base.geometry.index = this.triangle.index;
@@ -171,12 +187,53 @@ export default class Grass extends BaseObject {
 
 		this.base.geometry.setAttribute(
 			'aPositions',
-			new InstancedBufferAttribute(this.base.positions, 3, false),
+			new InstancedBufferAttribute(this.attributes.position, 3, false),
 		);
-		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 1, false));
+		this.base.geometry.setAttribute(
+			'aScale',
+			new InstancedBufferAttribute(this.attributes.scale, 3, false),
+		);
 	}
 
-	async setMaterial() {
+	updateAttributes() {
+		const particlesCount = this.count;
+
+		this.attributes.newPosition = new Float32Array(particlesCount * 3);
+		this.attributes.newScale = new Float32Array(particlesCount * 1);
+
+		for (let i = 0; i < particlesCount; i++) {
+			this.attributes.newPosition[i * 3 + 1] = this.attributes.position[i * 3 + 1];
+			this.attributes.newPosition[i * 3 + 0] = this.attributes.position[i * 3 + 0];
+			this.attributes.newPosition[i * 3 + 2] = this.attributes.position[i * 3 + 2];
+
+			this.attributes.newScale[i + 0] = this.attributes.scale[i + 0];
+		}
+
+		this.updateGeometry();
+	}
+
+	updateGeometry() {
+		this.base.geometry = new InstancedBufferGeometry();
+
+		this.base.geometry.index = this.triangle.index;
+		this.base.geometry.attributes.position = this.triangle.attributes.position;
+		this.base.geometry.attributes.normal = this.triangle.attributes.normal;
+		this.base.geometry.attributes.uv = this.triangle.attributes.uv;
+
+		this.base.geometry.setAttribute(
+			'aPositions',
+			new InstancedBufferAttribute(this.attributes.newPosition, 3, false),
+		);
+		this.base.geometry.setAttribute(
+			'aScale',
+			new InstancedBufferAttribute(this.attributes.newScale, 3, false),
+		);
+		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 1, false));
+
+		this.base.mesh.geometry = this.base.geometry;
+	}
+
+	setMaterial() {
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
@@ -204,7 +261,7 @@ export default class Grass extends BaseObject {
 	}
 
 	/// #if DEBUG
-	debug() {
+	devtools() {
 		const canvas = document.createElement('canvas');
 		canvas.width = this.depthTexture.source.data.width;
 		canvas.height = this.depthTexture.source.data.height;
@@ -256,18 +313,18 @@ export default class Grass extends BaseObject {
 			step: 0.01,
 		}).on('change', (size) => {
 			if (!size.last) return;
-			for (let i = 0; i < this.params.count; i++) {
-				this.base.positions[i * 3 + 0] = MathUtils.randFloatSpread(
+			for (let i = 0; i < this.count; i++) {
+				this.attributes.position[i * 3 + 0] = MathUtils.randFloatSpread(
 					this.params.halfBoxSize * 2,
 				);
-				this.base.positions[i * 3 + 2] = MathUtils.randFloatSpread(
+				this.attributes.position[i * 3 + 2] = MathUtils.randFloatSpread(
 					this.params.halfBoxSize * 2,
 				);
 			}
 			this.base.material.uniforms.uHalfBoxSize.value = size.value;
 			this.base.geometry.setAttribute(
 				'aPositions',
-				new InstancedBufferAttribute(this.base.positions, 3, false),
+				new InstancedBufferAttribute(this.attributes.position, 3, false),
 			);
 		});
 		gui.addInput(this.base.material.uniforms.uMaskRange, 'value', {

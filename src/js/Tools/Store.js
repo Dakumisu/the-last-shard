@@ -26,6 +26,7 @@ const store = {
 
 	isWebGL2: true,
 
+	manifest: [],
 	loadedAssets: {
 		models: new Map(),
 		audios: new Map(),

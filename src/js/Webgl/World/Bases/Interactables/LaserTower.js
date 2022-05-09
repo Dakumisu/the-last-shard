@@ -1,34 +1,20 @@
 import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
-import { loadDynamicGLTF } from '@utils/loaders';
-import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import anime from 'animejs';
-import { CylinderGeometry, Mesh, Ray, Vector3 } from 'three';
+import { Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
-import { loadModel } from '@utils/loaders/loadAssets';
 import { Group } from 'three';
-import { DoubleSide } from 'three';
-import { Color } from 'three';
 
 export default class LaserTower extends BaseCollider {
 	/**
 	 *
 	 * @param {{ asset?: Object, direction?: Array<number>, laserYOffset: number, game: LaserGame, group?: Group}} param0
 	 */
-	static geometries = {
-		start: null,
-		between: null,
-		end: null,
-	};
-
-	constructor({ asset = {}, direction = null, game, group }) {
+	constructor({ asset = null, direction = null, game, group }) {
 		super({ type: 'nonWalkable', isInteractable: true });
 
-		this.game = game;
-		this.game.laserTowers.push(this);
-
-		this.asset = asset;
-		this.group = group;
+		this.base.asset = asset;
+		this.base.group = group;
 
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
@@ -47,11 +33,14 @@ export default class LaserTower extends BaseCollider {
 
 		this.animation = null;
 
+		this.game = game;
+		this.game.laserTowers.push(this);
+
 		this.initialized = false;
 	}
 
 	async init() {
-		await this.loadAsset();
+		await super.init();
 
 		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
 		else this.base.mesh.getWorldDirection(this.direction);
@@ -68,39 +57,6 @@ export default class LaserTower extends BaseCollider {
 		this.base.mesh.add(this.laserGroup);
 
 		this.initialized = true;
-	}
-
-	async loadAsset() {
-		this.base.mesh = await LaserTower.getModel(this.type, this.asset.asset);
-
-		const { asset, transforms, type, traversable } = this.asset;
-
-		const material = new BaseToonMaterial({
-			side: DoubleSide,
-			color: new Color('#ED4646'),
-		});
-
-		this.base.mesh.material = material;
-
-		this.base.mesh.position.fromArray(transforms.pos);
-		this.base.mesh.quaternion.fromArray(transforms.qt);
-		this.base.mesh.scale.fromArray(transforms.scale);
-		// this.base.mesh.scale.setScalar(0.00001);
-		this.base.mesh.name = asset;
-
-		this.base.mesh.propType = type;
-		this.base.mesh.traversable = traversable;
-
-		this.group.add(this.base.mesh);
-
-		// anime({
-		// 	targets: this.base.mesh.scale,
-		// 	easing: 'spring(1, 190, 10, 1)',
-		// 	duration: 1000,
-		// 	x: [0.00001, transforms.scale[0]],
-		// 	y: [0.00001, transforms.scale[1]],
-		// 	z: [0.00001, transforms.scale[2]],
-		// });
 	}
 
 	activate() {
@@ -167,6 +123,8 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	update() {
+		if (!this.initialized) return;
+
 		const _d = this.direction.clone();
 		_d.applyQuaternion(this.base.mesh.quaternion);
 
@@ -199,17 +157,5 @@ export default class LaserTower extends BaseCollider {
 				nextLaserTower.desactivateBy(this);
 			}
 		});
-	}
-
-	static async getModel(type, asset) {
-		let geo;
-
-		if (LaserTower.geometries[type]) geo = LaserTower.geometries[type].clone();
-		else {
-			geo = (await loadModel(asset)).geometry;
-			LaserTower.geometries[type] = geo;
-		}
-
-		return new Mesh(geo, new BaseToonMaterial({ color: 0xffffff }));
 	}
 }

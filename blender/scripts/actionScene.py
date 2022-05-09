@@ -112,6 +112,7 @@ def export(fp, origCol, textureOnly=False):
         elif (
             kind.startswith('curves')
             or kind.startswith('datas')
+            or kind.startswith('movable')
         ):
             entities += list(subcol.all_objects)
         elif kind.startswith('traversable'):

@@ -1,4 +1,4 @@
-import { loadJSON } from 'philbin-packages/loader';
+import { store } from '@tools/Store';
 
 /**
  * Assets es6 Map
@@ -47,20 +47,34 @@ assetsMap.set('laserTexture', {
 	data: {},
 });
 
-export async function loadManifestAssets() {
-	const manifestPath = 'assets/export/Scenes.json';
-	const scenesManifest = await loadJSON(manifestPath);
+export async function loadManifest() {
+	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
+
+	const manifest = [];
 
 	for (const key in scenesManifest) {
-		const _assets = scenesManifest[key].assets;
+		const _c = await scenesManifest[key];
+		const _json = _c.default;
+		const _n = key.split('/').pop().split('.')[0];
+		manifest.push(_json);
 
+		assetsMap.set(_n, {
+			path: '/assets/export/' + _n + '.glb',
+			data: {},
+		});
+
+		const _assets = _json.assets;
 		_assets.forEach((asset) => {
+			if (assetsMap.get(asset)) return;
+
 			assetsMap.set(asset, {
 				path: '/assets/export/Asset_' + asset + '.glb',
 				data: {},
 			});
 		});
 	}
+
+	store.manifest = manifest;
 }
 
 export default assetsMap;

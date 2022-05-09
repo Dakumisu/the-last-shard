@@ -120,7 +120,6 @@ let camInertie = 0;
 let camAxisTarget = 0;
 
 /// #if DEBUG
-
 const debug = {
 	instance: null,
 	label: 'Player',
@@ -152,6 +151,14 @@ class Player extends BaseEntity {
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		/// #endif
+
+		signal.on('keyup', (e) => {
+			if (e === 'W') {
+				console.log(this.base.camera.orbit.sphericalTarget);
+				console.log(this.base.camera.orbit.spherical);
+				console.log(camInertie);
+			}
+		});
 
 		this.beforeInit();
 	}
@@ -246,19 +253,14 @@ class Player extends BaseEntity {
 		const material = new LineBasicMaterial({
 			color: '#ffffff',
 		});
+
 		const points = [];
-		// console.log(tLine3);
 		points.push(new Vector3(0, tLine3.start.y, 0));
 		points.push(new Vector3(0, tLine3.end.y, 0));
 		const geometry = new BufferGeometry().setFromPoints(points);
-		// console.log(geometry);
 
 		this.capsuleHelper = new Line(geometry, material);
 		this.base.group.add(this.capsuleHelper);
-
-		this.boxHelperA = new Box3Helper(tBox3a, 0xffffff);
-		this.boxHelperB = new Box3Helper(tBox3b, 0xffffff);
-		// this.scene.add(this.boxHelperA, this.boxHelperB);
 	}
 	/// #endif
 
@@ -602,7 +604,7 @@ class Player extends BaseEntity {
 
 	#updatePlayerCam(dt) {
 		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
-		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + camInertie);
+		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + (camInertie || 0));
 
 		let axisTarget = 0;
 		let strength = 0;
@@ -650,8 +652,8 @@ class Player extends BaseEntity {
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.copy(this.checkpoint.pos);
 		this.base.mesh.quaternion.copy(this.checkpoint.qt);
-		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
-		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y);
+		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position || this.checkpoint.pos);
+		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y || 0);
 	}
 
 	resize() {

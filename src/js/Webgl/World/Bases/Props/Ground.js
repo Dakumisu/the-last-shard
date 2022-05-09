@@ -9,7 +9,6 @@ import {
 	MeshNormalMaterial,
 	PlaneGeometry,
 	SphereGeometry,
-	Cache,
 } from 'three';
 
 import { mergeGeometry } from '@utils/webgl';
@@ -20,8 +19,6 @@ import { loadModel } from '@utils/loaders/loadAssets';
 import { Group } from 'three';
 import { wait } from 'philbin-packages/async';
 import { loadDynamicGLTF } from '@utils/loaders';
-
-Cache.enabled = true;
 
 const twoPI = Math.PI * 2;
 
@@ -64,10 +61,13 @@ export default class Ground extends BaseCollider {
 	}
 
 	async loadGround() {
-		const _asset = '/assets/export/Scene_' + this.label + '.glb';
-		const model = (await loadDynamicGLTF(_asset)).scene;
+		const _asset = 'Scene_' + this.label;
+		console.log(_asset);
+		const modelBase = await loadModel(_asset);
+		// reload model because GLTFLoader sucks (ref issues)
+		const modelToMerge = await loadModel(_asset);
 
-		const base = model.children.find((m) => m.name.includes('SceneBase'));
+		const base = modelBase.children.find((m) => m.name.includes('SceneBase'));
 
 		this.base.realMesh = base;
 
@@ -75,16 +75,11 @@ export default class Ground extends BaseCollider {
 			side: DoubleSide,
 			color: new Color('#4e4b37'),
 		});
-
-		model.traverse((obj) => {
-			if (obj.material) obj.material = material;
-		});
+		base.material = material;
 
 		this.instance.add(base);
 
-		// cloning issue with the model
-		const baseMerged = await mergeGeometry([], [_asset]);
-
+		const baseMerged = await mergeGeometry([modelToMerge], []);
 		this.base.mesh = new Mesh(baseMerged);
 		this.colliders.push(this.base);
 

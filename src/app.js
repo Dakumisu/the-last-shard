@@ -5,12 +5,12 @@ import signal from 'philbin-packages/signal';
 import { initDom } from '@dom/Dom';
 import { initWebgl } from '@webgl/Webgl';
 import { initGame } from '@game/Game';
-import { loadManifestAssets } from '@utils/manifest';
+import { loadManifest } from '@utils/manifest';
 
 const dom = initDom();
 
 signal.once('domLoaded', async () => {
-	await loadManifestAssets();
+	await loadManifest();
 	const game = initGame();
 	const webgl = initWebgl(dom.nodes.domElements.canvas);
 });

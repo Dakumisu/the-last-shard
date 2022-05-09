@@ -10,15 +10,15 @@ import { Group, Vector3 } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
-import { deferredPromise, wait } from 'philbin-packages/async';
+import { deferredPromise } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
-import Prop from '@webgl/World/Bases/Props/Prop';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import LaserGame from '@game/LaserGame';
 
 import LaserTower from '../World/Bases/Interactables/LaserTower';
+import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -130,17 +130,11 @@ export default class BaseScene {
 	async loadManifest() {
 		await this.isPreloaded;
 
-		let i = 0;
 		await this._loadBase();
-		console.log(i++);
 		await this._loadProps(this.manifest.props);
-		console.log(i++);
 		await this._loadInteractables(this.manifest.interactables);
-		console.log(i++);
 		await this._loadCurves(this.manifest.curves);
-		console.log(i++);
 		await this._loadPoints(this.manifest.points);
-		console.log(i++);
 
 		this.manifestLoaded.resolve(true);
 	}
@@ -152,54 +146,69 @@ export default class BaseScene {
 	}
 
 	async _loadProps(props) {
-		await Promise.all(
-			props.map(async (prop) => {
-				const _prop = new BaseObject({
-					isInteractable: false,
-					asset: prop,
-					group: this.props,
-				});
-				await _prop.init();
-			}),
-		);
+		if (!props) return;
 
+		props.map(async (prop) => {
+			const _prop = new BaseObject({
+				isInteractable: false,
+				asset: prop,
+				group: this.props,
+			});
+			await _prop.init();
+		});
 		console.log('🔋 Props loaded');
 
 		this.instance.add(this.props);
 	}
 
 	async _loadInteractables(interactables) {
+		if (!interactables) return;
+
 		const t = [];
 		const laserGames = [];
-		await Promise.all(
-			interactables.map(async (interactable) => {
-				const { asset, params } = interactable;
 
-				if (asset.includes('LaserTower')) {
-					if (!laserGames[params.gameId]) {
-						const _laserGame = new LaserGame({ scene: this });
-						laserGames.push(_laserGame);
-					}
+		interactables.map(async (interactable) => {
+			const { asset, params } = interactable;
 
-					const _interactable = new LaserTower({
-						asset: interactable,
-						game: laserGames[params.gameId],
-						group: this.interactables,
-					});
-					await _interactable.init();
-					t.push(_interactable);
+			if (asset.includes('LaserTower')) {
+				if (!laserGames[params.gameId]) {
+					const _laserGame = new LaserGame({ scene: this });
+					laserGames.push(_laserGame);
 				}
 
-				if (asset.includes('Coin')) {
-					// const _interactable = new Coin({
-					// 	asset: interactable,
-					// 	group: this.interactables,
-					// });
-					// await _interactable.init();
-					// t.push(_interactable);
-				}
-			}),
-		);
+				const _interactable = new LaserTower({
+					asset: interactable,
+					game: laserGames[params.gameId],
+					group: this.interactables,
+				});
+				await _interactable.init();
+				t.push(_interactable);
+			} else if (asset.includes('Coin')) {
+				// const _interactable = new Coin({
+				// 	isInteractable: true,
+				// 	asset: interactable,
+				// 	group: this.interactables,
+				// });
+				// await _interactable.init();
+				// t.push(_interactable);
+			} else if (asset.includes('Fragment')) {
+				const _interactable = new Fragment({
+					isInteractable: true,
+					asset: interactable,
+					group: this.interactables,
+				});
+				await _interactable.init();
+				t.push(_interactable);
+			} else {
+				const _interactable = new BaseObject({
+					isInteractable: true,
+					asset: interactable,
+					group: this.interactables,
+				});
+				await _interactable.init();
+				// t.push(_interactable);
+			}
+		});
 
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 2,
@@ -210,6 +219,8 @@ export default class BaseScene {
 	}
 
 	async _loadCurves(curves) {
+		if (!curves) return;
+
 		await Promise.all(
 			curves.map(async (curve) => {
 				const _curve = new Curve({ curve, group: this.curves });
@@ -220,6 +231,8 @@ export default class BaseScene {
 	}
 
 	async _loadPoints(points) {
+		if (!points) return;
+
 		const checkpoints = [];
 
 		points.forEach((point) => {
@@ -230,11 +243,11 @@ export default class BaseScene {
 				const qt = new Quaternion().fromArray(point.qt);
 				checkpoints.push({ pos, qt });
 			}
-			// if (_t === 'spawn') {
-			// 	const pos = new Vector3().fromArray(point.pos);
-			// 	const qt = new Quaternion().fromArray(point.qt);
-			// 	checkpoints.unshift({ pos, qt });
-			// }
+			if (_t === 'spawn') {
+				const pos = new Vector3().fromArray(point.pos);
+				const qt = new Quaternion().fromArray(point.qt);
+				checkpoints.unshift({ pos, qt });
+			}
 		});
 
 		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
