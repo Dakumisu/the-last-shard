@@ -68,11 +68,11 @@ export default class World {
 			const _scene = new newScene(datas);
 			_scene.preload();
 
-			this.sceneController.add(_scene, i === 0);
+			this.sceneController.add(_scene);
 		});
 
 		// TODO: get saved scene from localStorage
-		// this.sceneController.switch('Sandbox');
+		this.sceneController.switch('Cabane');
 	}
 
 	async setPlayer() {

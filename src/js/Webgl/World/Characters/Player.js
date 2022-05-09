@@ -45,6 +45,7 @@ const tVec3a = new Vector3();
 const tVec3b = new Vector3();
 const tVec3c = new Vector3();
 const tVec3d = new Vector3();
+const tVec3e = new Vector3();
 const tVec2a = new Vector2();
 const tVec2b = new Vector2();
 const tBox3a = new Box3();
@@ -230,6 +231,14 @@ class Player extends BaseEntity {
 			});
 
 		guiPosition.addSeparator();
+
+		guiPosition
+			.addButton({
+				title: 'respawn',
+			})
+			.on('click', () => {
+				this.reset();
+			});
 	}
 
 	#helpers() {
@@ -439,7 +448,7 @@ class Player extends BaseEntity {
 		tmpSlowDown = state.slowDown;
 
 		// Rotate only if the player is moving
-		if (player.isMoving && player.realSpeed > params.speed * 0.02) {
+		if (player.isMoving) {
 			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
 			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
 			directionTarget = currentDirection + camDirection;
@@ -510,13 +519,6 @@ class Player extends BaseEntity {
 		if (!player.isMoving && player.realSpeed < params.speed * 0.97)
 			this.#checkPlayerStuck(collider, dt);
 
-		/// #if DEBUG
-		this.capsuleHelper.geometry.setFromPoints([
-			new Vector3(0, tLine3.start.y, 0),
-			new Vector3(0, tLine3.end.y, 0),
-		]);
-		/// #endif
-
 		// get the adjusted position of the capsule collider in world space after checking
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
 		// the origin of the player model.
@@ -539,10 +541,11 @@ class Player extends BaseEntity {
 
 		if (!state.playerOnGround) {
 			// prevent user sticking the ceiling
-			if (state.isMounting) {
-				deltaVector.normalize();
-				playerVelocity.addScaledVector(deltaVector, -deltaVector.dot(playerVelocity));
-			}
+			// if (state.isMounting) {
+			deltaVector.normalize();
+			tVec3e.set(0, deltaVector.y, 0);
+			playerVelocity.addScaledVector(tVec3e, -tVec3e.dot(playerVelocity));
+			// }
 		} else {
 			playerVelocity.set(0, 0, 0);
 		}
@@ -558,7 +561,7 @@ class Player extends BaseEntity {
 		if (state.isJumping) return;
 		await wait(delay);
 		state.hasJumped = state.isJumping = true;
-		playerVelocity.y = 15.0;
+		playerVelocity.y = 10.0;
 		state.isJumping = false;
 	}
 
