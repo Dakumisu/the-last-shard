@@ -7,7 +7,7 @@ import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/Interactables
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
-import Particle from '@webgl/World/Bases/Particle/Particle';
+import Particles from '@webgl/World/Bases/Particles/Particles';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -53,7 +53,7 @@ export default class SandboxScene extends BaseScene {
 			background: await this.envMapTexture,
 		});
 
-		// Init grass after fog
+		// // Init grass after fog
 		this.grass = new Grass({
 			scene: this,
 			params: {
@@ -71,15 +71,15 @@ export default class SandboxScene extends BaseScene {
 		});
 		await this.grass.init();
 
-		this.particle = new Particle({
+		this.particles = new Particles({
 			scene: this,
 			params: {
 				count: 50000,
-				size: 20,
 				halfBoxSize: 30,
+				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
-		await this.particle.init();
+		await this.particles.init();
 
 		// LaserTowers
 
@@ -166,6 +166,7 @@ export default class SandboxScene extends BaseScene {
 		super.update(et, dt);
 		if (this.ground) this.ground.update(et, dt);
 		if (this.grass) this.grass.update(et, dt);
+		if (this.particles) this.particles.update(et, dt);
 
 		// if (this.interactablesBroadphase)
 		// 	this.interactablesBroadphase.update(this.player.base.mesh.position);
