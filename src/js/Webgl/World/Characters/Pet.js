@@ -1,7 +1,7 @@
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { getWebgl } from '@webgl/Webgl';
 import { dampPrecise } from 'philbin-packages/maths';
-import { IcosahedronGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { Euler, IcosahedronGeometry, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from 'three';
 import BaseEntity from '../Bases/BaseEntity';
 import { getPlayer } from './Player';
 
@@ -13,8 +13,14 @@ const debug = {
 };
 /// #endif
 
+const STATES = {
+	FOLLOW: 0,
+	IDLE: 1,
+};
+
 const params = {
-	distanceFromPlayer: new Vector3(-1.5, 1.5, 1.5),
+	offsetFromPlayer: new Vector3(-1.5, 1.5, 1.5),
+	followTimeOut: 1,
 };
 
 class Pet extends BaseEntity {
@@ -28,6 +34,8 @@ class Pet extends BaseEntity {
 
 		this.player = getPlayer();
 		this.scene = webgl.mainScene.instance;
+
+		this.state = STATES.IDLE;
 
 		this.targetPos = new Vector3();
 
@@ -51,12 +59,29 @@ class Pet extends BaseEntity {
 		this.devltools();
 		/// #endif
 
+		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
+
+		this.base.mesh.position.copy(this.targetPos);
 		this.scene.add(this.base.mesh);
 		this.isInitialized = true;
 	}
 
 	/// #if DEBUG
 	devltools() {
+		debug.instance.setFolder(debug.label, debug.tab);
+		const gui = debug.instance.getFolder(debug.label);
+
+		const options = [];
+		for (const key in STATES) options.push({ text: key, value: STATES[key] });
+
+		console.log(options);
+		gui.addBlade({
+			view: 'list',
+			label: 'State',
+			options,
+			value: this.state,
+		}).on('change', (e) => (this.state = e.value));
+
 		this.initPhysicsVisualizer();
 	}
 	/// #endif
@@ -64,8 +89,17 @@ class Pet extends BaseEntity {
 	update(et, dt) {
 		if (!this.isInitialized) return;
 
-		this.targetPos.copy(this.player.base.mesh.position);
-		this.targetPos.add(params.distanceFromPlayer);
+		if (this.player.isMoving()) this.state = STATES.FOLLOW;
+		else this.state = STATES.IDLE;
+
+		switch (this.state) {
+			case STATES.FOLLOW:
+				this.follow(et, dt);
+				break;
+			case STATES.IDLE:
+				this.idle(et, dt);
+				break;
+		}
 
 		this.base.mesh.position.x = dampPrecise(
 			this.base.mesh.position.x,
@@ -74,6 +108,7 @@ class Pet extends BaseEntity {
 			dt,
 			0.001,
 		);
+
 		this.base.mesh.position.y = dampPrecise(
 			this.base.mesh.position.y,
 			this.targetPos.y,
@@ -81,6 +116,7 @@ class Pet extends BaseEntity {
 			dt,
 			0.001,
 		);
+
 		this.base.mesh.position.z = dampPrecise(
 			this.base.mesh.position.z,
 			this.targetPos.z,
@@ -88,9 +124,24 @@ class Pet extends BaseEntity {
 			dt,
 			0.001,
 		);
-
-		// this.base.mesh.position.copy(this.player.base.mesh.position);
 	}
+
+	follow(et, dt) {
+		console.log('follow');
+		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
+	}
+
+	idle(et, dt) {
+		console.log('idle');
+
+		this.targetPos.x = Math.cos(et) + this.targetPos.x;
+		this.targetPos.z = Math.cos(et) + this.targetPos.z;
+
+		// .copy(this.player.base.mesh.position)
+		// .add(params.offsetFromPlayer.clone().multiplyScalar(0.5));
+	}
+
+	startTimeOut() {}
 }
 
 const initPet = () => {
