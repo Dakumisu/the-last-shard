@@ -44,38 +44,32 @@ assetsMap.set('grassTexture', {
 });
 
 export async function loadManifest() {
-	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json', {
-		as: 'raw',
-	});
+	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
 
 	console.log(scenesManifest);
 
 	const manifest = [];
 
-	for (const path in scenesManifest) {
-		const _c = await scenesManifest[path];
+	for (const key in scenesManifest) {
+		const _c = await scenesManifest[key];
 		const _json = _c.default;
-		const _n = path.split('/').pop().split('.')[0];
+		const _n = key.split('/').pop().split('.')[0];
+		manifest.push(_json);
 
 		assetsMap.set(_n, {
 			path: '/assets/export/' + _n + '.glb',
 			data: {},
 		});
 
-		for (const key in scenesManifest) {
-			const _assets = scenesManifest[key].assets;
+		const _assets = _json.assets;
+		_assets.forEach((asset) => {
+			if (assetsMap.get(asset)) return;
 
-			_assets.forEach((asset) => {
-				if (assetsMap.get(asset)) return;
-
-				assetsMap.set(asset, {
-					path: '/assets/export/Asset_' + asset + '.glb',
-					data: {},
-				});
+			assetsMap.set(asset, {
+				path: '/assets/export/Asset_' + asset + '.glb',
+				data: {},
 			});
-		}
-
-		manifest.push(_json);
+		});
 	}
 
 	store.manifest = manifest;
