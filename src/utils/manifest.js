@@ -10,12 +10,12 @@ const assetsMap = new Map();
 
 assetsMap.set('envMap1', {
 	path: [
-		'/assets/image/environmentMaps/1/px.png',
-		'/assets/image/environmentMaps/1/nx.png',
-		'/assets/image/environmentMaps/1/py.png',
-		'/assets/image/environmentMaps/1/ny.png',
-		'/assets/image/environmentMaps/1/pz.png',
-		'/assets/image/environmentMaps/1/nz.png',
+		'/assets/image/environmentMaps/1/px.jpg',
+		'/assets/image/environmentMaps/1/nx.jpg',
+		'/assets/image/environmentMaps/1/py.jpg',
+		'/assets/image/environmentMaps/1/ny.jpg',
+		'/assets/image/environmentMaps/1/pz.jpg',
+		'/assets/image/environmentMaps/1/nz.jpg',
 	],
 	data: {},
 });
