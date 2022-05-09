@@ -139,8 +139,8 @@ export default class Particles extends BaseObject {
 			positions[i * 3 + 1] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
 			positions[i * 3 + 2] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
 
-			scale[i] = MathUtils.randFloat(0, 1);
-			offset[i] = MathUtils.randFloat(-5, -2);
+			scale[i] = MathUtils.randFloat(1, 2);
+			offset[i] = MathUtils.randFloat(0, 10);
 		}
 
 		this.base.geometry = new InstancedBufferGeometry();
@@ -170,6 +170,8 @@ export default class Particles extends BaseObject {
 				uPositionTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.maxBox },
 				uMinMapBounds: { value: this.minBox },
+				uColor: { value: new Color().set(this.params.color) },
+				uColor2: { value: new Color().set(this.params.color2) },
 			},
 		});
 	}

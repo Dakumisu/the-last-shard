@@ -15,6 +15,7 @@ attribute vec3 aPositions;
 varying vec2 vUv;
 varying float vFade;
 varying float vLoop;
+varying float vNoise;
 
 float N(vec2 st) {
 	return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
@@ -44,19 +45,13 @@ float map(float value, float start1, float stop1, float start2, float stop2) {
 void main() {
 	float boxSize = uHalfBoxSize * 2.;
 
-	float time = uTime * 0.0002;
+	float time = uTime * 0.0001 * aScale;
 
 	vec3 pos = position * aScale;
 
 	vec3 translation = vec3(0.);
 
-	float maxDuration = 15.;
-
-	float loop = mod(time + aOffset * maxDuration, maxDuration) / maxDuration;
-	vLoop = loop;
-
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
-	translation.y += loop * ((time + aOffset));
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
@@ -75,22 +70,39 @@ void main() {
 	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
 	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
 
-	float scaleFromTexture = 1. - texture2D(uPositionTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
-	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	pos *= scaleFromTexture;
+	// float scaleFromTexture = 1. - texture2D(uPositionTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
+	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	// pos *= scaleFromTexture;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
 	translation.y += translationOffset;
 
 	// Player trail
-	// float trailIntensity = smoothstep(2.5, 0., distance(uCharaPos, translation.xyz));
-	// vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
+	float trailIntensity = smoothstep(2.5, 0., distance(uCharaPos, translation.xyz));
+	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
 
 	// Grass displacement according to player trail
-	// translation.x -= trailIntensity * trailDirection.x * .7;
-	// pos.y *= 1. - trailIntensity;
-	// translation.z -= trailIntensity * trailDirection.y * .7;
+	translation.x -= trailIntensity * trailDirection.x * .7;
+	pos.y *= 1. - trailIntensity;
+	translation.z -= trailIntensity * trailDirection.y * .7;
+
+
+	// Looping on Y axis
+	float maxDuration = 5.;
+
+	float noise = cnoise(aPositions.xz + time * 0.6);
+	vNoise = noise;
+
+	float loop = mod(time * aScale * maxDuration, maxDuration) / maxDuration;
+	vLoop = loop;
+
+	float loopRange = 4.5;
+
+	translation.y += loop * loopRange - (loopRange * 0.25);
+
+    translation.x += noise * aOffset;
+    translation.z += noise * aOffset;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 

@@ -74,7 +74,9 @@ export default class SandboxScene extends BaseScene {
 		this.particles = new Particles({
 			scene: this,
 			params: {
-				count: 50000,
+				color: '#dea7ff',
+				color2: '#de47ff',
+				count: 1000,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
