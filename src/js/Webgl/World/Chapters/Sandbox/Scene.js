@@ -60,14 +60,13 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 300000,
-				verticeScale: 0.38,
+				verticeScale: 0.2,
 				halfBoxSize: 25,
 				maskRange: 0.04,
 				noiseElevationIntensity: 0.75,
 				noiseMouvementIntensity: 0.15,
 				windColorIntensity: 0.1,
-				displacement: 0.22,
+				displacement: 0.15,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});

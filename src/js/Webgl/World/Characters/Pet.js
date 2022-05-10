@@ -52,7 +52,7 @@ class Pet extends BaseEntity {
 
 	async init() {
 		this.base.geometry = new IcosahedronGeometry(0.08, 3);
-		this.base.material = new BaseBasicMaterial({ color: 0xffffff });
+		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
 		this.initPhysics();
