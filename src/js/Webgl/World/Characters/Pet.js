@@ -20,7 +20,7 @@ const STATES = {
 
 const params = {
 	offsetFromPlayer: new Vector3(-1.5, 1.5, 1.5),
-	idleRadius: new Vector3(-1.5, 1.5, 1.5).length(),
+	idleRadius: 1,
 	followTimeOut: 1,
 };
 
@@ -37,6 +37,7 @@ class Pet extends BaseEntity {
 		this.scene = webgl.mainScene.instance;
 
 		this.state = STATES.IDLE;
+		this.speed = 1;
 
 		this.targetPos = new Vector3();
 
@@ -72,6 +73,8 @@ class Pet extends BaseEntity {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
+		gui.addInput(this, 'speed');
+
 		this.initPhysicsVisualizer();
 	}
 	/// #endif
@@ -91,29 +94,29 @@ class Pet extends BaseEntity {
 				break;
 		}
 
-		this.base.mesh.position.x = dampPrecise(
-			this.base.mesh.position.x,
-			this.targetPos.x,
-			0.1,
-			dt,
-			0.001,
-		);
+		// this.base.mesh.position.x = dampPrecise(
+		// 	this.base.mesh.position.x,
+		// 	this.targetPos.x,
+		// 	0.1,
+		// 	dt,
+		// 	0.001,
+		// );
 
-		this.base.mesh.position.y = dampPrecise(
-			this.base.mesh.position.y,
-			this.targetPos.y,
-			0.1,
-			dt,
-			0.001,
-		);
+		// this.base.mesh.position.y = dampPrecise(
+		// 	this.base.mesh.position.y,
+		// 	this.targetPos.y,
+		// 	0.1,
+		// 	dt,
+		// 	0.001,
+		// );
 
-		this.base.mesh.position.z = dampPrecise(
-			this.base.mesh.position.z,
-			this.targetPos.z,
-			0.1,
-			dt,
-			0.001,
-		);
+		// this.base.mesh.position.z = dampPrecise(
+		// 	this.base.mesh.position.z,
+		// 	this.targetPos.z,
+		// 	0.1,
+		// 	dt,
+		// 	0.001,
+		// );
 	}
 
 	follow(et, dt) {
@@ -125,9 +128,13 @@ class Pet extends BaseEntity {
 		console.log('idle');
 
 		this.targetPos.x =
-			Math.cos(et * 0.001) * params.idleRadius * 0.5 + this.player.base.mesh.position.x;
+			Math.cos(et * 0.001 * this.speed) * params.idleRadius +
+			this.player.base.mesh.position.x;
 		this.targetPos.z =
-			Math.sin(et * 0.001) * params.idleRadius * 0.5 + this.player.base.mesh.position.z;
+			Math.sin(et * 0.001 * this.speed) * params.idleRadius +
+			this.player.base.mesh.position.z;
+
+		this.targetPos.y = Math.sin(et * 0.005) * 0.01 + this.targetPos.y;
 
 		// .copy(this.player.base.mesh.position)
 		// .add(params.offsetFromPlayer.clone().multiplyScalar(0.5));
