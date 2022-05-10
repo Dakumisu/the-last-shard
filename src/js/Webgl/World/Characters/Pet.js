@@ -121,12 +121,12 @@ class Pet extends BaseEntity {
 	}
 
 	follow(et, dt) {
-		console.log('follow');
+		// console.log('follow');
 		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
 	}
 
 	idle(et, dt) {
-		console.log('idle');
+		// console.log('idle');
 
 		this.targetPos.x =
 			Math.cos(et * 0.001 * this.speed) * params.idleRadius +
