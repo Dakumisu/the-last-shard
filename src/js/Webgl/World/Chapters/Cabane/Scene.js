@@ -1,5 +1,5 @@
-import BaseScene from '../../../Scene/BaseScene';
-import Grass from '../../Bases/Grass/Grass';
+import BaseScene from '@webgl/Scene/BaseScene';
+import Grass from '@webgl/World/Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { Vector3 } from 'three';
 import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';

@@ -68,7 +68,7 @@ const params = {
 };
 
 const camParams = {
-	radius: 5,
+	radius: 2.5,
 	phi: 1,
 	theta: 0,
 };
@@ -366,7 +366,7 @@ class Player extends BaseEntity {
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
-		this.base.model.scene.scale.set(1.5, 1.5, 1.5);
+		// this.base.model.scene.scale.set(1.5, 1.5, 1.5);
 		this.base.model.scene.translateOnAxis(params.upVector, -1.4);
 
 		this.base.group.add(this.base.model.scene);
@@ -598,7 +598,7 @@ class Player extends BaseEntity {
 	updatePlayerCam(dt) {
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
 
-		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
+		camInertie = dampPrecise(camInertie, player.realSpeed * 0.2, 0.25, dt, 0.001);
 		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + (camInertie || 0));
 
 		let axisTarget = 0;

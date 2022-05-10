@@ -1,0 +1,798 @@
+{
+  "name": "Temple",
+  "bounds": [
+    [
+      -53.323112,
+      -0.887151,
+      -53.323112
+    ],
+    [
+      53.323112,
+      0.0,
+      53.323112
+    ]
+  ],
+  "assets": [
+    "TorchPillar",
+    "TorchWallPillar",
+    "MassivePillar",
+    "FloorGrid",
+    "BrokenBarWindow",
+    "ChainsA",
+    "CandleA",
+    "CandleB",
+    "BarrierA",
+    "BigPillar",
+    "Block",
+    "ArchA",
+    "GroundA",
+    "GroundB",
+    "GroundStones",
+    "HangingChainsA",
+    "HangingChainsB",
+    "HoledGroundA",
+    "LiitlePillar",
+    "Manhole",
+    "Pebbles",
+    "PillarA",
+    "PillarB",
+    "WallStonesD",
+    "WallStonesE",
+    "WoodenPlankA",
+    "WoodenPlankB"
+  ],
+  "props": [
+    {
+      "asset": "TorchPillar",
+      "uid": "TorchPillar.003",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -14.052034,
+          0.0,
+          42.176224
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TorchWallPillar",
+      "uid": "TorchWallPillar.003",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -12.243761,
+          -1e-06,
+          41.879776
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -56.962704,
+          1e-06,
+          -1.225117
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "FloorGrid",
+      "uid": "FloorGrid.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          2.992171,
+          1.178383,
+          1.912056
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "BrokenBarWindow",
+      "uid": "BrokenBarWindow.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          10.970524,
+          2e-06,
+          -3.066849
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "ChainsA",
+      "uid": "ChainsA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          3.054975,
+          2e-06,
+          6.766802
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "CandleA",
+      "uid": "CandleA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          2.95078,
+          1.157875,
+          2.100412
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.707107,
+          -0.0,
+          0.707107
+        ]
+      }
+    },
+    {
+      "asset": "CandleB",
+      "uid": "CandleB.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          2.927637,
+          1.149996,
+          1.581861
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          -0.0,
+          -1.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "asset": "BarrierA",
+      "uid": "BarrierA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          2.664802,
+          0.0,
+          -6.59309
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "BigPillar",
+      "uid": "BigPillar.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -62.321342,
+          1e-06,
+          0.0535
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Block",
+      "uid": "Block.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -50.899231,
+          0.0,
+          -11.292816
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "ArchA",
+      "uid": "ArchA.003",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -54.652466,
+          -0.114026,
+          1.811223
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "ArchA",
+      "uid": "ArchA.004",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -59.243,
+          -0.069458,
+          1.811223
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "GroundA",
+      "uid": "GroundA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -8.178218,
+          4e-06,
+          7.101357
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "GroundB",
+      "uid": "GroundB.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -8.365831,
+          4e-06,
+          10.258461
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "GroundStones",
+      "uid": "GroundStones.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -1.781248,
+          0.0,
+          5.431324
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "HangingChainsA",
+      "uid": "HangingChainsA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          8.617589,
+          1.532125,
+          4.753817
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "HangingChainsB",
+      "uid": "HangingChainsB.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          6.283235,
+          1.590443,
+          7.097965
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "HoledGroundA",
+      "uid": "HoledGroundA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -5.722909,
+          0.149162,
+          9.00753
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LiitlePillar",
+      "uid": "LiitlePillar.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -0.095135,
+          2e-06,
+          10.238374
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Manhole",
+      "uid": "Manhole.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -2.458414,
+          2e-06,
+          8.840301
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Pebbles",
+      "uid": "Pebbles.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          1.669896,
+          1e-06,
+          2.389536
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarA",
+      "uid": "PillarA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          1.674019,
+          -2e-06,
+          9.620805
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarB",
+      "uid": "PillarB.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -2.024914,
+          1e-06,
+          10.552348
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TorchPillar",
+      "uid": "TorchPillar.004",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -4.240669,
+          -2e-06,
+          9.740016
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TorchWallPillar",
+      "uid": "TorchWallPillar.004",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -2.076038,
+          1.430022,
+          10.889307
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "asset": "WallStonesD",
+      "uid": "WallStonesD.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          -0.029772,
+          0.558644,
+          10.419518
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          -0.0,
+          -1.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "asset": "WallStonesE",
+      "uid": "WallStonesE.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          1.688007,
+          1.058731,
+          10.103459
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.377568,
+          -0.377567,
+          -0.597865,
+          0.597865
+        ]
+      }
+    },
+    {
+      "asset": "WoodenPlankA",
+      "uid": "WoodenPlankA.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          1.358821,
+          3.008732,
+          9.977737
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.57762,
+          -0.57762,
+          -0.407867,
+          0.407867
+        ]
+      }
+    },
+    {
+      "asset": "WoodenPlankB",
+      "uid": "WoodenPlankB.002",
+      "type": "collider",
+      "traversable": false,
+      "transforms": {
+        "pos": [
+          1.63324,
+          2.297648,
+          10.090708
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.597865,
+          -0.597865,
+          -0.377567,
+          0.377567
+        ]
+      }
+    }
+  ],
+  "points": [
+    {
+      "type": "Spawn",
+      "uid": "Spawn.001",
+      "pos": [
+        0.0,
+        1.273255,
+        -0.0
+      ],
+      "qt": [
+        0.0,
+        0.0,
+        -0.0,
+        1.0
+      ]
+    },
+    {
+      "type": "CheckPoint",
+      "uid": "CheckPoint.001",
+      "pos": [
+        -15.205693,
+        1.273255,
+        -0.14819
+      ],
+      "qt": [
+        0.0,
+        0.0,
+        -0.0,
+        1.0
+      ]
+    }
+  ]
+}

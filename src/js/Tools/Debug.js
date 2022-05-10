@@ -19,7 +19,6 @@ export default class Debug {
 		this.tabs = {};
 
 		this.initTab();
-		this.getTab('Player').selected = true;
 
 		this.gui.hidden = JSON.parse(localStorage.getItem('debug_hide'));
 		signal.on('keyup', (key) => {
