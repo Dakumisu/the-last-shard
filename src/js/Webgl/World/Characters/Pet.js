@@ -20,6 +20,7 @@ const STATES = {
 
 const params = {
 	offsetFromPlayer: new Vector3(-1.5, 1.5, 1.5),
+	idleRadius: new Vector3(-1.5, 1.5, 1.5).length(),
 	followTimeOut: 1,
 };
 
@@ -70,17 +71,6 @@ class Pet extends BaseEntity {
 	devltools() {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
-
-		const options = [];
-		for (const key in STATES) options.push({ text: key, value: STATES[key] });
-
-		console.log(options);
-		gui.addBlade({
-			view: 'list',
-			label: 'State',
-			options,
-			value: this.state,
-		}).on('change', (e) => (this.state = e.value));
 
 		this.initPhysicsVisualizer();
 	}
@@ -134,8 +124,10 @@ class Pet extends BaseEntity {
 	idle(et, dt) {
 		console.log('idle');
 
-		this.targetPos.x = Math.cos(et) + this.targetPos.x;
-		this.targetPos.z = Math.cos(et) + this.targetPos.z;
+		this.targetPos.x =
+			Math.cos(et * 0.001) * params.idleRadius * 0.5 + this.player.base.mesh.position.x;
+		this.targetPos.z =
+			Math.sin(et * 0.001) * params.idleRadius * 0.5 + this.player.base.mesh.position.z;
 
 		// .copy(this.player.base.mesh.position)
 		// .add(params.offsetFromPlayer.clone().multiplyScalar(0.5));
