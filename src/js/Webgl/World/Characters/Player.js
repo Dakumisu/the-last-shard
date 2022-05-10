@@ -26,18 +26,18 @@ import { getWebgl } from '@webgl/Webgl';
 import { store } from '@tools/Store';
 import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
 import { mergeGeometry } from '@utils/webgl';
-import { dampPrecise, rDampPrecise } from 'philbin-packages/maths';
+import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
 import AnimationController from '@webgl/Animation/Controller';
 import DebugMaterial from '@webgl/Materials/Debug/DebugMaterial';
 import BaseEntity from '../Bases/BaseEntity';
-import { wait } from 'philbin-packages/async';
+import { debounce, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
-const model = '/assets/model/player.glb';
+const model = '/assets/export/Ayru.glb';
 
 const PI = Math.PI;
 const PI2 = PI * 2;
@@ -74,7 +74,7 @@ const camParams = {
 };
 
 const state = {
-	playerOnGround: true,
+	isOnGround: true,
 
 	forwardPressed: false,
 	backwardPressed: false,
@@ -85,7 +85,10 @@ const state = {
 	isJumping: false,
 
 	isMounting: false,
-	isDowning: false,
+	isFalling: false,
+
+	isMoving: false,
+	isBlocked: false,
 
 	slowDown: false,
 };
@@ -93,9 +96,6 @@ let tmpSlowDown = state.slowDown;
 
 const player = {
 	realSpeed: 0,
-	isMoving: false,
-	isBlocked: false,
-
 	anim: null,
 };
 
@@ -165,7 +165,7 @@ class Player extends BaseEntity {
 	}
 
 	/// #if DEBUG
-	#devtool() {
+	devtool() {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
@@ -196,9 +196,9 @@ class Player extends BaseEntity {
 		});
 
 		guiPosition.addMonitor(state, 'hasJumped', { label: 'has jumped', type: 'graph' });
-		guiPosition.addMonitor(state, 'playerOnGround', { label: 'on ground', type: 'graph' });
+		guiPosition.addMonitor(state, 'isOnGround', { label: 'on ground', type: 'graph' });
 		guiPosition.addMonitor(state, 'isMounting', { label: 'mounting', type: 'graph' });
-		guiPosition.addMonitor(state, 'isDowning', { label: 'downing', type: 'graph' });
+		guiPosition.addMonitor(state, 'isFalling', { label: 'falling', type: 'graph' });
 
 		guiPosition.addSeparator();
 
@@ -241,7 +241,7 @@ class Player extends BaseEntity {
 			});
 	}
 
-	#helpers() {
+	helpers() {
 		this.initPhysicsVisualizer(15);
 		this.scene.add(this.physicsVisualizer);
 
@@ -275,36 +275,32 @@ class Player extends BaseEntity {
 
 	async beforeInit() {
 		/// #if DEBUG
-		this.#devtool();
+		this.devtool();
 		/// #endif
 
-		await this.#init();
+		await this.init();
 
 		/// #if DEBUG
-		this.#helpers();
+		this.helpers();
 		/// #endif
 	}
 
-	async #init() {
-		this.#setCameraPlayer();
-		this.#setGeometry();
-		this.#setMaterial();
-		this.#setMesh();
+	async init() {
+		this.setCameraPlayer();
+		this.setBodyMesh();
 
 		this.initPhysics({
 			lazyGeneration: false,
 		});
 
-		await this.#setModel();
-
-		this.#setAnimation();
-
-		this.#setListeners();
+		await this.setModel();
+		this.setAnimation();
+		this.setListeners();
 
 		initialized = true;
 	}
 
-	#setCameraPlayer() {
+	setCameraPlayer() {
 		// Create OrbitCam for the player and add it to controller
 		const playerOrbitCam = new OrbitCamera(
 			{
@@ -332,28 +328,22 @@ class Player extends BaseEntity {
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
-	#setGeometry() {
+	setBodyMesh() {
 		this.base.geometry = new CapsuleGeometry(0.5, 1.5, 10, 20);
 		this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
 			radius: {
-				base: 0.5,
+				base: 0.4,
 				body: 0.27,
 			},
 			segment: new Line3(new Vector3(), new Vector3(0, -1, 0)),
 		};
-	}
-
-	#setMaterial() {
-		// this.base.material = new DebugMaterial();
 
 		this.base.material = new PlayerMaterial({
 			color: new Color('#d29ddc'),
 		});
-	}
 
-	#setMesh() {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.base.mesh.visible = false;
 
@@ -363,17 +353,15 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.group);
 	}
 
-	#setListeners() {
+	setListeners() {
 		signal.on('checkpoint', this.setCheckpoint.bind(this));
 	}
 
-	async #setModel() {
+	async setModel() {
 		const m = await loadGLTF(model);
 
 		// m.scene.traverse((object) => {
-		// 	if (object.type === 'SkinnedMesh') {
-		// 		object.material = this.base.material;
-		// 	}
+		// 	if (object.material) object.material = this.base.material;
 		// });
 
 		this.base.model = m;
@@ -384,11 +372,98 @@ class Player extends BaseEntity {
 		this.base.group.add(this.base.model.scene);
 	}
 
-	#setAnimation() {
+	setAnimation() {
 		this.base.animation = new AnimationController({ model: this.base.model, name: 'player' });
 	}
 
-	#updateDirection() {
+	move(dt, collider) {
+		const delta = dt * 0.001;
+
+		playerVelocity.y += state.isOnGround ? 0 : delta * this.params.gravity;
+		this.base.mesh.position.addScaledVector(playerVelocity, delta);
+
+		this.updateDirection();
+		this.updateSpeed(delta, dt);
+
+		// adjust player position based on collisions
+		tBox3a.makeEmpty();
+		tMat4a.copy(collider.mesh.geometry.matrixWorld).invert();
+		tLine3.copy(this.base.capsuleInfo.segment);
+
+		// get the position of the capsule in the local space of the collider
+		tLine3.start.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
+		tLine3.end.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
+
+		// get the axis aligned bounding box of the capsule
+		tBox3a.expandByPoint(tLine3.start);
+		tBox3a.expandByPoint(tLine3.end);
+
+		tBox3b.copy(tBox3a);
+
+		tBox3a.min.addScalar(-this.base.capsuleInfo.radius.base);
+		tBox3a.max.addScalar(this.base.capsuleInfo.radius.base);
+
+		tBox3b.min.addScalar(-this.base.capsuleInfo.radius.body);
+		tBox3b.max.addScalar(this.base.capsuleInfo.radius.body);
+
+		collider.mesh.geometry.boundsTree.shapecast({
+			intersectsBounds: (box) => box.intersectsBox(tBox3a),
+
+			intersectsTriangle: (tri) => {
+				// check if the triangle is intersecting the capsule and adjust the capsule position if it is
+				const triPoint = tVec3a;
+				const capsulePoint = tVec3b;
+
+				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
+				if (distance < this.base.capsuleInfo.radius.base) {
+					const depth = this.base.capsuleInfo.radius.base - distance;
+					const direction = capsulePoint.sub(triPoint).normalize();
+
+					tLine3.start.addScaledVector(direction, depth);
+					tLine3.end.addScaledVector(direction, depth);
+				}
+			},
+		});
+
+		if (!state.isMoving && player.realSpeed < params.speed * 0.97)
+			this.checkPlayerStuck(collider, dt);
+
+		// get the adjusted position of the capsule collider in world space after checking
+		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
+		// the origin of the player model
+		const newPosition = tVec3a;
+		newPosition.copy(tLine3.start).applyMatrix4(collider.mesh.geometry.matrixWorld);
+
+		// check how much the collider was moved
+		const deltaVector = tVec3b;
+		deltaVector.subVectors(newPosition, this.base.mesh.position);
+
+		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
+		if (collider.type === 'walkable')
+			state.isOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
+
+		// this.checkPlayerPosition(dt);
+
+		const offset = Math.max(0, deltaVector.length() - 1e-5);
+		deltaVector.normalize().multiplyScalar(offset);
+
+		// adjust the player model
+		this.base.mesh.position.add(deltaVector);
+
+		if (!state.isOnGround) {
+			// prevent user sticking the ceiling
+			deltaVector.normalize();
+			tVec3e.set(0, deltaVector.y, 0);
+			playerVelocity.addScaledVector(tVec3e, -tVec3e.dot(playerVelocity));
+		} else {
+			playerVelocity.set(0, 0, 0);
+		}
+
+		// if the player has fallen too far below the level reset their position to the start
+		if (this.base.mesh.position.y < -25) this.reset();
+	}
+
+	updateDirection() {
 		playerDirection = this.base.mesh.rotation.y;
 		camDirection = this.base.camera.orbit.spherical.theta;
 
@@ -431,7 +506,7 @@ class Player extends BaseEntity {
 		currentDirection = nextDirection;
 	}
 
-	#updateSpeed(delta, dt) {
+	updateSpeed(delta, dt) {
 		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
 		if (
@@ -448,7 +523,7 @@ class Player extends BaseEntity {
 		tmpSlowDown = state.slowDown;
 
 		// Rotate only if the player is moving
-		if (player.isMoving) {
+		if (state.isMoving && player.realSpeed > params.speed * 0.02) {
 			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
 			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
 			directionTarget = currentDirection + camDirection;
@@ -467,105 +542,15 @@ class Player extends BaseEntity {
 		this.base.mesh.updateMatrixWorld();
 	}
 
-	#move(dt, collider) {
-		const delta = dt * 0.001;
-
-		playerVelocity.y += state.playerOnGround ? 0 : delta * this.params.gravity;
-		this.base.mesh.position.addScaledVector(playerVelocity, delta);
-
-		this.#updateDirection();
-		this.#updateSpeed(delta, dt);
-
-		// adjust player position based on collisions
-		tBox3a.makeEmpty();
-		tMat4a.copy(collider.mesh.geometry.matrixWorld).invert();
-		tLine3.copy(this.base.capsuleInfo.segment);
-
-		// get the position of the capsule in the local space of the collider
-		tLine3.start.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
-		tLine3.end.applyMatrix4(this.base.mesh.matrixWorld).applyMatrix4(tMat4a);
-
-		// get the axis aligned bounding box of the capsule
-		tBox3a.expandByPoint(tLine3.start);
-		tBox3a.expandByPoint(tLine3.end);
-
-		tBox3b.copy(tBox3a);
-
-		tBox3a.min.addScalar(-this.base.capsuleInfo.radius.base);
-		tBox3a.max.addScalar(this.base.capsuleInfo.radius.base);
-
-		tBox3b.min.addScalar(-this.base.capsuleInfo.radius.body);
-		tBox3b.max.addScalar(this.base.capsuleInfo.radius.body);
-
-		collider.mesh.geometry.boundsTree.shapecast({
-			intersectsBounds: (box) => box.intersectsBox(tBox3a),
-
-			intersectsTriangle: (tri) => {
-				// check if the triangle is intersecting the capsule and adjust the capsule position if it is.
-				const triPoint = tVec3a;
-				const capsulePoint = tVec3b;
-
-				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
-				if (distance < this.base.capsuleInfo.radius.base) {
-					const depth = this.base.capsuleInfo.radius.base - distance;
-					const direction = capsulePoint.sub(triPoint).normalize();
-
-					tLine3.start.addScaledVector(direction, depth);
-					tLine3.end.addScaledVector(direction, depth);
-				}
-			},
-		});
-
-		if (!player.isMoving && player.realSpeed < params.speed * 0.97)
-			this.#checkPlayerStuck(collider, dt);
-
-		// get the adjusted position of the capsule collider in world space after checking
-		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
-		// the origin of the player model.
-		const newPosition = tVec3a;
-		newPosition.copy(tLine3.start).applyMatrix4(collider.mesh.geometry.matrixWorld);
-
-		// check how much the collider was moved
-		const deltaVector = tVec3b;
-		deltaVector.subVectors(newPosition, this.base.mesh.position);
-
-		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
-		if (collider.type === 'walkable')
-			state.playerOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
-
-		const offset = Math.max(0, deltaVector.length() - 1e-5);
-		deltaVector.normalize().multiplyScalar(offset);
-
-		// adjust the player model
-		this.base.mesh.position.add(deltaVector);
-
-		if (!state.playerOnGround) {
-			// prevent user sticking the ceiling
-			// if (state.isMounting) {
-			deltaVector.normalize();
-			tVec3e.set(0, deltaVector.y, 0);
-			playerVelocity.addScaledVector(tVec3e, -tVec3e.dot(playerVelocity));
-			// }
-		} else {
-			playerVelocity.set(0, 0, 0);
-		}
-
-		// adjust the camera
-		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
-
-		// if the player has fallen too far below the level reset their position to the start
-		if (this.base.mesh.position.y < -25) this.reset();
-	}
-
-	async #jump(delay = 0) {
+	async jump(delay = 0) {
 		if (state.isJumping) return;
-		await wait(delay);
 		state.hasJumped = state.isJumping = true;
-		playerVelocity.y = 10.0;
+		await wait(delay);
+		playerVelocity.y = 12;
 		state.isJumping = false;
 	}
 
-	#checkPlayerStuck(collider, dt) {
+	checkPlayerStuck(collider, dt) {
 		collider.mesh.geometry.boundsTree.shapecast({
 			intersectsBounds: (box) => box.intersectsBox(tBox3b),
 
@@ -577,11 +562,11 @@ class Player extends BaseEntity {
 				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
 
 				if (distance < this.base.capsuleInfo.radius.body * 2) {
-					let tmpIsBlocked = !player.isMoving && player.realSpeed <= params.speed * 0.97;
+					let dummyIsStuck = !state.isMoving && player.realSpeed <= params.speed * 0.97;
 
-					if (player.isBlocked !== tmpIsBlocked) player.isBlocked = tmpIsBlocked;
+					if (state.isStuck !== dummyIsStuck) state.isStuck = dummyIsStuck;
 
-					if (player.isBlocked) {
+					if (state.isStuck) {
 						tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection - PI);
 						this.base.mesh.position.addScaledVector(tVec3a, dt);
 					}
@@ -590,22 +575,29 @@ class Player extends BaseEntity {
 		});
 	}
 
-	#checkPlayerPosition(dt) {
+	checkPlayerPosition(dt) {
 		previousPlayerPos = playerPosY;
 		playerPosY = this.base.mesh.position.y;
 
-		state.isMounting = playerPosY - previousPlayerPos <= 0 ? false : true;
-		state.isDowning = playerPosY - previousPlayerPos >= 0 ? false : true;
+		let deltaPlayerPosY = Math.round((playerPosY - previousPlayerPos) * 100) * 0.001;
+
+		state.isMounting = deltaPlayerPosY >= 0 && deltaPlayerPosY !== 0;
+		state.isFalling = !state.isMounting && deltaPlayerPosY !== 0;
+		// state.isOnGround = deltaPlayerPosY === 0 && !state.isMounting;
 
 		// get real speed based on the player's delta position
 		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
-		const d = tVec2b.distanceTo(tVec2a);
-		player.realSpeed = (d / dt) * 1000;
-		player.isMoving = player.realSpeed > 0.001;
+		const _d = tVec2b.distanceTo(tVec2a);
+
+		// prevent big numbers when the player glitching
+		player.realSpeed = (_d / dt) * 1000;
+		state.isMoving = player.realSpeed > 0.002;
 		tVec2b.copy(tVec2a);
 	}
 
-	#updatePlayerCam(dt) {
+	updatePlayerCam(dt) {
+		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
+
 		camInertie = dampPrecise(camInertie, player.realSpeed * 0.3, 0.25, dt, 0.001);
 		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + (camInertie || 0));
 
@@ -613,8 +605,8 @@ class Player extends BaseEntity {
 		let strength = 0;
 		if (!state.hasJumped) {
 			axisTarget =
-				state.isDowning || state.isMounting ? (playerPosY - previousPlayerPos) * 0.5 : 0;
-			strength = state.isDowning || state.isMounting ? 0.03 : 0.2;
+				state.isFalling || state.isMounting ? (playerPosY - previousPlayerPos) * 0.2 : 0;
+			strength = state.isFalling || state.isMounting ? 0.03 : 0.2;
 		}
 		camAxisTarget = dampPrecise(camAxisTarget, axisTarget, strength, dt, 0.001);
 		this.base.camera.orbit.spherical
@@ -622,10 +614,11 @@ class Player extends BaseEntity {
 			.makeSafe();
 	}
 
-	#updateAnimation() {
+	async updateAnimation() {
 		let previousPlayerAnim = player.anim;
-		if (state.playerOnGround && !state.isJumping) {
-			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
+
+		if (state.isOnGround && !state.hasJumped) {
+			if (state.isMoving && player.realSpeed >= params.speed * 0.1) {
 				// if (player.realSpeed <= params.speed + 2)
 				// 	player.anim = this.base.animation.get('walk');
 
@@ -636,16 +629,21 @@ class Player extends BaseEntity {
 				else player.anim = this.base.animation.get('walk');
 			} else player.anim = this.base.animation.get('idle');
 		}
-		if (this.keyPressed.space && state.playerOnGround && !state.isJumping) {
-			if (player.isMoving && player.realSpeed >= params.speed * 0.1) {
+
+		if (this.keyPressed.space && state.isOnGround && !state.isJumping) {
+			if (state.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
-				this.#jump(100);
+				this.base.animation.playOnce(player.anim);
+				this.jump(100);
 			} else {
 				player.anim = this.base.animation.get('jump');
-				this.#jump(400);
+				this.base.animation.playOnce(player.anim);
+				this.jump(400);
 			}
-			this.base.animation.playOnce(player.anim);
 		}
+
+		if (state.isFalling && state.hasJumped && !state.isOnGround)
+			player.anim = this.base.animation.get('falling');
 
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
@@ -671,22 +669,24 @@ class Player extends BaseEntity {
 		if (this.broadphase.currentObjects.length)
 			this.broadphase.currentObjects.forEach((collider) => {
 				for (let i = 0; i < params.physicsSteps; i++)
-					this.#move(
+					this.move(
 						dt / params.physicsSteps / this.broadphase.currentObjects.length,
 						collider,
 					);
 			});
+
+		this.checkPlayerPosition(dt);
+		this.updateAnimation();
+
+		// adjust the camera
+		this.updatePlayerCam(dt);
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
-		if (state.hasJumped) state.hasJumped = !state.playerOnGround;
-
-		this.#checkPlayerPosition(dt);
-		this.#updatePlayerCam(dt);
-		this.#updateAnimation();
+		if (state.hasJumped && !state.isJumping) state.hasJumped = !state.isOnGround;
 
 		this.base.animation.update(dt);
 	}

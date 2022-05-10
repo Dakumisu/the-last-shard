@@ -72,7 +72,6 @@
 // 	gl_FragColor.a = (mixRender / a / aMix) * smoothUvEdges;
 // }
 
-
 #pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
 
 uniform float uTime;

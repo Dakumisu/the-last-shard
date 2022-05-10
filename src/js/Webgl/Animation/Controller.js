@@ -23,6 +23,8 @@ export default class AnimationController {
 
 		this.set();
 
+		// this.mixer.addEventListener('finished', this.handleAction.bind(this));
+
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
@@ -96,19 +98,23 @@ export default class AnimationController {
 
 		this.setCurrent(newAction);
 		/// #if DEBUG
-		// console.log(
-		// 	`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
-		// );
+		console.log(
+			`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
+		);
 		/// #endif
 	}
 
 	playOnce(action) {
 		if (!initialized) return;
 
+		console.log(action);
+
 		const oldAction = this.actions.current;
 		action.animation.loop = LoopOnce;
 		action.animation.reset();
 		action.animation.play();
+		action.animation.clampWhenFinished = true;
+
 		action.animation.crossFadeFrom(oldAction.animation, 0.5);
 		this.setCurrent(action);
 	}
@@ -128,7 +134,13 @@ export default class AnimationController {
 		}
 	}
 
-	delete() {}
+	handleAction(action) {
+		if (!initialized) return;
+
+		if (action.name === 'jump') {
+			this.switch(this.get('falling'));
+		}
+	}
 
 	destroy() {}
 
