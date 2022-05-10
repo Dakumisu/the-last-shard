@@ -68,7 +68,6 @@ export default class TempleScene extends BaseScene {
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
-		await this.grass.init();
 
 		this.particles = new Particles({
 			scene: this,
@@ -80,7 +79,6 @@ export default class TempleScene extends BaseScene {
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
-		await this.particles.init();
 
 		// this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
 		this.initialized.resolve(true);
@@ -89,9 +87,6 @@ export default class TempleScene extends BaseScene {
 
 	update(et, dt) {
 		super.update(et, dt);
-		// if (this.grass) this.grass.update(et, dt);
-		if (this.grass) this.grass.update(et, dt);
-		if (this.particles) this.particles.update(et, dt);
 	}
 
 	addTo(mainScene) {

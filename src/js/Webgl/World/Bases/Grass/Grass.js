@@ -9,59 +9,40 @@ import {
 	BufferAttribute,
 	BufferGeometry,
 	Color,
-	DoubleSide,
-	DepthFormat,
-	UnsignedShortType,
 	InstancedBufferAttribute,
 	InstancedBufferGeometry,
 	MathUtils,
 	Mesh,
-	DepthTexture,
-	OrthographicCamera,
-	WebGLRenderTarget,
 	Texture,
-	Vector3,
-	Box3,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
-import BaseObject from '../BaseObject';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
 
 const twigsCountList = [0, 0, 80000, 100000, 300000, 1000000];
 
-export default class Grass extends BaseObject {
+export default class Grass {
 	/**
 	 *
-	 * @param {{scene: BaseScene, params?:{color?: string, count?: number, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}}
+	 * @param {{scene: BaseScene, params?:{color?: string, color2?: string, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}}
 	 */
 
 	constructor({ scene, params }) {
-		super({ name: 'Grass', isInteractable: false });
-
 		this.scene = scene;
 		this.params = params;
 
 		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
 
-		this.base.material = null;
-		this.base.geometry = null;
+		this.base = {
+			geometry: null,
+			material: null,
+		};
 		this.attributes = {};
 
 		this.triangle = null;
-
-		this.minBox = new Vector3();
-		this.maxBox = new Vector3();
-
-		this.rtCamera = null;
-		const textureSize = 1024;
-		this.renderTarget = new WebGLRenderTarget(textureSize, textureSize);
-		this.depthTexture = new DepthTexture(textureSize, textureSize);
-
-		this.renderTargetRendered = false;
 
 		this.count = twigsCountList[5];
 
@@ -75,10 +56,11 @@ export default class Grass extends BaseObject {
 		/// #if DEBUG
 		debug.instance = scene.gui;
 		/// #endif
+
+		this.init();
 	}
 
-	async init() {
-		this.setRenderTarget();
+	init() {
 		this.setDefaultGeometry();
 		this.setAttributes();
 		this.setGeometry();
@@ -90,45 +72,6 @@ export default class Grass extends BaseObject {
 		/// #endif
 
 		this.initialized = true;
-	}
-
-	setRenderTarget() {
-		const boundingBox = new Box3().setFromObject(this.scene.ground.base.realMesh);
-		boundingBox.min.z -= 0.5;
-		boundingBox.max.z += 0.5;
-		boundingBox.min.x -= 0.5;
-		boundingBox.max.x += 0.5;
-		boundingBox.max.y += 0.5;
-
-		this.minBox = boundingBox.min;
-		this.maxBox = boundingBox.max;
-
-		const center = new Vector3();
-		boundingBox.getCenter(center);
-
-		const camNear = 1;
-		const camWidth = this.maxBox.x + Math.abs(this.minBox.x);
-		const camHeight = this.maxBox.z + Math.abs(this.minBox.z);
-
-		this.rtCamera = new OrthographicCamera(
-			camWidth / -2,
-			camWidth / 2,
-			camHeight / 2,
-			camHeight / -2,
-			camNear,
-			this.maxBox.y + Math.abs(this.minBox.y) + camNear,
-		);
-
-		this.rtCamera.position.set(center.x, this.maxBox.y + camNear, center.z);
-
-		// this.scene.instance.add(new Box3Helper(boundingBox, new Color(0x00ff00)));
-		// this.scene.instance.add(new CameraHelper(this.rtCamera));
-
-		this.rtCamera.rotation.x = -Math.PI * 0.5;
-
-		this.renderTarget.depthTexture = this.depthTexture;
-		this.renderTarget.depthTexture.format = DepthFormat;
-		this.renderTarget.depthTexture.type = UnsignedShortType;
 	}
 
 	setDefaultGeometry() {
@@ -226,9 +169,8 @@ export default class Grass extends BaseObject {
 		);
 		this.base.geometry.setAttribute(
 			'aScale',
-			new InstancedBufferAttribute(this.attributes.newScale, 3, false),
+			new InstancedBufferAttribute(this.attributes.newScale, 1, false),
 		);
-		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 1, false));
 
 		this.base.mesh.geometry = this.base.geometry;
 	}
@@ -245,11 +187,10 @@ export default class Grass extends BaseObject {
 				uCharaPos: { value: this.scene.player.base.mesh.position },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
-				uFogColor: { value: new Color().set(this.scene.fog.params.fogFarColor) },
-				uElevationTexture: { value: this.depthTexture },
+				uElevationTexture: { value: this.scene.depthTexture },
 				uGrassTexture: { value: this.params.positionsTexture },
-				uMaxMapBounds: { value: this.maxBox },
-				uMinMapBounds: { value: this.minBox },
+				uMaxMapBounds: { value: this.scene.maxBox },
+				uMinMapBounds: { value: this.scene.minBox },
 			},
 		});
 	}
@@ -263,24 +204,7 @@ export default class Grass extends BaseObject {
 
 	/// #if DEBUG
 	devtools() {
-		const canvas = document.createElement('canvas');
-		canvas.width = this.depthTexture.source.data.width;
-		canvas.height = this.depthTexture.source.data.height;
-		canvas.style.transform = 'scaleY(-1)';
-		canvas.style.position = 'absolute';
-		canvas.style.bottom = '50px';
-		this.canvasContext = canvas.getContext('2d');
-
 		const gui = debug.instance.addFolder({ title: debug.label });
-
-		const canvasParams = {
-			visible: false,
-		};
-		gui.addInput(canvasParams, 'visible', { label: 'Texture' }).on('change', () => {
-			canvasParams.visible
-				? document.body.prepend(canvas)
-				: document.body.removeChild(canvas);
-		});
 
 		gui.addInput(this.base.mesh.material.uniforms.uDisplacement, 'value', {
 			label: 'displace',
@@ -338,38 +262,9 @@ export default class Grass extends BaseObject {
 		gui.addInput(this.params, 'color').on('change', (color) => {
 			this.base.material.uniforms.uColor.value.set(color.value);
 		});
-		gui.addInput(this.scene.fog.params, 'fogFarColor').on('change', (color) => {
-			this.base.material.uniforms.uFogColor.value.set(color.value);
+		gui.addInput(this.params, 'color2').on('change', (color) => {
+			this.base.material.uniforms.uColor2.value.set(color.value);
 		});
 	}
 	/// #endif
-
-	update(et, dt) {
-		if (!this.initialized) return;
-
-		if (!this.renderTargetRendered) {
-			this.renderTargetRendered = true;
-			this.renderer.setRenderTarget(this.renderTarget);
-			// Edit this to render only the Mesh/Group you want to test depth with
-			this.renderer.render(this.scene.ground.base.realMesh, this.rtCamera);
-			// this.renderer.render(this.scene.instance, this.rtCamera);
-
-			/// #if DEBUG
-			const buffer = new Uint8Array(this.renderTarget.width * this.renderTarget.height * 4);
-			this.renderer.readRenderTargetPixels(
-				this.renderTarget,
-				0,
-				0,
-				this.renderTarget.width,
-				this.renderTarget.height,
-				buffer,
-			);
-			const data = new ImageData(this.renderTarget.width, this.renderTarget.height);
-			data.data.set(buffer);
-			this.canvasContext.putImageData(data, 0, 0);
-			/// #endif
-
-			this.renderer.setRenderTarget(null);
-		}
-	}
 }

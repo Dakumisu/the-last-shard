@@ -6,7 +6,16 @@ const debug = {
 };
 /// #endif
 
-import { Group, Vector3 } from 'three';
+import {
+	Box3,
+	DepthFormat,
+	DepthTexture,
+	Group,
+	OrthographicCamera,
+	UnsignedShortType,
+	Vector3,
+	WebGLRenderTarget,
+} from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
@@ -20,8 +29,14 @@ import LaserGame from '@game/LaserGame';
 import LaserTower from '../World/Bases/Interactables/LaserTower';
 import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 
+const params = {
+	textureSize: 1024,
+};
+
 export default class BaseScene {
 	constructor({ label, manifest }) {
+		const webgl = getWebgl();
+
 		this.label = label;
 		this.player = getPlayer();
 		this.colliders = [];
@@ -39,8 +54,15 @@ export default class BaseScene {
 		this.initialized = deferredPromise();
 		this.isInitialized = false;
 
+		// Render target
+		this.minBox = new Vector3();
+		this.maxBox = new Vector3();
+		this.renderer = webgl.renderer.renderer;
+		this.rtCamera = null;
+		this.renderTarget = new WebGLRenderTarget(params.textureSize, params.textureSize);
+		this.depthTexture = new DepthTexture(params.textureSize, params.textureSize);
+
 		/// #if DEBUG
-		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		debug.debugCam = webgl.debugOrbitCam;
 		this.devtool();
@@ -109,6 +131,25 @@ export default class BaseScene {
 		checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
 			label: 'Sphere',
 		});
+
+		const canvas = document.createElement('canvas');
+		canvas.width = this.depthTexture.source.data.width;
+		canvas.height = this.depthTexture.source.data.height;
+		canvas.style.transform = 'scaleY(-0.5) scaleX(0.5)';
+		canvas.style.position = 'absolute';
+		canvas.style.bottom = '50px';
+		this.canvasContext = canvas.getContext('2d');
+
+		const rtFolder = this.gui.addFolder({ title: 'Render Target' });
+
+		const canvasParams = {
+			visible: false,
+		};
+		rtFolder.addInput(canvasParams, 'visible', { label: 'Texture' }).on('change', () => {
+			canvasParams.visible
+				? document.body.prepend(canvas)
+				: document.body.removeChild(canvas);
+		});
 	}
 	/// #endif
 
@@ -123,6 +164,8 @@ export default class BaseScene {
 	async init() {
 		this.loadManifest();
 		await this.manifestLoaded;
+
+		this.setRenderTarget();
 
 		console.log('🔋 Scene initialized :', this.label);
 	}
@@ -253,6 +296,47 @@ export default class BaseScene {
 		console.log('🔋 Checkpoints loaded');
 	}
 
+	setRenderTarget() {
+		const boundingBox = new Box3().setFromObject(this.ground.base.realMesh);
+		boundingBox.min.z -= 0.5;
+		boundingBox.max.z += 0.5;
+		boundingBox.min.x -= 0.5;
+		boundingBox.max.x += 0.5;
+		boundingBox.max.y += 0.5;
+
+		this.minBox.copy(boundingBox.min);
+		this.maxBox.copy(boundingBox.max);
+
+		const center = new Vector3();
+		boundingBox.getCenter(center);
+
+		const camNear = 1;
+		const camWidth = this.maxBox.x + Math.abs(this.minBox.x);
+		const camHeight = this.maxBox.z + Math.abs(this.minBox.z);
+
+		this.rtCamera = new OrthographicCamera(
+			camWidth / -2,
+			camWidth / 2,
+			camHeight / 2,
+			camHeight / -2,
+			camNear,
+			this.maxBox.y + Math.abs(this.minBox.y) + camNear,
+		);
+
+		this.rtCamera.position.set(center.x, this.maxBox.y + camNear, center.z);
+
+		// this.scene.instance.add(new Box3Helper(boundingBox, new Color(0x00ff00)));
+		// this.scene.instance.add(new CameraHelper(this.rtCamera));
+
+		this.rtCamera.rotation.x = -Math.PI * 0.5;
+
+		this.renderTarget.depthTexture = this.depthTexture;
+		this.renderTarget.depthTexture.format = DepthFormat;
+		this.renderTarget.depthTexture.type = UnsignedShortType;
+
+		requestAnimationFrame(this.updateRenderTarget.bind(this));
+	}
+
 	addTo(mainScene) {
 		mainScene.add(this.instance);
 		this.player.setStartPosition(this.checkpoints.getCurrent());
@@ -263,6 +347,30 @@ export default class BaseScene {
 
 	removeFrom(mainScene) {
 		mainScene.remove(this.instance);
+	}
+
+	updateRenderTarget() {
+		this.renderer.setRenderTarget(this.renderTarget);
+		// Edit this to render only the Mesh/Group you want to test depth with
+		this.renderer.render(this.ground.base.realMesh, this.rtCamera);
+		// this.renderer.render(this.scene.instance, this.rtCamera);
+
+		/// #if DEBUG
+		const buffer = new Uint8Array(this.renderTarget.width * this.renderTarget.height * 4);
+		this.renderer.readRenderTargetPixels(
+			this.renderTarget,
+			0,
+			0,
+			this.renderTarget.width,
+			this.renderTarget.height,
+			buffer,
+		);
+		const data = new ImageData(this.renderTarget.width, this.renderTarget.height);
+		data.data.set(buffer);
+		this.canvasContext.putImageData(data, 0, 0);
+		/// #endif
+
+		this.renderer.setRenderTarget(null);
 	}
 
 	update(et, dt) {

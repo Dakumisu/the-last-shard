@@ -137,7 +137,6 @@ class Pet extends BaseEntity {
 	}
 
 	async idleTimeout() {
-		console.log('startTimeout');
 		this.timeOutStarted = true;
 		await wait(params.idleTimeout);
 		this.state = STATES.IDLE;

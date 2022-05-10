@@ -8,7 +8,6 @@ export default class CollidersBroadphase extends BaseBroadphase {
 
 	// Colliders
 	setGroundCollider(object) {
-		console.log(object);
 		if (!(object instanceof BaseCollider)) {
 			console.error(`Colliders required ❌`);
 			return;

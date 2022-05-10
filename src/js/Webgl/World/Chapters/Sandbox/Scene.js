@@ -8,7 +8,6 @@ import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
-import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -54,7 +53,6 @@ export default class SandboxScene extends BaseScene {
 			background: await this.envMapTexture,
 		});
 
-		// Init grass after fog
 		this.grass = new Grass({
 			scene: this,
 			params: {
@@ -70,7 +68,6 @@ export default class SandboxScene extends BaseScene {
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
-		await this.grass.init();
 
 		this.particles = new Particles({
 			scene: this,
@@ -82,19 +79,17 @@ export default class SandboxScene extends BaseScene {
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
-		await this.particles.init();
 
-		this.fogParticles = new FogParticles({
-			scene: this,
-			params: {
-				color: '#C1C2FF',
-				color2: '#664CB1',
-				count: 10000,
-				halfBoxSize: 30,
-				positionsTexture: await loadTexture('grassTexture'),
-			},
-		});
-		// await this.fogParticles.init();
+		// this.fogParticles = new FogParticles({
+		// 	scene: this,
+		// 	params: {
+		// 		color: '#C1C2FF',
+		// 		color2: '#664CB1',
+		// 		count: 10000,
+		// 		halfBoxSize: 30,
+		// 		positionsTexture: await loadTexture('grassTexture'),
+		// 	},
+		// });
 
 		this.initialized.resolve(true);
 		this.isInitialized = true;
@@ -102,9 +97,6 @@ export default class SandboxScene extends BaseScene {
 
 	update(et, dt) {
 		super.update(et, dt);
-		if (this.grass) this.grass.update(et, dt);
-		if (this.particles) this.particles.update(et, dt);
-		if (this.fogParticles) this.fogParticles.update(et, dt);
 	}
 
 	addTo(mainScene) {

@@ -110,7 +110,6 @@ function orbitController(
 	// current position in sphericalTarget coordinates
 	const sphericalDelta = new Spherical();
 	const sphericalTarget = new Spherical();
-	console.log('sphericalTarget', sphericalTarget);
 	const spherical = new Spherical();
 	const panDelta = new Vec3();
 
