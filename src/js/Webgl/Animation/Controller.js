@@ -21,9 +21,7 @@ export default class AnimationController {
 
 		this.animations = this.model.animations;
 
-		this.set();
-
-		// this.mixer.addEventListener('finished', this.handleAction.bind(this));
+		this.init();
 
 		/// #if DEBUG
 		const webgl = getWebgl();
@@ -50,7 +48,7 @@ export default class AnimationController {
 	}
 	/// #endif
 
-	set() {
+	init() {
 		this.mixer = new AnimationMixer(this.model.scene);
 
 		this.actions = {};
@@ -97,11 +95,11 @@ export default class AnimationController {
 		newAction.animation.crossFadeFrom(oldAction.animation, 0.5);
 
 		this.setCurrent(newAction);
-		/// #if DEBUG
-		console.log(
-			`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
-		);
-		/// #endif
+		// /// #if DEBUG
+		// console.log(
+		// 	`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
+		// );
+		// /// #endif
 	}
 
 	playOnce(action) {
