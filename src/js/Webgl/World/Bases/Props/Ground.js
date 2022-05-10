@@ -14,7 +14,6 @@ import {
 import { mergeGeometry } from '@utils/webgl';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import BaseCollider from '@webgl/World/Bases/BaseCollider';
-import { loadGLTF } from '@utils/loaders/loadStaticGLTF';
 import { loadModel } from '@utils/loaders/loadAssets';
 import { Group } from 'three';
 import { wait } from 'philbin-packages/async';
