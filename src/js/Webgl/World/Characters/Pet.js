@@ -90,33 +90,34 @@ class Pet extends BaseEntity {
 				this.follow(et, dt);
 				break;
 			case STATES.IDLE:
-				this.idle(et, dt);
+				this.follow(et, dt);
+				// this.idle(et, dt);
 				break;
 		}
 
-		// this.base.mesh.position.x = dampPrecise(
-		// 	this.base.mesh.position.x,
-		// 	this.targetPos.x,
-		// 	0.1,
-		// 	dt,
-		// 	0.001,
-		// );
+		this.base.mesh.position.x = dampPrecise(
+			this.base.mesh.position.x,
+			this.targetPos.x,
+			0.1,
+			dt,
+			0.001,
+		);
 
-		// this.base.mesh.position.y = dampPrecise(
-		// 	this.base.mesh.position.y,
-		// 	this.targetPos.y,
-		// 	0.1,
-		// 	dt,
-		// 	0.001,
-		// );
+		this.base.mesh.position.y = dampPrecise(
+			this.base.mesh.position.y,
+			this.targetPos.y,
+			0.1,
+			dt,
+			0.001,
+		);
 
-		// this.base.mesh.position.z = dampPrecise(
-		// 	this.base.mesh.position.z,
-		// 	this.targetPos.z,
-		// 	0.1,
-		// 	dt,
-		// 	0.001,
-		// );
+		this.base.mesh.position.z = dampPrecise(
+			this.base.mesh.position.z,
+			this.targetPos.z,
+			0.1,
+			dt,
+			0.001,
+		);
 	}
 
 	follow(et, dt) {
