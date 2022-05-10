@@ -329,8 +329,8 @@ class Player extends BaseEntity {
 	}
 
 	setBodyMesh() {
-		this.base.geometry = new CapsuleGeometry(0.5, 1.5, 10, 20);
-		this.base.geometry.translate(0, -0.5, 0);
+		this.base.geometry = new CapsuleGeometry(0.5, 1, 10, 20);
+		// this.base.geometry.translate(0, -0.5, 0);
 
 		this.base.capsuleInfo = {
 			radius: {
@@ -458,6 +458,9 @@ class Player extends BaseEntity {
 		} else {
 			playerVelocity.set(0, 0, 0);
 		}
+
+		// adjust the camera
+		this.updatePlayerCam(dt);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
@@ -678,8 +681,8 @@ class Player extends BaseEntity {
 		this.checkPlayerPosition(dt);
 		this.updateAnimation();
 
-		// adjust the camera
-		this.updatePlayerCam(dt);
+		// // adjust the camera
+		// this.updatePlayerCam(dt);
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 
