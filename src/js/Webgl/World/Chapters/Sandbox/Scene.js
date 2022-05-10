@@ -8,6 +8,7 @@ import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
+import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -43,29 +44,30 @@ export default class SandboxScene extends BaseScene {
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
 		this.fog = new BaseFog({
-			fogNearColor: '#844bb8',
+			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
-			fogNear: 30,
-			fogFar: 50,
+			fogNear: 0,
+			fogFar: 45,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
 			background: await this.envMapTexture,
 		});
 
-		// // Init grass after fog
+		// Init grass after fog
 		this.grass = new Grass({
 			scene: this,
 			params: {
-				color: '#de47ff',
-				count: 100000,
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 300000,
 				verticeScale: 0.42,
 				halfBoxSize: 30,
 				maskRange: 0.04,
 				noiseElevationIntensity: 0.75,
-				noiseMouvementIntensity: 0.2,
-				windColorIntensity: 0.2,
-				displacement: 0.2,
+				noiseMouvementIntensity: 0.15,
+				windColorIntensity: 0.1,
+				displacement: 0.22,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
@@ -74,14 +76,26 @@ export default class SandboxScene extends BaseScene {
 		this.particles = new Particles({
 			scene: this,
 			params: {
-				color: '#dea7ff',
-				color2: '#de47ff',
-				count: 1000,
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 350,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
 		await this.particles.init();
+
+		this.fogParticles = new FogParticles({
+			scene: this,
+			params: {
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 10000,
+				halfBoxSize: 30,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
+		});
+		// await this.fogParticles.init();
 
 		// LaserTowers
 
@@ -169,6 +183,7 @@ export default class SandboxScene extends BaseScene {
 		if (this.ground) this.ground.update(et, dt);
 		if (this.grass) this.grass.update(et, dt);
 		if (this.particles) this.particles.update(et, dt);
+		if (this.fogParticles) this.fogParticles.update(et, dt);
 
 		// if (this.interactablesBroadphase)
 		// 	this.interactablesBroadphase.update(this.player.base.mesh.position);

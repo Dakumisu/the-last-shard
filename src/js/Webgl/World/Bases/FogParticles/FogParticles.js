@@ -28,11 +28,11 @@ import {
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import BaseObject from '../BaseObject';
-import ParticlesMaterial from '@webgl/Materials/Particles/ParticlesMaterial';
+import FogParticlesMaterial from '@webgl/Materials/FogParticles/FogParticlesMaterial';
 
-export default class Particles extends BaseObject {
+export default class FogParticles extends BaseObject {
 	constructor({ scene, params }) {
-		super({ name: 'Particles', isInteractable: false });
+		super({ name: 'FogParticles', isInteractable: false });
 
 		this.scene = scene;
 
@@ -115,8 +115,6 @@ export default class Particles extends BaseObject {
 	setDefaultGeometry() {
 		this.geometry = new PlaneBufferGeometry();
 
-		console.log(this.geometry);
-
 		this.geometry.setIndex(new BufferAttribute(this.geometry.index.array, 1));
 		this.geometry.setAttribute(
 			'position',
@@ -159,7 +157,7 @@ export default class Particles extends BaseObject {
 	}
 
 	async setMaterial() {
-		this.base.material = new ParticlesMaterial({
+		this.base.material = new FogParticlesMaterial({
 			side: DoubleSide,
 			transparent: true,
 			depthWrite: false,

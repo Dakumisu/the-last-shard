@@ -55,7 +55,7 @@ export default class Grass extends BaseObject {
 		this.maxBox = new Vector3();
 
 		this.rtCamera = null;
-		const textureSize = 512;
+		const textureSize = 1024;
 		this.renderTarget = new WebGLRenderTarget(textureSize, textureSize);
 		this.depthTexture = new DepthTexture(textureSize, textureSize);
 
@@ -125,14 +125,14 @@ export default class Grass extends BaseObject {
 		this.triangle = new BufferGeometry();
 
 		const vertices = new Float32Array([
-			-0.5 * this.params.verticeScale,
-			-0.5 * this.params.verticeScale,
+			-0.15 * this.params.verticeScale,
+			-0.15 * this.params.verticeScale,
 			0 * this.params.verticeScale, // bl
-			0.5 * this.params.verticeScale,
-			-0.5 * this.params.verticeScale,
+			0.15 * this.params.verticeScale,
+			-0.15 * this.params.verticeScale,
 			0 * this.params.verticeScale, // br
 			0 * this.params.verticeScale,
-			0.5 * this.params.verticeScale,
+			0.75 * this.params.verticeScale,
 			0 * this.params.verticeScale, // tc
 		]);
 
@@ -178,7 +178,6 @@ export default class Grass extends BaseObject {
 
 	async setMaterial() {
 		this.base.material = new GrassMaterial({
-			side: DoubleSide,
 			uniforms: {
 				uDisplacement: { value: this.params.displacement },
 				uWindColorIntensity: { value: this.params.windColorIntensity },
@@ -188,6 +187,7 @@ export default class Grass extends BaseObject {
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
 				uColor: { value: new Color().set(this.params.color) },
+				uColor2: { value: new Color().set(this.params.color2) },
 				uFogColor: { value: new Color().set(this.scene.fog.params.fogFarColor) },
 				uElevationTexture: { value: this.depthTexture },
 				uGrassTexture: { value: this.params.positionsTexture },
