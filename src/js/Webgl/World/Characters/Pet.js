@@ -90,8 +90,7 @@ class Pet extends BaseEntity {
 				this.follow(et, dt);
 				break;
 			case STATES.IDLE:
-				this.follow(et, dt);
-				// this.idle(et, dt);
+				this.idle(et, dt);
 				break;
 		}
 
@@ -106,7 +105,7 @@ class Pet extends BaseEntity {
 		this.base.mesh.position.y = dampPrecise(
 			this.base.mesh.position.y,
 			this.targetPos.y,
-			0.1,
+			0.01,
 			dt,
 			0.001,
 		);
@@ -121,13 +120,10 @@ class Pet extends BaseEntity {
 	}
 
 	follow(et, dt) {
-		// console.log('follow');
 		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
 	}
 
 	idle(et, dt) {
-		// console.log('idle');
-
 		this.targetPos.x =
 			Math.cos(et * 0.001 * this.speed) * params.idleRadius +
 			this.player.base.mesh.position.x;

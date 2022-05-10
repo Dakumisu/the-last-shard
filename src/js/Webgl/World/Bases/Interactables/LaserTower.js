@@ -8,7 +8,7 @@ import { Group } from 'three';
 export default class LaserTower extends BaseCollider {
 	/**
 	 *
-	 * @param {{ asset?: Object, direction?: Array<number>, laserYOffset: number, game: LaserGame, group?: Group}} param0
+	 * @param {{ asset?: Object, direction?: Array<number>, game: LaserGame, group?: Group}} param0
 	 */
 	constructor({ asset = null, direction = null, game, group }) {
 		super({ type: 'nonWalkable', isInteractable: true });

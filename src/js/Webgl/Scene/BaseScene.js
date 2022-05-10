@@ -193,7 +193,6 @@ export default class BaseScene {
 				// t.push(_interactable);
 			} else if (asset.includes('Fragment')) {
 				const _interactable = new Fragment({
-					isInteractable: true,
 					asset: interactable,
 					group: this.interactables,
 				});
