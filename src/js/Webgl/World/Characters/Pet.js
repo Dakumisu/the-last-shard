@@ -1,5 +1,6 @@
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { getWebgl } from '@webgl/Webgl';
+import { wait } from 'philbin-packages/async';
 import { dampPrecise } from 'philbin-packages/maths';
 import { Euler, IcosahedronGeometry, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from 'three';
 import BaseEntity from '../Bases/BaseEntity';
@@ -21,7 +22,7 @@ const STATES = {
 const params = {
 	offsetFromPlayer: new Vector3(-0.5, 0.5, 0.5),
 	idleRadius: 1,
-	followTimeOut: 1,
+	idleTimeout: 3000,
 };
 
 class Pet extends BaseEntity {
@@ -37,6 +38,7 @@ class Pet extends BaseEntity {
 		this.scene = webgl.mainScene.instance;
 
 		this.state = STATES.IDLE;
+		this.canIdle = true;
 		this.speed = 1;
 
 		this.targetPos = new Vector3();
@@ -83,7 +85,7 @@ class Pet extends BaseEntity {
 		if (!this.isInitialized) return;
 
 		if (this.player.state.isMoving) this.state = STATES.FOLLOW;
-		else this.state = STATES.IDLE;
+		else if (this.state !== STATES.IDLE && !this.timeOutStarted) this.idleTimeout();
 
 		switch (this.state) {
 			case STATES.FOLLOW:
@@ -105,7 +107,7 @@ class Pet extends BaseEntity {
 		this.base.mesh.position.y = dampPrecise(
 			this.base.mesh.position.y,
 			this.targetPos.y,
-			0.01,
+			0.05,
 			dt,
 			0.001,
 		);
@@ -132,12 +134,15 @@ class Pet extends BaseEntity {
 			this.player.base.mesh.position.z;
 
 		this.targetPos.y = Math.sin(et * 0.005) * 0.01 + this.targetPos.y;
-
-		// .copy(this.player.base.mesh.position)
-		// .add(params.offsetFromPlayer.clone().multiplyScalar(0.5));
 	}
 
-	startTimeOut() {}
+	async idleTimeout() {
+		console.log('startTimeout');
+		this.timeOutStarted = true;
+		await wait(params.idleTimeout);
+		this.state = STATES.IDLE;
+		this.timeOutStarted = false;
+	}
 }
 
 const initPet = () => {
