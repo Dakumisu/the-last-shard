@@ -7,6 +7,7 @@ import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/Interactables
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
+import Particles from '@webgl/World/Bases/Particles/Particles';
 
 export default class TempleScene extends BaseScene {
 	constructor(manifest) {
@@ -40,35 +41,46 @@ export default class TempleScene extends BaseScene {
 		});
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
-
-		// this.fog = new BaseFog({
-		// 	fogNearColor: '#844bb8',
-		// 	fogFarColor: '#3e2e77',
-		// 	fogNear: 30,
-		// 	fogFar: 50,
-		// 	fogNoiseSpeed: 0.003,
-		// 	fogNoiseFreq: 0.125,
-		// 	fogNoiseImpact: 0.1,
-		// 	background: await this.envMapTexture,
-		// });
+		this.fog = new BaseFog({
+			fogNearColor: '#664CB1',
+			fogFarColor: '#3e2e77',
+			fogNear: 0,
+			fogFar: 45,
+			fogNoiseSpeed: 0.003,
+			fogNoiseFreq: 0.125,
+			fogNoiseImpact: 0.1,
+			background: await this.envMapTexture,
+		});
 
 		// Init grass after fog
-		// this.grass = new Grass({
-		// 	scene: this,
-		// 	params: {
-		// 		color: '#de47ff',
-		// 		count: 100000,
-		// 		verticeScale: 0.42,
-		// 		halfBoxSize: 30,
-		// 		maskRange: 0.04,
-		// 		noiseElevationIntensity: 0.75,
-		// 		noiseMouvementIntensity: 0.2,
-		// 		windColorIntensity: 0.2,
-		// 		displacement: 0.2,
-		// 		positionsTexture: await loadTexture('grassTexture'),
-		// 	},
-		// });
-		// await this.grass.init();
+		this.grass = new Grass({
+			scene: this,
+			params: {
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				verticeScale: 0.2,
+				halfBoxSize: 25,
+				maskRange: 0.04,
+				noiseElevationIntensity: 0.75,
+				noiseMouvementIntensity: 0.15,
+				windColorIntensity: 0.1,
+				displacement: 0.15,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
+		});
+		await this.grass.init();
+
+		this.particles = new Particles({
+			scene: this,
+			params: {
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 350,
+				halfBoxSize: 30,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
+		});
+		await this.particles.init();
 
 		// this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
 		this.initialized.resolve(true);
@@ -78,11 +90,13 @@ export default class TempleScene extends BaseScene {
 	update(et, dt) {
 		super.update(et, dt);
 		// if (this.grass) this.grass.update(et, dt);
+		if (this.grass) this.grass.update(et, dt);
+		if (this.particles) this.particles.update(et, dt);
 	}
 
 	addTo(mainScene) {
 		super.addTo(mainScene);
 
-		// this.fog.set();
+		this.fog.set();
 	}
 }
