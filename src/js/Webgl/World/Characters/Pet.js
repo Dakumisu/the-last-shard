@@ -19,7 +19,7 @@ const STATES = {
 };
 
 const params = {
-	offsetFromPlayer: new Vector3(-1.5, 1.5, 1.5),
+	offsetFromPlayer: new Vector3(-0.5, 0.5, 0.5),
 	idleRadius: 1,
 	followTimeOut: 1,
 };
@@ -51,8 +51,8 @@ class Pet extends BaseEntity {
 	}
 
 	async init() {
-		this.base.geometry = new IcosahedronGeometry(0.25, 3);
-		this.base.material = new BaseBasicMaterial({ color: 0xed4646 });
+		this.base.geometry = new IcosahedronGeometry(0.08, 3);
+		this.base.material = new BaseBasicMaterial({ color: 0xffffff });
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
 		this.initPhysics();

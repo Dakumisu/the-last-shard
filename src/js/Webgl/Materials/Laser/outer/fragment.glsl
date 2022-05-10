@@ -53,10 +53,9 @@ void main() {
 	float smoothUvEnd = 1.0 - smoothstep(0., 1.0, 1.0 - vUv.y);
 	float smoothUvEdges = smoothUvStart * smoothUvEnd;
 
-	gl_FragColor.xyz = vec3(a * noiseUvHigh * 0.2 * outsideColor / aMix * innerColor);
-	gl_FragColor.a = 1.0 - (a / smoothUvEdges * aMix);
+	gl_FragColor.xyz = vec3(outsideColor + noisePosHigh * noiseUvHigh);
+	gl_FragColor.a = (smoothUvEdges / a);
 }
-
 
 // #pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
 
@@ -118,4 +117,3 @@ void main() {
 // 	gl_FragColor.xyz = render;
 // 	gl_FragColor.a = smoothUvEdges *  (a / aMix) * 0.2;
 // }
-

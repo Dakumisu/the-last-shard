@@ -7,6 +7,8 @@ import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/Interactables
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
+import Particles from '@webgl/World/Bases/Particles/Particles';
+import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -33,7 +35,7 @@ export default class SandboxScene extends BaseScene {
 		// Lights
 		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
 		const directional = new BaseDirectionnal({
-			color: '#45b1e7',
+			color: '#fff',
 			intensity: 7,
 			label: 'Directionnal',
 			position: new Vector3(-10, 0, 10),
@@ -42,10 +44,10 @@ export default class SandboxScene extends BaseScene {
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
 		this.fog = new BaseFog({
-			fogNearColor: '#844bb8',
+			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
-			fogNear: 30,
-			fogFar: 50,
+			fogNear: 0,
+			fogFar: 45,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
@@ -56,21 +58,45 @@ export default class SandboxScene extends BaseScene {
 		this.grass = new Grass({
 			scene: this,
 			params: {
-				color: '#de47ff',
-				count: 100000,
-				verticeScale: 0.42,
-				halfBoxSize: 30,
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 300000,
+				verticeScale: 0.38,
+				halfBoxSize: 25,
 				maskRange: 0.04,
 				noiseElevationIntensity: 0.75,
-				noiseMouvementIntensity: 0.2,
-				windColorIntensity: 0.2,
-				displacement: 0.2,
+				noiseMouvementIntensity: 0.15,
+				windColorIntensity: 0.1,
+				displacement: 0.22,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
 		await this.grass.init();
 
-		// this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
+		this.particles = new Particles({
+			scene: this,
+			params: {
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 350,
+				halfBoxSize: 30,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
+		});
+		await this.particles.init();
+
+		this.fogParticles = new FogParticles({
+			scene: this,
+			params: {
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 10000,
+				halfBoxSize: 30,
+				positionsTexture: await loadTexture('grassTexture'),
+			},
+		});
+		// await this.fogParticles.init();
+
 		this.initialized.resolve(true);
 		this.isInitialized = true;
 	}
@@ -78,6 +104,8 @@ export default class SandboxScene extends BaseScene {
 	update(et, dt) {
 		super.update(et, dt);
 		if (this.grass) this.grass.update(et, dt);
+		if (this.particles) this.particles.update(et, dt);
+		if (this.fogParticles) this.fogParticles.update(et, dt);
 	}
 
 	addTo(mainScene) {

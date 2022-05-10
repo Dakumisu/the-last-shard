@@ -4,11 +4,13 @@ varying vec3 vPos;
 
 uniform float uWindColorIntensity;
 uniform vec3 uColor;
+uniform vec3 uColor2;
 
 void main() {
-	vec3 color = mix(uColor * 0.3, uColor, vPos.y * 2.);
+	float noiseElevation = vNoiseMouvement * uWindColorIntensity;
+	vec3 color = mix(uColor2, uColor, vPos.y);
 
-	vec3 render = color + vNoiseMouvement * uWindColorIntensity;
+	vec3 render = color + noiseElevation;
 
 	if(vFade == 1.)
 		discard;

@@ -38,7 +38,7 @@ export default class LaserGame {
 			side: DoubleSide,
 			uniforms: {
 				uTexture: { value: texture },
-				uTimeIntensity: { value: 0.001 },
+				uTimeIntensity: { value: 0.0012 },
 			},
 		});
 
@@ -47,7 +47,7 @@ export default class LaserGame {
 			side: DoubleSide,
 			blending: AdditiveBlending,
 			uniforms: {
-				uTimeIntensity: { value: 0.001 },
+				uTimeIntensity: { value: 0.0012 },
 			},
 		});
 
