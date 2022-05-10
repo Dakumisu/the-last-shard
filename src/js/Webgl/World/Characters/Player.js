@@ -73,27 +73,6 @@ const camParams = {
 	theta: 0,
 };
 
-const state = {
-	isOnGround: true,
-
-	forwardPressed: false,
-	backwardPressed: false,
-	leftPressed: false,
-	rightPressed: false,
-
-	hasJumped: false,
-	isJumping: false,
-
-	isMounting: false,
-	isFalling: false,
-
-	isMoving: false,
-	isBlocked: false,
-
-	slowDown: false,
-};
-let tmpSlowDown = state.slowDown;
-
 const player = {
 	realSpeed: 0,
 	anim: null,
@@ -149,6 +128,27 @@ class Player extends BaseEntity {
 
 		this.raycaster = webgl.raycaster;
 
+		this.state = {
+			isOnGround: true,
+
+			forwardPressed: false,
+			backwardPressed: false,
+			leftPressed: false,
+			rightPressed: false,
+
+			hasJumped: false,
+			isJumping: false,
+
+			isMounting: false,
+			isFalling: false,
+
+			isMoving: false,
+			isBlocked: false,
+
+			slowDown: false,
+		};
+		this.tmpSlowDown = this.state.slowDown;
+
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		/// #endif
@@ -195,10 +195,10 @@ class Player extends BaseEntity {
 			title: 'Position',
 		});
 
-		guiPosition.addMonitor(state, 'hasJumped', { label: 'has jumped', type: 'graph' });
-		guiPosition.addMonitor(state, 'isOnGround', { label: 'on ground', type: 'graph' });
-		guiPosition.addMonitor(state, 'isMounting', { label: 'mounting', type: 'graph' });
-		guiPosition.addMonitor(state, 'isFalling', { label: 'falling', type: 'graph' });
+		guiPosition.addMonitor(this.state, 'hasJumped', { label: 'has jumped', type: 'graph' });
+		guiPosition.addMonitor(this.state, 'isOnGround', { label: 'on ground', type: 'graph' });
+		guiPosition.addMonitor(this.state, 'isMounting', { label: 'mounting', type: 'graph' });
+		guiPosition.addMonitor(this.state, 'isFalling', { label: 'falling', type: 'graph' });
 
 		guiPosition.addSeparator();
 
@@ -379,7 +379,7 @@ class Player extends BaseEntity {
 	move(dt, collider) {
 		const delta = dt * 0.001;
 
-		playerVelocity.y += state.isOnGround ? 0 : delta * this.params.gravity;
+		playerVelocity.y += this.state.isOnGround ? 0 : delta * this.params.gravity;
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
 		this.updateDirection();
@@ -425,7 +425,7 @@ class Player extends BaseEntity {
 			},
 		});
 
-		if (!state.isMoving && player.realSpeed < params.speed * 0.97)
+		if (!this.state.isMoving && player.realSpeed < params.speed * 0.97)
 			this.checkPlayerStuck(collider, dt);
 
 		// get the adjusted position of the capsule collider in world space after checking
@@ -440,7 +440,7 @@ class Player extends BaseEntity {
 
 		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
 		if (collider.type === 'walkable')
-			state.isOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
+			this.state.isOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
 
 		// this.checkPlayerPosition(dt);
 
@@ -450,7 +450,7 @@ class Player extends BaseEntity {
 		// adjust the player model
 		this.base.mesh.position.add(deltaVector);
 
-		if (!state.isOnGround) {
+		if (!this.state.isOnGround) {
 			// prevent user sticking the ceiling
 			deltaVector.normalize();
 			tVec3e.set(0, deltaVector.y, 0);
@@ -471,18 +471,18 @@ class Player extends BaseEntity {
 		camDirection = this.base.camera.orbit.spherical.theta;
 
 		// gestion de la direction
-		state.forwardPressed = this.keyPressed.forward;
-		state.backwardPressed = this.keyPressed.backward;
-		state.leftPressed = this.keyPressed.left;
-		state.rightPressed = this.keyPressed.right;
+		this.state.forwardPressed = this.keyPressed.forward;
+		this.state.backwardPressed = this.keyPressed.backward;
+		this.state.leftPressed = this.keyPressed.left;
+		this.state.rightPressed = this.keyPressed.right;
 
-		if (state.leftPressed && !state.rightPressed) lastXAxis = 'left';
-		if (!state.leftPressed && state.rightPressed) lastXAxis = 'right';
-		if (!state.leftPressed && !state.rightPressed) lastXAxis = '';
+		if (this.state.leftPressed && !this.state.rightPressed) lastXAxis = 'left';
+		if (!this.state.leftPressed && this.state.rightPressed) lastXAxis = 'right';
+		if (!this.state.leftPressed && !this.state.rightPressed) lastXAxis = '';
 
-		if (state.forwardPressed && !state.backwardPressed) lastZAxis = 'forward';
-		if (!state.forwardPressed && state.backwardPressed) lastZAxis = 'backward';
-		if (!state.forwardPressed && !state.backwardPressed) lastZAxis = '';
+		if (this.state.forwardPressed && !this.state.backwardPressed) lastZAxis = 'forward';
+		if (!this.state.forwardPressed && this.state.backwardPressed) lastZAxis = 'backward';
+		if (!this.state.forwardPressed && !this.state.backwardPressed) lastZAxis = '';
 
 		if (this.keyPressed.forward) nextDirection = 0; // ⬆️
 		if (this.keyPressed.backward) nextDirection = PI; // ⬇️
@@ -502,7 +502,7 @@ class Player extends BaseEntity {
 		if (this.keyPressed.backward && this.keyPressed.left && lastXAxis === 'right')
 			nextDirection = PI * 0.75; // ↙️
 
-		state.slowDown =
+		this.state.slowDown =
 			Math.abs(currentDirection - nextDirection) >= PI - 0.003 &&
 			Math.abs(currentDirection - nextDirection) <= PI + 0.003;
 
@@ -518,15 +518,15 @@ class Player extends BaseEntity {
 			this.keyPressed.left ||
 			this.keyPressed.right
 		) {
-			if (!tmpSlowDown && state.slowDown) {
+			if (!this.tmpSlowDown && this.state.slowDown) {
 				speedTarget = -1.5;
 			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.05, dt, 0.1);
 		} else speedTarget = 0;
 
-		tmpSlowDown = state.slowDown;
+		this.tmpSlowDown = this.state.slowDown;
 
 		// Rotate only if the player is moving
-		if (state.isMoving && player.realSpeed > params.speed * 0.02) {
+		if (this.state.isMoving && player.realSpeed > params.speed * 0.02) {
 			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
 			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
 			directionTarget = currentDirection + camDirection;
@@ -546,11 +546,11 @@ class Player extends BaseEntity {
 	}
 
 	async jump(delay = 0) {
-		if (state.isJumping) return;
-		state.hasJumped = state.isJumping = true;
+		if (this.state.isJumping) return;
+		this.state.hasJumped = this.state.isJumping = true;
 		await wait(delay);
 		playerVelocity.y = 12;
-		state.isJumping = false;
+		this.state.isJumping = false;
 	}
 
 	checkPlayerStuck(collider, dt) {
@@ -565,11 +565,12 @@ class Player extends BaseEntity {
 				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
 
 				if (distance < this.base.capsuleInfo.radius.body * 2) {
-					let dummyIsStuck = !state.isMoving && player.realSpeed <= params.speed * 0.97;
+					let dummyIsStuck =
+						!this.state.isMoving && player.realSpeed <= params.speed * 0.97;
 
-					if (state.isStuck !== dummyIsStuck) state.isStuck = dummyIsStuck;
+					if (this.state.isStuck !== dummyIsStuck) this.state.isStuck = dummyIsStuck;
 
-					if (state.isStuck) {
+					if (this.state.isStuck) {
 						tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection - PI);
 						this.base.mesh.position.addScaledVector(tVec3a, dt);
 					}
@@ -584,9 +585,9 @@ class Player extends BaseEntity {
 
 		let deltaPlayerPosY = Math.round((playerPosY - previousPlayerPos) * 100) * 0.001;
 
-		state.isMounting = deltaPlayerPosY >= 0 && deltaPlayerPosY !== 0;
-		state.isFalling = !state.isMounting && deltaPlayerPosY !== 0;
-		// state.isOnGround = deltaPlayerPosY === 0 && !state.isMounting;
+		this.state.isMounting = deltaPlayerPosY >= 0 && deltaPlayerPosY !== 0;
+		this.state.isFalling = !this.state.isMounting && deltaPlayerPosY !== 0;
+		// this.state.isOnGround = deltaPlayerPosY === 0 && !this.state.isMounting;
 
 		// get real speed based on the player's delta position
 		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
@@ -594,7 +595,7 @@ class Player extends BaseEntity {
 
 		// prevent big numbers when the player glitching
 		player.realSpeed = (_d / dt) * 1000;
-		state.isMoving = player.realSpeed > 0.002;
+		this.state.isMoving = player.realSpeed > 0.002;
 		tVec2b.copy(tVec2a);
 	}
 
@@ -606,10 +607,12 @@ class Player extends BaseEntity {
 
 		let axisTarget = 0;
 		let strength = 0;
-		if (!state.hasJumped) {
+		if (!this.state.hasJumped) {
 			axisTarget =
-				state.isFalling || state.isMounting ? (playerPosY - previousPlayerPos) * 0.2 : 0;
-			strength = state.isFalling || state.isMounting ? 0.03 : 0.2;
+				this.state.isFalling || this.state.isMounting
+					? (playerPosY - previousPlayerPos) * 0.2
+					: 0;
+			strength = this.state.isFalling || this.state.isMounting ? 0.03 : 0.2;
 		}
 		camAxisTarget = dampPrecise(camAxisTarget, axisTarget, strength, dt, 0.001);
 		this.base.camera.orbit.spherical
@@ -620,8 +623,8 @@ class Player extends BaseEntity {
 	async updateAnimation() {
 		let previousPlayerAnim = player.anim;
 
-		if (state.isOnGround && !state.hasJumped) {
-			if (state.isMoving && player.realSpeed >= params.speed * 0.1) {
+		if (this.state.isOnGround && !this.state.hasJumped) {
+			if (this.state.isMoving && player.realSpeed >= params.speed * 0.1) {
 				if (player.realSpeed <= params.speed + 3)
 					player.anim = this.base.animation.get('walk');
 
@@ -633,8 +636,8 @@ class Player extends BaseEntity {
 			} else player.anim = this.base.animation.get('idle');
 		}
 
-		if (this.keyPressed.space && state.isOnGround && !state.isJumping) {
-			if (state.isMoving && player.realSpeed >= params.speed * 0.1) {
+		if (this.keyPressed.space && this.state.isOnGround && !this.state.isJumping) {
+			if (this.state.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
 				this.base.animation.playOnce(player.anim);
 				this.jump(100);
@@ -645,7 +648,7 @@ class Player extends BaseEntity {
 			}
 		}
 
-		if (state.isFalling && state.hasJumped && !state.isOnGround)
+		if (this.state.isFalling && this.state.hasJumped && !this.state.isOnGround)
 			player.anim = this.base.animation.get('falling');
 
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
@@ -689,7 +692,8 @@ class Player extends BaseEntity {
 		this.base.group.position.copy(this.base.mesh.position);
 		this.base.group.quaternion.copy(this.base.mesh.quaternion);
 
-		if (state.hasJumped && !state.isJumping) state.hasJumped = !state.isOnGround;
+		if (this.state.hasJumped && !this.state.isJumping)
+			this.state.hasJumped = !this.state.isOnGround;
 
 		this.base.animation.update(dt);
 	}

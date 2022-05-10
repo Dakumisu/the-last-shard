@@ -13,6 +13,7 @@ import { initPlayer } from './Characters/Player.js';
 import baseUniforms from '@webgl/Materials/baseUniforms.js';
 import { store } from '@tools/Store.js';
 import assetsMap from '@utils/manifest.js';
+import { initPet } from './Characters/Pet.js';
 
 export default class World {
 	constructor() {
@@ -44,7 +45,8 @@ export default class World {
 	/// #endif
 
 	async init() {
-		await this.setPlayer();
+		this.setPlayer();
+		this.setPet();
 		await this.getScenes();
 		await this.initScenes();
 	}
@@ -75,8 +77,12 @@ export default class World {
 		this.sceneController.switch('Cabane');
 	}
 
-	async setPlayer() {
+	setPlayer() {
 		this.player = initPlayer();
+	}
+
+	setPet() {
+		this.pet = initPet();
 	}
 
 	resize() {
@@ -87,5 +93,6 @@ export default class World {
 		if (this.sceneController) this.sceneController.update(et, dt);
 		// if (this.sky) this.sky.update(et, dt);
 		if (this.player) this.player.update(et, dt);
+		if (this.pet) this.pet.update(et, dt);
 	}
 }
