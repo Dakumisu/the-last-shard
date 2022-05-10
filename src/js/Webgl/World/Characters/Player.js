@@ -367,7 +367,7 @@ class Player extends BaseEntity {
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
 		this.base.model.scene.scale.set(1.5, 1.5, 1.5);
-		this.base.model.scene.translateOnAxis(params.upVector, -1.5);
+		this.base.model.scene.translateOnAxis(params.upVector, -1.4);
 
 		this.base.group.add(this.base.model.scene);
 	}
@@ -619,14 +619,14 @@ class Player extends BaseEntity {
 
 		if (state.isOnGround && !state.hasJumped) {
 			if (state.isMoving && player.realSpeed >= params.speed * 0.1) {
-				// if (player.realSpeed <= params.speed + 2)
-				// 	player.anim = this.base.animation.get('walk');
+				if (player.realSpeed <= params.speed + 3)
+					player.anim = this.base.animation.get('walk');
 
-				// if (player.realSpeed > params.speed + 1.5) {
-				// 	player.anim = this.base.animation.get('run');
-				// }
-				if (this.keyPressed.shift) player.anim = this.base.animation.get('run');
-				else player.anim = this.base.animation.get('walk');
+				if (player.realSpeed > params.speed + 3.5)
+					player.anim = this.base.animation.get('run');
+
+				// if (this.keyPressed.shift) player.anim = this.base.animation.get('run');
+				// else player.anim = this.base.animation.get('walk');
 			} else player.anim = this.base.animation.get('idle');
 		}
 
