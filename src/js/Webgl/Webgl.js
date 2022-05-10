@@ -92,10 +92,10 @@ class Webgl {
 	}
 
 	afterInit() {
+		initialized = true;
+
 		this.performance.everythingLoaded();
 		this.resize();
-
-		initialized = true;
 	}
 
 	event() {

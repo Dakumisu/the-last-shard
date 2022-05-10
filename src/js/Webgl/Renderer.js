@@ -11,16 +11,9 @@ const params = {
 	clearColor: '#06061c',
 };
 
-const resolutionList = [
-	720, // 1280×720
-	1080, // 1920×1080
-	1440, // 2560×1440
-	2160, // 3840x2160
-];
-
-let resolutionQuality = localStorage.getItem('quality')
-	? JSON.parse(localStorage.getItem('quality'))
-	: 2;
+// Normalize values between 0 - 1, will be multiplied by dpr to get accurate value
+const dprList = [0.3, 0.55, 0.8];
+let dprQuality = 0;
 
 /// #if DEBUG
 const debug = {
@@ -37,17 +30,21 @@ export default class Renderer {
 		this.canvas = webgl.canvas;
 
 		signal.on('quality', (quality) => {
-			const q = clamp(Math.ceil(quality / 2), 0, resolutionList.length - 1);
+			if (quality > 2) {
+				this.updateDPR(store.resolution.dpr);
+			} else {
+				const _q = dprList[quality] * store.resolution.dpr;
+				if (dprQuality == _q) return;
+				dprQuality = _q;
 
-			if (store.device.isMobile) return;
-			if (resolutionQuality == q) return;
-			resolutionQuality = q;
-
-			this.updateSize(resolutionQuality);
+				this.updateDPR(dprQuality);
+			}
 		});
 
 		this.setRenderer();
 		this.setPostProcess();
+
+		this.updateDPR(store.resolution.dpr);
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
@@ -62,29 +59,12 @@ export default class Renderer {
 			this.context = this.renderer.getContext();
 			this.stats.setRenderPanel(this.context);
 		}
-
-		// debug.instance.setFolder(debug.label);
-		// const gui = debug.instance.getFolder(debug.label);
-
-		// gui.addInput(params, 'clearColor', { label: 'background color' }).on('change', (color) => {
-		// 	this.renderer.setClearColor(color.value);
-		// });
 	}
 	/// #endif
 
-	updateSize(quality) {
-		const sizes = {
-			width: Math.min(store.resolution.width, resolutionList[quality] * store.aspect.ratio),
-			height: Math.min(store.resolution.height, resolutionList[quality]),
-		};
-
-		this.renderer.setSize(sizes.width, sizes.height);
-		this.postFX.resize(sizes.width, sizes.height);
-	}
-
-	resetSize() {
-		this.renderer.setSize(store.resolution.width, store.resolution.height);
-		this.postFX.resize(store.resolution.width, store.resolution.height);
+	updateDPR(dpr) {
+		this.renderer.setPixelRatio(dpr);
+		this.postFX.updateDPR(dpr);
 	}
 
 	setRenderer() {
@@ -97,8 +77,10 @@ export default class Renderer {
 			autoClear: false,
 		});
 
-		this.renderer.setSize(store.resolution.width, store.resolution.height);
-		this.renderer.setPixelRatio(Math.min(store.resolution.dpr, 2));
+		const { width, height, dpr } = store.resolution;
+
+		this.renderer.setSize(width, height);
+		this.renderer.setPixelRatio(Math.min(dpr, 2));
 		this.renderer.setClearColor(params.clearColor, 1);
 
 		this.renderer.physicallyCorrectLights = true;
@@ -114,9 +96,10 @@ export default class Renderer {
 	}
 
 	resize() {
-		this.updateSize(resolutionQuality);
+		const { width, height } = store.resolution;
 
-		this.renderer.setPixelRatio(Math.min(store.resolution.dpr, 2));
+		this.renderer.setSize(width, height);
+		this.postFX.resize(width, height);
 	}
 
 	render() {

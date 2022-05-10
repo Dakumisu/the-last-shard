@@ -125,7 +125,16 @@ export default class PostFX {
 		if (!initialized) return;
 
 		tVec2.set(width, height);
-		tVec3.set(tVec2.x, tVec2.y, store.resolution.dpr);
+		tVec3.x = tVec2.x;
+		tVec3.y = tVec2.y;
+
+		this.material.uniforms.uResolution.value = tVec3;
+	}
+
+	updateDPR(dpr) {
+		if (!initialized) return;
+
+		tVec3.z = dpr;
 
 		this.material.uniforms.uResolution.value = tVec3;
 	}
