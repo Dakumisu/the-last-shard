@@ -98,6 +98,12 @@ export default class BaseObject {
 			x: [0.00001, scale[0]],
 			y: [0.00001, scale[1]],
 			z: [0.00001, scale[2]],
+			complete: () => {
+				if (!this.base.isInteractable) {
+					this.base.mesh.matrixAutoUpdate = false;
+					this.base.mesh.updateMatrix();
+				}
+			},
 		});
 	}
 
