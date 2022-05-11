@@ -602,7 +602,7 @@ class Player extends BaseEntity {
 	updatePlayerCam(dt) {
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
 
-		camInertie = dampPrecise(camInertie, player.realSpeed * 0.2, 0.25, dt, 0.001);
+		camInertie = dampPrecise(camInertie, Math.abs(player.realSpeed) * 0.2, 0.25, dt, 0.001);
 		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + (camInertie || 0));
 
 		let axisTarget = 0;
