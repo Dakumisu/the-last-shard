@@ -63,8 +63,9 @@ export default class BaseScene {
 		this.renderTarget = new WebGLRenderTarget(textureSize[5], textureSize[5]);
 		this.depthTexture = new DepthTexture(textureSize[5], textureSize[5]);
 
-		signal.on('quality', (quality) => {
-			if (!this.isInitialized) return;
+		signal.on('quality', async (quality) => {
+			await this.initialized;
+
 			this.renderTarget = new WebGLRenderTarget(textureSize[quality], textureSize[quality]);
 			this.depthTexture = new DepthTexture(textureSize[quality], textureSize[quality]);
 			if (quality > 1) requestAnimationFrame(this.updateRenderTarget);

@@ -53,20 +53,12 @@ export default class SandboxScene extends BaseScene {
 			background: await this.envMapTexture,
 		});
 
-		this.grass = new Grass({
-			scene: this,
-			params: {
-				color: '#C1C2FF',
-				color2: '#664CB1',
-				verticeScale: 0.2,
-				halfBoxSize: 25,
-				maskRange: 0.04,
-				noiseElevationIntensity: 0.75,
-				noiseMouvementIntensity: 0.15,
-				windColorIntensity: 0.1,
-				displacement: 0.15,
-				positionsTexture: await loadTexture('grassTexture'),
-			},
+		this.grass = new Grass(this, {
+			color: '#C1C2FF',
+			color2: '#664CB1',
+			halfBoxSize: 25,
+			scale: 1,
+			positionsTexture: await loadTexture('grassTexture'),
 		});
 
 		this.particles = new Particles({

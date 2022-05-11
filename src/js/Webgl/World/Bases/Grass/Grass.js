@@ -11,6 +11,8 @@ import {
 	Color,
 	InstancedBufferAttribute,
 	InstancedBufferGeometry,
+	InstancedInterleavedBuffer,
+	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
 	Texture,
@@ -20,16 +22,18 @@ import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
+import { deferredPromise } from 'philbin-packages/async';
+import { store } from '@tools/Store';
 
-const twigsCountList = [0, 0, 80000, 100000, 300000, 1000000];
+const twigsCountList = [0, 0, 80000, 100000, 200000, 300000];
 
 export default class Grass {
 	/**
 	 *
-	 * @param {{scene: BaseScene, params?:{color?: string, color2?: string, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}}
+	 * @param {{scene: BaseScene, params?:{color?: string, color2?: string, halfBoxSize?: number, positionsTexture: Texture}}}
 	 */
 
-	constructor({ scene, params }) {
+	constructor(scene, params = {}) {
 		this.scene = scene;
 		this.params = params;
 
@@ -48,10 +52,10 @@ export default class Grass {
 
 		signal.on('quality', (quality) => {
 			this.count = twigsCountList[quality];
-			this.updateAttributes();
+			this.updateCount(this.count);
 		});
 
-		this.initialized = false;
+		this.initialized = deferredPromise();
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
@@ -61,32 +65,33 @@ export default class Grass {
 	}
 
 	init() {
-		this.setDefaultGeometry();
-		this.setAttributes();
-		this.setGeometry();
-		this.setMaterial();
-		this.setMesh();
+		this.setTwigGeometry();
+		this.initGeometry(twigsCountList[5]);
+		this.setGrass();
+
+		this.count = twigsCountList[store.quality];
+		this.updateCount(this.count);
 
 		/// #if DEBUG
 		this.devtools();
 		/// #endif
 
-		this.initialized = true;
+		this.initialized.resolve();
 	}
 
-	setDefaultGeometry() {
+	setTwigGeometry() {
 		this.triangle = new BufferGeometry();
 
 		const vertices = new Float32Array([
-			-0.15 * this.params.verticeScale,
-			-0.15 * this.params.verticeScale,
-			0 * this.params.verticeScale, // bl
-			0.15 * this.params.verticeScale,
-			-0.15 * this.params.verticeScale,
-			0 * this.params.verticeScale, // br
-			0 * this.params.verticeScale,
-			0.75 * this.params.verticeScale,
-			0 * this.params.verticeScale, // tc
+			-0.15 * 0.2,
+			-0.15 * 0.2,
+			0 * 0.2, // bl
+			0.15 * 0.2,
+			-0.15 * 0.2,
+			0 * 0.2, // br
+			0 * 0.2,
+			0.75 * 0.2,
+			0 * 0.2, // tc
 		]);
 
 		const normal = new Float32Array([
@@ -101,88 +106,57 @@ export default class Grass {
 		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
 	}
 
-	setAttributes() {
-		this.attributes.position = new Float32Array(this.count * 3);
-		this.attributes.scale = new Float32Array(this.count * 1);
+	initGeometry(count) {
+		const geo = new InstancedBufferGeometry();
 
-		for (let i = 0; i < this.count; i++) {
-			this.attributes.position[i * 3 + 0] = MathUtils.randFloatSpread(
-				this.params.halfBoxSize * 2,
-			);
-			this.attributes.position[i * 3 + 2] = MathUtils.randFloatSpread(
-				this.params.halfBoxSize * 2,
-			);
+		geo.index = this.triangle.index;
+		geo.attributes.position = this.triangle.attributes.position;
+		geo.attributes.normal = this.triangle.attributes.normal;
+		geo.attributes.uv = this.triangle.attributes.uv;
+		geo.scale(this.params.scale, this.params.scale, this.params.scale);
 
-			const random = MathUtils.randFloat(1, 3);
-			this.attributes.scale[i * 3 + 0] = random;
-			this.attributes.scale[i * 3 + 1] = random;
-			this.attributes.scale[i * 3 + 2] = random;
-		}
-	}
+		const array = [];
+		let id = 0;
+		for (let i = 0; i < count; i++) {
+			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
+			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
+			const scale = MathUtils.randFloat(1, 3);
+			id++;
 
-	setGeometry() {
-		this.base.geometry = new InstancedBufferGeometry();
-
-		this.base.geometry.index = this.triangle.index;
-		this.base.geometry.attributes.position = this.triangle.attributes.position;
-		this.base.geometry.attributes.normal = this.triangle.attributes.normal;
-		this.base.geometry.attributes.uv = this.triangle.attributes.uv;
-
-		this.base.geometry.setAttribute(
-			'aPositions',
-			new InstancedBufferAttribute(this.attributes.position, 3, false),
-		);
-		this.base.geometry.setAttribute(
-			'aScale',
-			new InstancedBufferAttribute(this.attributes.scale, 3, false),
-		);
-	}
-
-	updateAttributes() {
-		const particlesCount = this.count;
-
-		this.attributes.newPosition = new Float32Array(particlesCount * 3);
-		this.attributes.newScale = new Float32Array(particlesCount * 1);
-
-		for (let i = 0; i < particlesCount; i++) {
-			this.attributes.newPosition[i * 3 + 1] = this.attributes.position[i * 3 + 1];
-			this.attributes.newPosition[i * 3 + 0] = this.attributes.position[i * 3 + 0];
-			this.attributes.newPosition[i * 3 + 2] = this.attributes.position[i * 3 + 2];
-
-			this.attributes.newScale[i + 0] = this.attributes.scale[i + 0];
+			array.push(x, -0.2, z, scale);
 		}
 
-		this.updateGeometry();
+		// pos + scale
+		this.stride = 3 + 1;
+		this.buffer = new Float32Array(array.length);
+		const ib = new InstancedInterleavedBuffer(this.buffer, this.stride);
+		this.interleavedBuffer = ib;
+
+		geo.setAttribute('aPositions', new InterleavedBufferAttribute(ib, 3, 0, false));
+		geo.setAttribute('aScale', new InterleavedBufferAttribute(ib, 1, 3, false));
+
+		const buf = this.buffer;
+
+		for (let i = 0; i < id; i++) {
+			buf[i * this.stride] = array[i * this.stride];
+			buf[i * this.stride + 1] = array[i * this.stride + 1];
+			buf[i * this.stride + 2] = array[i * this.stride + 2];
+			buf[i * this.stride + 3] = array[i * this.stride + 3];
+
+			buf[i * this.stride + 4] = array[i * this.stride + 4];
+		}
+
+		this.base.geometry = geo;
 	}
 
-	updateGeometry() {
-		this.base.geometry = new InstancedBufferGeometry();
-
-		this.base.geometry.index = this.triangle.index;
-		this.base.geometry.attributes.position = this.triangle.attributes.position;
-		this.base.geometry.attributes.normal = this.triangle.attributes.normal;
-		this.base.geometry.attributes.uv = this.triangle.attributes.uv;
-
-		this.base.geometry.setAttribute(
-			'aPositions',
-			new InstancedBufferAttribute(this.attributes.newPosition, 3, false),
-		);
-		this.base.geometry.setAttribute(
-			'aScale',
-			new InstancedBufferAttribute(this.attributes.newScale, 1, false),
-		);
-
-		this.base.mesh.geometry = this.base.geometry;
-	}
-
-	setMaterial() {
+	setGrass() {
 		this.base.material = new GrassMaterial({
 			uniforms: {
-				uDisplacement: { value: this.params.displacement },
-				uWindColorIntensity: { value: this.params.windColorIntensity },
-				uMaskRange: { value: this.params.maskRange },
-				uNoiseMouvementIntensity: { value: this.params.noiseMouvementIntensity },
-				uNoiseElevationIntensity: { value: this.params.noiseElevationIntensity },
+				uDisplacement: { value: 0.15 },
+				uWindColorIntensity: { value: 0.1 },
+				uMaskRange: { value: 0.04 },
+				uNoiseMouvementIntensity: { value: 0.15 },
+				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
 				uColor: { value: new Color().set(this.params.color) },
@@ -193,13 +167,17 @@ export default class Grass {
 				uMinMapBounds: { value: this.scene.minBox },
 			},
 		});
+
+		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		this.base.mesh.frustumCulled = false;
+		this.scene.instance.add(this.base.mesh);
 	}
 
-	setMesh() {
-		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		this.scene.instance.add(this.base.mesh);
-		this.base.mesh.frustumCulled = false;
-		this.base.mesh.position.y = -0.2;
+	async updateCount(count) {
+		await this.initialized;
+
+		this.base.geometry.instanceCount = count;
+		this.interleavedBuffer.needsUpdate = true;
 	}
 
 	/// #if DEBUG
@@ -229,33 +207,6 @@ export default class Grass {
 			label: 'nElevationI',
 			min: 0,
 			max: 1,
-			step: 0.01,
-		});
-		gui.addInput(this.params, 'halfBoxSize', {
-			label: 'boxSize',
-			min: 1,
-			max: 100,
-			step: 0.01,
-		}).on('change', (size) => {
-			if (!size.last) return;
-			for (let i = 0; i < this.count; i++) {
-				this.attributes.position[i * 3 + 0] = MathUtils.randFloatSpread(
-					this.params.halfBoxSize * 2,
-				);
-				this.attributes.position[i * 3 + 2] = MathUtils.randFloatSpread(
-					this.params.halfBoxSize * 2,
-				);
-			}
-			this.base.material.uniforms.uHalfBoxSize.value = size.value;
-			this.base.geometry.setAttribute(
-				'aPositions',
-				new InstancedBufferAttribute(this.attributes.position, 3, false),
-			);
-		});
-		gui.addInput(this.base.material.uniforms.uMaskRange, 'value', {
-			label: 'maskRange',
-			min: 0,
-			max: 0.5,
 			step: 0.01,
 		});
 

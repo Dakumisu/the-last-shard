@@ -27,6 +27,7 @@ const params = {
 
 class Pet extends BaseEntity {
 	static instance;
+
 	constructor() {
 		super();
 

@@ -66,7 +66,7 @@ const debug = {
 
 export default class PerfomanceMonitor {
 	constructor() {
-		this.quality = DEFAULT_QUALITY;
+		store.quality = this.quality = DEFAULT_QUALITY;
 
 		this.qualityStr = qualityList[this.quality];
 		this.fps = 0;
@@ -228,7 +228,10 @@ export default class PerfomanceMonitor {
 
 		this.qualityStr = qualityList[this.quality];
 
-		if (prevQuality != this.quality) signal.emit('quality', this.quality);
+		if (prevQuality != this.quality) {
+			store.quality = this.quality;
+			signal.emit('quality', this.quality);
+		}
 
 		if (pingPong < MAX_PING_PONG) this.reset();
 	}
