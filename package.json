@@ -14,7 +14,8 @@
   "dependencies": {
     "animejs": "^3.2.1",
     "detect-gpu": "^4.0.7",
-    "howler": "^2.2.1",
+    "howler": "^2.2.3",
+    "install": "^0.13.0",
     "philbin-packages": "^1.1.1",
     "three": "^0.140.0",
     "three-mesh-bvh": "^0.5.5"
