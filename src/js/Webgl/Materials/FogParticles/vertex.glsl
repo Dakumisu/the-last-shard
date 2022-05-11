@@ -3,10 +3,6 @@
 uniform float uTime;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
-uniform sampler2D uElevationTexture;
-uniform sampler2D uPositionTexture;
-uniform vec3 uMaxMapBounds;
-uniform vec3 uMinMapBounds;
 
 attribute float aScale;
 attribute float aOffset;
@@ -50,39 +46,16 @@ void main() {
 	float time = uTime * 0.00008 * aScale;
 
 	vec3 pos = position * aScale;
-	
 
 	vec3 translation = vec3(0.);
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 	translation.y = uCharaPos.y - mod(aPositions.y + uCharaPos.y, boxSizeY) + uHalfBoxSizeY;
 
-	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
-	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
-
 	float fade = 1.0 - smoothstep(0., 1., (0.1 * distance(uCharaPos, translation)));
 
 	vFade = fade;
 	vUv = uv;
-
-
-	// Map position to the elevation texture coordinates using the map bounds
-	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
-	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
-
-	// float scaleFromTexture = 1. - texture2D(uPositionTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
-	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	// pos *= scaleFromTexture;
-
-
-	// Player trail
-	float trailIntensity = smoothstep(2.5, 0., distance(uCharaPos, translation.xyz));
-	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
-
-	// Grass displacement according to player trail
-	// translation -= trailIntensity * trailDirection;
-	// pos += trailIntensity;
-
 
 	// Looping on Y axis
 	float maxDuration = 5.;

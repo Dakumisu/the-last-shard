@@ -161,20 +161,14 @@ export default class FogParticles extends BaseObject {
 
 	async setMaterial() {
 		this.base.material = new FogParticlesMaterial({
-			side: DoubleSide,
-			transparent: true,
+			// side: DoubleSide,
 			depthWrite: false,
 			blending: AdditiveBlending,
 			uniforms: {
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
-				uElevationTexture: { value: this.depthTexture },
-				uPositionTexture: { value: this.params.positionsTexture },
 				uFogTexture: { value: this.params.fogTexture },
-				uMaxMapBounds: { value: this.maxBox },
-				uMinMapBounds: { value: this.minBox },
 				uColor: { value: new Color().set(this.params.color) },
-				uColor2: { value: new Color().set(this.params.color2) },
 			},
 		});
 	}

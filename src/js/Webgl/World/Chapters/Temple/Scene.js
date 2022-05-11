@@ -86,9 +86,8 @@ export default class TempleScene extends BaseScene {
 		this.fogParticles = new FogParticles({
 			scene: this,
 			params: {
-				color: '#C1C2FF',
-				color2: '#664CB1',
-				count: 20000,
+				color: '#664CB1',
+				count: 4000,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 				fogTexture: await loadTexture('fogTexture'),
