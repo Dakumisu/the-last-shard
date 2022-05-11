@@ -8,6 +8,7 @@ import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
+import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 
 export default class TempleScene extends BaseScene {
 	constructor(manifest) {
@@ -75,12 +76,25 @@ export default class TempleScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 350,
+				count: 200,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
 		await this.particles.init();
+
+		this.fogParticles = new FogParticles({
+			scene: this,
+			params: {
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 20000,
+				halfBoxSize: 30,
+				positionsTexture: await loadTexture('grassTexture'),
+				fogTexture: await loadTexture('fogTexture'),
+			},
+		});
+		await this.fogParticles.init();
 
 		// this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
 		this.initialized.resolve(true);

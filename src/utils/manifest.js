@@ -41,6 +41,10 @@ assetsMap.set('grassTexture', {
 	path: '/assets/image/grass.ktx2',
 	data: {},
 });
+assetsMap.set('fogTexture', {
+	path: '/assets/image/fog.png',
+	data: {},
+});
 
 assetsMap.set('laserTexture', {
 	path: '/assets/image/laser.png',

@@ -83,9 +83,8 @@ void main() {
 	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
 
 	// Grass displacement according to player trail
-	translation.x -= trailIntensity * trailDirection.x * .7;
-	pos.y *= 1. - trailIntensity;
-	translation.z -= trailIntensity * trailDirection.y * .7;
+	translation -= trailIntensity * trailDirection;
+	pos *= 1. - trailIntensity;
 
 
 	// Looping on Y axis

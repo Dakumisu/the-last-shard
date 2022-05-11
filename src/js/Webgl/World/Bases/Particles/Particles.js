@@ -23,6 +23,7 @@ import {
 	Vector3,
 	Box3,
 	PlaneBufferGeometry,
+	AdditiveBlending,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
@@ -136,7 +137,6 @@ export default class Particles extends BaseObject {
 
 		for (let i = 0; i < this.params.count; i++) {
 			positions[i * 3 + 0] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
-			positions[i * 3 + 1] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
 			positions[i * 3 + 2] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
 
 			scale[i] = MathUtils.randFloat(1, 2);
@@ -163,6 +163,7 @@ export default class Particles extends BaseObject {
 			side: DoubleSide,
 			transparent: true,
 			depthWrite: false,
+			blending: AdditiveBlending,
 			uniforms: {
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
