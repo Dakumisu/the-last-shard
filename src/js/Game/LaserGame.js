@@ -3,13 +3,14 @@ import { DoubleSide, CylinderGeometry, AdditiveBlending } from 'three';
 import { loadTexture } from '@utils/loaders';
 import { LaserMaterialInner } from '@webgl/Materials/Laser/inner/material';
 import { LaserMaterialOuter } from '@webgl/Materials/Laser/outer/material';
+import { getPet } from '@webgl/World/Characters/Pet';
 
 export default class LaserGame {
 	static laserMaterialInner;
 	static laserMaterialOuter;
 	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 256, 256, true)
-		.rotateZ(Math.PI / 2)
-		.rotateY(Math.PI / 2)
+		.rotateZ(Math.PI * 0.5)
+		.rotateY(Math.PI * 0.5)
 		.translate(0, 2, 0.5);
 
 	/**
@@ -19,6 +20,8 @@ export default class LaserGame {
 	constructor({ scene }) {
 		this.laserTowers = [];
 		this.scene = scene;
+
+		this.pet = getPet();
 
 		this.init();
 	}

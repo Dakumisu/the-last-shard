@@ -4,6 +4,7 @@ import anime from 'animejs';
 import { ArrowHelper, Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
+import { Pet } from '@webgl/World/Characters/Pet';
 
 export default class LaserTower extends BaseCollider {
 	/**
@@ -61,6 +62,8 @@ export default class LaserTower extends BaseCollider {
 
 	activate() {
 		this.isActivated = true;
+		if (this.type === 'start') this.game.pet.toggleFeeding();
+
 		if (this.type === 'end') this.game.endEvent();
 
 		this.laserGroup.visible = true;
@@ -72,6 +75,7 @@ export default class LaserTower extends BaseCollider {
 
 	desactivate() {
 		this.isActivated = false;
+		if (this.type === 'start') this.game.pet.toggleFeeding();
 
 		this.laserGroup.visible = false;
 		this.laserGroup.scale.z = this.maxDistance;

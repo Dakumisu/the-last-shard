@@ -14,18 +14,18 @@ const debug = {
 };
 /// #endif
 
-const STATES = {
-	FOLLOW: 0,
-	IDLE: 1,
-};
-
 const params = {
 	offsetFromPlayer: new Vector3(-0.5, 0.5, 0.5),
 	idleRadius: 1,
 	stateTimeout: [4000, 2000],
 };
 
-class Pet extends BaseEntity {
+export class Pet extends BaseEntity {
+	static STATES = {
+		FOLLOW: 0,
+		IDLE: 1,
+		FEEDING: 2,
+	};
 	static instance;
 
 	constructor() {
@@ -38,8 +38,8 @@ class Pet extends BaseEntity {
 		this.player = getPlayer();
 		this.scene = webgl.mainScene.instance;
 
-		this.state = STATES.IDLE;
-		this.canIdle = true;
+		this.state = Pet.STATES.IDLE;
+		this.isBlocked = false;
 		this.speed = 1;
 
 		this.lastPlayerPos = new Vector3();
@@ -86,17 +86,19 @@ class Pet extends BaseEntity {
 	/// #endif
 
 	update(et, dt) {
-		if (!this.isInitialized) return;
+		if (!this.isInitialized || this.isBlocked) return;
 
 		if (!this.timeOutStarted) this.stateTimeout();
 
 		switch (this.state) {
-			case STATES.FOLLOW:
+			case Pet.STATES.FOLLOW:
 				this.follow(et, dt);
 				break;
-			case STATES.IDLE:
+			case Pet.STATES.IDLE:
 				this.idle(et, dt);
 				break;
+			case Pet.STATES.FEEDING:
+				this.feed(et, dt);
 		}
 	}
 
@@ -130,7 +132,6 @@ class Pet extends BaseEntity {
 	follow(et, dt) {
 		this.dampPosition(dt, 0.1);
 
-		console.log('follow');
 		this.lastPlayerPos.copy(this.player.base.mesh.position);
 		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
 	}
@@ -138,7 +139,6 @@ class Pet extends BaseEntity {
 	idle(et, dt) {
 		this.dampPosition(dt, 0.01);
 
-		console.log('idle');
 		this.targetPos.x =
 			Math.cos(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.x;
 
@@ -148,10 +148,20 @@ class Pet extends BaseEntity {
 		this.targetPos.y = Math.sin(et * 0.005) * 0.01 + this.lastPlayerPos.y;
 	}
 
+	feed(et, dt) {
+		this.isBlocked = true;
+		console.log('feed');
+	}
+
+	toggleFeeding() {
+		this.state = Pet.STATES.FEEDING ? Pet.STATES.FOLLOW : Pet.STATES.FEEDING;
+		this.isBlocked = this.isBlocked ? false : true;
+	}
+
 	async stateTimeout() {
 		this.timeOutStarted = true;
 		await wait(params.stateTimeout[this.state]);
-		this.state = this.player.state.isMoving ? STATES.FOLLOW : STATES.IDLE;
+		this.state = this.player.state.isMoving ? Pet.STATES.FOLLOW : Pet.STATES.IDLE;
 		this.timeOutStarted = false;
 	}
 }
