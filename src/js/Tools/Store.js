@@ -24,6 +24,7 @@ const store = {
 	browser: null,
 	views: null,
 
+	quality: 5,
 	isWebGL2: true,
 
 	manifest: [],

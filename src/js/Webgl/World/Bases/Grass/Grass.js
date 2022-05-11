@@ -22,13 +22,15 @@ import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
+import { deferredPromise } from 'philbin-packages/async';
+import { store } from '@tools/Store';
 
 const twigsCountList = [0, 0, 80000, 100000, 200000, 300000];
 
 export default class Grass {
 	/**
 	 *
-	 * @param {{scene: BaseScene, params?:{color?: string, color2?: string, verticeScale?: number, halfBoxSize?: number, maskRange?: number, noiseElevationIntensity?: number, noiseMouvementIntensity?: number, windColorIntensity?: number, displacement?: number, positionsTexture: Texture}}}
+	 * @param {{scene: BaseScene, params?:{color?: string, color2?: string, halfBoxSize?: number, positionsTexture: Texture}}}
 	 */
 
 	constructor(scene, params = {}) {
@@ -53,7 +55,7 @@ export default class Grass {
 			this.updateCount(this.count);
 		});
 
-		this.initialized = false;
+		this.initialized = deferredPromise();
 
 		/// #if DEBUG
 		debug.instance = scene.gui;
@@ -67,11 +69,14 @@ export default class Grass {
 		this.initGeometry(twigsCountList[5]);
 		this.setGrass();
 
+		this.count = twigsCountList[store.quality];
+		this.updateCount(this.count);
+
 		/// #if DEBUG
 		this.devtools();
 		/// #endif
 
-		this.initialized = true;
+		this.initialized.resolve();
 	}
 
 	setTwigGeometry() {
@@ -168,7 +173,9 @@ export default class Grass {
 		this.scene.instance.add(this.base.mesh);
 	}
 
-	updateCount(count) {
+	async updateCount(count) {
+		await this.initialized;
+
 		this.base.geometry.instanceCount = count;
 		this.interleavedBuffer.needsUpdate = true;
 	}
@@ -200,33 +207,6 @@ export default class Grass {
 			label: 'nElevationI',
 			min: 0,
 			max: 1,
-			step: 0.01,
-		});
-		gui.addInput(this.params, 'halfBoxSize', {
-			label: 'boxSize',
-			min: 1,
-			max: 100,
-			step: 0.01,
-		}).on('change', (size) => {
-			if (!size.last) return;
-			for (let i = 0; i < this.count; i++) {
-				this.attributes.position[i * 3 + 0] = MathUtils.randFloatSpread(
-					this.params.halfBoxSize * 2,
-				);
-				this.attributes.position[i * 3 + 2] = MathUtils.randFloatSpread(
-					this.params.halfBoxSize * 2,
-				);
-			}
-			this.base.material.uniforms.uHalfBoxSize.value = size.value;
-			this.base.geometry.setAttribute(
-				'aPositions',
-				new InstancedBufferAttribute(this.attributes.position, 3, false),
-			);
-		});
-		gui.addInput(this.base.material.uniforms.uMaskRange, 'value', {
-			label: 'maskRange',
-			min: 0,
-			max: 0.5,
 			step: 0.01,
 		});
 

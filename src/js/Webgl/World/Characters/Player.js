@@ -58,17 +58,16 @@ const playerVelocity = new Vector3();
 
 const params = {
 	speed: 4,
-	sprint: 14,
+	sprint: 10,
 
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),
-	defaultPos: [0, 3, 30],
 
 	broadphaseRadius: 10,
 };
 
 const camParams = {
-	radius: 2.5,
+	radius: 3,
 	phi: 1,
 	theta: 0,
 };
@@ -329,15 +328,15 @@ class Player extends BaseEntity {
 	}
 
 	setBodyMesh() {
-		this.base.geometry = new CapsuleGeometry(0.5, 1, 10, 20);
-		// this.base.geometry.translate(0, -0.5, 0);
+		this.base.geometry = new CapsuleGeometry(0.5, 0.5, 10, 20);
+		this.base.geometry.translate(0, -0.75, 0);
 
 		this.base.capsuleInfo = {
 			radius: {
 				base: 0.4,
 				body: 0.27,
 			},
-			segment: new Line3(new Vector3(), new Vector3(0, -1, 0)),
+			segment: new Line3(new Vector3(), new Vector3(0, -0.75, 0)),
 		};
 
 		this.base.material = new PlayerMaterial({
@@ -346,8 +345,6 @@ class Player extends BaseEntity {
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.base.mesh.visible = false;
-
-		this.base.mesh.position.fromArray(params.defaultPos);
 
 		this.scene.add(this.base.mesh);
 		this.scene.add(this.base.group);
@@ -367,7 +364,7 @@ class Player extends BaseEntity {
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
 		// this.base.model.scene.scale.set(1.5, 1.5, 1.5);
-		this.base.model.scene.translateOnAxis(params.upVector, -1.4);
+		this.base.model.scene.translateOnAxis(params.upVector, -1.15);
 
 		this.base.group.add(this.base.model.scene);
 	}
@@ -459,8 +456,8 @@ class Player extends BaseEntity {
 			playerVelocity.set(0, 0, 0);
 		}
 
-		// adjust the camera
-		this.updatePlayerCam(dt);
+		// // adjust the camera
+		// this.updatePlayerCam(dt);
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
@@ -593,7 +590,7 @@ class Player extends BaseEntity {
 		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
 		const _d = tVec2b.distanceTo(tVec2a);
 
-		// prevent big numbers when the player glitching
+		if (!dt) return;
 		player.realSpeed = (_d / dt) * 1000;
 		this.state.isMoving = player.realSpeed > 0.002;
 		tVec2b.copy(tVec2a);
@@ -602,7 +599,7 @@ class Player extends BaseEntity {
 	updatePlayerCam(dt) {
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position);
 
-		camInertie = dampPrecise(camInertie, Math.abs(player.realSpeed) * 0.2, 0.25, dt, 0.001);
+		camInertie = dampPrecise(camInertie, player.realSpeed * 0.2, 0.25, dt, 0.001);
 		this.base.camera.orbit.sphericalTarget.setRadius(camParams.radius + (camInertie || 0));
 
 		let axisTarget = 0;
@@ -625,14 +622,14 @@ class Player extends BaseEntity {
 
 		if (this.state.isOnGround && !this.state.hasJumped) {
 			if (this.state.isMoving && player.realSpeed >= params.speed * 0.1) {
-				if (player.realSpeed <= params.speed + 3)
-					player.anim = this.base.animation.get('walk');
-
-				if (player.realSpeed > params.speed + 3.5)
-					player.anim = this.base.animation.get('run');
-
-				// if (this.keyPressed.shift) player.anim = this.base.animation.get('run');
-				// else player.anim = this.base.animation.get('walk');
+				// force run animation if the player sprints
+				if (this.keyPressed.shift) player.anim = this.base.animation.get('run');
+				else {
+					if (player.realSpeed <= params.speed + 3)
+						player.anim = this.base.animation.get('walk');
+					if (player.realSpeed > params.speed + 3.5)
+						player.anim = this.base.animation.get('run');
+				}
 			} else player.anim = this.base.animation.get('idle');
 		}
 
@@ -684,8 +681,8 @@ class Player extends BaseEntity {
 		this.checkPlayerPosition(dt);
 		this.updateAnimation();
 
-		// // adjust the camera
-		// this.updatePlayerCam(dt);
+		// adjust the camera
+		this.updatePlayerCam(dt);
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 

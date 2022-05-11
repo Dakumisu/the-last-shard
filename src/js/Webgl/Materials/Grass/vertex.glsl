@@ -80,7 +80,7 @@ void main() {
 	translation.y += translationOffset;
 
 	// Player trail
-	float trailIntensity = smoothstep(2.2, 0., distance(uCharaPos, translation.xyz));
+	float trailIntensity = smoothstep(1.8, 0., distance(uCharaPos, translation.xyz));
 	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
 
 	// Grass displacement according to player trail
@@ -95,10 +95,7 @@ void main() {
 	}
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
-
-	// mv.xyz += pos.xyz;
 	mv.xyz += pos;
 
 	gl_Position = projectionMatrix * mv;
-
 }
