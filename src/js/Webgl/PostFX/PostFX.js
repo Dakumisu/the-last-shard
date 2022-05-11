@@ -25,7 +25,9 @@ const tVec2 = new Vector2();
 const tVec3 = new Vector3();
 
 const params = {
-	postprocess: 0,
+	postprocess: 1,
+	brightness: 0,
+	contrast: 0.1,
 	useFxaa: true,
 };
 
@@ -75,6 +77,22 @@ export default class PostFX {
 		}).on('change', (e) => {
 			this.material.uniforms.POST_PROCESSING.value = e.value;
 		});
+		gui.addInput(params, 'brightness', {
+			label: 'brightness',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		}).on('change', (e) => {
+			this.material.uniforms.uBrightness.value = e.value;
+		});
+		gui.addInput(params, 'contrast', {
+			label: 'contrast',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		}).on('change', (e) => {
+			this.material.uniforms.uContrast.value = e.value;
+		});
 	}
 	/// #endif
 
@@ -108,6 +126,8 @@ export default class PostFX {
 				POST_PROCESSING: { value: params.postprocess },
 				uScene: { value: this.target.texture },
 				uResolution: { value: tVec3 },
+				uBrightness: { value: params.brightness },
+				uContrast: { value: params.contrast },
 			},
 		};
 

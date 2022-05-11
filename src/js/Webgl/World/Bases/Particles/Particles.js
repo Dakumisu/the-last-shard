@@ -15,6 +15,9 @@ import {
 	Mesh,
 	PlaneBufferGeometry,
 	AdditiveBlending,
+	BoxBufferGeometry,
+	MeshBasicMaterial,
+	MeshNormalMaterial,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
@@ -102,8 +105,6 @@ export default class Particles {
 
 	setMaterial() {
 		this.base.material = new ParticlesMaterial({
-			side: DoubleSide,
-			transparent: true,
 			depthWrite: false,
 			blending: AdditiveBlending,
 			uniforms: {

@@ -37,6 +37,5 @@ void main() {
 	float loopStart = vLoop;
 	float loop = loopStart * loopEnd;
 
-	gl_FragColor = vec4( vFade) ;
 	gl_FragColor = vec4(vec3(text) * uColor, text * dist * vFade * loop );
 }

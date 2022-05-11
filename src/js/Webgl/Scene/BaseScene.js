@@ -361,7 +361,6 @@ export default class BaseScene {
 		this.renderer.setRenderTarget(this.renderTarget);
 		// Edit this to render only the Mesh/Group you want to test depth with
 		this.renderer.render(this.ground.base.realMesh, this.rtCamera);
-		// this.renderer.render(this.scene.instance, this.rtCamera);
 
 		/// #if DEBUG
 		const buffer = new Uint8Array(this.renderTarget.width * this.renderTarget.height * 4);
