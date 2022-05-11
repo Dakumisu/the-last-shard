@@ -3,10 +3,6 @@
 uniform float uTime;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
-uniform sampler2D uElevationTexture;
-uniform sampler2D uPositionTexture;
-uniform vec3 uMaxMapBounds;
-uniform vec3 uMinMapBounds;
 
 attribute float aScale;
 attribute float aOffset;
@@ -44,65 +40,42 @@ float map(float value, float start1, float stop1, float start2, float stop2) {
 
 void main() {
 	float boxSize = uHalfBoxSize * 2.;
+	float uHalfBoxSizeY = uHalfBoxSize * 0.1;
+	float boxSizeY = uHalfBoxSizeY * 2.;
 
-	float time = uTime * 0.0001 * aScale;
+	float time = uTime * 0.00008 * aScale;
 
 	vec3 pos = position * aScale;
 
 	vec3 translation = vec3(0.);
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
+	translation.y = uCharaPos.y - mod(aPositions.y + uCharaPos.y, boxSizeY) + uHalfBoxSizeY;
 
-	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
-	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
-
-	float fade = 1.0 - smoothstep(0., 1., (0.05 * distance(uCharaPos.xz, translation.xz)));
+	float fade = 1.0 - smoothstep(0., 1., (0.1 * distance(uCharaPos, translation)));
 
 	vFade = fade;
 	vUv = uv;
 
-	// Scale down out of range grass
-	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
-	pos.y += scaleFromRange;
-	pos *= scaleFromRange;
-
-	// Map position to the elevation texture coordinates using the map bounds
-	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
-	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
-
-	// float scaleFromTexture = 1. - texture2D(uPositionTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
-	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	// pos *= scaleFromTexture;
-
-	// Apply height map
-	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
-	translation.y += translationOffset;
-
-	// Player trail
-	float trailIntensity = smoothstep(2.5, 0., distance(uCharaPos, translation.xyz));
-	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
-
-	// Grass displacement according to player trail
-	translation.x -= trailIntensity * trailDirection.x * .7;
-	pos.y *= 1. - trailIntensity;
-	translation.z -= trailIntensity * trailDirection.y * .7;
-
-
 	// Looping on Y axis
 	float maxDuration = 5.;
 
-	float noise = cnoise(aPositions.xz + time * 0.6);
-	vNoise = noise;
+	float noise = cnoise(aPositions.xz + time);
+	float rotateNoise = cnoise(aPositions.xy);
+	vNoise = rotateNoise;
 
 	float loop = mod(time * aScale * maxDuration, maxDuration) / maxDuration;
-	vLoop = loop;
 
 	float loopRange = 4.5;
 
-	translation.y += loop * loopRange - (loopRange * 0.25);
+	translation.x += loop;
+	translation.z -= loop;
 
-    translation.x += noise * aOffset;
-    translation.z += noise * aOffset;
+	vLoop = loop;
+
+    translation.x += noise;
+    translation.z += noise;
+    translation.y += noise;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 
