@@ -1,5 +1,4 @@
 /// #if DEBUG
-import { getWebgl } from '@webgl/Webgl';
 const debug = {
 	instance: null,
 	debugCam: null,
@@ -16,6 +15,7 @@ import {
 	Vector3,
 	WebGLRenderTarget,
 } from 'three';
+import { getWebgl } from '@webgl/Webgl';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
@@ -29,9 +29,9 @@ import LaserGame from '@game/LaserGame';
 import LaserTower from '../World/Bases/Interactables/LaserTower';
 import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 
-const params = {
-	textureSize: 1024,
-};
+import signal from 'philbin-packages/signal';
+
+const textureSize = [0, 0, 128, 256, 512, 1024];
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
@@ -55,12 +55,20 @@ export default class BaseScene {
 		this.isInitialized = false;
 
 		// Render target
+		this.updateRenderTarget = this.updateRenderTarget.bind(this);
 		this.minBox = new Vector3();
 		this.maxBox = new Vector3();
 		this.renderer = webgl.renderer.renderer;
 		this.rtCamera = null;
-		this.renderTarget = new WebGLRenderTarget(params.textureSize, params.textureSize);
-		this.depthTexture = new DepthTexture(params.textureSize, params.textureSize);
+		this.renderTarget = new WebGLRenderTarget(textureSize[5], textureSize[5]);
+		this.depthTexture = new DepthTexture(textureSize[5], textureSize[5]);
+
+		signal.on('quality', (quality) => {
+			if (!this.isInitialized) return;
+			this.renderTarget = new WebGLRenderTarget(textureSize[quality], textureSize[quality]);
+			this.depthTexture = new DepthTexture(textureSize[quality], textureSize[quality]);
+			if (quality > 1) requestAnimationFrame(this.updateRenderTarget);
+		});
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
@@ -334,7 +342,7 @@ export default class BaseScene {
 		this.renderTarget.depthTexture.format = DepthFormat;
 		this.renderTarget.depthTexture.type = UnsignedShortType;
 
-		requestAnimationFrame(this.updateRenderTarget.bind(this));
+		requestAnimationFrame(this.updateRenderTarget);
 	}
 
 	addTo(mainScene) {
