@@ -9,7 +9,8 @@ specifiers:
   detect-gpu: ^4.0.7
   esbuild: ^0.14.23
   fast-random: ^2.0.4
-  howler: ^2.2.1
+  howler: ^2.2.3
+  install: ^0.13.0
   meshoptimizer: ^0.17.0
   philbin-packages: ^1.1.3
   sass: ^1.35.1
@@ -27,7 +28,15 @@ dependencies:
   animejs: 3.2.1
   detect-gpu: 4.0.19
   howler: 2.2.3
+<<<<<<< HEAD
   philbin-packages: 1.1.3
+=======
+<<<<<<< Updated upstream
+=======
+  install: 0.13.0
+>>>>>>> Stashed changes
+  philbin-packages: 1.1.1
+>>>>>>> bc7a6b6 (howler)
   three: 0.140.0
   three-mesh-bvh: 0.5.10_three@0.140.0
   virtual-scroll: 2.2.1
@@ -642,6 +651,11 @@ packages:
   /inherits/2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: true
+
+  /install/0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
+    dev: false
 
   /is-binary-path/2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
