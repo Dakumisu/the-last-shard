@@ -47,7 +47,7 @@ void main() {
 	float uHalfBoxSizeY = uHalfBoxSize * 0.1;
 	float boxSizeY = uHalfBoxSizeY * 2.;
 
-	float time = uTime * 0.00003 * aScale;
+	float time = uTime * 0.00008 * aScale;
 
 	vec3 pos = position * aScale;
 	
@@ -91,7 +91,7 @@ void main() {
 	float rotateNoise = cnoise(aPositions.xy);
 	vNoise = rotateNoise;
 
-	float loop = mod(time * aOffset * maxDuration, maxDuration) / maxDuration;
+	float loop = mod(time * aScale * maxDuration, maxDuration) / maxDuration;
 
 	float loopRange = 4.5;
 
