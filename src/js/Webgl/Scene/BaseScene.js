@@ -9,8 +9,14 @@ import {
 	Box3,
 	DepthFormat,
 	DepthTexture,
+	FloatType,
 	Group,
+	Mesh,
+	MeshBasicMaterial,
 	OrthographicCamera,
+	PlaneBufferGeometry,
+	PlaneGeometry,
+	Scene,
 	UnsignedShortType,
 	Vector3,
 	WebGLRenderTarget,
@@ -361,12 +367,20 @@ export default class BaseScene {
 		this.renderer.setRenderTarget(this.renderTarget);
 		// Edit this to render only the Mesh/Group you want to test depth with
 		this.renderer.render(this.ground.base.realMesh, this.rtCamera);
-		// this.renderer.render(this.scene.instance, this.rtCamera);
+		this.renderer.setRenderTarget(null);
 
 		/// #if DEBUG
 		const buffer = new Uint8Array(this.renderTarget.width * this.renderTarget.height * 4);
+		const planeGeo = new PlaneGeometry(2, 2);
+		const planeMat = new MeshBasicMaterial({ map: this.depthTexture });
+		const plane = new Mesh(planeGeo, planeMat);
+		const ortho = new OrthographicCamera(-1, 1, 1, -1, -1, 1);
+		const planeRT = new WebGLRenderTarget(this.renderTarget.width, this.renderTarget.width);
+		this.renderer.setRenderTarget(planeRT);
+		this.renderer.render(plane, ortho);
+
 		this.renderer.readRenderTargetPixels(
-			this.renderTarget,
+			planeRT,
 			0,
 			0,
 			this.renderTarget.width,
@@ -375,10 +389,11 @@ export default class BaseScene {
 		);
 		const data = new ImageData(this.renderTarget.width, this.renderTarget.height);
 		data.data.set(buffer);
+
 		this.canvasContext.putImageData(data, 0, 0);
-		/// #endif
 
 		this.renderer.setRenderTarget(null);
+		/// #endif
 	}
 
 	update(et, dt) {

@@ -16,8 +16,8 @@ const debug = {
 
 const params = {
 	offsetFromPlayer: new Vector3(-0.5, 0.5, 0.5),
-	idleRadius: 1,
-	stateTimeout: [4000, 2000],
+	idleRadius: 2,
+	statesTimeouts: [4000, 2000],
 };
 
 export class Pet extends BaseEntity {
@@ -90,6 +90,8 @@ export class Pet extends BaseEntity {
 
 		if (!this.timeOutStarted) this.stateTimeout();
 
+		// TODO: TP if distance to far
+
 		switch (this.state) {
 			case Pet.STATES.FOLLOW:
 				this.follow(et, dt);
@@ -160,7 +162,7 @@ export class Pet extends BaseEntity {
 
 	async stateTimeout() {
 		this.timeOutStarted = true;
-		await wait(params.stateTimeout[this.state]);
+		await wait(params.statesTimeouts[this.state]);
 		this.state = this.player.state.isMoving ? Pet.STATES.FOLLOW : Pet.STATES.IDLE;
 		this.timeOutStarted = false;
 	}
