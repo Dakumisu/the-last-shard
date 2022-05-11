@@ -107,7 +107,7 @@ export default class FogParticles {
 	async setMaterial() {
 		this.base.material = new FogParticlesMaterial({
 			depthWrite: false,
-			depthTest: false,
+			// depthTest: false,
 			blending: AdditiveBlending,
 			uniforms: {
 				uHalfBoxSize: { value: this.params.halfBoxSize },

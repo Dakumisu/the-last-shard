@@ -21,7 +21,7 @@ import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
 
-const twigsCountList = [0, 0, 80000, 100000, 300000, 1000000];
+const twigsCountList = [0, 0, 80000, 100000, 300000, 300000];
 
 export default class Grass {
 	/**

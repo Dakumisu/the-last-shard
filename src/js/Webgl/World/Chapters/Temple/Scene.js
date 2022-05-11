@@ -63,9 +63,9 @@ export default class TempleScene extends BaseScene {
 				halfBoxSize: 25,
 				maskRange: 0.04,
 				noiseElevationIntensity: 0.75,
-				noiseMouvementIntensity: 0.15,
-				windColorIntensity: 0.1,
-				displacement: 0.15,
+				noiseMouvementIntensity: 0.2,
+				windColorIntensity: 0.11,
+				displacement: 0.11,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
@@ -75,7 +75,7 @@ export default class TempleScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 150,
+				count: 250,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 			},

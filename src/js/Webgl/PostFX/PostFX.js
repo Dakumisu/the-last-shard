@@ -13,13 +13,20 @@ import {
 	Vector2,
 	Vector3,
 	RGBAFormat,
+	Color,
 } from 'three';
+
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
 
 import PostFXMaterial from './basic/material';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 
 const tVec2 = new Vector2();
 const tVec3 = new Vector3();
@@ -27,7 +34,10 @@ const tVec3 = new Vector3();
 const params = {
 	postprocess: 1,
 	brightness: 0,
-	contrast: 0.1,
+	contrast: 0.05,
+	radius: 1,
+	strength: 0.15,
+	threshold: 0.3,
 	useFxaa: true,
 };
 
@@ -69,29 +79,45 @@ export default class PostFX {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addInput(params, 'postprocess', {
-			label: 'PostProcess level',
-			min: 0,
-			max: 1,
-			step: 0.01,
-		}).on('change', (e) => {
-			this.material.uniforms.POST_PROCESSING.value = e.value;
-		});
 		gui.addInput(params, 'brightness', {
 			label: 'brightness',
-			min: 0,
+			min: -1,
 			max: 1,
 			step: 0.01,
 		}).on('change', (e) => {
-			this.material.uniforms.uBrightness.value = e.value;
+			this.customPass.uniforms.uBrightness.value = e.value;
 		});
 		gui.addInput(params, 'contrast', {
 			label: 'contrast',
+			min: -1,
+			max: 1,
+			step: 0.01,
+		}).on('change', (e) => {
+			this.customPass.uniforms.uContrast.value = e.value;
+		});
+		gui.addInput(params, 'radius', {
+			label: 'radius',
 			min: 0,
 			max: 1,
 			step: 0.01,
 		}).on('change', (e) => {
-			this.material.uniforms.uContrast.value = e.value;
+			this.unrealBloomPass.radius = e.value;
+		});
+		gui.addInput(params, 'strength', {
+			label: 'strength',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		}).on('change', (e) => {
+			this.unrealBloomPass.strength = e.value;
+		});
+		gui.addInput(params, 'threshold', {
+			label: 'threshold',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		}).on('change', (e) => {
+			this.unrealBloomPass.threshold = e.value;
 		});
 	}
 	/// #endif
@@ -139,6 +165,67 @@ export default class PostFX {
 		this.triangle.frustumCulled = false;
 
 		this.scene.add(this.triangle);
+
+		this.composer = new EffectComposer(this.renderer);
+		this.composer.setSize(store.resolution.width, store.resolution.height);
+		this.composer.setPixelRatio(Math.min(store.resolution.dpr, 2));
+
+		const renderPass = new RenderPass(this.rendererScene, this.rendererCamera);
+		this.composer.addPass(renderPass);
+
+		this.unrealBloomPass = new UnrealBloomPass();
+		this.composer.addPass(this.unrealBloomPass);
+		this.unrealBloomPass.strength = params.strength;
+		this.unrealBloomPass.radius = params.radius;
+		this.unrealBloomPass.threshold = params.threshold;
+
+		const customShader = {
+			uniforms: {
+				tDiffuse: { value: null },
+				uBrightness: { value: params.brightness },
+				uContrast: { value: params.contrast },
+			},
+			vertexShader: `
+			varying vec2 vUv;
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+			vUv = uv;
+        }
+    `,
+			fragmentShader: `
+			uniform sampler2D tDiffuse;
+			uniform float uContrast;
+			uniform float uBrightness;
+
+			varying vec2 vUv;
+        void main()
+        {
+			// POST PROCESSING
+			float dist = smoothstep(0., .5, 1.0 - (length(vUv - 0.5)));
+			vec3 postPro = texture2D(tDiffuse, vUv).rgb;
+
+			gl_FragColor = vec4(vec3(dist), 1.0);
+			gl_FragColor = vec4(postPro * vec3(dist), 1.0);
+			gl_FragColor = vec4(postPro, 1.0) * dist;
+			gl_FragColor.rgb += uBrightness;
+
+			if(uContrast > 0.0) {
+				gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) / (1.0 - uContrast) + 0.5;
+			} else {
+				gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * (1.0 + uContrast) + 0.5;
+			}
+        }
+    `,
+		};
+
+		this.customPass = new ShaderPass(customShader);
+		console.log(this.customPass.uniforms);
+		this.composer.addPass(this.customPass);
+
+		// const glitch = new GlitchPass();
+		// this.composer.addPass(glitch);
 	}
 
 	resize(width, height) {
@@ -147,6 +234,9 @@ export default class PostFX {
 		tVec2.set(width, height);
 		tVec3.x = tVec2.x;
 		tVec3.y = tVec2.y;
+
+		this.composer.setSize(store.resolution.width, store.resolution.height);
+		this.composer.setPixelRatio(Math.min(store.resolution.dpr, 2));
 
 		this.material.uniforms.uResolution.value = tVec3;
 	}
@@ -162,10 +252,12 @@ export default class PostFX {
 	render() {
 		if (!initialized) return;
 
-		this.renderer.setRenderTarget(this.target);
-		this.renderer.render(this.rendererScene, this.rendererCamera);
-		this.renderer.setRenderTarget(null);
-		this.renderer.render(this.scene, this.dummyCamera);
+		// this.renderer.setRenderTarget(this.target);
+		// this.renderer.render(this.rendererScene, this.rendererCamera);
+		// this.renderer.setRenderTarget(null);
+		// this.renderer.render(this.scene, this.dummyCamera);
+
+		this.composer.render();
 	}
 
 	destroy() {
