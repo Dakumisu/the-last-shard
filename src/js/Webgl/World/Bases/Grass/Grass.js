@@ -123,7 +123,7 @@ export default class Grass {
 			const scale = MathUtils.randFloat(1, 3);
 			id++;
 
-			array.push(x, -0.2, z, scale);
+			array.push(x, 0, z, scale);
 		}
 
 		// pos + scale
@@ -169,6 +169,7 @@ export default class Grass {
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		// this.base.mesh.position.y = -0.2;
 		this.base.mesh.frustumCulled = false;
 		this.scene.instance.add(this.base.mesh);
 	}

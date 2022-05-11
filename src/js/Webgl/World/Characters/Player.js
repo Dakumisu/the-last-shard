@@ -57,8 +57,8 @@ const tLine3 = new Line3();
 const playerVelocity = new Vector3();
 
 const params = {
-	speed: 4,
-	sprint: 10,
+	speed: 3.25,
+	sprint: 6.9,
 
 	physicsSteps: 5,
 	upVector: new Vector3().set(0, 1, 0),

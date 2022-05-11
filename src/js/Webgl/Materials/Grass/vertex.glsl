@@ -39,7 +39,8 @@ void main() {
 
 	// Scale down out of range grass
 	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
-	pos.y += scaleFromRange * .35;
+	// pos.y += scaleFromRange * .5;
+	pos.y += scaleFromRange * .1;
 	pos *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds
