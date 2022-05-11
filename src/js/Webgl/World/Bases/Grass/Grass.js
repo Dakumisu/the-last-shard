@@ -49,10 +49,6 @@ export default class Grass {
 		signal.on('quality', (quality) => {
 			this.count = twigsCountList[quality];
 			this.updateAttributes();
-			// this.setAttributes();
-			// this.setGeometry();
-			// this.setMaterial();
-			// this.setMesh();
 		});
 
 		this.initialized = false;

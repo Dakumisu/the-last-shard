@@ -1,7 +1,7 @@
 import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
 import anime from 'animejs';
-import { Mesh, Ray, Vector3 } from 'three';
+import { ArrowHelper, Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
 
@@ -125,14 +125,10 @@ export default class LaserTower extends BaseCollider {
 	update() {
 		if (!this.initialized) return;
 
-		const _d = this.direction.clone();
-		_d.applyQuaternion(this.base.mesh.quaternion);
-
-		this.ray.direction.copy(_d);
+		this.base.mesh.getWorldDirection(this.ray.direction);
 
 		if (this.laserGroup.scale.z !== this.maxDistance)
 			this.laserGroup.scale.z = this.maxDistance;
-		// this.ray.set(this.base.mesh.position, _d);
 
 		this.game.laserTowers.forEach((nextLaserTower) => {
 			// Don't test with the start, the same tower and if distance from current is above max

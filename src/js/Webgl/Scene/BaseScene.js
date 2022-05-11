@@ -123,7 +123,6 @@ export default class BaseScene {
 				value: 0,
 			})
 			.on('change', (e) => {
-				console.log(this.checkpoints.points[e.value]);
 				this.player.base.mesh.position.copy(this.checkpoints.points[e.value].pos);
 				this.player.base.mesh.quaternion.copy(this.checkpoints.points[e.value].qt);
 			});
