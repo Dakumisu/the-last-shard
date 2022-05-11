@@ -2,7 +2,7 @@ import { loadModel } from '@utils/loaders/loadAssets';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import signal from 'philbin-packages/signal';
-import { Color, Group } from 'three';
+import { Color, Group, Object3D } from 'three';
 import { DoubleSide } from 'three';
 import { Mesh } from 'three';
 import anime from 'animejs';

@@ -22,7 +22,7 @@ const STATES = {
 const params = {
 	offsetFromPlayer: new Vector3(-0.5, 0.5, 0.5),
 	idleRadius: 1,
-	idleTimeout: 3000,
+	stateTimeout: [4000, 2000],
 };
 
 class Pet extends BaseEntity {
@@ -42,6 +42,7 @@ class Pet extends BaseEntity {
 		this.canIdle = true;
 		this.speed = 1;
 
+		this.lastPlayerPos = new Vector3();
 		this.targetPos = new Vector3();
 
 		/// #if DEBUG
@@ -67,6 +68,8 @@ class Pet extends BaseEntity {
 		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
 
 		this.base.mesh.position.copy(this.targetPos);
+		this.lastPlayerPos.copy(this.player.base.mesh.position);
+
 		this.scene.add(this.base.mesh);
 		this.isInitialized = true;
 	}
@@ -85,8 +88,7 @@ class Pet extends BaseEntity {
 	update(et, dt) {
 		if (!this.isInitialized) return;
 
-		if (this.player.state.isMoving) this.state = STATES.FOLLOW;
-		else if (this.state !== STATES.IDLE && !this.timeOutStarted) this.idleTimeout();
+		if (!this.timeOutStarted) this.stateTimeout();
 
 		switch (this.state) {
 			case STATES.FOLLOW:
@@ -96,51 +98,60 @@ class Pet extends BaseEntity {
 				this.idle(et, dt);
 				break;
 		}
+	}
 
+	dampPosition(dt, factor) {
 		this.base.mesh.position.x = dampPrecise(
 			this.base.mesh.position.x,
 			this.targetPos.x,
-			0.1,
+			factor,
 			dt,
 			0.001,
 		);
 
-		this.base.mesh.position.y = dampPrecise(
-			this.base.mesh.position.y,
-			this.targetPos.y,
-			0.05,
-			dt,
-			0.001,
-		);
+		if (this.player.state.isOnGround)
+			this.base.mesh.position.y = dampPrecise(
+				this.base.mesh.position.y,
+				this.targetPos.y,
+				factor,
+				dt,
+				0.001,
+			);
 
 		this.base.mesh.position.z = dampPrecise(
 			this.base.mesh.position.z,
 			this.targetPos.z,
-			0.1,
+			factor,
 			dt,
 			0.001,
 		);
 	}
 
 	follow(et, dt) {
+		this.dampPosition(dt, 0.1);
+
+		console.log('follow');
+		this.lastPlayerPos.copy(this.player.base.mesh.position);
 		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
 	}
 
 	idle(et, dt) {
-		this.targetPos.x =
-			Math.cos(et * 0.001 * this.speed) * params.idleRadius +
-			this.player.base.mesh.position.x;
-		this.targetPos.z =
-			Math.sin(et * 0.001 * this.speed) * params.idleRadius +
-			this.player.base.mesh.position.z;
+		this.dampPosition(dt, 0.01);
 
-		this.targetPos.y = Math.sin(et * 0.005) * 0.01 + this.targetPos.y;
+		console.log('idle');
+		this.targetPos.x =
+			Math.cos(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.x;
+
+		this.targetPos.z =
+			Math.sin(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.z;
+
+		this.targetPos.y = Math.sin(et * 0.005) * 0.01 + this.lastPlayerPos.y;
 	}
 
-	async idleTimeout() {
+	async stateTimeout() {
 		this.timeOutStarted = true;
-		await wait(params.idleTimeout);
-		this.state = STATES.IDLE;
+		await wait(params.stateTimeout[this.state]);
+		this.state = this.player.state.isMoving ? STATES.FOLLOW : STATES.IDLE;
 		this.timeOutStarted = false;
 	}
 }
