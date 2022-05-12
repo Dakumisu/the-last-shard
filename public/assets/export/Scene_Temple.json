@@ -41,9 +41,10 @@
   "props": [
     {
       "asset": "Fountain",
-      "uid": "Fountain.009",
+      "uid": "Fountain.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           0.020723,
@@ -65,9 +66,10 @@
     },
     {
       "asset": "LostTemple",
-      "uid": "LostTemple.009",
+      "uid": "LostTemple.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           29.237547,
@@ -89,9 +91,10 @@
     },
     {
       "asset": "Manhole",
-      "uid": "Manhole.010",
+      "uid": "Manhole.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           19.268997,
@@ -113,9 +116,10 @@
     },
     {
       "asset": "MassivePillar",
-      "uid": "MassivePillar.058",
+      "uid": "MassivePillar.106",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.226883,
@@ -137,9 +141,10 @@
     },
     {
       "asset": "MassivePillar",
-      "uid": "MassivePillar.059",
+      "uid": "MassivePillar.107",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.226883,
@@ -161,9 +166,10 @@
     },
     {
       "asset": "MassivePillar",
-      "uid": "MassivePillar.060",
+      "uid": "MassivePillar.108",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           25.400621,
@@ -185,9 +191,10 @@
     },
     {
       "asset": "MassivePillar",
-      "uid": "MassivePillar.061",
+      "uid": "MassivePillar.109",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           28.042185,
@@ -209,9 +216,10 @@
     },
     {
       "asset": "MassivePillar",
-      "uid": "MassivePillar.062",
+      "uid": "MassivePillar.110",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           30.750923,
@@ -233,9 +241,10 @@
     },
     {
       "asset": "MassivePillar",
-      "uid": "MassivePillar.063",
+      "uid": "MassivePillar.111",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -51.945412,
@@ -257,9 +266,10 @@
     },
     {
       "asset": "MassivePillar",
-      "uid": "MassivePillar.064",
+      "uid": "MassivePillar.112",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -51.945412,
@@ -281,9 +291,10 @@
     },
     {
       "asset": "ParkourPlatformA",
-      "uid": "ParkourPlatformA.009",
+      "uid": "ParkourPlatformA.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.462181,
@@ -305,9 +316,10 @@
     },
     {
       "asset": "ParkourPlatformB",
-      "uid": "ParkourPlatformB.009",
+      "uid": "ParkourPlatformB.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           34.612823,
@@ -329,9 +341,10 @@
     },
     {
       "asset": "ParkourPlatformC",
-      "uid": "ParkourPlatformC.009",
+      "uid": "ParkourPlatformC.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           32.661049,
@@ -353,9 +366,10 @@
     },
     {
       "asset": "Pebbles",
-      "uid": "Pebbles.018",
+      "uid": "Pebbles.031",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           42.664032,
@@ -377,9 +391,10 @@
     },
     {
       "asset": "Pebbles",
-      "uid": "Pebbles.019",
+      "uid": "Pebbles.032",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           3.028368,
@@ -401,9 +416,10 @@
     },
     {
       "asset": "PillarA",
-      "uid": "PillarA.042",
+      "uid": "PillarA.076",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.16029,
@@ -425,9 +441,10 @@
     },
     {
       "asset": "PillarA",
-      "uid": "PillarA.043",
+      "uid": "PillarA.077",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.16029,
@@ -449,9 +466,10 @@
     },
     {
       "asset": "PillarA",
-      "uid": "PillarA.044",
+      "uid": "PillarA.078",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.295918,
@@ -473,9 +491,10 @@
     },
     {
       "asset": "PillarA",
-      "uid": "PillarA.045",
+      "uid": "PillarA.079",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.295918,
@@ -497,9 +516,10 @@
     },
     {
       "asset": "PillarA",
-      "uid": "PillarA.046",
+      "uid": "PillarA.080",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           33.359486,
@@ -521,9 +541,10 @@
     },
     {
       "asset": "PillarB",
-      "uid": "PillarB.010",
+      "uid": "PillarB.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           40.391907,
@@ -545,9 +566,10 @@
     },
     {
       "asset": "Podium",
-      "uid": "Podium.009",
+      "uid": "Podium.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           50.236332,
@@ -569,9 +591,10 @@
     },
     {
       "asset": "Ramp",
-      "uid": "Ramp.009",
+      "uid": "Ramp.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           47.398674,
@@ -593,9 +616,10 @@
     },
     {
       "asset": "Stool",
-      "uid": "Stool.009",
+      "uid": "Stool.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           43.278992,
@@ -617,9 +641,10 @@
     },
     {
       "asset": "TempleGateA",
-      "uid": "TempleGateA.009",
+      "uid": "TempleGateA.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -51.138145,
@@ -641,9 +666,10 @@
     },
     {
       "asset": "TempleGateB",
-      "uid": "TempleGateB.009",
+      "uid": "TempleGateB.016",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.942024,
@@ -665,9 +691,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.145",
+      "uid": "TreeA.271",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           16.879883,
@@ -689,9 +716,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.146",
+      "uid": "TreeA.272",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           11.681219,
@@ -713,9 +741,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.147",
+      "uid": "TreeA.273",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           7.899968,
@@ -737,9 +766,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.148",
+      "uid": "TreeA.274",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -16.348267,
@@ -761,9 +791,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.149",
+      "uid": "TreeA.275",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -13.188071,
@@ -785,9 +816,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.150",
+      "uid": "TreeA.276",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -7.228749,
@@ -809,9 +841,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.151",
+      "uid": "TreeA.277",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -21.514055,
@@ -833,9 +866,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.152",
+      "uid": "TreeA.278",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -24.483887,
@@ -857,9 +891,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.153",
+      "uid": "TreeA.279",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -30.372028,
@@ -881,9 +916,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.154",
+      "uid": "TreeA.280",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -35.881443,
@@ -905,9 +941,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.155",
+      "uid": "TreeA.281",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -30.68272,
@@ -929,9 +966,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.156",
+      "uid": "TreeA.282",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -26.901215,
@@ -953,9 +991,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.157",
+      "uid": "TreeA.283",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -2.653109,
@@ -977,9 +1016,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.158",
+      "uid": "TreeA.284",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -5.813076,
@@ -1001,9 +1041,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.159",
+      "uid": "TreeA.285",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -11.772318,
@@ -1025,9 +1066,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.160",
+      "uid": "TreeA.286",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           2.51312,
@@ -1049,9 +1091,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.161",
+      "uid": "TreeA.287",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           5.482715,
@@ -1073,9 +1116,10 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.162",
+      "uid": "TreeA.288",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           11.370766,
@@ -1097,9 +1141,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.193",
+      "uid": "TreeB.361",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -3.900095,
@@ -1121,9 +1166,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.194",
+      "uid": "TreeB.362",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           12.764506,
@@ -1145,9 +1191,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.195",
+      "uid": "TreeB.363",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           5.457196,
@@ -1169,9 +1216,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.196",
+      "uid": "TreeB.364",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           3.626692,
@@ -1193,9 +1241,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.197",
+      "uid": "TreeB.365",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           18.792227,
@@ -1217,9 +1266,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.198",
+      "uid": "TreeB.366",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           0.940995,
@@ -1241,9 +1291,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.199",
+      "uid": "TreeB.367",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -9.231173,
@@ -1265,9 +1316,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.200",
+      "uid": "TreeB.368",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -11.922222,
@@ -1289,9 +1341,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.201",
+      "uid": "TreeB.369",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -33.994343,
@@ -1313,9 +1366,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.202",
+      "uid": "TreeB.370",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -38.575188,
@@ -1337,9 +1391,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.203",
+      "uid": "TreeB.371",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -28.128578,
@@ -1361,9 +1416,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.204",
+      "uid": "TreeB.372",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -26.112844,
@@ -1385,9 +1441,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.205",
+      "uid": "TreeB.373",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -31.765442,
@@ -1409,9 +1466,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.206",
+      "uid": "TreeB.374",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -24.458019,
@@ -1433,9 +1491,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.207",
+      "uid": "TreeB.375",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -22.628151,
@@ -1457,9 +1516,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.208",
+      "uid": "TreeB.376",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -37.79348,
@@ -1481,9 +1541,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.209",
+      "uid": "TreeB.377",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -15.101334,
@@ -1505,9 +1566,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.210",
+      "uid": "TreeB.378",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -19.942116,
@@ -1529,9 +1591,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.211",
+      "uid": "TreeB.379",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -9.7696,
@@ -1553,9 +1616,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.212",
+      "uid": "TreeB.380",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -7.079369,
@@ -1577,9 +1641,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.213",
+      "uid": "TreeB.381",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           14.993428,
@@ -1601,9 +1666,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.214",
+      "uid": "TreeB.382",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           17.602797,
@@ -1625,9 +1691,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.215",
+      "uid": "TreeB.383",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           9.127022,
@@ -1649,9 +1716,10 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.216",
+      "uid": "TreeB.384",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           7.112112,
@@ -1673,9 +1741,10 @@
     },
     {
       "asset": "Urne",
-      "uid": "Urne.017",
+      "uid": "Urne.031",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           22.994263,
@@ -1697,9 +1766,10 @@
     },
     {
       "asset": "Urne",
-      "uid": "Urne.018",
+      "uid": "Urne.032",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           36.33049,
@@ -1721,9 +1791,10 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.043",
+      "uid": "WallA.085",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.850422,
@@ -1745,9 +1816,10 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.044",
+      "uid": "WallA.086",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           38.850422,
@@ -1769,9 +1841,10 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.045",
+      "uid": "WallA.087",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -51.316288,
@@ -1793,9 +1866,10 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.046",
+      "uid": "WallA.088",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -51.316288,
@@ -1817,9 +1891,10 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.016",
+      "uid": "Stairs.037",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           29.75894,
@@ -1841,9 +1916,10 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.017",
+      "uid": "Stairs.038",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           29.76429,
@@ -1865,9 +1941,10 @@
     },
     {
       "asset": "Stairs",
-      "uid": "Stairs.018",
+      "uid": "Stairs.039",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           29.807285,
@@ -1889,9 +1966,10 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.047",
+      "uid": "WallA.089",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           27.140772,
@@ -1913,9 +1991,10 @@
     },
     {
       "asset": "WallA",
-      "uid": "WallA.048",
+      "uid": "WallA.090",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           33.328304,
@@ -1937,9 +2016,10 @@
     },
     {
       "asset": "Bridge",
-      "uid": "Bridge.002",
+      "uid": "Bridge.009",
       "type": "collider",
       "traversable": false,
+      "movable": false,
       "transforms": {
         "pos": [
           -89.527794,
@@ -1963,9 +2043,10 @@
   "interactables": [
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.043",
+      "uid": "LaserTowerBetween.085",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0,
         "distance": 10.0
@@ -1991,9 +2072,10 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.044",
+      "uid": "LaserTowerBetween.086",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0,
         "distance": 10.0
@@ -2019,9 +2101,10 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.045",
+      "uid": "LaserTowerBetween.087",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0,
         "distance": 10.0
@@ -2047,9 +2130,10 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.046",
+      "uid": "LaserTowerBetween.088",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0,
         "distance": 10.0
@@ -2075,9 +2159,10 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.047",
+      "uid": "LaserTowerBetween.089",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0,
         "distance": 10.0
@@ -2103,9 +2188,10 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.048",
+      "uid": "LaserTowerBetween.090",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0,
         "distance": 10.0
@@ -2131,9 +2217,10 @@
     },
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.008",
+      "uid": "LaserTowerEnd.015",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0
       },
@@ -2158,9 +2245,10 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.008",
+      "uid": "LaserTowerStart.015",
       "type": "interactable",
       "traversable": false,
+      "movable": false,
       "params": {
         "gameId": 0,
         "distance": 10.0
@@ -2188,7 +2276,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.009",
+      "uid": "Spawn.015",
       "pos": [
         51.48119,
         1.273254,
@@ -2203,10 +2291,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.021",
+      "uid": "Checkpoint.042",
       "pos": [
         16.159115,
-        0.0,
+        1.129131,
         21.209126
       ],
       "qt": [
@@ -2218,10 +2306,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.022",
+      "uid": "Checkpoint.043",
       "pos": [
         -32.858082,
-        0.0,
+        1.129131,
         24.898743
       ],
       "qt": [
@@ -2233,10 +2321,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.023",
+      "uid": "Checkpoint.044",
       "pos": [
         -12.142229,
-        -2e-06,
+        1.129129,
         -15.498188
       ],
       "qt": [
