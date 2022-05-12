@@ -17,8 +17,8 @@ const debug = {
 /// #endif
 
 const params = {
-	offsetFromPlayer: new Vector3(-0.5, 0.5, 0.5),
-	idleRadius: 2,
+	offsetFromPlayer: new Vector3(-1, 1, 1),
+	idleRadius: 2.5,
 	statesTimeouts: [4000, 2000],
 };
 
@@ -61,7 +61,6 @@ export class Pet extends BaseEntity {
 		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
 
 		this.base.group = await loadModel('lua');
-		this.base.group.scale.setScalar(0.08);
 		this.base.group.traverse((child) => {
 			if (child.isMesh) child.material = this.base.material;
 		});
@@ -113,6 +112,45 @@ export class Pet extends BaseEntity {
 		}
 	}
 
+	follow(et, dt) {
+		// this.lookAtPlayer();
+		this.dampPosition(dt, 0.1);
+
+		this.lastPlayerPos.copy(this.player.base.mesh.position);
+
+		const _dir = new Vector3();
+		// this.player.base.mesh.getWorldDirection(_dir);
+		// _dir.negate();
+
+		this.targetPos.copy(this.player.base.mesh.position).add(_dir).add(params.offsetFromPlayer);
+	}
+
+	idle(et, dt) {
+		this.lookAtPlayer();
+		this.dampPosition(dt, 0.01);
+
+		this.targetPos.x =
+			Math.cos(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.x;
+
+		this.targetPos.z =
+			Math.sin(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.z;
+	}
+
+	feed(et, dt) {
+		this.dampPosition(dt, 0.1);
+	}
+
+	toggleFeeding(targetPos = null) {
+		if (!this.isBlocked && targetPos) {
+			this.isBlocked = true;
+			this.targetPos.copy(targetPos);
+			this.state = Pet.STATES.FEEDING;
+		} else {
+			this.state = Pet.STATES.FOLLOW;
+			this.isBlocked = false;
+		}
+	}
+
 	dampPosition(dt, factor) {
 		this.base.group.position.x = dampPrecise(
 			this.base.group.position.x,
@@ -122,7 +160,7 @@ export class Pet extends BaseEntity {
 			0.001,
 		);
 
-		if (this.player.state.isOnGround)
+		if (!this.player.state.hasJumped)
 			this.base.group.position.y = dampPrecise(
 				this.base.group.position.y,
 				this.targetPos.y,
@@ -140,53 +178,12 @@ export class Pet extends BaseEntity {
 		);
 	}
 
-	follow(et, dt) {
-		// console.log('follow');
-		this.dampPosition(dt, 0.1);
-
+	lookAtPlayer() {
 		this.base.group.lookAt(
 			this.player.base.mesh.position.x,
 			this.base.group.position.y,
 			this.player.base.mesh.position.z,
 		);
-
-		this.lastPlayerPos.copy(this.player.base.mesh.position);
-		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
-	}
-
-	idle(et, dt) {
-		// console.log('idle');
-		this.dampPosition(dt, 0.01);
-
-		this.base.group.lookAt(
-			this.player.base.mesh.position.x,
-			this.base.group.position.y,
-			this.player.base.mesh.position.z,
-		);
-
-		this.targetPos.x =
-			Math.cos(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.x;
-
-		this.targetPos.z =
-			Math.sin(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.z;
-
-		this.targetPos.y = Math.sin(et * 0.005) * 0.01 + this.lastPlayerPos.y;
-	}
-
-	feed(et, dt) {
-		// console.log('feed');
-		this.dampPosition(dt, 0.1);
-	}
-
-	toggleFeeding(targetPos = null) {
-		if (!this.isBlocked && targetPos) {
-			this.isBlocked = true;
-			this.targetPos.copy(targetPos);
-			this.state = Pet.STATES.FEEDING;
-		} else {
-			this.state = Pet.STATES.FOLLOW;
-			this.isBlocked = false;
-		}
 	}
 
 	async stateTimeout() {
