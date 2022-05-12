@@ -57,7 +57,9 @@ export default class TempleScene extends BaseScene {
 		this.grass = new Grass({
 			scene: this,
 			params: {
-				color: '#C1C2FF',
+				color: '#66C0ef',
+				// color: '#9799f7',
+				// color: '#66C0ef',
 				color2: '#664CB1',
 				verticeScale: 0.2,
 				halfBoxSize: 25,
@@ -75,7 +77,7 @@ export default class TempleScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 250,
+				count: 350,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 			},

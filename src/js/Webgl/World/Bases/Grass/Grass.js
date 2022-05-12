@@ -21,7 +21,7 @@ import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
 
-const twigsCountList = [0, 0, 80000, 100000, 300000, 300000];
+const twigsCountList = [0, 0, 80000, 100000, 300000, 1000000];
 
 export default class Grass {
 	/**
@@ -46,14 +46,16 @@ export default class Grass {
 
 		this.count = twigsCountList[5];
 
-		signal.on('quality', (quality) => {
-			this.count = twigsCountList[quality];
-			this.updateAttributes();
-			// this.setAttributes();
-			// this.setGeometry();
-			// this.setMaterial();
-			// this.setMesh();
-		});
+		// signal.on('quality', (quality) => {
+		// 	this.count = twigsCountList[quality];
+		// 	this.updateAttributes();
+		// 	// this.setAttributes();
+		// 	// this.setGeometry();
+		// 	// this.setMaterial();
+		// 	// this.setMesh();
+		// });
+		// this.count = 1000000;
+		this.count = 2000000;
 
 		this.initialized = false;
 
@@ -81,12 +83,24 @@ export default class Grass {
 	setDefaultGeometry() {
 		this.triangle = new BufferGeometry();
 
+		// const vertices = new Float32Array([
+		// 	-0.15 * this.params.verticeScale,
+		// 	-0.15 * this.params.verticeScale,
+		// 	0 * this.params.verticeScale, // bl
+		// 	0.15 * this.params.verticeScale,
+		// 	-0.15 * this.params.verticeScale,
+		// 	0 * this.params.verticeScale, // br
+		// 	0 * this.params.verticeScale,
+		// 	0.75 * this.params.verticeScale,
+		// 	0 * this.params.verticeScale, // tc
+		// ]);
+
 		const vertices = new Float32Array([
-			-0.15 * this.params.verticeScale,
-			-0.15 * this.params.verticeScale,
+			-0.05 * this.params.verticeScale,
+			-0.05 * this.params.verticeScale,
 			0 * this.params.verticeScale, // bl
-			0.15 * this.params.verticeScale,
-			-0.15 * this.params.verticeScale,
+			0.05 * this.params.verticeScale,
+			-0.05 * this.params.verticeScale,
 			0 * this.params.verticeScale, // br
 			0 * this.params.verticeScale,
 			0.75 * this.params.verticeScale,

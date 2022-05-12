@@ -34,7 +34,7 @@ const tVec3 = new Vector3();
 const params = {
 	postprocess: 1,
 	brightness: 0,
-	contrast: 0.05,
+	contrast: 0.1,
 	radius: 1,
 	strength: 0.15,
 	threshold: 0.3,
@@ -203,7 +203,7 @@ export default class PostFX {
         void main()
         {
 			// POST PROCESSING
-			float dist = smoothstep(0., .5, 1.0 - (length(vUv - 0.5)));
+			float dist = smoothstep(0., 1.0, 1.0 - (length(vUv - 0.5) * 0.5));
 			vec3 postPro = texture2D(tDiffuse, vUv).rgb;
 
 			gl_FragColor = vec4(vec3(dist), 1.0);
