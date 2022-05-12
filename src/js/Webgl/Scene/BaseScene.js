@@ -29,6 +29,7 @@ import { deferredPromise } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
+import Movable from '@webgl/World/Bases/Props/Movable';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import LaserGame from '@game/LaserGame';
 
@@ -36,6 +37,7 @@ import LaserTower from '../World/Bases/Interactables/LaserTower';
 import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 
 import signal from 'philbin-packages/signal';
+import CollidersBroadphase from '@webgl/World/Bases/Broadphase/CollidersBroadphase';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 
@@ -206,15 +208,31 @@ export default class BaseScene {
 	async _loadProps(props) {
 		if (!props) return;
 
+		const collidersBp = [];
+
 		props.map(async (prop) => {
-			const _prop = new BaseObject({
-				isInteractable: false,
-				asset: prop,
-				group: this.props,
-			});
-			await _prop.init();
+			if (prop.movable) {
+				const _prop = new Movable({
+					asset: prop,
+					group: this.props,
+				});
+				await _prop.init();
+				collidersBp.push(_prop);
+				console.log(collidersBp);
+			} else {
+				const _prop = new BaseObject({
+					asset: prop,
+					group: this.props,
+				});
+				await _prop.init();
+			}
 		});
 		console.log('🔋 Props loaded');
+
+		this.collidersBroadphase = new CollidersBroadphase({
+			radius: 2,
+			objectsToTest: collidersBp,
+		});
 
 		this.instance.add(this.props);
 	}
@@ -222,7 +240,7 @@ export default class BaseScene {
 	async _loadInteractables(interactables) {
 		if (!interactables) return;
 
-		const t = [];
+		const interactablesBp = [];
 		const laserGames = [];
 
 		interactables.map(async (interactable) => {
@@ -230,7 +248,7 @@ export default class BaseScene {
 
 			if (asset.includes('LaserTower')) {
 				if (!laserGames[params.gameId]) {
-					const _laserGame = new LaserGame({ scene: this });
+					const _laserGame = new LaserGame({ scene: this, id: params.gameId });
 					laserGames.push(_laserGame);
 				}
 
@@ -240,7 +258,7 @@ export default class BaseScene {
 					group: this.interactables,
 				});
 				await _interactable.init();
-				t.push(_interactable);
+				interactablesBp.push(_interactable);
 			} else if (asset.includes('Coin')) {
 				// const _interactable = new Coin({
 				// 	isInteractable: true,
@@ -248,14 +266,14 @@ export default class BaseScene {
 				// 	group: this.interactables,
 				// });
 				// await _interactable.init();
-				// t.push(_interactable);
+				// interactablesBp.push(_interactable);
 			} else if (asset.includes('Fragment')) {
 				const _interactable = new Fragment({
 					asset: interactable,
 					group: this.interactables,
 				});
 				await _interactable.init();
-				t.push(_interactable);
+				interactablesBp.push(_interactable);
 			} else {
 				const _interactable = new BaseObject({
 					isInteractable: true,
@@ -263,13 +281,13 @@ export default class BaseScene {
 					group: this.interactables,
 				});
 				await _interactable.init();
-				// t.push(_interactable);
+				// interactablesBp.push(_interactable);
 			}
 		});
 
 		this.interactablesBroadphase = new InteractablesBroadphase({
 			radius: 2,
-			objectsToTest: t,
+			objectsToTest: interactablesBp,
 		});
 
 		this.instance.add(this.interactables);
@@ -300,11 +318,11 @@ export default class BaseScene {
 				const qt = new Quaternion().fromArray(point.qt);
 				checkpoints.push({ pos, qt });
 			}
-			if (_t === 'spawn') {
-				const pos = new Vector3().fromArray(point.pos);
-				const qt = new Quaternion().fromArray(point.qt);
-				checkpoints.unshift({ pos, qt });
-			}
+			// if (_t === 'spawn') {
+			// 	const pos = new Vector3().fromArray(point.pos);
+			// 	const qt = new Quaternion().fromArray(point.qt);
+			// 	checkpoints.unshift({ pos, qt });
+			// }
 		});
 
 		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
@@ -357,7 +375,7 @@ export default class BaseScene {
 		this.player.setStartPosition(this.checkpoints.getCurrent());
 
 		this.player.broadphase.setGroundCollider(this.ground);
-		// this.player.broadphase.setPropsColliders(this.ground);
+		this.player.broadphase.setPropsColliders(this.collidersBroadphase.objectsToTest);
 	}
 
 	removeFrom(mainScene) {
@@ -403,5 +421,7 @@ export default class BaseScene {
 		if (this.checkpoints) this.checkpoints.update(et, dt);
 		if (this.interactablesBroadphase)
 			this.interactablesBroadphase.update(this.player.base.mesh.position);
+		if (this.collidersBroadphase)
+			this.collidersBroadphase.update(this.player.base.mesh.position);
 	}
 }

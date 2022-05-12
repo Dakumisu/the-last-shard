@@ -73,6 +73,7 @@ export async function loadManifest() {
 		});
 
 		const _assets = _json.assets;
+		console.log('_assets', _assets, '_json', _json);
 		_assets.forEach((asset) => {
 			if (assetsMap.get(asset)) return;
 

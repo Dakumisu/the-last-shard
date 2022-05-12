@@ -27,11 +27,11 @@ export default class BaseBroadphase {
 
 	update(positionToTest) {
 		this.objectsToTest.forEach((object) => {
-			console.log(object);
 			tBox3c.makeEmpty();
-			if (!object.mesh.geometry.boundingBox) object.mesh.geometry.computeBoundingBox();
-			tBox3c.copy(object.mesh.geometry.boundingBox);
-			tMat4b.copy(object.mesh.matrixWorld);
+			if (!object.base.mesh.geometry.boundingBox)
+				object.base.mesh.geometry.computeBoundingBox();
+			tBox3c.copy(object.base.mesh.geometry.boundingBox);
+			tMat4b.copy(object.base.mesh.matrixWorld);
 			tBox3c.applyMatrix4(tMat4b);
 
 			const d = tBox3c.distanceToPoint(positionToTest);

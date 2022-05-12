@@ -85,7 +85,8 @@ export default class Ground extends BaseCollider {
 
 		const baseMerged = await mergeGeometry([modelToMerge], []);
 		this.base.mesh = new Mesh(baseMerged);
-		this.colliders.push(this.base);
+
+		this.colliders.push(this);
 
 		const geoOpt = {
 			lazyGeneration: false,
