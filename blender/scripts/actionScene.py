@@ -82,6 +82,7 @@ def export(fp, origCol, textureOnly=False):
     collidersCol = None
     entities = []
     traversableEntities = []
+    movableEntities = []
     toExport = []
 
     # Grab all subcollections
@@ -104,7 +105,7 @@ def export(fp, origCol, textureOnly=False):
             toExport.append(mergedBase)
 
         # Scene colliders
-        elif kind.startswith('objects'):
+        elif kind.startswith('collider'):
             collidersCol = subcol
             entities += list(subcol.all_objects)
 
@@ -112,12 +113,14 @@ def export(fp, origCol, textureOnly=False):
         elif (
             kind.startswith('curves')
             or kind.startswith('datas')
-            or kind.startswith('movable')
         ):
             entities += list(subcol.all_objects)
         elif kind.startswith('traversable'):
             entities += list(subcol.all_objects)
             traversableEntities += list(subcol.all_objects)
+        elif kind.startswith('movable'):
+            entities += list(subcol.all_objects)
+            movableEntities += list(subcol.all_objects)
 
     # Export props, commons, datas, interactables, ...
     debugStep()
@@ -125,6 +128,7 @@ def export(fp, origCol, textureOnly=False):
     actionCommon.exportEntities(
         entities,
         traversableEntities,
+        movableEntities,
         data,
         True
     )

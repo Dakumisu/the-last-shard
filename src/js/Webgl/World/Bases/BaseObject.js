@@ -12,11 +12,18 @@ export default class BaseObject {
 	 *
 	 * @param {{name?: string, isInteractable: boolean, asset?: Object, group?: Group}} param0
 	 */
-	constructor({ name = '', isInteractable = false, asset = null, group = null }) {
+	constructor({
+		name = '',
+		isInteractable = false,
+		isMovable = false,
+		asset = null,
+		group = null,
+	}) {
 		this.base = {
 			mesh: null,
 			name,
 			isInteractable,
+			isMovable,
 			isRawMesh: false,
 			asset,
 			group,
@@ -38,9 +45,9 @@ export default class BaseObject {
 			return;
 		}
 
-		const { asset, transforms, type, traversable } = this.base.asset;
+		const { asset, movable, transforms, type, traversable } = this.base.asset;
 
-		let _model = await loadModel(asset);
+		const model = await loadModel(asset);
 
 		// define material in function of the type of the object
 		const materials = {};
@@ -53,7 +60,13 @@ export default class BaseObject {
 			color: new Color('#224646'),
 		});
 
-		_model.traverse((obj) => {
+		if (asset.includes('Test')) {
+			console.log('🎮 Loaded :', asset, model);
+
+			debugger;
+		}
+
+		model.traverse((obj) => {
 			if (obj.material)
 				obj.material = this.base.isInteractable
 					? materials.interactable
@@ -70,8 +83,6 @@ export default class BaseObject {
 			if (obj.isMesh && !this.base.isRawMesh) this.base.mesh = obj;
 		});
 
-		// console.log('🎮 Loaded :', asset, this.base.mesh);
-
 		if (!this.base.mesh) return;
 
 		this.base.mesh.position.fromArray(transforms.pos);
@@ -80,6 +91,7 @@ export default class BaseObject {
 		this.base.mesh.name = asset;
 		this.base.name = asset;
 		this.base.mesh.isInteractable = this.base.isInteractable;
+		this.base.mesh.isMovable = this.base.isMovable = movable;
 
 		if (this.base.isInteractable) this.base.mesh.userData.interact = this.base.asset.effect;
 

@@ -95,11 +95,11 @@ export default class AnimationController {
 		newAction.animation.crossFadeFrom(oldAction.animation, 0.5);
 
 		this.setCurrent(newAction);
-		// /// #if DEBUG
-		console.log(
-			`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
-		);
-		// /// #endif
+		/// #if DEBUG
+		// console.log(
+		// 	`💫 Animation of '${this.name}' switch from '${oldAction.name}' to '${newAction.name}'`,
+		// );
+		/// #endif
 	}
 
 	playOnce(action) {

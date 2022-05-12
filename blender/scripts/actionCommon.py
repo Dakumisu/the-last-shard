@@ -91,12 +91,12 @@ def exportPolyline(curves, obj, uid, spline):
     curves.append(data)
 
 
-# Export entities like npc, assets, helpers, etc
-
-def exportEntities(objs, traversableObjs, data, keepProps=False):
+# Export entities like interactables, assets, helpers, etc...
+def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False):
     # Export instanced types (props, etc...)
     props = []
     traversables = []
+    movables = []
 
     for obj in objs:
         if obj.instance_type != 'COLLECTION':
@@ -113,15 +113,15 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         uid = rawseg[1].strip()
         asset = seg[1].strip()
 
-        # # prevent export other stuff in the collection
-        # if type != 'prop' or 'interactable':
-        #     continue
-
         isInteractable = type == 'interactable'
 
         category = 'collider'
         if isInteractable:
             category = 'interactable'
+
+        isMovable = False
+        if obj in movableEntities:
+            isMovable = True
 
         if 'assets' not in data:
             data['assets'] = []
@@ -135,6 +135,8 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
             empty['asset'] = asset
             if obj in traversableObjs:
                 traversables.append(empty)
+            if obj in movableEntities:
+                movables.append(empty)
             else:
                 props.append(empty)
 
@@ -150,7 +152,9 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
 
         # Get interactable effect
         params = {}
-        if isInteractable:
+        # print(category, type, asset)
+        # print('-------------', isMovable, isInteractable)
+        if isInteractable or isMovable:
             for key in obj.keys():
                 if key.startswith('_'):
                     continue
@@ -180,14 +184,20 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         else:
             objData['traversable'] = False
 
-        if (isInteractable and params != None):
+        objData['movable'] = isMovable
+
+        if (isInteractable or isMovable and params != None):
             objData['params'] = params
 
         # Pack transformations
-        objData['transforms'] = {}
-        objData['transforms']['pos'] = pos
-        objData['transforms']['scale'] = scale
-        objData['transforms']['qt'] = qt
+        objData['transforms'] = {
+            'pos': pos,
+            'scale': scale,
+            'qt': qt,
+        }
+
+        if isMovable:
+            objData['anim'] = []
 
         data[newType].append(objData)
 
@@ -202,17 +212,45 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
         if len(rawSeg) < 2:
             continue
         type = rawSeg[0].lower().strip()
-        if type.lower().strip() != 'point':
+
+        if type.lower().strip() == 'point':
+            if 'points' not in data:
+                data['points'] = []
+
+            ptName = seg[1]
+            uid = rawSeg[1]
+            pos, qt, scale = obj.matrix_world.decompose()
+            pos = utils.toThreePos(utils.toNumberList(pos, 6))
+            qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
+            ptData = {'type': ptName, 'uid': uid, 'pos': pos, 'qt': qt}
+            data['points'].append(ptData)
+
+        if type.lower().strip() == 'transform':
+            ptName = seg[1]
+            uid = rawSeg[1]
+            rawTarget = ptName.split('_')
+            target = rawTarget[0]
+            id = rawTarget[1]
+
+            pos, qt, scale = obj.matrix_world.decompose()
+            pos = utils.toThreePos(utils.toNumberList(pos, 6))
+            qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
+            scale = utils.toThreeScale(utils.toNumberList(scale, 8))
+
+            transformData = {
+                'pos': pos,
+                'qt': qt,
+                'scale': scale
+            }
+
+            for prop in data['props']:
+                if (prop['asset'] == target and prop['movable']):
+                    for param in prop['params']:
+                        if (prop['params'][param] != ptName):
+                            continue
+                        prop['anim'].append(transformData)
+        else:
             continue
-        if 'points' not in data:
-            data['points'] = []
-        ptName = seg[1]
-        uid = rawSeg[1]
-        pos, qt, scale = obj.matrix_world.decompose()
-        pos = utils.toThreePos(utils.toNumberList(pos, 6))
-        qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
-        ptData = {'type': ptName, 'uid': uid, 'pos': pos, 'qt': qt}
-        data['points'].append(ptData)
 
     # Export areas
     for obj in objs:
@@ -271,4 +309,4 @@ def exportEntities(objs, traversableObjs, data, keepProps=False):
             exportPolyline(curves, obj, curveName, spline)
 
     if keepProps:
-        return (props, traversables)
+        return (props, traversables, movables)

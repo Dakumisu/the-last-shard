@@ -3,6 +3,7 @@ import { DoubleSide, CylinderGeometry, AdditiveBlending } from 'three';
 import { loadTexture } from '@utils/loaders';
 import { LaserMaterialInner } from '@webgl/Materials/Laser/inner/material';
 import { LaserMaterialOuter } from '@webgl/Materials/Laser/outer/material';
+import signal from 'philbin-packages/signal';
 
 export default class LaserGame {
 	static laserMaterialInner;
@@ -16,9 +17,10 @@ export default class LaserGame {
 	 *
 	 * @param {{scene: BaseScene}} param0
 	 */
-	constructor({ scene }) {
+	constructor({ scene, id }) {
 		this.laserTowers = [];
 		this.scene = scene;
+		this.id = id;
 
 		this.init();
 	}
@@ -27,6 +29,7 @@ export default class LaserGame {
 		this.laserTowers.forEach((tower) => {
 			tower.base.isInteractable = false;
 		});
+		signal.emit('test', this.id);
 		console.log('🕹 Game ended');
 	}
 

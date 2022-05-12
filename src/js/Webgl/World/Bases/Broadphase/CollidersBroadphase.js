@@ -13,7 +13,7 @@ export default class CollidersBroadphase extends BaseBroadphase {
 			return;
 		}
 		this.currentObjects = [];
-		this.currentObjects.push(object.base);
+		this.currentObjects.push(object);
 	}
 
 	setPropsColliders(objectsToTest = []) {
