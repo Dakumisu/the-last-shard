@@ -36,8 +36,8 @@ const params = {
 	brightness: 0,
 	contrast: 0.1,
 	radius: 1,
-	strength: 0.15,
-	threshold: 0.3,
+	strength: 0.2,
+	threshold: 0.0,
 	useFxaa: true,
 };
 
@@ -252,12 +252,12 @@ export default class PostFX {
 	render() {
 		if (!initialized) return;
 
-		// this.renderer.setRenderTarget(this.target);
-		// this.renderer.render(this.rendererScene, this.rendererCamera);
-		// this.renderer.setRenderTarget(null);
-		// this.renderer.render(this.scene, this.dummyCamera);
+		this.renderer.setRenderTarget(this.target);
+		this.renderer.render(this.rendererScene, this.rendererCamera);
+		this.renderer.setRenderTarget(null);
+		this.renderer.render(this.scene, this.dummyCamera);
 
-		this.composer.render();
+		// this.composer.render();
 	}
 
 	destroy() {

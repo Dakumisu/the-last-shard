@@ -55,7 +55,7 @@ export default class Grass {
 		// 	// this.setMesh();
 		// });
 		// this.count = 1000000;
-		this.count = 2000000;
+		this.count = 1000000;
 
 		this.initialized = false;
 
@@ -83,24 +83,12 @@ export default class Grass {
 	setDefaultGeometry() {
 		this.triangle = new BufferGeometry();
 
-		// const vertices = new Float32Array([
-		// 	-0.15 * this.params.verticeScale,
-		// 	-0.15 * this.params.verticeScale,
-		// 	0 * this.params.verticeScale, // bl
-		// 	0.15 * this.params.verticeScale,
-		// 	-0.15 * this.params.verticeScale,
-		// 	0 * this.params.verticeScale, // br
-		// 	0 * this.params.verticeScale,
-		// 	0.75 * this.params.verticeScale,
-		// 	0 * this.params.verticeScale, // tc
-		// ]);
-
 		const vertices = new Float32Array([
-			-0.05 * this.params.verticeScale,
-			-0.05 * this.params.verticeScale,
+			-0.15 * this.params.verticeScale,
+			-0.15 * this.params.verticeScale,
 			0 * this.params.verticeScale, // bl
-			0.05 * this.params.verticeScale,
-			-0.05 * this.params.verticeScale,
+			0.15 * this.params.verticeScale,
+			-0.15 * this.params.verticeScale,
 			0 * this.params.verticeScale, // br
 			0 * this.params.verticeScale,
 			0.75 * this.params.verticeScale,
