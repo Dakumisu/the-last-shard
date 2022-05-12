@@ -150,6 +150,7 @@ export default class BaseScene {
 		canvas.width = this.depthTexture.source.data.width;
 		canvas.height = this.depthTexture.source.data.height;
 		canvas.style.transform = 'scaleY(-0.5) scaleX(0.5)';
+		canvas.style.transformOrigin = '0 50%';
 		canvas.style.position = 'absolute';
 		canvas.style.bottom = '50px';
 		this.canvasContext = canvas.getContext('2d');
