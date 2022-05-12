@@ -200,7 +200,6 @@ export default class BaseScene {
 	}
 
 	async _loadBase() {
-		console.log(this);
 		this.ground = new Ground(this);
 		await this.ground.init();
 	}
@@ -218,7 +217,6 @@ export default class BaseScene {
 				});
 				await _prop.init();
 				collidersBp.push(_prop);
-				console.log(collidersBp);
 			} else {
 				const _prop = new BaseObject({
 					asset: prop,
