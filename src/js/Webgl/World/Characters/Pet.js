@@ -1,3 +1,4 @@
+import { loadModel } from '@utils/loaders/loadAssets';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { getWebgl } from '@webgl/Webgl';
 import anime from 'animejs';
@@ -58,7 +59,14 @@ export class Pet extends BaseEntity {
 	async init() {
 		this.base.geometry = new IcosahedronGeometry(0.1, 3);
 		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
-		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+
+		this.base.group = await loadModel('lua');
+		this.base.group.scale.setScalar(0.08);
+		this.base.group.traverse((child) => {
+			if (child.isMesh) child.material = this.base.material;
+		});
+
+		this.base.mesh = new Mesh(this.base.geometry);
 
 		this.initPhysics();
 
@@ -68,10 +76,10 @@ export class Pet extends BaseEntity {
 
 		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
 
-		this.base.mesh.position.copy(this.targetPos);
+		this.base.group.position.copy(this.targetPos);
 		this.lastPlayerPos.copy(this.player.base.mesh.position);
 
-		this.scene.add(this.base.mesh);
+		this.scene.add(this.base.group);
 		this.isInitialized = true;
 	}
 
@@ -106,8 +114,8 @@ export class Pet extends BaseEntity {
 	}
 
 	dampPosition(dt, factor) {
-		this.base.mesh.position.x = dampPrecise(
-			this.base.mesh.position.x,
+		this.base.group.position.x = dampPrecise(
+			this.base.group.position.x,
 			this.targetPos.x,
 			factor,
 			dt,
@@ -115,16 +123,16 @@ export class Pet extends BaseEntity {
 		);
 
 		if (this.player.state.isOnGround)
-			this.base.mesh.position.y = dampPrecise(
-				this.base.mesh.position.y,
+			this.base.group.position.y = dampPrecise(
+				this.base.group.position.y,
 				this.targetPos.y,
 				factor,
 				dt,
 				0.001,
 			);
 
-		this.base.mesh.position.z = dampPrecise(
-			this.base.mesh.position.z,
+		this.base.group.position.z = dampPrecise(
+			this.base.group.position.z,
 			this.targetPos.z,
 			factor,
 			dt,
@@ -136,6 +144,12 @@ export class Pet extends BaseEntity {
 		console.log('follow');
 		this.dampPosition(dt, 0.1);
 
+		this.base.group.lookAt(
+			this.player.base.mesh.position.x,
+			this.base.group.position.y,
+			this.player.base.mesh.position.z,
+		);
+
 		this.lastPlayerPos.copy(this.player.base.mesh.position);
 		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
 	}
@@ -143,6 +157,12 @@ export class Pet extends BaseEntity {
 	idle(et, dt) {
 		console.log('idle');
 		this.dampPosition(dt, 0.01);
+
+		this.base.group.lookAt(
+			this.player.base.mesh.position.x,
+			this.base.group.position.y,
+			this.player.base.mesh.position.z,
+		);
 
 		this.targetPos.x =
 			Math.cos(et * 0.001 * this.speed) * params.idleRadius + this.lastPlayerPos.x;

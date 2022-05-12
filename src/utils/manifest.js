@@ -51,6 +51,11 @@ assetsMap.set('laserTexture', {
 	data: {},
 });
 
+assetsMap.set('lua', {
+	path: '/assets/model/lua.glb',
+	data: {},
+});
+
 export async function loadManifest() {
 	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
 
