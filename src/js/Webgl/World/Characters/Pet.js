@@ -141,7 +141,7 @@ export class Pet extends BaseEntity {
 	}
 
 	follow(et, dt) {
-		console.log('follow');
+		// console.log('follow');
 		this.dampPosition(dt, 0.1);
 
 		this.base.group.lookAt(
@@ -155,7 +155,7 @@ export class Pet extends BaseEntity {
 	}
 
 	idle(et, dt) {
-		console.log('idle');
+		// console.log('idle');
 		this.dampPosition(dt, 0.01);
 
 		this.base.group.lookAt(
@@ -174,7 +174,7 @@ export class Pet extends BaseEntity {
 	}
 
 	feed(et, dt) {
-		console.log('feed');
+		// console.log('feed');
 		this.dampPosition(dt, 0.1);
 	}
 
