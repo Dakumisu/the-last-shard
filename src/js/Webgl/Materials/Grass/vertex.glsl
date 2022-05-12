@@ -49,9 +49,9 @@ void main() {
 
 	vFade = elevation;
 
-	float scaleFromTexture = 1. - texture2D(uGrassTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
-	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	pos *= scaleFromTexture;
+	// float scaleFromTexture = 1. - texture2D(uGrassTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
+	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	// pos *= scaleFromTexture;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);

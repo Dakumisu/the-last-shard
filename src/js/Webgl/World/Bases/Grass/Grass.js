@@ -34,6 +34,7 @@ export default class Grass {
 	 */
 
 	constructor(scene, params = {}) {
+		console.log(scene);
 		this.scene = scene;
 		this.params = params;
 
@@ -150,6 +151,7 @@ export default class Grass {
 	}
 
 	setGrass() {
+		console.log(this.scene);
 		this.base.material = new GrassMaterial({
 			uniforms: {
 				uDisplacement: { value: 0.15 },

@@ -82,7 +82,7 @@ export default class BaseFog {
 		});
 		gui.addInput(this.params, 'fogFar', {
 			label: 'farRange',
-			min: 20,
+			min: 0,
 			max: 150,
 			step: 0.01,
 		}).on('change', (fogFar) => {

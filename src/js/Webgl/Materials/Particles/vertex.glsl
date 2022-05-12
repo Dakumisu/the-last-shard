@@ -78,15 +78,6 @@ void main() {
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
 	translation.y += translationOffset;
 
-	// Player trail
-	float trailIntensity = smoothstep(2.5, 0., distance(uCharaPos, translation.xyz));
-	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
-
-	// Grass displacement according to player trail
-	translation -= trailIntensity * trailDirection;
-	pos *= 1. - trailIntensity;
-
-
 	// Looping on Y axis
 	float maxDuration = 5.;
 

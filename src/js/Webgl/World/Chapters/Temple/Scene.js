@@ -1,7 +1,7 @@
 import BaseScene from '@webgl/Scene/BaseScene';
 import Grass from '@webgl/World/Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
-import { Vector3 } from 'three';
+import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
@@ -46,7 +46,7 @@ export default class TempleScene extends BaseScene {
 			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
 			fogNear: 0,
-			fogFar: 45,
+			fogFar: 30,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
@@ -55,10 +55,17 @@ export default class TempleScene extends BaseScene {
 
 		// Init grass after fog
 		this.grass = new Grass(this, {
-			color: '#C1C2FF',
+			color: '#66C0ef',
+			// color: '#9799f7',
+			// color: '#66C0ef',
 			color2: '#664CB1',
+			verticeScale: 0.2,
 			halfBoxSize: 25,
-			scale: 1,
+			maskRange: 0.04,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.2,
+			windColorIntensity: 0.11,
+			displacement: 0.11,
 			positionsTexture: await loadTexture('grassTexture'),
 		});
 
@@ -67,7 +74,7 @@ export default class TempleScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 200,
+				count: 350,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
@@ -77,7 +84,7 @@ export default class TempleScene extends BaseScene {
 			scene: this,
 			params: {
 				color: '#664CB1',
-				count: 4000,
+				count: 2000,
 				halfBoxSize: 30,
 				positionsTexture: await loadTexture('grassTexture'),
 				fogTexture: await loadTexture('fogTexture'),

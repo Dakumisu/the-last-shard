@@ -74,7 +74,7 @@ export default class World {
 		});
 
 		// TODO: get saved scene from localStorage
-		this.sceneController.switch('Sandbox');
+		this.sceneController.switch('Temple');
 	}
 
 	setPlayer() {
