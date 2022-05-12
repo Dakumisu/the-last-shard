@@ -32,6 +32,11 @@ assetsMap.set('envMap2', {
 	data: {},
 });
 
+assetsMap.set('asset_gradient', {
+	path: '/assets/image/gradients/gradient.png',
+	data: {},
+});
+
 assetsMap.set('noiseTexture', {
 	path: '/assets/image/pattern.png',
 	data: {},

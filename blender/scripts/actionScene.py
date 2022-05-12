@@ -93,6 +93,7 @@ def export(fp, origCol, textureOnly=False):
 
         # Base items will be merged
         # Used to define scene bounds
+        print(kind)
         if kind.startswith('base'):
             mergedBase = utils.mergeApply(
                 list(subcol.all_objects), True, False, False, True)
