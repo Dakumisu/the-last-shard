@@ -62,7 +62,8 @@ export default class LaserTower extends BaseCollider {
 
 	activate() {
 		this.isActivated = true;
-		if (this.type === 'start') this.game.pet.toggleFeeding();
+		if (this.type === 'start')
+			this.game.pet.toggleFeeding(this.base.mesh.position.clone().setY(2));
 
 		if (this.type === 'end') this.game.endEvent();
 

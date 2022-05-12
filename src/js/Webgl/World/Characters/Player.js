@@ -37,7 +37,7 @@ import { debounce, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
-const model = '/assets/export/Ayru.glb';
+const model = '/assets/model/Ayru.glb';
 
 const PI = Math.PI;
 const PI2 = PI * 2;

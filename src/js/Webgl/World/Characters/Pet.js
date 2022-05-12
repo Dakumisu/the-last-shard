@@ -1,5 +1,6 @@
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { getWebgl } from '@webgl/Webgl';
+import anime from 'animejs';
 import { wait } from 'philbin-packages/async';
 import { dampPrecise } from 'philbin-packages/maths';
 import { Euler, IcosahedronGeometry, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from 'three';
@@ -55,7 +56,7 @@ export class Pet extends BaseEntity {
 	}
 
 	async init() {
-		this.base.geometry = new IcosahedronGeometry(0.08, 3);
+		this.base.geometry = new IcosahedronGeometry(0.1, 3);
 		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 
@@ -86,9 +87,9 @@ export class Pet extends BaseEntity {
 	/// #endif
 
 	update(et, dt) {
-		if (!this.isInitialized || this.isBlocked) return;
+		if (!this.isInitialized) return;
 
-		if (!this.timeOutStarted) this.stateTimeout();
+		if (!this.timeOutStarted && this.state !== Pet.STATES.FEEDING) this.stateTimeout();
 
 		// TODO: TP if distance to far
 
@@ -132,6 +133,7 @@ export class Pet extends BaseEntity {
 	}
 
 	follow(et, dt) {
+		console.log('follow');
 		this.dampPosition(dt, 0.1);
 
 		this.lastPlayerPos.copy(this.player.base.mesh.position);
@@ -139,6 +141,7 @@ export class Pet extends BaseEntity {
 	}
 
 	idle(et, dt) {
+		console.log('idle');
 		this.dampPosition(dt, 0.01);
 
 		this.targetPos.x =
@@ -151,19 +154,26 @@ export class Pet extends BaseEntity {
 	}
 
 	feed(et, dt) {
-		this.isBlocked = true;
 		console.log('feed');
+		this.dampPosition(dt, 0.1);
 	}
 
-	toggleFeeding() {
-		this.state = Pet.STATES.FEEDING ? Pet.STATES.FOLLOW : Pet.STATES.FEEDING;
-		this.isBlocked = this.isBlocked ? false : true;
+	toggleFeeding(targetPos = null) {
+		if (!this.isBlocked && targetPos) {
+			this.isBlocked = true;
+			this.targetPos.copy(targetPos);
+			this.state = Pet.STATES.FEEDING;
+		} else {
+			this.state = Pet.STATES.FOLLOW;
+			this.isBlocked = false;
+		}
 	}
 
 	async stateTimeout() {
 		this.timeOutStarted = true;
 		await wait(params.statesTimeouts[this.state]);
-		this.state = this.player.state.isMoving ? Pet.STATES.FOLLOW : Pet.STATES.IDLE;
+		if (!this.isBlocked)
+			this.state = this.player.state.isMoving ? Pet.STATES.FOLLOW : Pet.STATES.IDLE;
 		this.timeOutStarted = false;
 	}
 }
