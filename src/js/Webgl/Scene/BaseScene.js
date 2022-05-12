@@ -318,11 +318,11 @@ export default class BaseScene {
 				const qt = new Quaternion().fromArray(point.qt);
 				checkpoints.push({ pos, qt });
 			}
-			// if (_t === 'spawn') {
-			// 	const pos = new Vector3().fromArray(point.pos);
-			// 	const qt = new Quaternion().fromArray(point.qt);
-			// 	checkpoints.unshift({ pos, qt });
-			// }
+			if (_t === 'spawn') {
+				const pos = new Vector3().fromArray(point.pos);
+				const qt = new Quaternion().fromArray(point.qt);
+				checkpoints.unshift({ pos, qt });
+			}
 		});
 
 		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });

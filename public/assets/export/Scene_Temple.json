@@ -12,10 +12,2271 @@
       58.904095
     ]
   ],
+  "assets": [
+    "Fountain",
+    "LostTemple",
+    "Manhole",
+    "MassivePillar",
+    "ParkourPlatformA",
+    "ParkourPlatformB",
+    "ParkourPlatformC",
+    "Pebbles",
+    "PillarA",
+    "PillarB",
+    "Podium",
+    "Ramp",
+    "Stool",
+    "TempleGateA",
+    "TempleGateB",
+    "TreeA",
+    "TreeB",
+    "Urne",
+    "WallA",
+    "LaserTowerBetween",
+    "LaserTowerEnd",
+    "LaserTowerStart",
+    "Stairs",
+    "Bridge"
+  ],
+  "props": [
+    {
+      "asset": "Fountain",
+      "uid": "Fountain.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          0.020723,
+          0.0,
+          0.038444
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LostTemple",
+      "uid": "LostTemple.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          29.237547,
+          -8e-06,
+          23.474421
+        ],
+        "scale": [
+          1.63489461,
+          1.63489461,
+          1.63489461
+        ],
+        "qt": [
+          0.0,
+          -0.707107,
+          -0.0,
+          0.707107
+        ]
+      }
+    },
+    {
+      "asset": "Manhole",
+      "uid": "Manhole.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          19.268997,
+          4e-06,
+          39.179512
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.106",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.226883,
+          20.253485,
+          8.184864
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.107",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.226883,
+          20.253485,
+          -7.826738
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.108",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          25.400621,
+          9.367777,
+          -35.252274
+        ],
+        "scale": [
+          0.4518007,
+          0.4518007,
+          0.4518007
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.109",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          28.042185,
+          6.119835,
+          -35.204353
+        ],
+        "scale": [
+          0.3012836,
+          0.3012836,
+          0.3012836
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.110",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          30.750923,
+          9.367777,
+          -35.252274
+        ],
+        "scale": [
+          0.4518007,
+          0.4518007,
+          0.4518007
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.111",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -51.945412,
+          7.322037,
+          6.161294
+        ],
+        "scale": [
+          1.0,
+          0.36970812,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "MassivePillar",
+      "uid": "MassivePillar.112",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -51.945412,
+          7.322037,
+          -6.23255
+        ],
+        "scale": [
+          1.0,
+          0.36970812,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "ParkourPlatformA",
+      "uid": "ParkourPlatformA.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.462181,
+          1e-06,
+          48.824715
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "ParkourPlatformB",
+      "uid": "ParkourPlatformB.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          34.612823,
+          -2e-06,
+          42.751282
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "ParkourPlatformC",
+      "uid": "ParkourPlatformC.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          32.661049,
+          0.0,
+          45.318172
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Pebbles",
+      "uid": "Pebbles.031",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          42.664032,
+          0.0,
+          47.806763
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Pebbles",
+      "uid": "Pebbles.032",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          3.028368,
+          0.0,
+          -46.125805
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarA",
+      "uid": "PillarA.076",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.16029,
+          0.0,
+          25.743938
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarA",
+      "uid": "PillarA.077",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.16029,
+          0.0,
+          27.703003
+        ],
+        "scale": [
+          1.0,
+          0.79415071,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarA",
+      "uid": "PillarA.078",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.295918,
+          0.0,
+          -27.211159
+        ],
+        "scale": [
+          1.0,
+          0.79415071,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarA",
+      "uid": "PillarA.079",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.295918,
+          0.0,
+          -25.25209
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarA",
+      "uid": "PillarA.080",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          33.359486,
+          -1e-06,
+          -35.307556
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "PillarB",
+      "uid": "PillarB.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          40.391907,
+          2e-06,
+          35.935394
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Podium",
+      "uid": "Podium.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          50.236332,
+          0.0,
+          38.871582
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Ramp",
+      "uid": "Ramp.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          47.398674,
+          0.617834,
+          44.047852
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Stool",
+      "uid": "Stool.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          43.278992,
+          -3e-06,
+          31.192696
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TempleGateA",
+      "uid": "TempleGateA.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -51.138145,
+          -2e-06,
+          2.307107
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TempleGateB",
+      "uid": "TempleGateB.016",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.942024,
+          1e-06,
+          5.069489
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.271",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          16.879883,
+          0.0,
+          -27.767817
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.272",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          11.681219,
+          0.0,
+          -28.923571
+        ],
+        "scale": [
+          1.32612467,
+          1.32612467,
+          1.32612467
+        ],
+        "qt": [
+          -0.0,
+          -0.998296,
+          0.0,
+          0.058345
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.273",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          7.899968,
+          0.0,
+          -33.767197
+        ],
+        "scale": [
+          0.9345724,
+          0.93457234,
+          0.9345724
+        ],
+        "qt": [
+          -0.0,
+          -0.929007,
+          0.0,
+          0.370062
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.274",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -16.348267,
+          0.0,
+          -31.244925
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          -0.838026,
+          -0.0,
+          0.54563
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.275",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -13.188071,
+          0.0,
+          -35.531536
+        ],
+        "scale": [
+          1.32612479,
+          1.32612467,
+          1.32612479
+        ],
+        "qt": [
+          0.0,
+          0.593595,
+          -0.0,
+          0.804764
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.276",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -7.228749,
+          0.0,
+          -37.029892
+        ],
+        "scale": [
+          0.93457234,
+          0.93457234,
+          0.93457234
+        ],
+        "qt": [
+          0.0,
+          0.817016,
+          -0.0,
+          0.576616
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.277",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -21.514055,
+          0.0,
+          -39.503616
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.563817,
+          -0.0,
+          0.8259
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.278",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -24.483887,
+          0.0,
+          -35.082989
+        ],
+        "scale": [
+          1.32612467,
+          1.32612467,
+          1.32612467
+        ],
+        "qt": [
+          0.0,
+          -0.791597,
+          -0.0,
+          0.611044
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.279",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -30.372028,
+          0.0,
+          -33.325611
+        ],
+        "scale": [
+          0.93457234,
+          0.93457234,
+          0.93457234
+        ],
+        "qt": [
+          0.0,
+          -0.55862,
+          -0.0,
+          0.829424
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.280",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -35.881443,
+          0.0,
+          34.517567
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          -0.0,
+          -1.0,
+          0.0,
+          2.7e-05
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.281",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -30.68272,
+          0.0,
+          35.673042
+        ],
+        "scale": [
+          1.32612467,
+          1.32612467,
+          1.32612467
+        ],
+        "qt": [
+          0.0,
+          0.058348,
+          -0.0,
+          0.998296
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.282",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -26.901215,
+          0.0,
+          40.516468
+        ],
+        "scale": [
+          0.93457234,
+          0.93457234,
+          0.93457234
+        ],
+        "qt": [
+          0.0,
+          0.370047,
+          -0.0,
+          0.929013
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.283",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -2.653109,
+          0.0,
+          37.992905
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          0.99999994
+        ],
+        "qt": [
+          0.0,
+          0.545604,
+          -0.0,
+          0.838043
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.284",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -5.813076,
+          0.0,
+          42.279686
+        ],
+        "scale": [
+          1.32612479,
+          1.32612467,
+          1.32612479
+        ],
+        "qt": [
+          0.0,
+          -0.80476,
+          -0.0,
+          0.5936
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.285",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -11.772318,
+          0.0,
+          43.778358
+        ],
+        "scale": [
+          0.9345724,
+          0.93457234,
+          0.9345724
+        ],
+        "qt": [
+          0.0,
+          -0.576626,
+          -0.0,
+          0.817008
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.286",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          2.51312,
+          0.0,
+          46.25132
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          0.99999994
+        ],
+        "qt": [
+          0.0,
+          -0.825885,
+          -0.0,
+          0.563838
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.287",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          5.482715,
+          0.0,
+          41.830536
+        ],
+        "scale": [
+          1.32612467,
+          1.32612467,
+          1.32612467
+        ],
+        "qt": [
+          0.0,
+          0.611045,
+          -0.0,
+          0.791596
+        ]
+      }
+    },
+    {
+      "asset": "TreeA",
+      "uid": "TreeA.288",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          11.370766,
+          0.0,
+          40.072845
+        ],
+        "scale": [
+          0.93457234,
+          0.93457234,
+          0.93457234
+        ],
+        "qt": [
+          0.0,
+          0.829414,
+          -0.0,
+          0.558634
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.361",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -3.900095,
+          -2e-06,
+          -30.237984
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          -0.0,
+          -0.995276,
+          0.0,
+          0.097084
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.362",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          12.764506,
+          -2e-06,
+          -39.559109
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          0.99999994
+        ],
+        "qt": [
+          0.0,
+          -0.461694,
+          -0.0,
+          0.887039
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.363",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          5.457196,
+          -2e-06,
+          -41.620037
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.364",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          3.626692,
+          -2e-06,
+          -29.687078
+        ],
+        "scale": [
+          0.74915713,
+          0.74915707,
+          0.74915713
+        ],
+        "qt": [
+          0.0,
+          0.423735,
+          -0.0,
+          0.905786
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.365",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          18.792227,
+          0.254709,
+          -33.453663
+        ],
+        "scale": [
+          0.80256879,
+          0.80256879,
+          0.80256879
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.366",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          0.940995,
+          -2e-06,
+          -36.08675
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          -0.838026,
+          -0.0,
+          0.54563
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.367",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -9.231173,
+          -2e-06,
+          -42.588539
+        ],
+        "scale": [
+          0.74915713,
+          0.74915707,
+          0.74915713
+        ],
+        "qt": [
+          0.0,
+          -0.52787,
+          -0.0,
+          0.849325
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.368",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -11.922222,
+          0.254709,
+          -27.195721
+        ],
+        "scale": [
+          0.80256879,
+          0.80256879,
+          0.80256879
+        ],
+        "qt": [
+          0.0,
+          -0.838026,
+          -0.0,
+          0.54563
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.369",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -33.994343,
+          -2e-06,
+          -39.965549
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.118815,
+          -0.0,
+          0.992916
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.370",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -38.575188,
+          -2e-06,
+          -33.910793
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.563817,
+          -0.0,
+          0.8259
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.371",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -28.128578,
+          -2e-06,
+          -27.859793
+        ],
+        "scale": [
+          0.74915713,
+          0.74915707,
+          0.74915713
+        ],
+        "qt": [
+          0.0,
+          0.860661,
+          -0.0,
+          0.509179
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.372",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -26.112844,
+          0.254709,
+          -43.355515
+        ],
+        "scale": [
+          0.80256879,
+          0.80256879,
+          0.80256879
+        ],
+        "qt": [
+          0.0,
+          0.563817,
+          -0.0,
+          0.8259
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.373",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -31.765442,
+          -2e-06,
+          46.30864
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.887044,
+          -0.0,
+          0.461684
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.374",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -24.458019,
+          -2e-06,
+          48.369179
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          -0.0,
+          -1.0,
+          0.0,
+          2.7e-05
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.375",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -22.628151,
+          -2e-06,
+          36.436123
+        ],
+        "scale": [
+          0.74915713,
+          0.74915707,
+          0.74915713
+        ],
+        "qt": [
+          -0.0,
+          -0.905777,
+          0.0,
+          0.423756
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.376",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -37.79348,
+          0.254709,
+          40.203514
+        ],
+        "scale": [
+          0.80256879,
+          0.80256879,
+          0.80256879
+        ],
+        "qt": [
+          -0.0,
+          -1.0,
+          0.0,
+          2.7e-05
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.377",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -15.101334,
+          -2e-06,
+          36.986626
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          0.99999994
+        ],
+        "qt": [
+          0.0,
+          0.097098,
+          -0.0,
+          0.995275
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.378",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -19.942116,
+          -2e-06,
+          42.835651
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          0.99999994
+        ],
+        "qt": [
+          0.0,
+          0.545604,
+          -0.0,
+          0.838043
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.379",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -9.7696,
+          -2e-06,
+          49.336899
+        ],
+        "scale": [
+          0.74915713,
+          0.74915707,
+          0.74915713
+        ],
+        "qt": [
+          0.0,
+          0.849307,
+          -0.0,
+          0.5279
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.380",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -7.079369,
+          0.254709,
+          33.943939
+        ],
+        "scale": [
+          0.80256879,
+          0.80256879,
+          0.80256879
+        ],
+        "qt": [
+          0.0,
+          0.545604,
+          -0.0,
+          0.838043
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.381",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          14.993428,
+          -2e-06,
+          46.712593
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          -0.0,
+          -0.992915,
+          0.0,
+          0.118825
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.382",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          17.602797,
+          -2e-06,
+          32.2798
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          0.99999994
+        ],
+        "qt": [
+          0.0,
+          -0.825885,
+          -0.0,
+          0.563838
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.383",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          9.127022,
+          -2e-06,
+          34.607147
+        ],
+        "scale": [
+          0.74915713,
+          0.74915707,
+          0.74915713
+        ],
+        "qt": [
+          0.0,
+          -0.509161,
+          -0.0,
+          0.860671
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.384",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          7.112112,
+          0.254709,
+          50.102974
+        ],
+        "scale": [
+          0.80256879,
+          0.80256879,
+          0.80256879
+        ],
+        "qt": [
+          0.0,
+          -0.825885,
+          -0.0,
+          0.563838
+        ]
+      }
+    },
+    {
+      "asset": "Urne",
+      "uid": "Urne.031",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          22.994263,
+          -0.0,
+          32.544064
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Urne",
+      "uid": "Urne.032",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          36.33049,
+          0.0,
+          31.681183
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "WallA",
+      "uid": "WallA.085",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.850422,
+          -0.0,
+          -24.190706
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "WallA",
+      "uid": "WallA.086",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          38.850422,
+          -0.0,
+          11.354609
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "WallA",
+      "uid": "WallA.087",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -51.316288,
+          -0.0,
+          -22.804014
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "WallA",
+      "uid": "WallA.088",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -51.316288,
+          -0.0,
+          9.616695
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Stairs",
+      "uid": "Stairs.037",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          29.75894,
+          1.941509,
+          22.019878
+        ],
+        "scale": [
+          1.20233369,
+          1.20233369,
+          1.20233369
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Stairs",
+      "uid": "Stairs.038",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          29.76429,
+          0.940163,
+          19.909004
+        ],
+        "scale": [
+          1.20233369,
+          1.20233369,
+          1.20233369
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Stairs",
+      "uid": "Stairs.039",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          29.807285,
+          -0.138343,
+          17.830118
+        ],
+        "scale": [
+          1.20233369,
+          1.20233369,
+          1.20233369
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "WallA",
+      "uid": "WallA.089",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          27.140772,
+          -0.0,
+          15.407248
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "WallA",
+      "uid": "WallA.090",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          33.328304,
+          -0.0,
+          15.505549
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "Bridge",
+      "uid": "Bridge.009",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "transforms": {
+        "pos": [
+          -89.527794,
+          -1.102675,
+          -0.877243
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    }
+  ],
+  "interactables": [
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.085",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0,
+        "distance": 10.0
+      },
+      "transforms": {
+        "pos": [
+          8.479533,
+          0.0,
+          -13.471115
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.086",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0,
+        "distance": 10.0
+      },
+      "transforms": {
+        "pos": [
+          -7.470304,
+          0.0,
+          -14.230631
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.087",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0,
+        "distance": 10.0
+      },
+      "transforms": {
+        "pos": [
+          -12.56991,
+          0.0,
+          -4.899436
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.088",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0,
+        "distance": 10.0
+      },
+      "transforms": {
+        "pos": [
+          14.664163,
+          0.0,
+          3.455239
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.089",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0,
+        "distance": 10.0
+      },
+      "transforms": {
+        "pos": [
+          16.617203,
+          0.0,
+          -5.984458
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.090",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0,
+        "distance": 10.0
+      },
+      "transforms": {
+        "pos": [
+          0.341859,
+          -5.6e-05,
+          -9.782038
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerEnd",
+      "uid": "LaserTowerEnd.015",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          -23.854147,
+          -5.6e-05,
+          -1.427363
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "LaserTowerStart",
+      "uid": "LaserTowerStart.015",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "gameId": 0,
+        "distance": 10.0
+      },
+      "transforms": {
+        "pos": [
+          19.546764,
+          0.0,
+          11.158902
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    }
+  ],
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.001",
+      "uid": "Spawn.015",
       "pos": [
         51.48119,
         1.273254,
@@ -30,10 +2291,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.024",
+      "uid": "Checkpoint.042",
       "pos": [
         16.159115,
-        0.0,
+        1.129131,
         21.209126
       ],
       "qt": [
@@ -45,10 +2306,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.025",
+      "uid": "Checkpoint.043",
       "pos": [
         -32.858082,
-        0.0,
+        1.129131,
         24.898743
       ],
       "qt": [
@@ -60,10 +2321,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.026",
+      "uid": "Checkpoint.044",
       "pos": [
         -12.142229,
-        -2e-06,
+        1.129129,
         -15.498188
       ],
       "qt": [
