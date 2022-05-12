@@ -22,7 +22,6 @@ export default class LaserGame {
 		this.laserTowers = [];
 		this.scene = scene;
 		this.id = id;
-
 		this.pet = getPet();
 
 		this.init();

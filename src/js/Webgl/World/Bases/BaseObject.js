@@ -10,7 +10,7 @@ import anime from 'animejs';
 export default class BaseObject {
 	/**
 	 *
-	 * @param {{name?: string, isInteractable: boolean, asset?: Object, group?: Group}} param0
+	 * @param {{name?: string, isInteractable: boolean, isMovable: boolean, asset?: Object, group?: Group}} param0
 	 */
 	constructor({
 		name = '',
@@ -60,11 +60,13 @@ export default class BaseObject {
 			color: new Color('#224646'),
 		});
 
+		/// #if DEBUG
 		if (asset.includes('Test')) {
 			console.log('🎮 Loaded :', asset, model);
 
 			debugger;
 		}
+		/// #endif
 
 		model.traverse((obj) => {
 			if (obj.material)
@@ -111,7 +113,7 @@ export default class BaseObject {
 			y: [0.00001, scale[1]],
 			z: [0.00001, scale[2]],
 			complete: () => {
-				if (!this.base.isInteractable) {
+				if (!this.base.isInteractable && !this.base.isMovable) {
 					this.base.mesh.matrixAutoUpdate = false;
 					this.base.mesh.updateMatrix();
 				}
