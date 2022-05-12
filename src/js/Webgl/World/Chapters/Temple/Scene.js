@@ -9,6 +9,7 @@ import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
+import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 
 export default class TempleScene extends BaseScene {
 	constructor(manifest) {
@@ -46,7 +47,7 @@ export default class TempleScene extends BaseScene {
 			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
 			fogNear: 0,
-			fogFar: 30,
+			fogFar: 25,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
@@ -61,11 +62,26 @@ export default class TempleScene extends BaseScene {
 			color2: '#664CB1',
 			verticeScale: 0.2,
 			halfBoxSize: 25,
-			maskRange: 0.04,
 			noiseElevationIntensity: 0.75,
-			noiseMouvementIntensity: 0.2,
+			noiseMouvementIntensity: 0.15,
 			windColorIntensity: 0.11,
-			displacement: 0.11,
+			displacement: 0.08,
+			scale: 1,
+			positionsTexture: await loadTexture('grassTexture'),
+		});
+
+		this.flowers = new Flowers(this, {
+			color: '#66C0ef',
+			// color: '#9799f7',
+			// color: '#66C0ef',
+			color2: '#664CB1',
+			verticeScale: 0.2,
+			halfBoxSize: 25,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.15,
+			windColorIntensity: 0.11,
+			displacement: 0.08,
+			scale: 1,
 			positionsTexture: await loadTexture('grassTexture'),
 		});
 
@@ -74,8 +90,8 @@ export default class TempleScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 350,
-				halfBoxSize: 30,
+				count: 250,
+				halfBoxSize: 25,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
@@ -84,13 +100,12 @@ export default class TempleScene extends BaseScene {
 			scene: this,
 			params: {
 				color: '#664CB1',
-				count: 2000,
-				halfBoxSize: 30,
+				count: 3000,
+				halfBoxSize: 25,
 				positionsTexture: await loadTexture('grassTexture'),
 				fogTexture: await loadTexture('fogTexture'),
 			},
 		});
-		await this.fogParticles.init();
 
 		// this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
 		this.initialized.resolve(true);
