@@ -20,6 +20,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { LUTPass } from 'three/examples/jsm/postprocessing/LUTPass.js';
 
 import { getWebgl } from '@webgl/Webgl';
 
@@ -27,6 +28,7 @@ import { store } from '@tools/Store';
 
 import PostFXMaterial from './basic/material';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { loadLUTCube } from '@utils/loaders/loadAssets';
 
 const tVec2 = new Vector2();
 const tVec3 = new Vector3();
@@ -160,7 +162,7 @@ export default class PostFX {
 		this.material = PostFXMaterial.get(opts);
 	}
 
-	setPostPro() {
+	async setPostPro() {
 		this.triangle = new Mesh(this.geometry, this.material);
 		this.triangle.frustumCulled = false;
 
@@ -178,6 +180,11 @@ export default class PostFX {
 		this.unrealBloomPass.strength = params.strength;
 		this.unrealBloomPass.radius = params.radius;
 		this.unrealBloomPass.threshold = params.threshold;
+
+		const lutPass = new LUTPass();
+		lutPass.lut = await loadLUTCube('fuj-film');
+
+		this.composer.addPass(lutPass);
 
 		const customShader = {
 			uniforms: {
