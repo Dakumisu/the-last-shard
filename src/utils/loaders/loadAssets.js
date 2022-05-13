@@ -87,9 +87,9 @@ export async function loadCubeTexture(key) {
 /**
  *
  * @param {string} key
- * @returns {Promise<unknown | null>}
+ * @returns {Promise<Texture | null>}
  */
-export async function loadLUTCube(key) {
+export async function loadLUTTexture(key) {
 	const path = manifest.get(key)?.path;
 	if (!path) {
 		/// #if DEBUG
@@ -98,12 +98,13 @@ export async function loadLUTCube(key) {
 		return;
 	}
 
-	let loadedLut = store.loadedAssets.textures.get(key);
-	if (!loadedLut) {
-		loadedLut = await lutCubeLoader.loadAsync(path);
-		store.loadedAssets.textures.set(key, loadedLut);
+	let loadedTexture = store.loadedAssets.textures.get(key);
+	if (!loadedTexture) {
+		loadedTexture = (await lutCubeLoader.loadAsync(path)).texture;
+
+		store.loadedAssets.textures.set(key, loadedTexture);
 	}
-	return loadedLut;
+	return loadedTexture;
 }
 
 /**
