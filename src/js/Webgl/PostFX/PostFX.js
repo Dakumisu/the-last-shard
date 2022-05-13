@@ -189,6 +189,7 @@ export default class PostFX {
 
 		this.lutPass = new LUTPass();
 		this.lutPass.lut = await loadLUTTexture('test-lut');
+		this.lutPass.intensity = 0;
 
 		this.composer.addPass(this.lutPass);
 
