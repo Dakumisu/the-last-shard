@@ -6,8 +6,6 @@ export default class Lut {
 		this.material = material;
 		this.lutKey = lutKey;
 
-		this.intensity = 1;
-
 		this.initialized = false;
 
 		this.init();
@@ -15,16 +13,11 @@ export default class Lut {
 
 	async init() {
 		this.texture = await loadLUTTexture(this.lutKey);
-		console.log('🎮 Loaded :', this.lutKey, this.texture);
 
 		if (this.texture !== this.material.uniforms.lut) {
-			this.material.uniforms.lutSize.value = this.texture.image.width;
-			this.material.uniforms.lut.value = this.texture;
+			this.material.uniforms.uLutSize.value = this.texture.image.width;
+			this.material.uniforms.uLut1.value = this.texture;
 		}
 		this.initialized = true;
-	}
-
-	set intensity(v) {
-		this.material.uniforms.intensity.value = v;
 	}
 }

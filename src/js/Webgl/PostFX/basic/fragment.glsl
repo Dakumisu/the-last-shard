@@ -4,9 +4,11 @@ precision highp sampler2D;
 uniform sampler2D uScene;
 uniform vec3 uResolution;
 
-uniform float lutSize;
-uniform sampler2D lut;
-uniform float intensity;
+uniform float uLutSize;
+uniform sampler2D uLut1;
+uniform sampler2D uLut2;
+uniform float uLutIntensity1;
+uniform float uLutIntensity2;
 
 vec3 lutLookup(sampler2D tex, float size, vec3 rgb) {
 
@@ -44,13 +46,13 @@ void main() {
 
 	// pull the sample in by half a pixel so the sample begins
 	// at the center of the edge pixels.
-	float pixelWidth = 1.0 / lutSize;
-	float halfPixelWidth = 0.5 / lutSize;
+	float pixelWidth = 1.0 / uLutSize;
+	float halfPixelWidth = 0.5 / uLutSize;
 	vec3 uvw = vec3(halfPixelWidth) + val.rgb * (1.0 - pixelWidth);
 
-	lutVal = vec4(lutLookup(lut, lutSize, uvw), val.a);
-	lutVal = vec4(lutLookup(lut, lutSize, uvw), val.a);
+	lutVal = vec4(lutLookup(uLut2, uLutSize, uvw), val.a);
+	lutVal = vec4(lutLookup(uLut1, uLutSize, uvw), val.a);
 
-	gl_FragColor = vec4(mix(val, lutVal, intensity));
+	gl_FragColor = vec4(mix(val, lutVal, uLutIntensity1));
 
 }

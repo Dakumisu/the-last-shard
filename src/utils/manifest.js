@@ -56,8 +56,13 @@ assetsMap.set('laserTexture', {
 	data: {},
 });
 
-assetsMap.set('test-lut', {
-	path: '/assets/luts/lutCreatorJs.cube',
+assetsMap.set('lut-1', {
+	path: '/assets/luts/lut-1.cube',
+	data: {},
+});
+
+assetsMap.set('lut-2', {
+	path: '/assets/luts/lut-2.cube',
 	data: {},
 });
 

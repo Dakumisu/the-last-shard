@@ -69,10 +69,12 @@ export default class PostFX {
 				uScene: { value: this.target.texture },
 				uResolution: { value: tVec3 },
 
-				lut: { value: null },
-				lutSize: { value: 0 },
+				uLut1: { value: null },
+				uLut2: { value: null },
+				uLutSize: { value: 0 },
 
-				intensity: { value: 1.0 },
+				uLutIntensity1: { value: 1.0 },
+				uLutIntensity2: { value: 1.0 },
 			},
 		});
 
@@ -80,7 +82,8 @@ export default class PostFX {
 		triangle.frustumCulled = false;
 		this.scene.add(triangle);
 
-		const lut = new Lut({ material: this.material, lutKey: 'test-lut' });
+		const lut = new Lut({ material: this.material, lutKey: 'lut-2' });
+		const lut2 = new Lut({ material: this.material, lutKey: 'lut-1' });
 
 		PostFX.initialized = true;
 
@@ -95,13 +98,10 @@ export default class PostFX {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addInput(params, 'postprocess', {
-			label: 'PostProcess level',
+		gui.addInput(this.material.uniforms.uLutIntensity1, 'value', {
 			min: 0,
 			max: 1,
-			step: 0.01,
-		}).on('change', (e) => {
-			this.material.uniforms.POST_PROCESSING.value = e.value;
+			label: 'Intensity',
 		});
 	}
 	/// #endif
