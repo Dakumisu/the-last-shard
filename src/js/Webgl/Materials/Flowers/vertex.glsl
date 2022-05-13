@@ -15,6 +15,7 @@ uniform vec3 uMinMapBounds;
 
 attribute float aScale;
 attribute vec3 aPositions;
+attribute vec4 aRotate;
 
 varying vec3 vPos;
 varying float vFade;
@@ -61,21 +62,23 @@ void main() {
 	vec3 pos = position * aScale;
 
 	vPos = pos;
+	// vec3 rotatedPos = pos;
 
-	vec3 translation = vec3(0., pos.y, 0.);
-	vec3 rotation = rotate(pos, vec3(0., 1.0, 0.), time * 300.);
+	vec4 orientation = normalize(aRotate);
+	vec3 vcV = cross(orientation.xyz, pos);
+	pos = vcV * (2.0 * orientation.w) + (cross(orientation.xyz, vcV) * 2.0 + pos);
+
+	vec3 translation = pos;
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
-	translation += rotation;
 	// translation.xz += pos.xz;
 
 	// Scale down out of range grass
 	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
-	// pos.y += scaleFromRange * .5;
 	pos.y += scaleFromRange * .1;
 	pos *= scaleFromRange;
 

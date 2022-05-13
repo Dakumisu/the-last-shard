@@ -128,31 +128,40 @@ export default class Flowers {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const scale = MathUtils.randFloat(1, 1.2);
-			const rotate = MathUtils.randFloat(0, Math.PI * 2);
+
+			const rX = 0;
+			const rY = Math.PI * Math.random() * 2;
+			const rZ = 0;
+			const rW = Math.PI * Math.random() * 2;
+
 			id++;
 
-			array.push(x, 0, z, scale);
+			array.push(x, 0, z, scale, rX, rY, rZ, rW);
 		}
 
-		// pos + scale
-		this.stride = 3 + 1;
+		// pos + scale + rotation
+		this.stride = 3 + 1 + 4;
 		this.buffer = new Float32Array(array.length);
 		const ib = new InstancedInterleavedBuffer(this.buffer, this.stride);
 		this.interleavedBuffer = ib;
 
 		instancecGeom.setAttribute('aPositions', new InterleavedBufferAttribute(ib, 3, 0, false));
 		instancecGeom.setAttribute('aScale', new InterleavedBufferAttribute(ib, 1, 3, false));
+		instancecGeom.setAttribute('aRotate', new InterleavedBufferAttribute(ib, 4, 4, false));
 
 		const buf = this.buffer;
 
 		for (let i = 0; i < id; i++) {
-			buf[i * this.stride] = array[i * this.stride];
+			buf[i * this.stride + 0] = array[i * this.stride + 0];
 			buf[i * this.stride + 1] = array[i * this.stride + 1];
 			buf[i * this.stride + 2] = array[i * this.stride + 2];
+
 			buf[i * this.stride + 3] = array[i * this.stride + 3];
 
 			buf[i * this.stride + 4] = array[i * this.stride + 4];
-			// buf[i * this.stride + 5] = array[i * this.stride + 5];
+			buf[i * this.stride + 5] = array[i * this.stride + 5];
+			buf[i * this.stride + 6] = array[i * this.stride + 6];
+			buf[i * this.stride + 7] = array[i * this.stride + 7];
 		}
 
 		this.base.geometry = instancecGeom;

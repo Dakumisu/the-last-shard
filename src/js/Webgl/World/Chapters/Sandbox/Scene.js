@@ -8,6 +8,8 @@ import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
 import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
+import Flowers from '@webgl/World/Bases/Flowers/Flowers';
+import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -46,17 +48,40 @@ export default class SandboxScene extends BaseScene {
 			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
 			fogNear: 0,
-			fogFar: 45,
+			fogFar: 25,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
 			background: await this.envMapTexture,
 		});
 
+		// Init grass after fog
 		this.grass = new Grass(this, {
-			color: '#C1C2FF',
+			color: '#66C0ef',
+			// color: '#9799f7',
+			// color: '#66C0ef',
 			color2: '#664CB1',
+			verticeScale: 0.2,
 			halfBoxSize: 25,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.15,
+			windColorIntensity: 0.11,
+			displacement: 0.08,
+			scale: 1,
+			positionsTexture: await loadTexture('grassTexture'),
+		});
+
+		this.flowers = new Flowers(this, {
+			color: '#66C0ef',
+			// color: '#9799f7',
+			// color: '#66C0ef',
+			color2: '#664CB1',
+			verticeScale: 0.2,
+			halfBoxSize: 25,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.15,
+			windColorIntensity: 0.11,
+			displacement: 0.08,
 			scale: 1,
 			positionsTexture: await loadTexture('grassTexture'),
 		});
@@ -66,22 +91,22 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 500,
-				halfBoxSize: 30,
+				count: 250,
+				halfBoxSize: 25,
 				positionsTexture: await loadTexture('grassTexture'),
 			},
 		});
 
-		// this.fogParticles = new FogParticles({
-		// 	scene: this,
-		// 	params: {
-		// 		color: '#C1C2FF',
-		// 		color2: '#664CB1',
-		// 		count: 10000,
-		// 		halfBoxSize: 30,
-		// 		positionsTexture: await loadTexture('grassTexture'),
-		// 	},
-		// });
+		this.fogParticles = new FogParticles({
+			scene: this,
+			params: {
+				color: '#664CB1',
+				count: 3000,
+				halfBoxSize: 25,
+				positionsTexture: await loadTexture('grassTexture'),
+				fogTexture: await loadTexture('fogTexture'),
+			},
+		});
 
 		this.initialized.resolve(true);
 		this.isInitialized = true;
