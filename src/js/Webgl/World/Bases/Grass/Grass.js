@@ -121,7 +121,7 @@ export default class Grass {
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(0.75, 2.75);
+			const scale = MathUtils.randFloat(1, 3);
 			id++;
 
 			array.push(x, 0, z, scale);
@@ -153,10 +153,11 @@ export default class Grass {
 		console.log(this.scene);
 		this.base.material = new GrassMaterial({
 			uniforms: {
-				uDisplacement: { value: this.params.displacement },
-				uWindColorIntensity: { value: this.params.windColorIntensity },
-				uNoiseMouvementIntensity: { value: this.params.noiseMouvementIntensity },
-				uNoiseElevationIntensity: { value: this.params.noiseElevationIntensity },
+				uDisplacement: { value: 0.15 },
+				uWindColorIntensity: { value: 0.1 },
+				uMaskRange: { value: 0.04 },
+				uNoiseMouvementIntensity: { value: 0.15 },
+				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
 				uColor: { value: new Color().set(this.params.color) },
