@@ -20,7 +20,7 @@ export default class Movable extends BasePhysic {
 		this.currentAnim = null;
 		this.triggerId = this.base.asset.params.gameId;
 
-		signal.on(this.name + ':endGame', async (gameId, targetId = 0, opt = {}) => {
+		signal.on(name + ':endGame', async (gameId, targetId = 0, opt = {}) => {
 			console.log('🎮 Test :', gameId, targetId, opt);
 			if (gameId !== this.triggerId) return;
 			await this.targetTo(targetId, opt);
