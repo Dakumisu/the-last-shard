@@ -153,8 +153,8 @@ export default class Grass {
 		console.log(this.scene);
 		this.base.material = new GrassMaterial({
 			uniforms: {
-				uDisplacement: { value: 0.15 },
-				uWindColorIntensity: { value: 0.1 },
+				uDisplacement: { value: 0.08 },
+				uWindColorIntensity: { value: 0.11 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },
 				uNoiseElevationIntensity: { value: 0.75 },
