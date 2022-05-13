@@ -56,8 +56,8 @@ assetsMap.set('laserTexture', {
 	data: {},
 });
 
-assetsMap.set('fuj-film', {
-	path: '/assets/luts/FUJ-Film.cube',
+assetsMap.set('test-lut', {
+	path: '/assets/luts/lutCreatorJs.cube',
 	data: {},
 });
 
