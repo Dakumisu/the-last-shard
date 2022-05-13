@@ -170,10 +170,10 @@ export default class Flowers {
 	setGrass() {
 		this.base.material = new FlowerMaterial({
 			uniforms: {
-				uDisplacement: { value: this.params.displacement },
-				uWindColorIntensity: { value: this.params.windColorIntensity },
-				uNoiseMouvementIntensity: { value: this.params.noiseMouvementIntensity },
-				uNoiseElevationIntensity: { value: this.params.noiseElevationIntensity },
+				uDisplacement: { value: 0.08 },
+				uWindColorIntensity: { value: 0.11 },
+				uNoiseMouvementIntensity: { value: 0.15 },
+				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
 				uColor: { value: new Color().set(this.params.color) },

@@ -58,30 +58,16 @@ export default class SandboxScene extends BaseScene {
 		// Init grass after fog
 		this.grass = new Grass(this, {
 			color: '#66C0ef',
-			// color: '#9799f7',
-			// color: '#66C0ef',
 			color2: '#664CB1',
-			verticeScale: 0.2,
 			halfBoxSize: 25,
-			noiseElevationIntensity: 0.75,
-			noiseMouvementIntensity: 0.15,
-			windColorIntensity: 0.11,
-			displacement: 0.08,
 			scale: 1,
-			positionsTexture: await loadTexture('grassTexture'),
+			positionsTexture: this.terrainSplatting,
 		});
 
 		this.flowers = new Flowers(this, {
 			color: '#66C0ef',
-			// color: '#9799f7',
-			// color: '#66C0ef',
 			color2: '#664CB1',
-			verticeScale: 0.2,
 			halfBoxSize: 25,
-			noiseElevationIntensity: 0.75,
-			noiseMouvementIntensity: 0.15,
-			windColorIntensity: 0.11,
-			displacement: 0.08,
 			scale: 1,
 			positionsTexture: this.terrainSplatting,
 		});
