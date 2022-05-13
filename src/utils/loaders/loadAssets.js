@@ -87,7 +87,7 @@ export async function loadCubeTexture(key) {
 /**
  *
  * @param {string} key
- * @returns {Promise<Texture | null>}
+ * @returns {Promise< Texture | null>}
  */
 export async function loadLUTTexture(key) {
 	const path = manifest.get(key)?.path;
