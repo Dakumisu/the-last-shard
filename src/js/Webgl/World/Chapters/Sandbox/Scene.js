@@ -58,7 +58,7 @@ export default class SandboxScene extends BaseScene {
 			color2: '#664CB1',
 			halfBoxSize: 25,
 			scale: 1,
-			positionsTexture: await loadTexture('grassTexture'),
+			positionsTexture: this.terrainSplatting,
 		});
 
 		this.particles = new Particles({
@@ -68,7 +68,7 @@ export default class SandboxScene extends BaseScene {
 				color2: '#664CB1',
 				count: 500,
 				halfBoxSize: 30,
-				positionsTexture: await loadTexture('grassTexture'),
+				positionsTexture: this.terrainSplatting,
 			},
 		});
 

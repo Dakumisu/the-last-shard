@@ -56,17 +56,10 @@ export default class TempleScene extends BaseScene {
 		// Init grass after fog
 		this.grass = new Grass(this, {
 			color: '#66C0ef',
-			// color: '#9799f7',
-			// color: '#66C0ef',
 			color2: '#664CB1',
-			verticeScale: 0.2,
 			halfBoxSize: 25,
-			maskRange: 0.04,
-			noiseElevationIntensity: 0.75,
-			noiseMouvementIntensity: 0.2,
-			windColorIntensity: 0.11,
-			displacement: 0.11,
-			positionsTexture: await loadTexture('grassTexture'),
+			scale: 1,
+			positionsTexture: this.terrainSplatting,
 		});
 
 		this.particles = new Particles({
@@ -76,7 +69,7 @@ export default class TempleScene extends BaseScene {
 				color2: '#664CB1',
 				count: 350,
 				halfBoxSize: 30,
-				positionsTexture: await loadTexture('grassTexture'),
+				positionsTexture: this.terrainSplatting,
 			},
 		});
 

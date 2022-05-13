@@ -38,6 +38,7 @@ import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 
 import signal from 'philbin-packages/signal';
 import CollidersBroadphase from '@webgl/World/Bases/Broadphase/CollidersBroadphase';
+import { loadTexture } from '@utils/loaders';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 
@@ -176,6 +177,7 @@ export default class BaseScene {
 		console.log(`🔋 Manifest of ${this.label}`);
 		console.log(this.manifest);
 		/// #endif
+		await this.loadTerrainSplatting();
 	}
 
 	async init() {
@@ -185,6 +187,13 @@ export default class BaseScene {
 		this.setRenderTarget();
 
 		console.log('🔋 Scene initialized :', this.label);
+	}
+
+	async loadTerrainSplatting() {
+		const path = `Scene_${this.label}_TerrainSplatting`;
+		const terrain = await loadTexture(path);
+
+		this.terrainSplatting = terrain;
 	}
 
 	async loadManifest() {
@@ -212,6 +221,7 @@ export default class BaseScene {
 		props.map(async (prop) => {
 			if (prop.movable) {
 				const _prop = new Movable({
+					name: this.label,
 					asset: prop,
 					group: this.props,
 				});
@@ -356,9 +366,6 @@ export default class BaseScene {
 
 		this.rtCamera.position.set(center.x, this.maxBox.y + camNear, center.z);
 
-		// this.scene.instance.add(new Box3Helper(boundingBox, new Color(0x00ff00)));
-		// this.scene.instance.add(new CameraHelper(this.rtCamera));
-
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
 
 		this.renderTarget.depthTexture = this.depthTexture;
@@ -373,7 +380,8 @@ export default class BaseScene {
 		this.player.setStartPosition(this.checkpoints.getCurrent());
 
 		this.player.broadphase.setGroundCollider(this.ground);
-		this.player.broadphase.setPropsColliders(this.collidersBroadphase.objectsToTest);
+		if (this.collidersBroadphase)
+			this.player.broadphase.setPropsColliders(this.collidersBroadphase.objectsToTest);
 	}
 
 	removeFrom(mainScene) {

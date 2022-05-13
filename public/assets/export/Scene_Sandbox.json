@@ -22,7 +22,6 @@
     "Wall",
     "LaserTowerEnd",
     "LaserTowerStart",
-    "LaserTowerBetween",
     "Coin",
     "CliffC"
   ],
@@ -386,92 +385,6 @@
       }
     },
     {
-      "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.001",
-      "type": "interactable",
-      "traversable": false,
-      "movable": false,
-      "params": {
-        "distance": 10.0,
-        "gameId": 1
-      },
-      "transforms": {
-        "pos": [
-          -1.530362,
-          -4e-06,
-          -84.300171
-        ],
-        "scale": [
-          1.0,
-          1.0,
-          1.0
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
-      "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.009",
-      "type": "interactable",
-      "traversable": false,
-      "movable": false,
-      "params": {
-        "gameId": 1
-      },
-      "transforms": {
-        "pos": [
-          4.013578,
-          -4e-06,
-          -91.590157
-        ],
-        "scale": [
-          1.0,
-          1.0,
-          1.0
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
-      "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.009",
-      "type": "interactable",
-      "traversable": false,
-      "movable": false,
-      "params": {
-        "distance": 10.0,
-        "gameId": 1
-      },
-      "transforms": {
-        "pos": [
-          -6.556671,
-          8e-06,
-          -92.521156
-        ],
-        "scale": [
-          1.0,
-          1.0,
-          1.0
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
       "asset": "Coin",
       "uid": "Coin.015",
       "type": "interactable",
@@ -561,35 +474,6 @@
           11.483891,
           1e-06,
           34.182568
-        ],
-        "scale": [
-          1.0,
-          1.0,
-          1.0
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
-      "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.010",
-      "type": "interactable",
-      "traversable": true,
-      "movable": false,
-      "params": {
-        "distance": 10.0,
-        "gameId": 1
-      },
-      "transforms": {
-        "pos": [
-          6.360991,
-          0.0,
-          -82.740761
         ],
         "scale": [
           1.0,

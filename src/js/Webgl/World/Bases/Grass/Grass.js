@@ -142,9 +142,8 @@ export default class Grass {
 			buf[i * this.stride] = array[i * this.stride];
 			buf[i * this.stride + 1] = array[i * this.stride + 1];
 			buf[i * this.stride + 2] = array[i * this.stride + 2];
-			buf[i * this.stride + 3] = array[i * this.stride + 3];
 
-			buf[i * this.stride + 4] = array[i * this.stride + 4];
+			buf[i * this.stride + 3] = array[i * this.stride + 3];
 		}
 
 		this.base.geometry = geo;

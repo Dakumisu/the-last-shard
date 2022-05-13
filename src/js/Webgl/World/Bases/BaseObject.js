@@ -53,17 +53,6 @@ export default class BaseObject {
 		const gradient = await loadTexture('asset_gradient');
 		gradient.flipY = false;
 
-		// define material in function of the type of the object
-		const materials = {};
-		materials.collider = new BaseToonMaterial({
-			side: DoubleSide,
-			map: gradient,
-		});
-		materials.interactable = new BaseToonMaterial({
-			side: DoubleSide,
-			map: gradient,
-		});
-
 		/// #if DEBUG
 		if (asset.includes('Test')) {
 			console.log('🎮 Loaded :', asset, model);
@@ -73,10 +62,18 @@ export default class BaseObject {
 		/// #endif
 
 		model.traverse((obj) => {
-			if (obj.material)
+			if (obj.material) {
+				// define material in function of the type of the object
 				obj.material = this.base.isInteractable
-					? materials.interactable
-					: materials.collider;
+					? new BaseToonMaterial({
+							side: DoubleSide,
+							map: gradient,
+					  })
+					: new BaseToonMaterial({
+							side: DoubleSide,
+							map: gradient,
+					  });
+			}
 
 			if (obj.geometry) obj.geometry.computeBoundingBox();
 
