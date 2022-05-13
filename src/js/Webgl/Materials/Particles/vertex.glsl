@@ -14,6 +14,7 @@ attribute vec3 aPositions;
 
 varying vec2 vUv;
 varying float vFade;
+varying float vFadePos;
 varying float vLoop;
 varying float vNoise;
 
@@ -58,7 +59,7 @@ void main() {
 
 	float fade = 1.0 - smoothstep(0., 1., (0.05 * distance(uCharaPos.xz, translation.xz)));
 
-	vFade = fade;
+	vFadePos = fade;
 	vUv = uv;
 
 	// Scale down out of range grass
@@ -69,6 +70,8 @@ void main() {
 	// Map position to the elevation texture coordinates using the map bounds
 	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
 	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
+
+	vFade = elevation;
 
 	// float scaleFromTexture = 1. - texture2D(uPositionTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
@@ -91,12 +94,16 @@ void main() {
 
 	translation.y += loop * loopRange - (loopRange * 0.25);
 
-    translation.x += noise * aOffset;
-    translation.z += noise * aOffset;
+	translation.x += noise * aOffset;
+	translation.z += noise * aOffset;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 
-	mv.xyz += pos;
+	if(elevation >= 1.) {
+		pos = vec3(0.);
+	} else {
+		mv.xyz += pos;
+	}
 
 	gl_Position = projectionMatrix * mv;
 

@@ -10,6 +10,7 @@ import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
+import Flowers2 from '@webgl/World/Bases/Flowers2/Flowers';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -77,7 +78,22 @@ export default class SandboxScene extends BaseScene {
 			// color: '#66C0ef',
 			color2: '#664CB1',
 			verticeScale: 0.2,
-			halfBoxSize: 25,
+			halfBoxSize: 12.5,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.15,
+			windColorIntensity: 0.11,
+			displacement: 0.08,
+			scale: 1,
+			positionsTexture: this.terrainSplatting,
+		});
+
+		this.flowers2 = new Flowers2(this, {
+			color: '#66C0ef',
+			// color: '#9799f7',
+			// color: '#66C0ef',
+			color2: '#664CB1',
+			verticeScale: 0.2,
+			halfBoxSize: 12.5,
 			noiseElevationIntensity: 0.75,
 			noiseMouvementIntensity: 0.15,
 			windColorIntensity: 0.11,
@@ -91,7 +107,7 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 250,
+				count: 350,
 				halfBoxSize: 25,
 				positionsTexture: this.terrainSplatting,
 			},

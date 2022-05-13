@@ -30,7 +30,7 @@ void main() {
 
 	vPos = pos;
 
-	vec3 translation = vec3(0.);
+	vec3 translation = vec3(pos.x, 0., pos.z);
 
 	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
 
@@ -39,8 +39,6 @@ void main() {
 
 	// Scale down out of range grass
 	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
-	// pos.y += scaleFromRange * .5;
-	pos.y += scaleFromRange * .1;
 	pos *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds
@@ -49,9 +47,13 @@ void main() {
 
 	vFade = elevation;
 
-	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
-	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	pos *= scaleFromTexture;
+	// float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
+	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	// pos *= scaleFromTexture;
+	vec4 localPosition = vec4(pos, 1.);
+	vec4 worldPosition = modelMatrix * localPosition;
+	vec3 look = normalize(cameraPosition - vec3(worldPosition));
+	translation.y += pos.y;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
@@ -73,7 +75,12 @@ void main() {
 	}
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
-	mv.xyz += pos;
+
+	if(elevation >= 1.) {
+		pos = vec3(0.);
+	} else {
+		mv.xz += pos.xz;
+	}
 
 	gl_Position = projectionMatrix * mv;
 }

@@ -68,7 +68,7 @@ export default class TempleScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 250,
+				count: 350,
 				halfBoxSize: 25,
 				positionsTexture: this.terrainSplatting,
 			},

@@ -9,6 +9,7 @@ import {
 	BufferAttribute,
 	BufferGeometry,
 	Color,
+	DoubleSide,
 	InstancedBufferAttribute,
 	InstancedBufferGeometry,
 	InstancedInterleavedBuffer,
@@ -152,6 +153,7 @@ export default class Grass {
 	setGrass() {
 		console.log(this.scene);
 		this.base.material = new GrassMaterial({
+			side: DoubleSide,
 			uniforms: {
 				uDisplacement: { value: 0.08 },
 				uWindColorIntensity: { value: 0.11 },

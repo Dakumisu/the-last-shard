@@ -22,15 +22,15 @@ import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUti
 
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
-import FlowerMaterial from '@webgl/Materials/Flowers/FlowerMaterial';
 import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
+import FlowerMaterial from '@webgl/Materials/Flowers2/FlowerMaterial';
 
 const twigsCountList = [0, 0, 1000, 1000, 1000, 1000];
 
-export default class Flowers {
+export default class Flowers2 {
 	/**
 	 *
 	 * @param {{scene: BaseScene, params?:{color?: string, color2?: string, halfBoxSize?: number, positionsTexture: Texture}}}
@@ -52,8 +52,6 @@ export default class Flowers {
 
 		this.triangle = null;
 
-		// this.envMapTexture = await loadCubeTexture('envMap1');
-
 		this.count = twigsCountList[5];
 
 		signal.on('quality', (quality) => {
@@ -72,16 +70,15 @@ export default class Flowers {
 
 	async init() {
 		const geometries = [];
-		this.model = await loadModel('pissenli');
-		this.texture = await loadTexture('pissenliTexture');
+		this.model = await loadModel('lavande');
+		this.texture = await loadTexture('lavandeTexture');
 		this.texture.flipY = false;
 
 		this.model.traverse((child) => {
 			if (child.geometry) {
 				const cloned = child.geometry.clone();
 				cloned.applyMatrix4(child.matrixWorld);
-				cloned.scale(0.01, 0.01, 0.01);
-				cloned.rotateX(Math.PI * 0.5);
+				cloned.scale(1.4, 1.4, 1.4);
 				geometries.push(cloned);
 			}
 		});

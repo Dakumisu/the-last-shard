@@ -61,8 +61,23 @@ assetsMap.set('lua', {
 	data: {},
 });
 
-assetsMap.set('flower', {
-	path: 'assets/model/flower.glb',
+assetsMap.set('pissenli', {
+	path: 'assets/model/pissenli.glb',
+	data: {},
+});
+
+assetsMap.set('pissenliTexture', {
+	path: '/assets/image/pissenli.jpeg',
+	data: {},
+});
+
+assetsMap.set('lavande', {
+	path: 'assets/model/lavande.glb',
+	data: {},
+});
+
+assetsMap.set('lavandeTexture', {
+	path: '/assets/image/lavande.jpeg',
 	data: {},
 });
 
