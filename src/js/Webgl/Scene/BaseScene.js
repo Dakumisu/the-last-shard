@@ -178,6 +178,7 @@ export default class BaseScene {
 		console.log(this.manifest);
 		/// #endif
 		await this.loadTerrainSplatting();
+		await loadTexture('asset_gradient');
 	}
 
 	async init() {

@@ -7,6 +7,7 @@ import { DoubleSide } from 'three';
 import { Mesh } from 'three';
 import anime from 'animejs';
 import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
+import ObjectMaterial from '@webgl/Materials/Objects/ObjectMaterial';
 
 export default class BaseObject {
 	/**
@@ -51,29 +52,12 @@ export default class BaseObject {
 
 		const model = await loadModel(asset);
 
-		const gradient = await loadTexture('asset_gradient');
-		gradient.flipY = false;
-
-		/// #if DEBUG
-		if (asset.includes('Test')) {
-			console.log('🎮 Loaded :', asset, model);
-
-			debugger;
-		}
-		/// #endif
+		const material = ObjectMaterial.use();
 
 		model.traverse((obj) => {
 			if (obj.material) {
 				// define material in function of the type of the object
-				obj.material = this.base.isInteractable
-					? new BaseToonMaterial({
-							side: DoubleSide,
-							map: gradient,
-					  })
-					: new BaseToonMaterial({
-							side: DoubleSide,
-							map: gradient,
-					  });
+				obj.material = material;
 			}
 
 			if (obj.geometry) obj.geometry.computeBoundingBox();
