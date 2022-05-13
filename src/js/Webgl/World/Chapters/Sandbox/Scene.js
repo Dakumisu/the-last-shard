@@ -83,7 +83,7 @@ export default class SandboxScene extends BaseScene {
 			windColorIntensity: 0.11,
 			displacement: 0.08,
 			scale: 1,
-			positionsTexture: await loadTexture('grassTexture'),
+			positionsTexture: this.terrainSplatting,
 		});
 
 		this.particles = new Particles({
@@ -93,7 +93,7 @@ export default class SandboxScene extends BaseScene {
 				color2: '#664CB1',
 				count: 250,
 				halfBoxSize: 25,
-				positionsTexture: await loadTexture('grassTexture'),
+				positionsTexture: this.terrainSplatting,
 			},
 		});
 
@@ -103,7 +103,7 @@ export default class SandboxScene extends BaseScene {
 				color: '#664CB1',
 				count: 3000,
 				halfBoxSize: 25,
-				positionsTexture: await loadTexture('grassTexture'),
+				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),
 			},
 		});

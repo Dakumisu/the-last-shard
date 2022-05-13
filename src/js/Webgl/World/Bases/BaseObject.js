@@ -1,11 +1,12 @@
-import { loadModel } from '@utils/loaders/loadAssets';
+import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 import signal from 'philbin-packages/signal';
-import { Color, Group, Object3D } from 'three';
+import { Color, Group, Object3D, RepeatWrapping, ShaderMaterial } from 'three';
 import { DoubleSide } from 'three';
 import { Mesh } from 'three';
 import anime from 'animejs';
+import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
 
 export default class BaseObject {
 	/**
@@ -50,16 +51,8 @@ export default class BaseObject {
 
 		const model = await loadModel(asset);
 
-		// define material in function of the type of the object
-		const materials = {};
-		materials.collider = new BaseToonMaterial({
-			side: DoubleSide,
-			color: new Color('#ED4646'),
-		});
-		materials.interactable = new BaseToonMaterial({
-			side: DoubleSide,
-			color: new Color('#224646'),
-		});
+		const gradient = await loadTexture('asset_gradient');
+		gradient.flipY = false;
 
 		/// #if DEBUG
 		if (asset.includes('Test')) {
@@ -70,10 +63,18 @@ export default class BaseObject {
 		/// #endif
 
 		model.traverse((obj) => {
-			if (obj.material)
+			if (obj.material) {
+				// define material in function of the type of the object
 				obj.material = this.base.isInteractable
-					? materials.interactable
-					: materials.collider;
+					? new BaseToonMaterial({
+							side: DoubleSide,
+							map: gradient,
+					  })
+					: new BaseToonMaterial({
+							side: DoubleSide,
+							map: gradient,
+					  });
+			}
 
 			if (obj.geometry) obj.geometry.computeBoundingBox();
 

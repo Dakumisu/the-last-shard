@@ -31,7 +31,7 @@ export default class LaserGame {
 		this.laserTowers.forEach((tower) => {
 			tower.base.isInteractable = false;
 		});
-		signal.emit('test', this.id);
+		signal.emit(this.scene.label + ':endGame', this.id);
 		console.log('🕹 Game ended');
 	}
 

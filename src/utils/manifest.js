@@ -32,6 +32,11 @@ assetsMap.set('envMap2', {
 	data: {},
 });
 
+assetsMap.set('asset_gradient', {
+	path: '/assets/image/gradients/gradient.png',
+	data: {},
+});
+
 assetsMap.set('noiseTexture', {
 	path: '/assets/image/pattern.png',
 	data: {},
@@ -63,6 +68,7 @@ assetsMap.set('flower', {
 
 export async function loadManifest() {
 	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
+	const terrainsSplatting = import.meta.globEager('../../public/assets/export/Scene_*.png');
 
 	const manifest = [];
 
@@ -85,6 +91,15 @@ export async function loadManifest() {
 				path: '/assets/export/Asset_' + asset + '.glb',
 				data: {},
 			});
+		});
+	}
+
+	for (const key in terrainsSplatting) {
+		const _n = key.split('/').pop().split('.')[0];
+
+		assetsMap.set(_n, {
+			path: '/assets/export/' + _n + '.png',
+			data: {},
 		});
 	}
 
