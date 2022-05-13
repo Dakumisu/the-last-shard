@@ -10,12 +10,13 @@ import anime from 'animejs';
 export default class BaseObject {
 	/**
 	 *
-	 * @param {{name?: string, isInteractable: boolean, isMovable: boolean, asset?: Object, group?: Group}} param0
+	 * @param {{name?: string, isInteractable: boolean, isMovable: boolean, isRawMesh: boolean, asset?: Object, group?: Group}} param0
 	 */
 	constructor({
 		name = '',
 		isInteractable = false,
 		isMovable = false,
+		isRawMesh = false,
 		asset = null,
 		group = null,
 	}) {
@@ -24,7 +25,7 @@ export default class BaseObject {
 			name,
 			isInteractable,
 			isMovable,
-			isRawMesh: false,
+			isRawMesh,
 			asset,
 			group,
 		};

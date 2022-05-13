@@ -6,20 +6,16 @@ import BasePhysic from '../BasePhysic';
 
 export default class Movable extends BasePhysic {
 	/**
-	 * @param {{name?: string, isInteractable: boolean, asset?: Object, group?: Group}} param0
+	 * @param {{name?: string, isInteractable: boolean, isRawMesh: boolean, asset?: Object, group?: Group}} param0
 	 */
-	constructor({ name = '', isInteractable = false, asset = null, group = null }) {
-		super({ name, isInteractable, asset, group });
-
-		this.base = {
-			mesh: null,
-			name,
-			isInteractable,
-			isMovable: true,
-			isRawMesh: false,
-			asset,
-			group,
-		};
+	constructor({
+		name = '',
+		isInteractable = false,
+		isRawMesh = false,
+		asset = null,
+		group = null,
+	}) {
+		super({ name, isInteractable, isMovable: true, isRawMesh, asset, group });
 
 		this.currentAnim = null;
 		this.triggerId = this.base.asset.params.gameId;
