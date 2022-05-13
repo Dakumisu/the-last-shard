@@ -18,7 +18,7 @@ const debug = {
 
 const params = {
 	offsetFromPlayer: new Vector3(-1, 1, 1),
-	idleRadius: 2.5,
+	idleRadius: 2,
 	statesTimeouts: [4000, 2000],
 };
 
@@ -113,8 +113,8 @@ export class Pet extends BaseEntity {
 	}
 
 	follow(et, dt) {
-		// this.lookAtPlayer();
-		this.dampPosition(dt, 0.1);
+		this.lookAtPlayer();
+		this.dampPosition(dt, 0.05);
 
 		this.lastPlayerPos.copy(this.player.base.mesh.position);
 
