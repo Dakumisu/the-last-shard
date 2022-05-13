@@ -27,6 +27,7 @@ import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
 import { deferredPromise } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
+import Area from '@webgl/World/Bases/Props/Area';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
 import Movable from '@webgl/World/Bases/Props/Movable';
@@ -57,6 +58,7 @@ export default class BaseScene {
 		this.interactables = new Group();
 		this.curves = new Group();
 		this.checkpoints = null;
+		this.areas = new Group();
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
@@ -205,6 +207,7 @@ export default class BaseScene {
 		await this._loadInteractables(this.manifest.interactables);
 		await this._loadCurves(this.manifest.curves);
 		await this._loadPoints(this.manifest.points);
+		await this._loadAreas(this.manifest.areas);
 
 		this.manifestLoaded.resolve(true);
 	}
@@ -336,6 +339,17 @@ export default class BaseScene {
 
 		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
 		console.log('🔋 Checkpoints loaded');
+	}
+
+	async _loadAreas(areas) {
+		if (!areas) return;
+
+		areas.forEach((area) => {
+			const _area = new Area({ area: area, group: this.areas });
+		});
+
+		this.instance.add(this.areas);
+		console.log('🔋 Areas loaded');
 	}
 
 	setRenderTarget() {

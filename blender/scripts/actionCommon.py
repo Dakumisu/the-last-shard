@@ -257,23 +257,25 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
         if obj.type != 'EMPTY':
             continue
 
-        seg = obj.name.split(' - ')
-        if len(seg) < 2:
+        rawseg = obj.name.split(' - ')
+        seg = utils.removeIncrement(obj.name).split(' - ')
+
+        if len(rawseg) < 2:
             continue
 
-        type = seg[0].lower().strip()
+        type = rawseg[0].lower().strip()
         if type.lower().strip() != 'area':
             continue
 
         if 'areas' not in data:
             data['areas'] = []
 
-        ptName = seg[1]
+        zone = seg[1]
         pos, qt, scale = obj.matrix_world.decompose()
         pos = utils.toThreePos(utils.toNumberList(pos, 6))
-        size = round(obj.empty_display_size, 3)
+        scale = utils.toThreeScale(utils.toNumberList(scale, 6))
 
-        areaData = {'type': type, 'uid': ptName, 'pos': pos, 'size': size}
+        areaData = {'zone': zone, 'pos': pos, 'size': scale[0]}
 
         data['areas'].append(areaData)
 

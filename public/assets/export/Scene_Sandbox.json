@@ -28,7 +28,7 @@
   "props": [
     {
       "asset": "Stairs",
-      "uid": "Stairs.005",
+      "uid": "Stairs.012",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -53,7 +53,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.009",
+      "uid": "Coupe.023",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -78,7 +78,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.010",
+      "uid": "Coupe.024",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -103,7 +103,7 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.005",
+      "uid": "TreeA.012",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -128,7 +128,7 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.005",
+      "uid": "TreeB.012",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -153,7 +153,7 @@
     },
     {
       "asset": "TreeC",
-      "uid": "TreeC.005",
+      "uid": "TreeC.012",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -178,7 +178,7 @@
     },
     {
       "asset": "Urne",
-      "uid": "Urne.005",
+      "uid": "Urne.012",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -203,7 +203,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.013",
+      "uid": "Wall.034",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -228,7 +228,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.014",
+      "uid": "Wall.035",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -253,7 +253,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.015",
+      "uid": "Wall.036",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -278,7 +278,7 @@
     },
     {
       "asset": "CliffC",
-      "uid": "CliffC.006",
+      "uid": "CliffC.012",
       "type": "collider",
       "traversable": false,
       "movable": true,
@@ -329,7 +329,7 @@
   "interactables": [
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.008",
+      "uid": "LaserTowerEnd.012",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -357,7 +357,7 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.008",
+      "uid": "LaserTowerStart.012",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -386,7 +386,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.015",
+      "uid": "Coin.043",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -412,7 +412,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.016",
+      "uid": "Coin.044",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -438,7 +438,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.017",
+      "uid": "Coin.045",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -464,7 +464,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.018",
+      "uid": "Coin.046",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -492,7 +492,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.004",
+      "uid": "Spawn.011",
       "pos": [
         -10.572475,
         2.060297,
@@ -507,7 +507,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.016",
+      "uid": "Checkpoint.044",
       "pos": [
         10.243461,
         2.060297,
@@ -522,7 +522,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.017",
+      "uid": "Checkpoint.045",
       "pos": [
         -10.563803,
         2.060297,
@@ -537,7 +537,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.018",
+      "uid": "Checkpoint.046",
       "pos": [
         61.949936,
         2.060297,
@@ -552,7 +552,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.019",
+      "uid": "Checkpoint.047",
       "pos": [
         100.7435,
         13.863754,
@@ -566,9 +566,29 @@
       ]
     }
   ],
+  "areas": [
+    {
+      "zone": "Laser_1",
+      "pos": [
+        19.765665,
+        0.019161,
+        -63.93602
+      ],
+      "size": 18.204206
+    },
+    {
+      "zone": "Intro",
+      "pos": [
+        -0.104579,
+        0.019161,
+        5.025411
+      ],
+      "size": 18.204206
+    }
+  ],
   "curves": [
     {
-      "uid": "Helper.004",
+      "uid": "Helper.012",
       "type": "bezier",
       "closed": true,
       "points": [
@@ -619,7 +639,7 @@
       ]
     },
     {
-      "uid": "Bot.004",
+      "uid": "Bot.011",
       "type": "nurbs",
       "closed": false,
       "points": [
