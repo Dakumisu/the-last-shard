@@ -18,16 +18,19 @@ import {
 	Texture,
 } from 'three';
 
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
-import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
+import FlowerMaterial from '@webgl/Materials/Flowers/FlowerMaterial';
 import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
+import { loadModel } from '@utils/loaders/loadAssets';
 
-const twigsCountList = [0, 0, 80000, 100000, 200000, 300000];
+const twigsCountList = [0, 0, 1000, 1000, 1000, 1000];
 
-export default class Grass {
+export default class Flowers {
 	/**
 	 *
 	 * @param {{scene: BaseScene, params?:{color?: string, color2?: string, halfBoxSize?: number, positionsTexture: Texture}}}
@@ -65,8 +68,22 @@ export default class Grass {
 		this.init();
 	}
 
-	init() {
-		this.setTwigGeometry();
+	async init() {
+		const geometries = [];
+		this.model = await loadModel('flower');
+
+		this.model.traverse((child) => {
+			if (child.geometry) {
+				const cloned = child.geometry.clone();
+				cloned.applyMatrix4(child.matrixWorld);
+				cloned.scale(0.01, 0.01, 0.01);
+				cloned.rotateX(Math.PI * 0.5);
+				geometries.push(cloned);
+			}
+		});
+		this.geom = BufferGeometryUtils.mergeBufferGeometries(geometries);
+
+		// this.setTwigGeometry();
 		this.initGeometry(twigsCountList[5]);
 		this.setGrass();
 
@@ -81,78 +98,77 @@ export default class Grass {
 	}
 
 	setTwigGeometry() {
-		this.triangle = new BufferGeometry();
-
-		const vertices = new Float32Array([
-			-0.15 * 0.2,
-			-0.15 * 0.2,
-			0 * 0.2, // bl
-			0.15 * 0.2,
-			-0.15 * 0.2,
-			0 * 0.2, // br
-			0 * 0.2,
-			0.75 * 0.2,
-			0 * 0.2, // tc
-		]);
-
-		const normal = new Float32Array([
-			0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
-		]);
-		const uv = new Float32Array([0, 1, 1, 1, 0, 0]);
-		const indices = new Uint16Array([0, 1, 2]);
-
-		this.triangle.setIndex(new BufferAttribute(indices, 1));
-		this.triangle.setAttribute('position', new BufferAttribute(vertices, 3));
-		this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
-		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
+		this.geom.setIndex(new BufferAttribute(this.model.children[0].geometry.index.array, 1));
+		this.geom.setAttribute(
+			'position',
+			new BufferAttribute(this.model.children[0].geometry.attributes.position.array, 3),
+		);
+		this.geom.setAttribute(
+			'normal',
+			new BufferAttribute(this.model.children[0].geometry.attributes.normal.array, 3),
+		);
+		this.geom.setAttribute(
+			'uv',
+			new BufferAttribute(this.model.children[0].geometry.attributes.uv.array, 2),
+		);
 	}
 
 	initGeometry(count) {
-		const geo = new InstancedBufferGeometry();
+		const instancecGeom = new InstancedBufferGeometry();
 
-		geo.index = this.triangle.index;
-		geo.attributes.position = this.triangle.attributes.position;
-		geo.attributes.normal = this.triangle.attributes.normal;
-		geo.attributes.uv = this.triangle.attributes.uv;
-		geo.scale(this.params.scale, this.params.scale, this.params.scale);
+		instancecGeom.index = this.geom.index;
+		instancecGeom.attributes.position = this.geom.attributes.position;
+		instancecGeom.attributes.normal = this.geom.attributes.normal;
+		instancecGeom.attributes.uv = this.geom.attributes.uv;
+		instancecGeom.scale(this.params.scale, this.params.scale, this.params.scale);
 
 		const array = [];
 		let id = 0;
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(0.75, 2.75);
+			const scale = MathUtils.randFloat(1, 1.2);
+
+			const rX = 0;
+			const rY = Math.PI * Math.random() * 2;
+			const rZ = 0;
+			const rW = Math.PI * Math.random() * 2;
+
 			id++;
 
-			array.push(x, 0, z, scale);
+			array.push(x, 0, z, scale, rX, rY, rZ, rW);
 		}
 
-		// pos + scale
-		this.stride = 3 + 1;
+		// pos + scale + rotation
+		this.stride = 3 + 1 + 4;
 		this.buffer = new Float32Array(array.length);
 		const ib = new InstancedInterleavedBuffer(this.buffer, this.stride);
 		this.interleavedBuffer = ib;
 
-		geo.setAttribute('aPositions', new InterleavedBufferAttribute(ib, 3, 0, false));
-		geo.setAttribute('aScale', new InterleavedBufferAttribute(ib, 1, 3, false));
+		instancecGeom.setAttribute('aPositions', new InterleavedBufferAttribute(ib, 3, 0, false));
+		instancecGeom.setAttribute('aScale', new InterleavedBufferAttribute(ib, 1, 3, false));
+		instancecGeom.setAttribute('aRotate', new InterleavedBufferAttribute(ib, 4, 4, false));
 
 		const buf = this.buffer;
 
 		for (let i = 0; i < id; i++) {
-			buf[i * this.stride] = array[i * this.stride];
+			buf[i * this.stride + 0] = array[i * this.stride + 0];
 			buf[i * this.stride + 1] = array[i * this.stride + 1];
 			buf[i * this.stride + 2] = array[i * this.stride + 2];
+
 			buf[i * this.stride + 3] = array[i * this.stride + 3];
 
 			buf[i * this.stride + 4] = array[i * this.stride + 4];
+			buf[i * this.stride + 5] = array[i * this.stride + 5];
+			buf[i * this.stride + 6] = array[i * this.stride + 6];
+			buf[i * this.stride + 7] = array[i * this.stride + 7];
 		}
 
-		this.base.geometry = geo;
+		this.base.geometry = instancecGeom;
 	}
 
 	setGrass() {
-		console.log(this.scene);
-		this.base.material = new GrassMaterial({
+		this.base.material = new FlowerMaterial({
 			uniforms: {
 				uDisplacement: { value: this.params.displacement },
 				uWindColorIntensity: { value: this.params.windColorIntensity },
@@ -170,7 +186,6 @@ export default class Grass {
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
-		// this.base.mesh.position.y = -0.2;
 		this.base.mesh.frustumCulled = false;
 		this.scene.instance.add(this.base.mesh);
 	}

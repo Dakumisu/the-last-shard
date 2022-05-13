@@ -28,7 +28,7 @@ void main() {
 	#endif
 
 	// POST PROCESSING
-	float dist = smoothstep(0., 1.0, 1.0 - (length(uv - 0.5) * 0.75));
+	float dist = smoothstep(0., 1.0, 1.0 - (length(uv - 0.5) * 0.8));
 	vec3 postPro = render;
 
 	gl_FragColor = vec4(vec3(dist), 1.0);

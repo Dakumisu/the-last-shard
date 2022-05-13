@@ -56,6 +56,11 @@ assetsMap.set('lua', {
 	data: {},
 });
 
+assetsMap.set('flower', {
+	path: 'assets/model/flower.glb',
+	data: {},
+});
+
 export async function loadManifest() {
 	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
 
