@@ -212,12 +212,8 @@ export default class Grass {
 			step: 0.01,
 		});
 
-		gui.addInput(this.params, 'color').on('change', (color) => {
-			this.base.material.uniforms.uColor.value.set(color.value);
-		});
-		gui.addInput(this.params, 'color2').on('change', (color) => {
-			this.base.material.uniforms.uColor2.value.set(color.value);
-		});
+		gui.addInput(this.base.material.uniforms.uColor, 'value', { view: 'color-2' });
+		gui.addInput(this.base.material.uniforms.uColor2, 'value', { view: 'color-2' });
 	}
 	/// #endif
 }

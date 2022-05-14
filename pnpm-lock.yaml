@@ -17,6 +17,7 @@ specifiers:
   three: ^0.140.0
   three-mesh-bvh: ^0.5.5
   tweakpane: ^3.0.7
+  tweakpane-plugin-colors: ^0.0.4
   vite: ^2.7.13
   vite-plugin-glslify: ^2.0.1
   vite-plugin-handlebars: ^1.6.0
@@ -40,6 +41,7 @@ devDependencies:
   sass: 1.51.0
   stats.js: 0.17.0
   tweakpane: 3.0.8
+  tweakpane-plugin-colors: 0.0.4_tweakpane@3.0.8
   vite: 2.9.6_sass@1.51.0
   vite-plugin-glslify: 2.0.1_vite@2.9.6
   vite-plugin-handlebars: 1.6.0_sass@1.51.0
@@ -942,6 +944,14 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
+    dev: true
+
+  /tweakpane-plugin-colors/0.0.4_tweakpane@3.0.8:
+    resolution: {integrity: sha512-y070WWoZ58wX7qC7nKFoo/aahOVjBqmt3/2DzRktvB5nTMgDXDYQxdSo0CG9P5HC7FiFwfmBoBDtR1UCx7EY+Q==}
+    peerDependencies:
+      tweakpane: ^3.0.5
+    dependencies:
+      tweakpane: 3.0.8
     dev: true
 
   /tweakpane/3.0.8:

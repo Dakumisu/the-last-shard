@@ -2,7 +2,6 @@
 import { getWebgl } from '@webgl/Webgl';
 const debug = {
 	instance: null,
-	color: null,
 };
 /// #endif
 
@@ -16,7 +15,6 @@ export default class BaseAmbient {
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
-		debug.color = color;
 		/// #endif
 	}
 
@@ -26,9 +24,7 @@ export default class BaseAmbient {
 			title: this.light.name,
 		});
 
-		gui.addInput(debug, 'color').on('change', (color) => {
-			this.light.color.set(color.value);
-		});
+		gui.addInput(this.light, 'color');
 		gui.addInput(this.light, 'intensity', {
 			min: 0,
 			max: 2,

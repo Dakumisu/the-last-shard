@@ -1,9 +1,11 @@
 import { Pane } from 'tweakpane';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import * as TweakpaneRotationInputPlugin from '@0b5vr/tweakpane-plugin-rotation';
+import * as TweakpaneColorsInputPlugin from 'tweakpane-plugin-colors';
 import StatsJs from '@tools/Stats';
 /// #if DEBUG
 import signal from 'philbin-packages/signal';
+import { Color } from 'three';
 /// #endif
 
 let tabList = ['General', 'Player', 'Scene', 'Env', 'Stats'];
@@ -11,8 +13,11 @@ let tabList = ['General', 'Player', 'Scene', 'Env', 'Stats'];
 export default class Debug {
 	constructor() {
 		this.gui = new Pane();
+
 		this.gui.registerPlugin(EssentialsPlugin); // https://cocopon.github.io/tweakpane/plugins.html
 		this.gui.registerPlugin(TweakpaneRotationInputPlugin); // https://www.npmjs.com/package/@0b5vr/tweakpane-plugin-rotation
+		this.gui.registerPlugin(TweakpaneColorsInputPlugin); // https://www.npmjs.com/package/tweakpane-plugin-colors
+
 		this.stats = new StatsJs();
 
 		this.debugFolders = {};
