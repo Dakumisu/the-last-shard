@@ -151,7 +151,6 @@ export default class Grass {
 	}
 
 	setGrass() {
-		console.log(this.scene);
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {

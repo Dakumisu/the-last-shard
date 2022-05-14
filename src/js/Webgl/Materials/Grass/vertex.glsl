@@ -2,6 +2,7 @@
 #pragma glslify: smoothNoise = require('philbin-packages/glsl/noises/smooth/2d')
 #pragma glslify: map = require('philbin-packages/glsl/maths/map')
 
+uniform float uTime;
 uniform float uWindSpeed;
 uniform float uDisplacement;
 uniform float uNoiseMouvementIntensity;
@@ -20,20 +21,7 @@ varying float vNoiseMouvement;
 varying vec2 vUv;
 varying vec3 vPos;
 
-#define TOON
-varying vec3 vViewPosition;
-#include <common>
-#include <uv_pars_vertex>
-#include <uv2_pars_vertex>
-#include <displacementmap_pars_vertex>
-#include <color_pars_vertex>
 #include <fog_pars_vertex>
-#include <normal_pars_vertex>
-#include <morphtarget_pars_vertex>
-#include <skinning_pars_vertex>
-#include <shadowmap_pars_vertex>
-#include <logdepthbuf_pars_vertex>
-#include <clipping_planes_pars_vertex>
 
 void main() {
 	float boxSize = uHalfBoxSize * 2.;
@@ -64,9 +52,7 @@ void main() {
 	// float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	// pos *= scaleFromTexture;
-	vec4 localPosition = vec4(pos, 1.);
-	vec4 worldPosition = modelMatrix * localPosition;
-	vec3 look = normalize(cameraPosition - vec3(worldPosition));
+
 	translation.y += pos.y;
 
 	// Apply height map
@@ -91,31 +77,10 @@ void main() {
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 
 	if(elevation >= 1.) {
-		pos = vec3(0.);
+		translation = vec3(0.);
 	} else {
 		mv.xz += pos.xz;
 	}
-
-	#include <uv_vertex>
-	#include <uv2_vertex>
-	#include <color_vertex>
-	#include <morphcolor_vertex>
-	#include <beginnormal_vertex>
-	#include <morphnormal_vertex>
-	#include <skinbase_vertex>
-	#include <skinnormal_vertex>
-	#include <defaultnormal_vertex>
-	#include <normal_vertex>
-	#include <begin_vertex>
-	#include <morphtarget_vertex>
-	#include <skinning_vertex>
-	#include <displacementmap_vertex>
-	#include <project_vertex>
-	#include <logdepthbuf_vertex>
-	#include <clipping_planes_vertex>
-	vViewPosition = -mvPosition.xyz;
-	#include <worldpos_vertex>
-	#include <shadowmap_vertex>
 
 	#ifdef USE_FOG
 	vFogWorldPosition = translation;
@@ -123,5 +88,5 @@ void main() {
 
 	gl_Position = projectionMatrix * mv;
 
-	vPos = translation;
+	vPos = pos;
 }

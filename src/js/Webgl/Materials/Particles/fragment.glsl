@@ -10,7 +10,7 @@ void main() {
 	float distanceToCenter = distance(vUv, vec2(0.5));
 	float strength = 0.0075 / distanceToCenter - 0.01;
 
-	float smoothEnd = smoothstep(0.0, 0.5, 1.0 - vLoop);
+	float smoothEnd = smoothstep(0.0, 0.1, 1.0 - vLoop);
 	float smoothStart = smoothstep(0.0, 1.0, vLoop);
 	float globalSmooth = smoothStart * smoothEnd;
 

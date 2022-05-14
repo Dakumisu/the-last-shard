@@ -43,16 +43,16 @@ export default class SandboxScene extends BaseScene {
 			position: new Vector3(-10, 0, 10),
 		});
 
-		this.lights = new Lights(this, [baseAmbient, directional]);
+		// this.lights = new Lights(this, [baseAmbient, directional]);
 
 		this.fog = new BaseFog({
-			fogNearColor: '#FFFFFF',
+			fogNearColor: '#664CB1',
 			// fogFarColor: '#3e2e77',
-			fogFarColor: '#FFFFFF',
+			fogFarColor: '#664CB1',
 			fogNear: 0,
 			fogFar: 25,
-			fogNoiseSpeed: 0.01,
-			fogNoiseFreq: 0.03,
+			fogNoiseSpeed: 0.0035,
+			fogNoiseFreq: 0.15,
 			fogNoiseImpact: 0.2,
 			background: await this.envMapTexture,
 		});
@@ -60,8 +60,6 @@ export default class SandboxScene extends BaseScene {
 		// Init grass after fog
 		this.grass = new Grass(this, {
 			color: '#66C0ef',
-			// color: '#9799f7',
-			// color: '#66C0ef',
 			color2: '#664CB1',
 			verticeScale: 0.2,
 			halfBoxSize: 25,
@@ -75,11 +73,9 @@ export default class SandboxScene extends BaseScene {
 
 		this.flowers = new Flowers(this, {
 			color: '#66C0ef',
-			// color: '#9799f7',
-			// color: '#66C0ef',
 			color2: '#664CB1',
 			verticeScale: 0.2,
-			halfBoxSize: 12.5,
+			halfBoxSize: 15,
 			noiseElevationIntensity: 0.75,
 			noiseMouvementIntensity: 0.15,
 			windColorIntensity: 0.11,
@@ -90,11 +86,9 @@ export default class SandboxScene extends BaseScene {
 
 		this.flowers2 = new Flowers2(this, {
 			color: '#66C0ef',
-			// color: '#9799f7',
-			// color: '#66C0ef',
 			color2: '#664CB1',
 			verticeScale: 0.2,
-			halfBoxSize: 12.5,
+			halfBoxSize: 15,
 			noiseElevationIntensity: 0.75,
 			noiseMouvementIntensity: 0.15,
 			windColorIntensity: 0.11,

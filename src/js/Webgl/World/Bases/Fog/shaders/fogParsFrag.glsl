@@ -12,4 +12,15 @@ uniform float uFogNoiseImpact;
 
 varying vec3 vFogWorldPosition;
 varying float fogDepth;
+varying float vFogDepth;
 #endif
+
+// #ifdef USE_FOG
+// 	uniform vec3 fogColor;
+// 	varying float vFogDepth;
+
+//     uniform float fogNear;
+//     uniform float fogFar;
+
+//     uniform float fogDensity;
+// #endif

@@ -340,7 +340,8 @@ class Player extends BaseEntity {
 		};
 
 		this.base.material = new PlayerMaterial({
-			color: new Color('#d29ddc'),
+			// color: new Color('#d29ddc'),
+			fog: false,
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
