@@ -18,6 +18,7 @@ import World from './World/World';
 /// #if DEBUG
 import Debug from '@tools/Debug';
 import OrbitCamera from './Camera/Cameras/OrbitCamera';
+import Timer from '@game/Timer';
 /// #endif
 
 let initialized = false;
@@ -125,6 +126,9 @@ class Webgl {
 
 		if (this.performance) this.performance.update(this.raf.delta);
 		if (this.raycaster) this.raycaster.update();
+
+		Timer.update();
+
 		baseUniforms.uTime.value = this.raf.elapsed;
 
 		/// #if DEBUG

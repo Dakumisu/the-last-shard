@@ -3,6 +3,7 @@ import manifest from '@utils/manifest';
 import { getWebgl } from '@webgl/Webgl';
 import { AudioLoader, CubeTexture, CubeTextureLoader, Group, Texture, TextureLoader } from 'three';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
+import { LUTCubeLoader } from 'three/examples/jsm/loaders/LUTCubeLoader';
 import { loadGLTF } from './loadDynamicGLTF';
 
 const basisLoader = new KTX2Loader();
@@ -10,6 +11,7 @@ let basisLoaderInit = false;
 basisLoader.setTranscoderPath('/assets/decoder/basis/');
 
 const textureLoader = new TextureLoader();
+const lutCubeLoader = new LUTCubeLoader();
 const audioLoader = new AudioLoader();
 const cubeTextureLoader = new CubeTextureLoader();
 
@@ -76,6 +78,29 @@ export async function loadCubeTexture(key) {
 			loadedTexture.needsUpdate = true;
 			console.log(loadedTexture);
 		} else loadedTexture = await cubeTextureLoader.loadAsync(path);
+
+		store.loadedAssets.textures.set(key, loadedTexture);
+	}
+	return loadedTexture;
+}
+
+/**
+ *
+ * @param {string} key
+ * @returns {Promise< Texture | null>}
+ */
+export async function loadLUTTexture(key) {
+	const path = manifest.get(key)?.path;
+	if (!path) {
+		/// #if DEBUG
+		console.error(`LUT Cube ${key} not found`);
+		/// #endif
+		return;
+	}
+
+	let loadedTexture = store.loadedAssets.textures.get(key);
+	if (!loadedTexture) {
+		loadedTexture = (await lutCubeLoader.loadAsync(path)).texture;
 
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}

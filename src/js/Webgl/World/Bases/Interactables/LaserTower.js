@@ -5,6 +5,7 @@ import { ArrowHelper, Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
 import { Pet } from '@webgl/World/Characters/Pet';
+import Timer from '@game/Timer';
 
 export default class LaserTower extends BaseCollider {
 	/**
@@ -57,13 +58,17 @@ export default class LaserTower extends BaseCollider {
 
 		this.base.mesh.add(this.laserGroup);
 
+		if (this.type === 'start') this.timer = new Timer(10000, () => this.desactivate());
+
 		this.initialized = true;
 	}
 
 	activate() {
 		this.isActivated = true;
-		if (this.type === 'start')
+		if (this.type === 'start') {
+			this.timer.start();
 			this.game.pet.toggleFeeding(this.base.mesh.position.clone().setY(2));
+		}
 
 		if (this.type === 'end') this.game.endEvent();
 
@@ -76,7 +81,10 @@ export default class LaserTower extends BaseCollider {
 
 	desactivate() {
 		this.isActivated = false;
-		if (this.type === 'start') this.game.pet.toggleFeeding();
+		if (this.type === 'start') {
+			this.timer.stop();
+			this.game.pet.toggleFeeding();
+		}
 
 		this.laserGroup.visible = false;
 		this.laserGroup.scale.z = this.maxDistance;

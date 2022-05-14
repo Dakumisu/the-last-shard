@@ -6,11 +6,7 @@ let instance;
 
 export default class PostProcessingMaterial extends RawShaderMaterial {
 	constructor(opts = {}) {
-		super();
-
-		for (const opt in opts) {
-			this[opt] = opts[opt];
-		}
+		super(opts);
 
 		hotShaders.use(this);
 	}

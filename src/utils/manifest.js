@@ -56,6 +56,26 @@ assetsMap.set('laserTexture', {
 	data: {},
 });
 
+assetsMap.set('lut-1', {
+	path: '/assets/luts/lut-1.cube',
+	data: {},
+});
+
+assetsMap.set('lut-2', {
+	path: '/assets/luts/lut-2.cube',
+	data: {},
+});
+
+assetsMap.set('lut-3', {
+	path: '/assets/luts/lut-3.cube',
+	data: {},
+});
+
+assetsMap.set('lut-4', {
+	path: '/assets/luts/lut-4.cube',
+	data: {},
+});
+
 assetsMap.set('lua', {
 	path: '/assets/model/lua.glb',
 	data: {},

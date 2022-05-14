@@ -9,39 +9,19 @@ import {
 	BufferAttribute,
 	Mesh,
 	Scene,
-	RawShaderMaterial,
 	Vector2,
 	Vector3,
 	RGBAFormat,
-	Color,
 } from 'three';
-
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import { getWebgl } from '@webgl/Webgl';
 
-import { store } from '@tools/Store';
-
 import PostFXMaterial from './basic/material';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import Lut from './Lut';
+import anime from 'animejs';
 
 const tVec2 = new Vector2();
 const tVec3 = new Vector3();
-
-const params = {
-	postprocess: 1,
-	brightness: 0,
-	contrast: 0.1,
-	radius: 1,
-	strength: 0.15,
-	threshold: 0.05,
-	useFxaa: true,
-};
-
-let initialized = false;
 
 /// #if DEBUG
 const debug = {
@@ -51,6 +31,7 @@ const debug = {
 /// #endif
 
 export default class PostFX {
+	static initialized;
 	constructor(renderer) {
 		const webgl = getWebgl();
 		this.rendererScene = webgl.mainScene.instance;
@@ -60,17 +41,50 @@ export default class PostFX {
 
 		this.renderer.getDrawingBufferSize(tVec2);
 
-		this.setEnvironnement();
-		this.setTriangle();
-		this.setRenderTarget();
-		this.setMaterial();
-		this.setPostPro();
+		// Init render target
+		this.scene = new Scene();
+		this.dummyCamera = new OrthographicCamera(1 / -2, 1 / 2, 1 / 2, 1 / -2);
+		this.target = new WebGLRenderTarget(tVec2.x, tVec2.y, {
+			format: RGBAFormat,
+			stencilBuffer: false,
+			depthBuffer: true,
+		});
 
-		initialized = true;
+		const geometry = new BufferGeometry();
+		const vertices = new Float32Array([-1.0, -1.0, 3.0, -1.0, -1.0, 3.0]);
+		geometry.setAttribute('position', new BufferAttribute(vertices, 2));
+
+		this.material = PostFXMaterial.get({
+			// defines: {
+			// 	FXAA: params.useFxaa,
+			// },
+			uniforms: {
+				// POST_PROCESSING: { value: params.postprocess },
+				uScene: { value: this.target.texture },
+				uResolution: { value: tVec3 },
+
+				uLut1: { value: null },
+				uLut2: { value: null },
+				uLutSize: { value: 0 },
+
+				uLutIntensity: { value: 0 },
+				uGlobalLutIntensity: { value: 1 },
+			},
+		});
+
+		const triangle = new Mesh(geometry, this.material);
+		triangle.frustumCulled = false;
+		this.scene.add(triangle);
+
+		this.currentLut = null;
+		this.luts = {};
+
+		this.loadLuts();
+
+		PostFX.initialized = true;
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.devtool();
 		/// #endif
 	}
 
@@ -79,170 +93,91 @@ export default class PostFX {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addInput(params, 'brightness', {
-			label: 'brightness',
-			min: -1,
-			max: 1,
-			step: 0.01,
-		}).on('change', (e) => {
-			this.customPass.uniforms.uBrightness.value = e.value;
-		});
-		gui.addInput(params, 'contrast', {
-			label: 'contrast',
-			min: -1,
-			max: 1,
-			step: 0.01,
-		}).on('change', (e) => {
-			this.customPass.uniforms.uContrast.value = e.value;
-		});
-		gui.addInput(params, 'radius', {
-			label: 'radius',
+		const options = [];
+		console.log(this.luts);
+		for (const lut in this.luts) {
+			options.push({ text: this.luts[lut].lutKey, value: this.luts[lut].lutKey });
+		}
+
+		gui.addInput(this.material.uniforms.uGlobalLutIntensity, 'value', {
 			min: 0,
 			max: 1,
-			step: 0.01,
-		}).on('change', (e) => {
-			this.unrealBloomPass.radius = e.value;
+			label: 'Global LUT',
 		});
-		gui.addInput(params, 'strength', {
-			label: 'strength',
-			min: 0,
-			max: 1,
-			step: 0.01,
-		}).on('change', (e) => {
-			this.unrealBloomPass.strength = e.value;
-		});
-		gui.addInput(params, 'threshold', {
-			label: 'threshold',
-			min: 0,
-			max: 1,
-			step: 0.01,
-		}).on('change', (e) => {
-			this.unrealBloomPass.threshold = e.value;
-		});
+
+		gui.addBlade({
+			view: 'list',
+			label: 'Luts',
+			options,
+			value: 'lut-1',
+		}).on('change', (e) => this.switch(this.luts[e.value]));
 	}
 	/// #endif
 
-	setEnvironnement() {
-		this.scene = new Scene();
-		this.dummyCamera = new OrthographicCamera(1 / -2, 1 / 2, 1 / 2, 1 / -2);
+	async loadLuts() {
+		const lut1 = new Lut({ material: this.material, lutKey: 'lut-1' });
+		await lut1.load();
+		this.luts['lut-1'] = lut1;
+
+		const lut2 = new Lut({ material: this.material, lutKey: 'lut-2' });
+		await lut2.load();
+		this.luts['lut-2'] = lut2;
+
+		const lut3 = new Lut({ material: this.material, lutKey: 'lut-3' });
+		await lut3.load();
+		this.luts['lut-3'] = lut3;
+
+		const lut4 = new Lut({ material: this.material, lutKey: 'lut-4' });
+		await lut4.load();
+		this.luts['lut-4'] = lut4;
+
+		this.material.uniforms.uLut1.value = lut1.texture;
+		this.material.uniforms.uLut2.value = lut2.texture;
+		this.material.uniforms.uLutSize.value = lut1.size;
+
+		this.currentLut = lut1;
+
+		/// #if DEBUG
+		this.devtool();
+		/// #endif
 	}
 
-	setTriangle() {
-		this.geometry = new BufferGeometry();
+	switch(lut) {
+		if (this.currentLut === lut) return;
 
-		const vertices = new Float32Array([-1.0, -1.0, 3.0, -1.0, -1.0, 3.0]);
+		if (this.currentLut.texture === this.material.uniforms.uLut1.value) {
+			this.material.uniforms.uLut2.value = lut.texture;
+			anime({
+				targets: this.material.uniforms.uLutIntensity,
+				value: 1,
+				duration: 500,
+				easing: 'linear',
+			});
+		} else if (this.currentLut.texture === this.material.uniforms.uLut2.value) {
+			this.material.uniforms.uLut1.value = lut.texture;
+			anime({
+				targets: this.material.uniforms.uLutIntensity,
+				value: 0,
+				duration: 500,
+				easing: 'linear',
+			});
+		}
 
-		this.geometry.setAttribute('position', new BufferAttribute(vertices, 2));
-	}
-
-	setRenderTarget() {
-		this.target = new WebGLRenderTarget(tVec2.x, tVec2.y, {
-			format: RGBAFormat,
-			stencilBuffer: false,
-			depthBuffer: true,
-		});
-	}
-
-	setMaterial() {
-		const opts = {
-			defines: {
-				FXAA: params.useFxaa,
-			},
-			uniforms: {
-				POST_PROCESSING: { value: params.postprocess },
-				uScene: { value: this.target.texture },
-				uResolution: { value: tVec3 },
-				uBrightness: { value: params.brightness },
-				uContrast: { value: params.contrast },
-			},
-		};
-
-		this.material = PostFXMaterial.get(opts);
-	}
-
-	setPostPro() {
-		this.triangle = new Mesh(this.geometry, this.material);
-		this.triangle.frustumCulled = false;
-
-		this.scene.add(this.triangle);
-
-		this.composer = new EffectComposer(this.renderer);
-		this.composer.setSize(store.resolution.width, store.resolution.height);
-		this.composer.setPixelRatio(Math.min(store.resolution.dpr, 2));
-
-		const renderPass = new RenderPass(this.rendererScene, this.rendererCamera);
-		this.composer.addPass(renderPass);
-
-		this.unrealBloomPass = new UnrealBloomPass();
-		this.composer.addPass(this.unrealBloomPass);
-		this.unrealBloomPass.strength = params.strength;
-		this.unrealBloomPass.radius = params.radius;
-		this.unrealBloomPass.threshold = params.threshold;
-
-		const customShader = {
-			uniforms: {
-				tDiffuse: { value: null },
-				uBrightness: { value: params.brightness },
-				uContrast: { value: params.contrast },
-			},
-			vertexShader: `
-			varying vec2 vUv;
-        void main()
-        {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-
-			vUv = uv;
-        }
-    `,
-			fragmentShader: `
-			uniform sampler2D tDiffuse;
-			uniform float uContrast;
-			uniform float uBrightness;
-
-			varying vec2 vUv;
-        void main()
-        {
-			// POST PROCESSING
-			float dist = smoothstep(0., 1.0, 1.0 - (length(vUv - 0.5) * 0.75));
-			vec3 postPro = texture2D(tDiffuse, vUv).rgb;
-
-			gl_FragColor = vec4(vec3(dist), 1.0);
-			gl_FragColor = vec4(postPro * vec3(dist), 1.0);
-			gl_FragColor = vec4(postPro, 1.0) * dist;
-			gl_FragColor.rgb += uBrightness;
-
-			if(uContrast > 0.0) {
-				gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) / (1.0 - uContrast) + 0.5;
-			} else {
-				gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * (1.0 + uContrast) + 0.5;
-			}
-        }
-    `,
-		};
-
-		this.customPass = new ShaderPass(customShader);
-		console.log(this.customPass.uniforms);
-		this.composer.addPass(this.customPass);
-
-		// const glitch = new GlitchPass();
-		// this.composer.addPass(glitch);
+		this.currentLut = lut;
 	}
 
 	resize(width, height) {
-		if (!initialized) return;
+		if (!PostFX.initialized) return;
 
 		tVec2.set(width, height);
 		tVec3.x = tVec2.x;
 		tVec3.y = tVec2.y;
 
-		this.composer.setSize(store.resolution.width, store.resolution.height);
-		this.composer.setPixelRatio(Math.min(store.resolution.dpr, 2));
-
 		this.material.uniforms.uResolution.value = tVec3;
 	}
 
 	updateDPR(dpr) {
-		if (!initialized) return;
+		if (!PostFX.initialized) return;
 
 		tVec3.z = dpr;
 
@@ -250,14 +185,12 @@ export default class PostFX {
 	}
 
 	render() {
-		if (!initialized) return;
+		if (!PostFX.initialized) return;
 
 		this.renderer.setRenderTarget(this.target);
 		this.renderer.render(this.rendererScene, this.rendererCamera);
 		this.renderer.setRenderTarget(null);
 		this.renderer.render(this.scene, this.dummyCamera);
-
-		// this.composer.render();
 	}
 
 	destroy() {
