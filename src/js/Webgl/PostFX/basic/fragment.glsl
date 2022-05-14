@@ -7,8 +7,7 @@ uniform vec3 uResolution;
 uniform float uLutSize;
 uniform sampler2D uLut1;
 uniform sampler2D uLut2;
-uniform float uLutIntensity1;
-uniform float uLutIntensity2;
+uniform float uLutIntensity;
 
 vec3 lutLookup(sampler2D tex, float size, vec3 rgb) {
 
@@ -42,7 +41,6 @@ void main() {
 	uv /= uResolution.z;
 
 	vec4 val = texture2D(uScene, uv);
-	vec4 lutVal;
 
 	// pull the sample in by half a pixel so the sample begins
 	// at the center of the edge pixels.
@@ -50,9 +48,9 @@ void main() {
 	float halfPixelWidth = 0.5 / uLutSize;
 	vec3 uvw = vec3(halfPixelWidth) + val.rgb * (1.0 - pixelWidth);
 
-	lutVal = vec4(lutLookup(uLut2, uLutSize, uvw), val.a);
-	lutVal = vec4(lutLookup(uLut1, uLutSize, uvw), val.a);
+	vec4 lutVal1 = vec4(lutLookup(uLut1, uLutSize, uvw), val.a);
+	vec4 lutVal2 = vec4(lutLookup(uLut2, uLutSize, uvw), val.a);
 
-	gl_FragColor = vec4(mix(val, lutVal, uLutIntensity1));
+	gl_FragColor = vec4(mix(lutVal1, lutVal2, uLutIntensity));
 
 }

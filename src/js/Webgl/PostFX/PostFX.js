@@ -12,22 +12,16 @@ import {
 	Vector2,
 	Vector3,
 	RGBAFormat,
-	GLSL3,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 
 import PostFXMaterial from './basic/material';
-import { loadLUTTexture } from '@utils/loaders/loadAssets';
 import Lut from './Lut';
+import anime from 'animejs';
 
 const tVec2 = new Vector2();
 const tVec3 = new Vector3();
-
-const params = {
-	postprocess: 0,
-	useFxaa: true,
-};
 
 /// #if DEBUG
 const debug = {
@@ -73,8 +67,7 @@ export default class PostFX {
 				uLut2: { value: null },
 				uLutSize: { value: 0 },
 
-				uLutIntensity1: { value: 1.0 },
-				uLutIntensity2: { value: 1.0 },
+				uLutIntensity: { value: 0 },
 			},
 		});
 
@@ -82,14 +75,15 @@ export default class PostFX {
 		triangle.frustumCulled = false;
 		this.scene.add(triangle);
 
-		const lut = new Lut({ material: this.material, lutKey: 'lut-2' });
-		const lut2 = new Lut({ material: this.material, lutKey: 'lut-1' });
+		this.currentLut = null;
+		this.luts = {};
+
+		this.loadLuts();
 
 		PostFX.initialized = true;
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
-		this.devtool();
 		/// #endif
 	}
 
@@ -98,13 +92,74 @@ export default class PostFX {
 		debug.instance.setFolder(debug.label);
 		const gui = debug.instance.getFolder(debug.label);
 
-		gui.addInput(this.material.uniforms.uLutIntensity1, 'value', {
-			min: 0,
-			max: 1,
-			label: 'Intensity',
+		const options = [];
+		console.log(this.luts);
+		for (const lut in this.luts) {
+			options.push({ text: this.luts[lut].lutKey, value: this.luts[lut].lutKey });
+		}
+
+		gui.addBlade({
+			view: 'list',
+			label: 'Luts',
+			options,
+			value: 'lut-1',
+		}).on('change', (e) => {
+			this.switch(this.luts[e.value]);
 		});
 	}
 	/// #endif
+
+	async loadLuts() {
+		const lut1 = new Lut({ material: this.material, lutKey: 'lut-1' });
+		await lut1.load();
+		this.luts['lut-1'] = lut1;
+
+		const lut2 = new Lut({ material: this.material, lutKey: 'lut-2' });
+		await lut2.load();
+		this.luts['lut-2'] = lut2;
+
+		const lut3 = new Lut({ material: this.material, lutKey: 'lut-3' });
+		await lut3.load();
+		this.luts['lut-3'] = lut3;
+
+		const lut4 = new Lut({ material: this.material, lutKey: 'lut-4' });
+		await lut4.load();
+		this.luts['lut-4'] = lut4;
+
+		this.material.uniforms.uLut1.value = lut1.texture;
+		this.material.uniforms.uLut2.value = lut2.texture;
+		this.material.uniforms.uLutSize.value = lut1.size;
+
+		this.currentLut = lut1;
+
+		/// #if DEBUG
+		this.devtool();
+		/// #endif
+	}
+
+	switch(lut) {
+		if (this.currentLut === lut) return;
+
+		if (this.currentLut.texture === this.material.uniforms.uLut1.value) {
+			this.material.uniforms.uLut2.value = lut.texture;
+			anime({
+				targets: this.material.uniforms.uLutIntensity,
+				value: 1,
+				duration: 500,
+				easing: 'linear',
+			});
+		} else if (this.currentLut.texture === this.material.uniforms.uLut2.value) {
+			this.material.uniforms.uLut1.value = lut.texture;
+			anime({
+				targets: this.material.uniforms.uLutIntensity,
+				value: 0,
+				duration: 500,
+				easing: 'linear',
+			});
+		}
+
+		this.currentLut = lut;
+	}
 
 	resize(width, height) {
 		if (!PostFX.initialized) return;
