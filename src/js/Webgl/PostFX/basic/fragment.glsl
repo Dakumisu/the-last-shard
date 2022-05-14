@@ -8,6 +8,7 @@ uniform float uLutSize;
 uniform sampler2D uLut1;
 uniform sampler2D uLut2;
 uniform float uLutIntensity;
+uniform float uGlobalLutIntensity;
 
 vec3 lutLookup(sampler2D tex, float size, vec3 rgb) {
 
@@ -51,6 +52,8 @@ void main() {
 	vec4 lutVal1 = vec4(lutLookup(uLut1, uLutSize, uvw), val.a);
 	vec4 lutVal2 = vec4(lutLookup(uLut2, uLutSize, uvw), val.a);
 
-	gl_FragColor = vec4(mix(lutVal1, lutVal2, uLutIntensity));
+	vec4 final = mix(lutVal1, lutVal2, uLutIntensity);
+
+	gl_FragColor = vec4(mix(val, final, uGlobalLutIntensity));
 
 }

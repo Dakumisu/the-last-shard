@@ -68,6 +68,7 @@ export default class PostFX {
 				uLutSize: { value: 0 },
 
 				uLutIntensity: { value: 0 },
+				uGlobalLutIntensity: { value: 1 },
 			},
 		});
 
@@ -97,6 +98,12 @@ export default class PostFX {
 		for (const lut in this.luts) {
 			options.push({ text: this.luts[lut].lutKey, value: this.luts[lut].lutKey });
 		}
+
+		gui.addInput(this.material.uniforms.uGlobalLutIntensity, 'value', {
+			min: 0,
+			max: 1,
+			label: 'Global LUT',
+		});
 
 		gui.addBlade({
 			view: 'list',
