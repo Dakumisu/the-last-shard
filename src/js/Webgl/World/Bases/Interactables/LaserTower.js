@@ -58,7 +58,13 @@ export default class LaserTower extends BaseCollider {
 
 		this.base.mesh.add(this.laserGroup);
 
-		if (this.type === 'start') this.timer = new Timer(10000, () => this.desactivate());
+		if (this.type === 'start')
+			this.timer = new Timer(
+				5000,
+				'laserTimer',
+				() => this.desactivate(),
+				(et) => console.log(et),
+			);
 
 		this.initialized = true;
 	}

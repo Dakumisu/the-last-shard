@@ -28,9 +28,6 @@ export default class LaserGame {
 	}
 
 	endEvent() {
-		this.laserTowers.forEach((tower) => {
-			tower.base.isInteractable = false;
-		});
 		signal.emit(this.scene.label + ':endGame', this.id);
 		console.log('🕹 Game ended');
 	}
@@ -38,23 +35,25 @@ export default class LaserGame {
 	async init() {
 		const texture = await loadTexture('laserTexture');
 
-		LaserGame.laserMaterialInner = new LaserMaterialInner({
-			transparent: true,
-			side: DoubleSide,
-			uniforms: {
-				uTexture: { value: texture },
-				uTimeIntensity: { value: 0.0012 },
-			},
-		});
+		if (!LaserGame.laserMaterialInner && !LaserGame.laserMaterialOuter) {
+			LaserGame.laserMaterialInner = new LaserMaterialInner({
+				transparent: true,
+				side: DoubleSide,
+				uniforms: {
+					uTexture: { value: texture },
+					uTimeIntensity: { value: 0.0012 },
+				},
+			});
 
-		LaserGame.laserMaterialOuter = new LaserMaterialOuter({
-			transparent: true,
-			side: DoubleSide,
-			blending: AdditiveBlending,
-			uniforms: {
-				uTimeIntensity: { value: 0.0012 },
-			},
-		});
+			LaserGame.laserMaterialOuter = new LaserMaterialOuter({
+				transparent: true,
+				side: DoubleSide,
+				blending: AdditiveBlending,
+				uniforms: {
+					uTimeIntensity: { value: 0.0012 },
+				},
+			});
+		}
 
 		this.laserGeometry = LaserGame.laserGeometry;
 		this.laserMaterialInner = LaserGame.laserMaterialInner;
