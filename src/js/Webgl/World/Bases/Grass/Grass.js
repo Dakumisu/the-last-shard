@@ -184,7 +184,7 @@ export default class Grass {
 
 	/// #if DEBUG
 	devtools() {
-		const gui = debug.instance.addFolder({ title: debug.label });
+		const gui = debug.instance.addFolder({ title: debug.label, expanded: false });
 
 		gui.addInput(this.base.mesh.material.uniforms.uDisplacement, 'value', {
 			label: 'displace',
