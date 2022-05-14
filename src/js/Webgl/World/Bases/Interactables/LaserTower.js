@@ -132,13 +132,21 @@ export default class LaserTower extends BaseCollider {
 			if (this.animation && !this.animation.paused) this.animation.pause();
 			let yOffset = this.base.mesh.rotation.y + Math.PI * 0.05;
 			if (this.nextTower) yOffset += Math.PI * 0.05;
-			const updateHandler = this.isActivated ? this.update.bind(this) : null;
+			const updateHandler = this.isActivated ? this.update : null;
+
 			this.animation = anime({
 				targets: this.base.mesh.rotation,
 				y: yOffset,
 				duration: 300,
 				easing: 'easeOutQuad',
 				update: updateHandler,
+				begin: () => {
+					this.base.mesh.matrixAutoUpdate = true;
+				},
+				complete: () => {
+					this.base.mesh.matrixAutoUpdate = false;
+					this.base.mesh.updateMatrix();
+				},
 			});
 		} else if (key === controlsKeys.interact.default && this.type === 'start') {
 			if (this.isActivated) this.desactivate();
@@ -146,7 +154,7 @@ export default class LaserTower extends BaseCollider {
 		}
 	}
 
-	update() {
+	update = () => {
 		if (!this.initialized) return;
 
 		this.base.mesh.getWorldDirection(this.ray.direction);
@@ -177,5 +185,5 @@ export default class LaserTower extends BaseCollider {
 				nextLaserTower.desactivateBy(this);
 			}
 		});
-	}
+	};
 }

@@ -110,7 +110,7 @@ export default class PostFX {
 			label: 'Luts',
 			options,
 			value: 'lut-1',
-		}).on('change', (e) => this.switch(this.luts[e.value]));
+		}).on('change', (e) => this.switch(this.luts[e.value], 1000));
 	}
 	/// #endif
 
@@ -142,7 +142,7 @@ export default class PostFX {
 		/// #endif
 	}
 
-	switch(lut) {
+	switch(lut, duration) {
 		if (this.currentLut === lut) return;
 
 		if (this.currentLut.texture === this.material.uniforms.uLut1.value) {
@@ -150,7 +150,7 @@ export default class PostFX {
 			anime({
 				targets: this.material.uniforms.uLutIntensity,
 				value: 1,
-				duration: 500,
+				duration,
 				easing: 'linear',
 			});
 		} else if (this.currentLut.texture === this.material.uniforms.uLut2.value) {
@@ -158,7 +158,7 @@ export default class PostFX {
 			anime({
 				targets: this.material.uniforms.uLutIntensity,
 				value: 0,
-				duration: 500,
+				duration,
 				easing: 'linear',
 			});
 		}

@@ -78,6 +78,8 @@ export default class BaseObject {
 		this.base.mesh.isInteractable = this.base.isInteractable;
 		this.base.mesh.isMovable = this.base.isMovable = movable;
 
+		this.base.mesh.matrixAutoUpdate = false;
+
 		if (this.base.isInteractable) this.base.mesh.userData.interact = this.base.asset.effect;
 
 		this.base.mesh.traversable = traversable;
@@ -88,6 +90,8 @@ export default class BaseObject {
 
 	show() {
 		const { scale } = this.base.asset.transforms;
+		this.base.mesh.matrixAutoUpdate = true;
+		// this.base.mesh.updateMatrix();
 		anime({
 			targets: this.base.mesh.scale,
 			easing: 'spring(1, 190, 10, 1)',
@@ -95,16 +99,18 @@ export default class BaseObject {
 			x: [0.00001, scale[0]],
 			y: [0.00001, scale[1]],
 			z: [0.00001, scale[2]],
+			begin: () => {
+				this.base.mesh.matrixAutoUpdate = true;
+			},
 			complete: () => {
-				if (!this.base.isInteractable && !this.base.isMovable) {
-					this.base.mesh.matrixAutoUpdate = false;
-					this.base.mesh.updateMatrix();
-				}
+				this.base.mesh.matrixAutoUpdate = false;
+				this.base.mesh.updateMatrix();
 			},
 		});
 	}
 
 	hide() {
+		// this.base.mesh.updateMatrix();
 		anime({
 			targets: this.base.mesh.scale,
 			easing: 'spring(1, 190, 10, 1)',
@@ -112,6 +118,13 @@ export default class BaseObject {
 			x: ['', 0.001],
 			y: ['', 0.001],
 			z: ['', 0.001],
+			begin: () => {
+				this.base.mesh.matrixAutoUpdate = true;
+			},
+			complete: () => {
+				this.base.mesh.matrixAutoUpdate = false;
+				this.base.mesh.updateMatrix();
+			},
 		});
 	}
 
