@@ -52,9 +52,14 @@ export default class Movable extends BasePhysic {
 			autoplay: false,
 			...opts,
 			...new Vector3().fromArray(target.pos),
+			begin: () => {
+				this.base.mesh.matrixAutoUpdate = true;
+			},
+			complete: () => {
+				this.base.mesh.matrixAutoUpdate = false;
+				this.base.mesh.updateMatrix();
+			},
 		};
-
-		console.log(animeOpts);
 
 		this.currentAnim = anime(animeOpts);
 
