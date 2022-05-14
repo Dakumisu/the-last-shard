@@ -1,6 +1,6 @@
 import { getWebgl } from '@webgl/Webgl';
 import baseUniforms from '@webgl/Materials/baseUniforms';
-import { Color, Fog, ShaderChunk } from 'three';
+import { Color, Fog, FogExp2, ShaderChunk } from 'three';
 import fogFrag from './shaders/fogFrag.glsl';
 import fogParsFrag from './shaders/fogParsFrag.glsl';
 import fogParsVert from './shaders/fogParsVert.glsl';
@@ -19,6 +19,8 @@ ShaderChunk.fog_pars_vertex = fogParsVert;
 ShaderChunk.fog_vertex = fogVert;
 ShaderChunk.fog_pars_fragment = fogParsFrag;
 ShaderChunk.fog_fragment = fogFrag;
+
+console.log(ShaderChunk);
 
 export default class BaseFog {
 	constructor({
@@ -59,7 +61,8 @@ export default class BaseFog {
 		baseUniforms.uFogNoiseSpeed.value = this.params.fogNoiseSpeed;
 		baseUniforms.uFogNoiseImpact.value = this.params.fogNoiseImpact;
 
-		const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
+		// const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
+		const fog = new FogExp2(this.params.fogFarColor, 0);
 		this.scene.fog = fog;
 		this.scene.background = this.params.background;
 	}

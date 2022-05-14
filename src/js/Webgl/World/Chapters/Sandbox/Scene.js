@@ -46,13 +46,14 @@ export default class SandboxScene extends BaseScene {
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
 		this.fog = new BaseFog({
-			fogNearColor: '#664CB1',
-			fogFarColor: '#3e2e77',
+			fogNearColor: '#FFFFFF',
+			// fogFarColor: '#3e2e77',
+			fogFarColor: '#FFFFFF',
 			fogNear: 0,
 			fogFar: 25,
-			fogNoiseSpeed: 0.003,
-			fogNoiseFreq: 0.125,
-			fogNoiseImpact: 0.1,
+			fogNoiseSpeed: 0.01,
+			fogNoiseFreq: 0.03,
+			fogNoiseImpact: 0.2,
 			background: await this.envMapTexture,
 		});
 
