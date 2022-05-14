@@ -110,9 +110,7 @@ export default class PostFX {
 			label: 'Luts',
 			options,
 			value: 'lut-1',
-		}).on('change', (e) => {
-			this.switch(this.luts[e.value]);
-		});
+		}).on('change', (e) => this.switch(this.luts[e.value]));
 	}
 	/// #endif
 

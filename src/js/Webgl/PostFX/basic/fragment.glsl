@@ -49,9 +49,11 @@ void main() {
 	float halfPixelWidth = 0.5 / uLutSize;
 	vec3 uvw = vec3(halfPixelWidth) + val.rgb * (1.0 - pixelWidth);
 
+	// Sample the two LUTs
 	vec4 lutVal1 = vec4(lutLookup(uLut1, uLutSize, uvw), val.a);
 	vec4 lutVal2 = vec4(lutLookup(uLut2, uLutSize, uvw), val.a);
 
+	// Blend the two LUTs
 	vec4 final = mix(lutVal1, lutVal2, uLutIntensity);
 
 	gl_FragColor = vec4(mix(val, final, uGlobalLutIntensity));
