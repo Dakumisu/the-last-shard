@@ -55,10 +55,7 @@ export default class BaseObject {
 		const material = ObjectMaterial.use();
 
 		model.traverse((obj) => {
-			if (obj.material) {
-				// define material in function of the type of the object
-				obj.material = material;
-			}
+			if (obj.material) obj.material = material;
 
 			if (obj.geometry) obj.geometry.computeBoundingBox();
 
