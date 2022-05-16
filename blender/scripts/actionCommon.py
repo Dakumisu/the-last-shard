@@ -33,10 +33,11 @@ def exportFile(source, dist, name):
         cache.append(distPath)
 
 
-def exportBezier(curves, obj, uid, spline):
+def exportBezier(curves, obj, type, name, spline):
     data = {}
-    data['uid'] = uid
-    data['type'] = 'bezier'
+    data['name'] = name
+    data['type'] = type
+    data['curve'] = 'bezier'
     data['closed'] = spline.use_cyclic_u
     data['points'] = []
     utils.applyTransforms(obj)
@@ -48,14 +49,16 @@ def exportBezier(curves, obj, uid, spline):
             handle_right = utils.toThreePos(
                 utils.toNumberList(point.handle_right, 4))
             data['points'].append([] + control + handle_left + handle_right)
+    print(data)
     curves.append(data)
 
 
 # From Emilien for Kode - will be converted as a catmull3 curve
-def exportNurbs(curves, obj, uid, spline):
+def exportNurbs(curves, obj, type, name, spline):
     data = {}
-    data['uid'] = uid
-    data['type'] = 'nurbs'
+    data['name'] = name
+    data['type'] = type
+    data['curve'] = 'nurbs'
     data['closed'] = spline.use_cyclic_u
     data['points'] = []
     utils.applyTransforms(obj)
@@ -74,13 +77,15 @@ def exportNurbs(curves, obj, uid, spline):
         co = obj.matrix_world @ vertex.co
         pos = utils.toThreePos(utils.toNumberList(co, 4))
         data['points'].append(pos)
+    print(data)
     curves.append(data)
 
 
-def exportPolyline(curves, obj, uid, spline):
+def exportPolyline(curves, obj, type, name, spline):
     data = {}
-    data['uid'] = uid
-    data['type'] = 'poly'
+    data['name'] = name
+    data['type'] = type
+    data['curve'] = 'poly'
     data['closed'] = spline.use_cyclic_u
     data['points'] = []
     utils.applyTransforms(obj)
@@ -88,6 +93,7 @@ def exportPolyline(curves, obj, uid, spline):
         for point in spline.points.values():
             pos = utils.toThreePos(utils.toNumberList(point.co, 4))
             data['points'].append(pos)
+    print(data)
     curves.append(data)
 
 
@@ -284,31 +290,36 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
         if obj.type != 'CURVE':
             continue
 
-        seg = obj.name.split(' - ')
+        seg = utils.removeIncrement(obj.name).split(' - ')
         if len(seg) < 2:
             continue
-        if seg[0].lower().strip() != 'curve':
+
+        type = seg[0].lower().strip()
+        name = seg[1].strip()
+        if type.lower().strip() != 'cam' and type.lower().strip() != 'helper':
             continue
+
         if 'curves' not in data:
             data['curves'] = []
 
         curves = data['curves']
-        curveName = seg[1]
+
         if len(obj.data.splines) < 1:
             continue
+
         elif len(obj.data.splines) > 1:
             utils.warn(
                 'Curve '
-                + curveName
+                + name
                 + ' - Cannot export more than one curve per object'
             )
         spline = obj.data.splines[0]
         if spline.type == 'BEZIER':
-            exportBezier(curves, obj, curveName, spline)
+            exportBezier(curves, obj, type, name, spline)
         elif spline.type == 'NURBS':
-            exportNurbs(curves, obj, curveName, spline)
+            exportNurbs(curves, obj, type, name, spline)
         elif spline.type == 'POLY':
-            exportPolyline(curves, obj, curveName, spline)
+            exportPolyline(curves, obj, type, name, spline)
 
     if keepProps:
         return (props, traversables, movables)
