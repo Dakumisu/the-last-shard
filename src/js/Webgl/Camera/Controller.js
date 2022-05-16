@@ -16,15 +16,13 @@ export default class CameraController {
 		this.cameras = {};
 		this.currentCamera = null;
 
+		signal.on('cameraSwitch', this.switch.bind(this));
+
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		this.devtool();
 		/// #endif
-	}
-
-	init() {
-		signal.on('cameraSwitch', this.switch.bind(this));
 	}
 
 	/// #if DEBUG
@@ -52,7 +50,7 @@ export default class CameraController {
 		});
 
 		debug.guiList.on('change', (e) => {
-			this.switch(e.value);
+			signal.emit('cameraSwitch', e.value);
 		});
 
 		const domEl = debug.guiList.controller_.view.valueElement.firstChild.firstChild;

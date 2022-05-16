@@ -6,8 +6,6 @@ import signal from 'philbin-packages/signal';
 export default class MainCamera {
 	constructor() {
 		this.instance = new PerspectiveCamera(75, store.aspect.ratio, 0.5, 1000);
-		this.instance.position.set(2, 3, 3);
-		this.instance.lookAt(0, 0, 0);
 		this.instance.rotation.reorder('YXZ');
 
 		const webgl = getWebgl();
@@ -31,7 +29,7 @@ export default class MainCamera {
 		this.instance.updateProjectionMatrix();
 	}
 
-	update() {
+	update(et, dt) {
 		if (this.cameraController.currentCamera) {
 			/// #if DEBUG
 			if (
@@ -39,12 +37,11 @@ export default class MainCamera {
 				this.cameraController.currentCamera !== this.cameraController.get('player')
 			) {
 				this.cameraController.get('player').update();
-				this.cameraController.currentCamera.update();
-			} else this.cameraController.currentCamera.update();
+			}
 			/// #endif
-			/// #if !DEBUG
-			this.cameraController.currentCamera.update();
-			/// #endif
+
+			this.cameraController.currentCamera.update(et, dt);
+
 			this.instance.position.copy(this.cameraController.currentCamera.instance.position);
 			this.instance.quaternion.copy(this.cameraController.currentCamera.instance.quaternion);
 			this.instance.updateMatrixWorld();
