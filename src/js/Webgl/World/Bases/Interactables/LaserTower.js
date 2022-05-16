@@ -66,6 +66,7 @@ export default class LaserTower extends BaseCollider {
 
 	activate() {
 		this.isActivated = true;
+
 		if (this.type === 'start') {
 			signal.emit('sound:play-loop', 'laser');
 			this.timer.start();
