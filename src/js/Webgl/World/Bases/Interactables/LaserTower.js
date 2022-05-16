@@ -6,6 +6,7 @@ import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
 import { Pet } from '@webgl/World/Characters/Pet';
 import Timer from '@game/Timer';
+import signal from 'philbin-packages/signal';
 
 export default class LaserTower extends BaseCollider {
 	/**
@@ -66,6 +67,7 @@ export default class LaserTower extends BaseCollider {
 	activate() {
 		this.isActivated = true;
 		if (this.type === 'start') {
+			signal.emit('sound:play-loop', 'laser');
 			this.timer.start();
 			this.game.pet.toggleFeeding(this.base.mesh.position.clone().setY(2));
 		}
@@ -81,7 +83,9 @@ export default class LaserTower extends BaseCollider {
 
 	desactivate() {
 		this.isActivated = false;
+
 		if (this.type === 'start') {
+			signal.emit('sound:stop', 'laser');
 			this.timer.stop();
 			this.game.pet.toggleFeeding();
 		}

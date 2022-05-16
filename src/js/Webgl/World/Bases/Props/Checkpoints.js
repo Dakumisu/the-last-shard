@@ -2,6 +2,7 @@ import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material
 import { Color, Mesh, SphereGeometry, Vector3 } from 'three';
 import signal from 'philbin-packages/signal';
 import { Quaternion } from 'three';
+import { getPlayer } from '@webgl/World/Characters/Player';
 
 const radius = 2;
 const tVec3 = new Vector3();
@@ -9,9 +10,11 @@ const tQuat = new Quaternion();
 
 export default class Checkpoints {
 	constructor({ points = [], scene }) {
-		this.scene = scene;
+		this.player = getPlayer();
 
+		this.scene = scene;
 		this.points = points;
+
 		this.checkpointsIndex = 1;
 		this.isInside = false;
 
@@ -54,8 +57,7 @@ export default class Checkpoints {
 		if (!this.initialized) return;
 		if (this.checkpointsIndex >= this.points.length) return;
 
-		const inRange =
-			this.scene.player.base.mesh.position.distanceTo(this.nextCheckpointPos) < radius;
+		const inRange = this.player.base.mesh.position.distanceTo(this.nextCheckpointPos) < radius;
 
 		if (!this.isInside && inRange) {
 			this.isInside = true;

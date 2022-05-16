@@ -27,6 +27,7 @@ import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
 import { deferredPromise } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
+import Areas from '@webgl/World/Bases/Props/Areas';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
 import Movable from '@webgl/World/Bases/Props/Movable';
@@ -57,6 +58,7 @@ export default class BaseScene {
 		this.interactables = new Group();
 		this.curves = new Group();
 		this.checkpoints = null;
+		this.areas = null;
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
@@ -205,8 +207,9 @@ export default class BaseScene {
 		await this._loadInteractables(this.manifest.interactables);
 		await this._loadCurves(this.manifest.curves);
 		await this._loadPoints(this.manifest.points);
+		await this._loadAreas(this.manifest.areas);
 
-		this.manifestLoaded.resolve(true);
+		this.manifestLoaded.resolve();
 	}
 
 	async _loadBase() {
@@ -305,11 +308,9 @@ export default class BaseScene {
 	async _loadCurves(curves) {
 		if (!curves) return;
 
-		await Promise.all(
-			curves.map(async (curve) => {
-				const _curve = new Curve({ curve, group: this.curves });
-			}),
-		);
+		await curves.map(async (curve) => {
+			const _curve = new Curve({ curve, group: this.curves });
+		});
 
 		this.instance.add(this.curves);
 	}
@@ -317,7 +318,7 @@ export default class BaseScene {
 	async _loadPoints(points) {
 		if (!points) return;
 
-		const checkpoints = [];
+		const pointsList = [];
 
 		points.forEach((point) => {
 			const _t = point.type.toLowerCase();
@@ -325,17 +326,34 @@ export default class BaseScene {
 			if (_t === 'checkpoint') {
 				const pos = new Vector3().fromArray(point.pos);
 				const qt = new Quaternion().fromArray(point.qt);
-				checkpoints.push({ pos, qt });
+				pointsList.push({ pos, qt });
 			}
 			if (_t === 'spawn') {
 				const pos = new Vector3().fromArray(point.pos);
 				const qt = new Quaternion().fromArray(point.qt);
-				checkpoints.unshift({ pos, qt });
+				pointsList.unshift({ pos, qt });
 			}
 		});
 
-		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
+		this.checkpoints = new Checkpoints({ points: pointsList, scene: this });
 		console.log('🔋 Checkpoints loaded');
+	}
+
+	async _loadAreas(areas) {
+		if (!areas) return;
+
+		const areasList = [];
+
+		areas.forEach((area) => {
+			const zone = area.zone.toLowerCase();
+			const pos = new Vector3().fromArray(area.pos);
+			const size = area.size;
+
+			areasList.push({ pos, zone, size });
+		});
+
+		this.areas = new Areas({ areas: areasList, scene: this });
+		console.log('🔋 Areas loaded');
 	}
 
 	setRenderTarget() {
@@ -426,6 +444,7 @@ export default class BaseScene {
 		if (!this.initialized) return;
 
 		if (this.checkpoints) this.checkpoints.update(et, dt);
+		if (this.areas) this.areas.update(et, dt);
 		if (this.interactablesBroadphase)
 			this.interactablesBroadphase.update(this.player.base.mesh.position);
 		if (this.collidersBroadphase)
