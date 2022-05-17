@@ -22,7 +22,6 @@ export default class PersCamera {
 
 	init() {
 		this.setPerspectiveCamera();
-		console.log(this.cameraController);
 		this.cameraController.add(this);
 
 		initialized = true;

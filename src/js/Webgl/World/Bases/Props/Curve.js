@@ -45,10 +45,11 @@ export default class Curve {
 	}
 
 	loadCurve() {
-		const { uid, type, curve, closed, points } = this.rawcurve;
+		const { uid, type, curve, closed, points, params } = this.rawcurve;
 		if (!curve) return;
 
 		this.name = uid;
+		this.params = params;
 
 		const _t = curve.toLowerCase();
 

@@ -48,11 +48,8 @@ class Webgl {
 
 		this.device = new Device();
 		this.size = new Size();
-
 		this.raf = new Raf();
-
 		this.mainScene = new MainScene();
-		// this.keyboard = new Keyboard();
 
 		this.init();
 	}
@@ -85,7 +82,6 @@ class Webgl {
 		this.renderer = new Renderer();
 
 		this.mouse = new Mouse();
-
 		this.raycaster = new Raycast();
 
 		this.world = new World();

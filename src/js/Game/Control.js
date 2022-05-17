@@ -8,6 +8,7 @@ export const controlsKeys = {
 	backward: 'S',
 	right: 'D',
 	space: 'SPACE',
+	escape: 'ESCAPE',
 	shift: 'SHIFT',
 	interact: {
 		default: 'F',
@@ -33,6 +34,7 @@ export default class Control {
 			backward: false,
 			right: false,
 			space: false,
+			escape: false,
 			shift: false,
 			interact: false,
 		};
@@ -54,6 +56,9 @@ export default class Control {
 				break;
 			case controlsKeys.space:
 				this.keyPressed.space = true;
+				break;
+			case controlsKeys.escape:
+				this.keyPressed.escape = true;
 				break;
 			case controlsKeys.shift:
 				this.keyPressed.shift = true;
@@ -85,6 +90,9 @@ export default class Control {
 				break;
 			case controlsKeys.space:
 				this.keyPressed.space = false;
+				break;
+			case controlsKeys.escape:
+				this.keyPressed.escape = false;
 				break;
 			case controlsKeys.shift:
 				this.keyPressed.shift = false;

@@ -7,15 +7,17 @@ const debug = {
 import { getWebgl } from '@webgl/Webgl.js';
 /// #endif
 
-import baseUniforms from '@webgl/Materials/baseUniforms.js';
-import Timer from '@game/Timer';
+import signal from 'philbin-packages/signal';
 
 import SceneController from '@webgl/Scene/Controller.js';
-import { loadJSON } from 'philbin-packages/loader';
+import Timer from '@game/Timer';
+
+import { initPet } from './Characters/Pet.js';
 import { initPlayer } from './Characters/Player.js';
+
 import { store } from '@tools/Store.js';
 import assetsMap from '@utils/manifest.js';
-import { initPet } from './Characters/Pet.js';
+import baseUniforms from '@webgl/Materials/baseUniforms.js';
 
 export default class World {
 	constructor() {
@@ -28,10 +30,9 @@ export default class World {
 		this.init();
 
 		/// #if DEBUG
-		if (!debug.instance) {
-			debug.instance = getWebgl().debug;
-			this.setDebug();
-		}
+		const webgl = getWebgl();
+		debug.instance = webgl.debug;
+		this.setDebug();
 		/// #endif
 	}
 
@@ -41,8 +42,6 @@ export default class World {
 		const gui = debug.instance.getFolder(debug.label);
 
 		gui.addInput(baseUniforms.uWindSpeed, 'value', { label: 'windSpeed' });
-
-		// add other global uniforms here
 	}
 	/// #endif
 
@@ -76,7 +75,10 @@ export default class World {
 		});
 
 		// TODO: get saved scene from localStorage
-		this.sceneController.switch('Sandbox');
+		signal.emit('sceneSwitch', 'Sandbox');
+
+		signal.emit('cinematrix:switch', store.cinematrix[0]);
+		signal.emit('cameraSwitch', 'cinematrix');
 	}
 
 	setPlayer() {
