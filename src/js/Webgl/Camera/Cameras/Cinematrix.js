@@ -20,10 +20,14 @@ let dummyPos = new Vector3();
 let dummyTarget = new Vector3();
 let nextDummyTarget = new Vector3();
 let dummyFov = 0;
+let dummySpeed = 0;
 
-let currentPart = 0;
-let prevPart = 0;
+let currentFocus = '';
+let prevFocus = '';
 let index = 0;
+
+let hasSkipped = false;
+let isComplete = false;
 
 const isBetween = (value, min, max, inclusive = false) =>
 	inclusive ? value >= min && value <= max : value > min && value < max;
@@ -48,7 +52,7 @@ export default class Cinematrix extends PersCamera {
 
 		this.targets = null;
 
-		this.speed = 1;
+		this.speed = 0;
 		this.delay = 0;
 
 		signal.on('cinematrix:switch', (curve) => {
@@ -124,7 +128,6 @@ export default class Cinematrix extends PersCamera {
 
 	switch(curve) {
 		if (!curve) return;
-		// if (this.isActive) return;
 
 		console.log('cinematrix switch', curve);
 
@@ -175,8 +178,10 @@ export default class Cinematrix extends PersCamera {
 		this.setPosition({ ...this.path[index] });
 
 		Cinematrix.targetsList['player'].copy(getPlayer().base.mesh.position);
-		const _target = Cinematrix.targetsList['player'];
-		dummyTarget.set(..._target);
+
+		const _target = Cinematrix.targetsList[this.targets[0].focus];
+		nextDummyTarget.set(..._target);
+		dummyTarget.copy(nextDummyTarget);
 
 		this.instance.lookAt(dummyTarget);
 
@@ -217,11 +222,14 @@ export default class Cinematrix extends PersCamera {
 		targets.split(',').map((t) => {
 			const _t = t.split('-');
 			const _focus = _t[0].trim();
-			const _part = _t[1];
+			const _part = _t[1] * 1;
+			const _speed = _t[2] ? _t[2] * 1 : 1;
+			// multiply by 1 to parse string number into a real number
 
 			const _target = {};
 			_target['focus'] = _focus;
-			_target['part'] = _part * 0.01;
+			_target['part'] = _part;
+			_target['speed'] = _speed;
 
 			_targets.push(_target);
 		});
@@ -263,7 +271,9 @@ export default class Cinematrix extends PersCamera {
 			return this;
 		}
 
-		this.speed = speed;
+		dummySpeed = speed;
+
+		console.log('speed:', speed);
 
 		return this;
 	}
@@ -275,43 +285,50 @@ export default class Cinematrix extends PersCamera {
 	}
 
 	async onComplete() {
-		this.isPlaying = false;
+		if (isComplete) return;
+
+		isComplete = true;
 		console.log('cinematrix complete');
 
 		await wait(this.delay);
-		// TODO: postpro fadeout
 		signal.emit('postpro:fadeout');
 		// await fadeOut()
+		this.isPlaying = false;
+		// TODO: postpro fadeout
 
 		this.quit();
 	}
 
 	skip() {
+		if (hasSkipped) return;
+
 		console.log('cinematrix skipped');
+		hasSkipped = true;
 
 		this.onComplete();
 	}
 
 	updateTarget(length, index, dt) {
-		// don't work yet
-		let _part = 0;
+		let realPart = 0;
+		let prevPart = 0;
 		this.targets.forEach((target, i, array) => {
-			_part += target.part;
-			let _prevPart = i === 0 ? 0 : _part - array[i - 1].part;
+			prevPart = i === 0 ? 0 : realPart;
+			realPart += target.part;
 
-			const min = i === array.length - 1 ? length * target.part : length * _prevPart;
-			const max = i === array.length - 1 ? length : length * _part;
-
-			// console.log(index, min, max);
+			const min = length * prevPart;
+			const max = length * realPart;
 
 			let inRange = isBetween(index, min, max);
 			if (!inRange) return;
+			// console.log(index, min, max, target.focus);
 
-			currentPart = target.part;
-			if (currentPart !== prevPart) this.setTarget(target.focus);
+			prevFocus = currentFocus;
+			currentFocus = target.focus;
+			if (currentFocus !== prevFocus) {
+				this.setTarget(target.focus);
+				if (dummySpeed !== target.speed) this.setSpeed(target.speed);
+			}
 		});
-
-		prevPart = currentPart;
 
 		dummyTarget.x = dampPrecise(dummyTarget.x, nextDummyTarget.x, 0.01, dt, 0.001);
 		dummyTarget.y = dampPrecise(dummyTarget.y, nextDummyTarget.y, 0.01, dt, 0.001);
@@ -333,6 +350,8 @@ export default class Cinematrix extends PersCamera {
 			if (!this.onPause) {
 				const _points = this.path;
 				const _len = this.length;
+
+				this.speed = dampPrecise(this.speed, dummySpeed, 0.05, dt, 0.01);
 
 				index += 0.1 * dt * this.speed;
 				index = clamp(index, 0, _len - 1);

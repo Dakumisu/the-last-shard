@@ -28,7 +28,7 @@
   "props": [
     {
       "asset": "Stairs",
-      "uid": "Stairs.034",
+      "uid": "Stairs.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -53,7 +53,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.067",
+      "uid": "Coupe.073",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -78,7 +78,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.068",
+      "uid": "Coupe.074",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -103,7 +103,7 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.034",
+      "uid": "TreeA.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -128,7 +128,7 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.034",
+      "uid": "TreeB.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -153,7 +153,7 @@
     },
     {
       "asset": "TreeC",
-      "uid": "TreeC.034",
+      "uid": "TreeC.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -178,7 +178,7 @@
     },
     {
       "asset": "Urne",
-      "uid": "Urne.034",
+      "uid": "Urne.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -203,7 +203,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.100",
+      "uid": "Wall.109",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -228,7 +228,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.101",
+      "uid": "Wall.110",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -253,7 +253,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.102",
+      "uid": "Wall.111",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -278,7 +278,7 @@
     },
     {
       "asset": "CliffC",
-      "uid": "CliffC.034",
+      "uid": "CliffC.037",
       "type": "collider",
       "traversable": false,
       "movable": true,
@@ -329,7 +329,7 @@
   "interactables": [
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.034",
+      "uid": "LaserTowerEnd.037",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -357,7 +357,7 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.034",
+      "uid": "LaserTowerStart.037",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -386,7 +386,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.133",
+      "uid": "Coin.145",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -412,7 +412,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.134",
+      "uid": "Coin.146",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -438,7 +438,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.135",
+      "uid": "Coin.147",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -464,7 +464,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.136",
+      "uid": "Coin.148",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -492,7 +492,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.033",
+      "uid": "Spawn.036",
       "pos": [
         -10.572475,
         2.060297,
@@ -507,7 +507,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.132",
+      "uid": "Checkpoint.144",
       "pos": [
         10.243461,
         2.060297,
@@ -522,7 +522,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.133",
+      "uid": "Checkpoint.145",
       "pos": [
         -10.563803,
         2.060297,
@@ -537,7 +537,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.134",
+      "uid": "Checkpoint.146",
       "pos": [
         61.949936,
         2.060297,
@@ -552,7 +552,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.135",
+      "uid": "Checkpoint.147",
       "pos": [
         100.7435,
         13.863754,
@@ -1362,7 +1362,7 @@
       ],
       "params": {
         "speed": 1.0,
-        "targets": "player-25, objectif-50, center-25"
+        "targets": "player-.5-.25, objectif-.25-.1, center-.25"
       }
     }
   ]
