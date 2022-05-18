@@ -64,7 +64,7 @@ export default class LaserTower extends BaseCollider {
 				2000,
 				'laserTimer',
 				() => this.desactivate(),
-				(et) => console.log(et),
+				// (et) => console.log(et),
 			);
 
 		this.initialized = true;
@@ -77,9 +77,7 @@ export default class LaserTower extends BaseCollider {
 			signal.emit('sound:play-loop', 'laser');
 			this.timer.start();
 			this.game.pet.toggleFeeding(this.base.mesh.position.clone().setY(2));
-		}
-
-		if (this.type === 'end') this.game.endEvent();
+		} else if (this.type === 'end') this.game.endEvent();
 
 		this.laserGroup.visible = true;
 
@@ -91,11 +89,11 @@ export default class LaserTower extends BaseCollider {
 	desactivate() {
 		this.isActivated = false;
 
-		if (this.type === 'start') {
+		if (this.type === 'end') this.game.revertEndEvent();
+		else if (this.type === 'start') {
 			signal.emit('sound:stop', 'laser');
 			this.timer.stop();
 			this.game.pet.toggleFeeding();
-			this.game.revertEndEvent();
 		}
 
 		this.laserGroup.visible = false;
@@ -133,7 +131,9 @@ export default class LaserTower extends BaseCollider {
 			if (this.animation && !this.animation.paused) this.animation.pause();
 			let yOffset = this.base.mesh.rotation.y + Math.PI * 0.05;
 			if (this.nextTower) yOffset += Math.PI * 0.05;
-			const updateHandler = this.isActivated ? this.update : null;
+			const updateHandler = this.isActivated
+				? this.update
+				: () => this.base.mesh.updateMatrix();
 
 			this.animation = anime({
 				targets: this.base.mesh.rotation,
@@ -141,13 +141,6 @@ export default class LaserTower extends BaseCollider {
 				duration: 300,
 				easing: 'easeOutQuad',
 				update: updateHandler,
-				begin: () => {
-					this.base.mesh.matrixAutoUpdate = true;
-				},
-				complete: () => {
-					this.base.mesh.matrixAutoUpdate = false;
-					this.base.mesh.updateMatrix();
-				},
 			});
 		} else if (key === controlsKeys.interact.default && this.type === 'start') {
 			if (this.isActivated) this.desactivate();
@@ -157,6 +150,8 @@ export default class LaserTower extends BaseCollider {
 
 	update = () => {
 		if (!this.initialized) return;
+
+		this.base.mesh.updateMatrix();
 
 		this.base.mesh.getWorldDirection(this.ray.direction);
 
