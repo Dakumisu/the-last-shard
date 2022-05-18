@@ -7,7 +7,7 @@ const debug = {
 /// #endif
 
 import { getWebgl } from '@webgl/Webgl';
-import { CameraHelper, Path, Vector3 } from 'three';
+import { BufferGeometry, CameraHelper, Mesh, Path, Vector3 } from 'three';
 import PersCamera from './PersCamera';
 import signal from 'philbin-packages/signal';
 import { store } from '@tools/Store';
@@ -16,9 +16,11 @@ import { wait } from 'philbin-packages/async';
 import { getGame } from '@game/Game';
 import { getPlayer } from '@webgl/World/Characters/Player';
 
-let dummyPos = new Vector3();
-let dummyTarget = new Vector3();
-let nextDummyTarget = new Vector3();
+const dummyTangent = new Vector3();
+const tmpPos = new Vector3();
+const dummyPos = new Vector3();
+const dummyTarget = new Vector3();
+const nextDummyTarget = new Vector3();
 let dummyFov = 0;
 let dummySpeed = 0;
 
@@ -308,6 +310,13 @@ export default class Cinematrix extends PersCamera {
 		this.onComplete();
 	}
 
+	getTangent(a, b, dt) {
+		dummyTangent.subVectors(a, b).normalize();
+
+		dummyTarget.copy(tmpPos.copy(this.instance.position).sub(dummyTangent));
+		this.instance.lookAt(dummyTarget);
+	}
+
 	updateTarget(length, index, dt) {
 		let realPart = 0;
 		let prevPart = 0;
@@ -320,7 +329,6 @@ export default class Cinematrix extends PersCamera {
 
 			let inRange = isBetween(index, min, max);
 			if (!inRange) return;
-			// console.log(index, min, max, target.focus);
 
 			prevFocus = currentFocus;
 			currentFocus = target.focus;
@@ -361,6 +369,7 @@ export default class Cinematrix extends PersCamera {
 
 				dummyPos.set(_point.x, _point.y, _point.z);
 
+				// if (_points[_index + 1]) this.getTangent(_point, _points[_index + 1], dt);
 				this.updateTarget(_len, _index, dt);
 			}
 
