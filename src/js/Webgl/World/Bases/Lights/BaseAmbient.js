@@ -23,8 +23,10 @@ export default class BaseAmbient {
 		const gui = parentFolder.addFolder({
 			title: this.light.name,
 		});
-
-		gui.addInput(this.light, 'color');
+		console.log(this.light.color);
+		gui.addInput(this.light, 'color', {
+			view: 'color-2',
+		});
 		gui.addInput(this.light, 'intensity', {
 			min: 0,
 			max: 2,

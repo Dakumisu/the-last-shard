@@ -23,8 +23,13 @@ export default class Movable extends BasePhysic {
 		signal.on(name + ':endGame', async (gameId, targetId = 0, opt = {}) => {
 			console.log('🎮 Test :', gameId, targetId, opt);
 			if (gameId !== this.triggerId) return;
-			await this.targetTo(targetId, opt);
-			this.play();
+			this.targetTo(targetId, opt).play();
+		});
+
+		signal.on(name + ':endGameReverse', async (gameId) => {
+			if (gameId !== this.triggerId) return;
+			console.log('youhou');
+			this.reverse();
 		});
 
 		this.targets = this.base.asset.anim;
@@ -35,7 +40,7 @@ export default class Movable extends BasePhysic {
 		this.initPhysics();
 	}
 
-	async targetTo(id, opts = {}) {
+	targetTo(id, opts = {}) {
 		// if (this.currentAnim) await this.currentAnim.finished;
 
 		const target = this.targets[id];
@@ -52,10 +57,10 @@ export default class Movable extends BasePhysic {
 			autoplay: false,
 			...opts,
 			...new Vector3().fromArray(target.pos),
-			begin: () => {
+			changeBegin: () => {
 				this.base.mesh.matrixAutoUpdate = true;
 			},
-			complete: () => {
+			changeComplete: () => {
 				this.base.mesh.matrixAutoUpdate = false;
 				this.base.mesh.updateMatrix();
 			},
@@ -67,7 +72,9 @@ export default class Movable extends BasePhysic {
 	}
 
 	play() {
-		if (this.currentAnim) this.currentAnim.play();
+		if (this.currentAnim) {
+			if (this.currentAnim.reversed) this.currentAnim.restart();
+		}
 	}
 
 	stop() {
@@ -79,6 +86,11 @@ export default class Movable extends BasePhysic {
 	}
 
 	reverse() {
-		if (this.currentAnim) this.currentAnim.reverse();
+		console.log(this.currentAnim);
+		if (this.currentAnim) {
+			// this.currentAnim.pause();
+			this.currentAnim.reverse();
+			// this.currentAnim.play();
+		}
 	}
 }

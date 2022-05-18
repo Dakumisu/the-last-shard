@@ -32,6 +32,11 @@ export default class LaserGame {
 		console.log('🕹 Game ended');
 	}
 
+	revertEndEvent() {
+		signal.emit(this.scene.label + ':endGameReverse', this.id);
+		console.log('🕹 Game end reverted');
+	}
+
 	async init() {
 		const texture = await loadTexture('laserTexture');
 

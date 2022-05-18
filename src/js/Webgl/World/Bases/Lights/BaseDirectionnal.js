@@ -30,13 +30,14 @@ export default class BaseDirectionnal {
 	addTodebug(parentFolder) {
 		this.helper = new DirectionalLightHelper(this.light, 5);
 		this.helper.visible = false;
-		// this.light.add(helper);
 
 		const gui = parentFolder.addFolder({
 			title: this.light.name,
 		});
 
-		gui.addInput(this.light, 'color');
+		gui.addInput(this.light, 'color', {
+			view: 'color-2',
+		});
 		gui.addInput(this.light, 'intensity', {
 			min: 0,
 			max: 10,

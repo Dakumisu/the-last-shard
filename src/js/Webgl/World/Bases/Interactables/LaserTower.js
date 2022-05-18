@@ -61,7 +61,7 @@ export default class LaserTower extends BaseCollider {
 
 		if (this.type === 'start')
 			this.timer = new Timer(
-				5000,
+				2000,
 				'laserTimer',
 				() => this.desactivate(),
 				(et) => console.log(et),
@@ -95,6 +95,7 @@ export default class LaserTower extends BaseCollider {
 			signal.emit('sound:stop', 'laser');
 			this.timer.stop();
 			this.game.pet.toggleFeeding();
+			this.game.revertEndEvent();
 		}
 
 		this.laserGroup.visible = false;
