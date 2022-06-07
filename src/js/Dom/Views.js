@@ -49,7 +49,7 @@ export default class Views {
 		if (!this.viewList[view]) return console.error(`View '${view}' doesn't exist 🚫`);
 
 		this.currentView = this.viewList[view];
-		signal.emit('viewUpdated', this.currentView);
+		signal.emit('view:update', this.currentView);
 	}
 
 	getView() {

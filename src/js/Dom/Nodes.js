@@ -8,7 +8,7 @@ export default class Nodes {
 			await this.getNodes();
 			await this.getShadowNodes();
 
-			signal.emit('domLoaded');
+			signal.emit('dom:complete');
 		});
 	}
 

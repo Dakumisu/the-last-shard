@@ -33,6 +33,10 @@ const store = {
 		audios: new Map(),
 		textures: new Map(),
 	},
+
+	player: {
+		canMove: true,
+	},
 };
 
 export { store };

@@ -40,6 +40,7 @@ import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 import signal from 'philbin-packages/signal';
 import CollidersBroadphase from '@webgl/World/Bases/Broadphase/CollidersBroadphase';
 import { loadTexture } from '@utils/loaders';
+import { store } from '@tools/Store';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 
@@ -64,6 +65,8 @@ export default class BaseScene {
 		this.manifestLoaded = deferredPromise();
 		this.initialized = deferredPromise();
 		this.isInitialized = false;
+
+		this.cinematrixClasses = {};
 
 		// Render target
 		this.updateRenderTarget = this.updateRenderTarget.bind(this);
@@ -310,9 +313,21 @@ export default class BaseScene {
 
 		await curves.map(async (curve) => {
 			const _curve = new Curve({ curve, group: this.curves });
+			if (curve.type.includes('cam')) {
+				const name = curve.name.toLowerCase();
+
+				if (!this.cinematrixClasses[name]) return;
+
+				const Cinematrix = this.cinematrixClasses[name];
+
+				const datas = { cam: name, curve: _curve };
+				new Cinematrix(datas);
+				// store.cinematrix.push(datas);
+			}
 		});
 
 		this.instance.add(this.curves);
+		console.log('🔋 Curves loaded');
 	}
 
 	async _loadPoints(points) {

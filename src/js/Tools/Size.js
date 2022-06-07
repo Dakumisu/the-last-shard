@@ -1,11 +1,11 @@
 import signal from 'philbin-packages/signal';
+import { debounce } from 'philbin-packages/async';
 
 import { store } from '@tools/Store';
-import { debounce } from 'philbin-packages/async';
 
 export default class Size {
 	constructor() {
-		const resize = debounce(this.resize.bind(this), 200);
+		const resize = debounce(this.resize.bind(this), 200, { trail: true });
 		window.addEventListener('resize', resize.bind(this));
 
 		this.resize();

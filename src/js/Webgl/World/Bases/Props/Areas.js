@@ -59,10 +59,11 @@ export default class Areas {
 				this.currentArea.size;
 			if (inRange && this.isInside) return;
 
+			const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
+			signal.emit('area:leave', name);
+
 			this.isInside = false;
 			this.currentArea = null;
-
-			signal.emit('area:leave');
 
 			/// #if DEBUG
 			console.log('👊 Area leave');
@@ -76,7 +77,8 @@ export default class Areas {
 				this.currentArea = area;
 				this.isInside = true;
 
-				signal.emit('area:enter', this.currentArea);
+				const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
+				signal.emit('area:enter', name);
 
 				/// #if DEBUG
 				console.log('👊 Area enter:', this.currentArea.zone);
