@@ -34,7 +34,7 @@ export default class BaseObject {
 
 		if (this.base.isInteractable) {
 			this.isInBroadphaseRange = false;
-			signal.on('interact', this.interact.bind(this));
+			signal.on('user:interact', this.interact.bind(this));
 		}
 	}
 

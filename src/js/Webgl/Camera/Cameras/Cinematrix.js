@@ -11,7 +11,7 @@ import { BufferGeometry, CameraHelper, Mesh, Path, Vector3 } from 'three';
 import PersCamera from './PersCamera';
 import signal from 'philbin-packages/signal';
 import { store } from '@tools/Store';
-import { clamp, dampPrecise } from 'philbin-packages/maths';
+import { clamp, dampPrecise, isBetween } from 'philbin-packages/maths';
 import { wait } from 'philbin-packages/async';
 import { getGame } from '@game/Game';
 import { getPlayer } from '@webgl/World/Characters/Player';
@@ -31,18 +31,11 @@ let index = 0;
 let hasSkipped = false;
 let isComplete = false;
 
-const isBetween = (value, min, max, inclusive = false) =>
-	inclusive ? value >= min && value <= max : value > min && value < max;
-
 export default class Cinematrix extends PersCamera {
-	static targetsList = {
-		player: new Vector3(),
-		objectif: new Vector3(),
-		center: new Vector3(),
-	};
+	constructor(label = 'cinematrix_null') {
+		super(label);
 
-	constructor() {
-		super('cinematrix');
+		this.label = label;
 
 		const webgl = getWebgl();
 		const game = getGame();
@@ -51,22 +44,14 @@ export default class Cinematrix extends PersCamera {
 		this.isActive = false;
 		this.isPlaying = false;
 		this.onPause = false;
+		this.useNormals = false;
 
-		this.targets = null;
+		this.targetsList = {};
 
 		this.speed = 0;
 		this.delay = 0;
 
-		signal.on('cinematrix:switch', (curve) => {
-			this.switch(curve);
-		});
-
-		signal.on('cinematrix:play', () => this.play());
-		signal.on('cinematrix:stop', () => this.stop());
-
-		signal.on('cameraSwitch', (label) => {
-			if (label === this.label) this.enter();
-		});
+		this.init();
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
@@ -76,23 +61,11 @@ export default class Cinematrix extends PersCamera {
 		/// #endif
 	}
 
-	init() {
-		super.init();
-	}
-
 	/// #if DEBUG
-	devtool() {
-		this.camHelper = new CameraHelper(this.instance);
-		this.camHelper.visible = false;
-		debug.scene.add(this.camHelper);
+	async devtool() {
+		await this.initialized;
 
-		this.gui = debug.instance
-			.getFolder('CameraController')
-			.addFolder({ title: this.label ? this.label : 'null', expanded: false });
-
-		this.gui.addInput(this.camHelper, 'visible', {
-			label: 'Show Helper',
-		});
+		super.devtools(debug);
 
 		this.gui
 			.addButton({
@@ -128,21 +101,25 @@ export default class Cinematrix extends PersCamera {
 	}
 	/// #endif
 
-	switch(curve) {
-		if (!curve) return;
+	init() {
+		super.init();
+	}
 
-		console.log('cinematrix switch', curve);
+	async setupPath(curve) {
+		if (!curve) {
+			console.error('Need datas');
+			return;
+		}
 
-		const { name, instance, params } = curve;
+		this.curve = curve;
 
-		const _points = instance.getPoints(500);
+		console.log('cinematrix switch', this.curve);
+
+		const { name, instance, params } = this.curve;
+
+		const _points = instance.getPoints(800);
 		this.path = _points;
 		this.length = _points.length;
-
-		this.setSpeed(params.speed);
-		this.initTargets(params.targets);
-		this.setDelay(1000);
-		this.reset();
 
 		return this;
 	}
@@ -179,10 +156,8 @@ export default class Cinematrix extends PersCamera {
 		index = 0;
 		this.setPosition({ ...this.path[index] });
 
-		Cinematrix.targetsList['player'].copy(getPlayer().base.mesh.position);
-
-		const _target = Cinematrix.targetsList[this.targets[0].focus];
-		nextDummyTarget.set(..._target);
+		const _target = this.targetsList[0];
+		nextDummyTarget.set(..._target.pos);
 		dummyTarget.copy(nextDummyTarget);
 
 		this.instance.lookAt(dummyTarget);
@@ -197,14 +172,6 @@ export default class Cinematrix extends PersCamera {
 		console.log('cinematrix reset');
 	}
 
-	quit() {
-		this.isActive = false;
-
-		signal.emit('cinematrix:quit');
-
-		console.log('cinematrix quit');
-	}
-
 	enter() {
 		this.isActive = true;
 		console.log('cinematrix enter');
@@ -212,32 +179,12 @@ export default class Cinematrix extends PersCamera {
 		return this;
 	}
 
-	initTargets(targets) {
-		if (!targets) {
-			console.log('no targets, set to 0 per default');
-			this.setTarget('center');
+	exit() {
+		this.isActive = false;
 
-			return this;
-		}
+		signal.emit('cinematrix:exit', this.label);
 
-		const _targets = [];
-		targets.split(',').map((t) => {
-			const _t = t.split('-');
-			const _focus = _t[0].trim();
-			const _part = _t[1] * 1;
-			const _speed = _t[2] ? _t[2] * 1 : 1;
-			// multiply by 1 to parse string number into a real number
-
-			const _target = {};
-			_target['focus'] = _focus;
-			_target['part'] = _part;
-			_target['speed'] = _speed;
-
-			_targets.push(_target);
-		});
-
-		console.log(_targets);
-		this.targets = _targets;
+		console.log('cinematrix exit');
 	}
 
 	setPosition({ x, y, z }) {
@@ -252,11 +199,13 @@ export default class Cinematrix extends PersCamera {
 		return this;
 	}
 
-	setTarget(target) {
-		const _target = Cinematrix.targetsList[target];
-		nextDummyTarget.set(..._target);
+	async setTargets(targets) {
+		if (!targets) {
+			console.log('Need targets');
+			return this;
+		}
 
-		console.log(target, _target);
+		this.targetsList = targets;
 
 		return this;
 	}
@@ -293,12 +242,12 @@ export default class Cinematrix extends PersCamera {
 		console.log('cinematrix complete');
 
 		await wait(this.delay);
-		signal.emit('postpro:fadeout');
+		signal.emit('postpro:transition');
 		// await fadeOut()
 		this.isPlaying = false;
 		// TODO: postpro fadeout
 
-		this.quit();
+		this.exit();
 	}
 
 	skip() {
@@ -310,6 +259,15 @@ export default class Cinematrix extends PersCamera {
 		this.onComplete();
 	}
 
+	updateTarget(i) {
+		const _target = this.targetsList[i];
+		nextDummyTarget.set(..._target.pos);
+
+		console.log(_target);
+
+		return this;
+	}
+
 	getTangent(a, b, dt) {
 		dummyTangent.subVectors(a, b).normalize();
 
@@ -317,12 +275,13 @@ export default class Cinematrix extends PersCamera {
 		this.instance.lookAt(dummyTarget);
 	}
 
-	updateTarget(length, index, dt) {
+	updatePath(length, index, dt) {
 		let realPart = 0;
 		let prevPart = 0;
-		this.targets.forEach((target, i, array) => {
+
+		this.targetsList.forEach((target, i) => {
 			prevPart = i === 0 ? 0 : realPart;
-			realPart += target.part;
+			realPart += target.ratio;
 
 			const min = length * prevPart;
 			const max = length * realPart;
@@ -333,7 +292,7 @@ export default class Cinematrix extends PersCamera {
 			prevFocus = currentFocus;
 			currentFocus = target.focus;
 			if (currentFocus !== prevFocus) {
-				this.setTarget(target.focus);
+				this.updateTarget(i);
 				if (dummySpeed !== target.speed) this.setSpeed(target.speed);
 			}
 		});
@@ -359,7 +318,7 @@ export default class Cinematrix extends PersCamera {
 				const _points = this.path;
 				const _len = this.length;
 
-				this.speed = dampPrecise(this.speed, dummySpeed, 0.05, dt, 0.01);
+				this.speed = dampPrecise(this.speed, dummySpeed, 0.04, dt, 0.01);
 
 				index += 0.1 * dt * this.speed;
 				index = clamp(index, 0, _len - 1);
@@ -369,8 +328,11 @@ export default class Cinematrix extends PersCamera {
 
 				dummyPos.set(_point.x, _point.y, _point.z);
 
-				// if (_points[_index + 1]) this.getTangent(_point, _points[_index + 1], dt);
-				this.updateTarget(_len, _index, dt);
+				if (!this.useNormals) {
+					this.updatePath(_len, _index, dt);
+				} else {
+					if (_points[_index + 1]) this.getTangent(_point, _points[_index + 1], dt);
+				}
 			}
 
 			this.instance.position.x = dampPrecise(

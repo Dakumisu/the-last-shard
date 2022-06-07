@@ -65,11 +65,11 @@ export default class Control {
 				break;
 			case controlsKeys.interact.default:
 				this.keyPressed.interact = true;
-				signal.emit('interact', controlsKeys.interact.default);
+				signal.emit('user:interact', controlsKeys.interact.default);
 				break;
 			case controlsKeys.interact.rotate:
 				this.keyPressed.interact = true;
-				signal.emit('interact', controlsKeys.interact.rotate);
+				signal.emit('user:interact', controlsKeys.interact.rotate);
 				break;
 		}
 	}

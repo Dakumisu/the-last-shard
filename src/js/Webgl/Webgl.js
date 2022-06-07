@@ -9,7 +9,7 @@ import Raycast from '@tools/Raycast';
 import Size from '@tools/Size';
 
 import CameraController from './Camera/Controller';
-import MainCamera from './Camera/MainCamera';
+import MainCamera from './Camera/Cameras/MainCamera';
 import Cinematrix from './Camera/Cameras/Cinematrix';
 
 import Renderer from './Renderer';
@@ -57,7 +57,7 @@ class Webgl {
 	init() {
 		this.cameraController = new CameraController();
 		this.camera = new MainCamera();
-		this.cinematrixCamera = new Cinematrix();
+		// this.cinematrixCamera = new Cinematrix();
 
 		/// #if DEBUG
 		this.debugOrbitCam = new OrbitCamera(

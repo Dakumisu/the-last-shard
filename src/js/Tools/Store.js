@@ -27,12 +27,15 @@ const store = {
 	quality: 5,
 	isWebGL2: true,
 
-	cinematrix: [],
 	manifest: [],
 	loadedAssets: {
 		models: new Map(),
 		audios: new Map(),
 		textures: new Map(),
+	},
+
+	player: {
+		canMove: true,
 	},
 };
 

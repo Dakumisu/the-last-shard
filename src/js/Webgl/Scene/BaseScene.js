@@ -66,6 +66,8 @@ export default class BaseScene {
 		this.initialized = deferredPromise();
 		this.isInitialized = false;
 
+		this.cinematrixClasses = {};
+
 		// Render target
 		this.updateRenderTarget = this.updateRenderTarget.bind(this);
 		this.minBox = new Vector3();
@@ -311,10 +313,18 @@ export default class BaseScene {
 
 		await curves.map(async (curve) => {
 			const _curve = new Curve({ curve, group: this.curves });
-			if (curve.type.includes('cam')) store.cinematrix.push(_curve);
-		});
+			if (curve.type.includes('cam')) {
+				const name = curve.name.toLowerCase();
 
-		signal.emit('cinematrix:switch', store.cinematrix[0]);
+				if (!this.cinematrixClasses[name]) return;
+
+				const Cinematrix = this.cinematrixClasses[name];
+
+				const datas = { cam: name, curve: _curve };
+				new Cinematrix(datas);
+				// store.cinematrix.push(datas);
+			}
+		});
 
 		this.instance.add(this.curves);
 		console.log('🔋 Curves loaded');

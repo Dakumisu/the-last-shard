@@ -11,7 +11,7 @@ import Particles from '@webgl/World/Bases/Particles/Particles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 
-import signal from 'philbin-packages/signal';
+// import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
 
 export default class SandboxScene extends BaseScene {
@@ -32,6 +32,7 @@ export default class SandboxScene extends BaseScene {
 	}
 
 	async init() {
+		await this.getCinematrix();
 		super.init();
 
 		await this.manifestLoaded;
@@ -101,7 +102,22 @@ export default class SandboxScene extends BaseScene {
 		this.isInitialized = true;
 	}
 
+	async getCinematrix() {
+		const cinematrixClasses = import.meta.globEager('./Cinematrix/*.js');
+
+		for (const path in cinematrixClasses) {
+			// Get the class
+			const _c = await cinematrixClasses[path];
+			// Get the name of the folder where the cinematrix is
+			const _n = path.split('/')[2].split('.')[0];
+			// Assign the class to the cinematrix
+			this.cinematrixClasses[_n.toLowerCase()] = _c[_n];
+		}
+	}
+
 	update(et, dt) {
+		if (!this.isInitialized) return;
+
 		super.update(et, dt);
 	}
 

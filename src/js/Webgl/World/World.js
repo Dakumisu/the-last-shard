@@ -77,8 +77,8 @@ export default class World {
 		// TODO: get saved scene from localStorage
 		signal.emit('sceneSwitch', 'Sandbox');
 
-		signal.emit('cinematrix:switch', store.cinematrix[0]);
-		signal.emit('cameraSwitch', 'cinematrix');
+		// signal.emit('cinematrix:switch', store.cinematrix[0]);
+		// signal.emit('camera:switch', 'cinematrix');
 	}
 
 	setPlayer() {

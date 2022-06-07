@@ -1,30 +1,46 @@
-import { PerspectiveCamera } from 'three';
+import { CameraHelper, PerspectiveCamera } from 'three';
 import { imageAspect } from 'philbin-packages/maths';
+import { deferredPromise } from 'philbin-packages/async';
 
 import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
 
-let initialized = false;
-
 export default class PersCamera {
-	constructor(label = '', params = {}) {
+	constructor(label = 'camera_null', params = {}) {
 		const webgl = getWebgl();
 		this.scene = webgl.mainScene.instance;
 		this.canvas = webgl.canvas;
 		this.cameraController = webgl.cameraController;
 
 		this.label = label;
+		console.log(`[CAMERA] ${this.label}`);
 		this.params = params;
 
-		this.init();
+		this.initialized = deferredPromise();
 	}
+
+	/// #if DEBUG
+	devtools(debug) {
+		this.camHelper = new CameraHelper(this.instance);
+		this.camHelper.visible = false;
+		debug.scene.add(this.camHelper);
+
+		this.gui = debug.instance
+			.getFolder('CameraController')
+			.addFolder({ title: this.label ? this.label : 'null', expanded: false });
+
+		this.gui.addInput(this.camHelper, 'visible', {
+			label: 'Show Helper',
+		});
+	}
+	/// #endif
 
 	init() {
 		this.setPerspectiveCamera();
 		this.cameraController.add(this);
 
-		initialized = true;
+		this.initialized.resolve();
 	}
 
 	setPerspectiveCamera() {
@@ -40,7 +56,7 @@ export default class PersCamera {
 	}
 
 	update() {
-		if (!initialized) return;
+		if (!this.initialized) return;
 
 		this.instance.updateMatrixWorld();
 	}
