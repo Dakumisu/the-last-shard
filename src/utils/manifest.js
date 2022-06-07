@@ -104,14 +104,17 @@ export async function loadManifest() {
 		});
 
 		const _assets = _json.assets;
-		_assets.forEach((asset) => {
-			if (assetsMap.get(asset)) return;
-
-			assetsMap.set(asset, {
-				path: '/assets/export/Asset_' + asset + '.glb',
-				data: {},
+		if (_assets) {
+			_assets.forEach((asset) => {
+				if (assetsMap.get(asset)) return;
+	
+				assetsMap.set(asset, {
+					path: '/assets/export/Asset_' + asset + '.glb',
+					data: {},
+				});
 			});
-		});
+		}
+		
 	}
 
 	for (const key in terrainsSplatting) {

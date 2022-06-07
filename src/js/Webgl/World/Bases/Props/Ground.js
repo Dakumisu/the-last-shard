@@ -71,14 +71,14 @@ export default class Ground extends BaseCollider {
 
 		this.base.realMesh = base;
 
-		const material = new BaseBasicMaterial({
-			side: DoubleSide,
-			color: new Color('#664CB1'),
-		});
-		// const material = new BaseToonMaterial({
+		// const material = new BaseBasicMaterial({
 		// 	side: DoubleSide,
 		// 	color: new Color('#664CB1'),
 		// });
+		const material = new BaseToonMaterial({
+			side: DoubleSide,
+			color: new Color('#664CB1'),
+		});
 		base.material = material;
 
 		this.instance.add(base);

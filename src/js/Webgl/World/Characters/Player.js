@@ -647,11 +647,11 @@ class Player extends BaseEntity {
 			if (this.state.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
 				this.base.animation.playOnce(player.anim);
-				this.jump(100);
+				this.jump(40);
 			} else {
 				player.anim = this.base.animation.get('jump');
 				this.base.animation.playOnce(player.anim);
-				this.jump(400);
+				this.jump(40);
 			}
 		}
 
