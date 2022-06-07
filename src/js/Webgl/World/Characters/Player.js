@@ -457,9 +457,6 @@ class Player extends BaseEntity {
 			playerVelocity.set(0, 0, 0);
 		}
 
-		// // adjust the camera
-		// this.updatePlayerCam(dt);
-
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
 	}
@@ -519,21 +516,17 @@ class Player extends BaseEntity {
 	updateSpeed(delta, dt) {
 		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
-		if (
-			this.state.forwardPressed ||
-			this.state.backwardPressed ||
-			this.state.leftPressed ||
-			this.state.rightPressed
-		) {
+		if (this.state.keysPressed) {
 			if (!this.tmpSlowDown && this.state.slowDown) {
-				speedTarget = -1.5;
+				speedTarget = 0;
 			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.05, dt, 0.1);
 		} else speedTarget = 0;
 
 		this.tmpSlowDown = this.state.slowDown;
 
 		// Rotate only if the player is moving
-		if (this.state.isMoving && player.realSpeed > params.speed * 0.02) {
+		directionTarget = currentDirection + camDirection;
+		if (this.state.isMoving && player.realSpeed > params.speed * 0.1) {
 			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
 			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
 			directionTarget = currentDirection + camDirection;
@@ -545,7 +538,7 @@ class Player extends BaseEntity {
 				dt,
 				0.01,
 			);
-		}
+		} else if (this.state.keysPressed) this.base.mesh.rotation.y = directionTarget;
 		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
 		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
@@ -594,7 +587,6 @@ class Player extends BaseEntity {
 
 		this.state.isMounting = deltaPlayerPosY >= 0 && deltaPlayerPosY !== 0;
 		this.state.isFalling = !this.state.isMounting && deltaPlayerPosY !== 0;
-		// this.state.isOnGround = deltaPlayerPosY === 0 && !this.state.isMounting;
 
 		// get real speed based on the player's delta position
 		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
@@ -701,6 +693,12 @@ class Player extends BaseEntity {
 
 		if (this.state.hasJumped && !this.state.isJumping)
 			this.state.hasJumped = !this.state.isOnGround;
+
+		this.state.keysPressed =
+			this.state.forwardPressed ||
+			this.state.backwardPressed ||
+			this.state.leftPressed ||
+			this.state.rightPressed;
 
 		this.base.animation.update(dt);
 	}
