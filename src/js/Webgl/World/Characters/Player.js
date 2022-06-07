@@ -17,6 +17,7 @@ import {
 	Line,
 	Box3Helper,
 	MeshNormalMaterial,
+	sRGBEncoding,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -24,7 +25,7 @@ import { getGame } from '@game/Game';
 import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
-import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
+import { loadDynamicGLTF as loadGLTF, loadTexture } from '@utils/loaders';
 import { mergeGeometry } from '@utils/webgl';
 import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
@@ -37,7 +38,7 @@ import { debounce, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
-const model = '/assets/model/Ayru.glb';
+const model = '/assets/model/player.glb';
 
 const PI = Math.PI;
 const PI2 = PI * 2;
