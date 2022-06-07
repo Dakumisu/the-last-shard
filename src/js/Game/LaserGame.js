@@ -65,4 +65,8 @@ export default class LaserGame {
 		this.laserMaterialOuter = LaserGame.laserMaterialOuter;
 		// this.laserMaterial.defines.USE_TANGENT = ''
 	}
+
+	update(et, dt) {
+		this.laserTowers.forEach((laserTower) => laserTower.update(et, dt));
+	}
 }
