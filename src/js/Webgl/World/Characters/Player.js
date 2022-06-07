@@ -380,7 +380,7 @@ class Player extends BaseEntity {
 		playerVelocity.y += this.state.isOnGround ? 0 : delta * this.params.gravity;
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
-		this.updateDirection();
+		this.updateDirection(store.player.canMove);
 		this.updateSpeed(delta, dt);
 
 		// adjust player position based on collisions
@@ -464,9 +464,18 @@ class Player extends BaseEntity {
 		if (this.base.mesh.position.y < -25) this.reset();
 	}
 
-	updateDirection() {
+	updateDirection(canMove) {
 		playerDirection = this.base.mesh.rotation.y;
 		camDirection = this.base.camera.orbit.spherical.theta;
+
+		if (!canMove) {
+			this.state.forwardPressed = false;
+			this.state.backwardPressed = false;
+			this.state.leftPressed = false;
+			this.state.rightPressed = false;
+
+			return;
+		}
 
 		// gestion de la direction
 		this.state.forwardPressed = this.keyPressed.forward;
@@ -511,10 +520,10 @@ class Player extends BaseEntity {
 		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
 		if (
-			this.keyPressed.forward ||
-			this.keyPressed.backward ||
-			this.keyPressed.left ||
-			this.keyPressed.right
+			this.state.forwardPressed ||
+			this.state.backwardPressed ||
+			this.state.leftPressed ||
+			this.state.rightPressed
 		) {
 			if (!this.tmpSlowDown && this.state.slowDown) {
 				speedTarget = -1.5;

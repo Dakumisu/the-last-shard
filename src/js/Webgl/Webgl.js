@@ -9,8 +9,9 @@ import Raycast from '@tools/Raycast';
 import Size from '@tools/Size';
 
 import CameraController from './Camera/Controller';
-import MainCamera from './Camera/MainCamera';
-import baseUniforms from './Materials/baseUniforms';
+import MainCamera from './Camera/Cameras/MainCamera';
+import Cinematrix from './Camera/Cameras/Cinematrix';
+
 import Renderer from './Renderer';
 import MainScene from './Scene/MainScene';
 import World from './World/World';
@@ -18,7 +19,6 @@ import World from './World/World';
 /// #if DEBUG
 import Debug from '@tools/Debug';
 import OrbitCamera from './Camera/Cameras/OrbitCamera';
-import Timer from '@game/Timer';
 /// #endif
 
 let initialized = false;
@@ -48,11 +48,8 @@ class Webgl {
 
 		this.device = new Device();
 		this.size = new Size();
-
 		this.raf = new Raf();
-
 		this.mainScene = new MainScene();
-		// this.keyboard = new Keyboard();
 
 		this.init();
 	}
@@ -60,6 +57,7 @@ class Webgl {
 	init() {
 		this.cameraController = new CameraController();
 		this.camera = new MainCamera();
+		// this.cinematrixCamera = new Cinematrix();
 
 		/// #if DEBUG
 		this.debugOrbitCam = new OrbitCamera(
@@ -84,7 +82,6 @@ class Webgl {
 		this.renderer = new Renderer();
 
 		this.mouse = new Mouse();
-
 		this.raycaster = new Raycast();
 
 		this.world = new World();
@@ -127,10 +124,6 @@ class Webgl {
 		if (this.performance) this.performance.update(this.raf.delta);
 		if (this.raycaster) this.raycaster.update();
 
-		Timer.update();
-
-		baseUniforms.uTime.value = this.raf.elapsed;
-
 		/// #if DEBUG
 		if (this.debug.stats) this.debug.stats.update();
 		/// #endif
@@ -141,7 +134,7 @@ class Webgl {
 
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
 		if (this.renderer) this.renderer.render();
-		if (this.camera) this.camera.update();
+		if (this.camera) this.camera.update(this.raf.elapsed, this.raf.delta);
 	}
 
 	resize() {

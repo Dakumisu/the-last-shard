@@ -1,5 +1,5 @@
 import { getWebgl } from '../Webgl';
-import signal from 'philbin-packages/signal/Signal';
+import signal from 'philbin-packages/signal';
 
 /// #if DEBUG
 const debug = {
@@ -17,6 +17,7 @@ export default class SceneController {
 		this.scenes = {};
 		this.currentScene = null;
 
+		this.init();
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		this.devtool();

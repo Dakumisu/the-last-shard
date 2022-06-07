@@ -49,6 +49,25 @@ def exportBezier(curves, obj, type, name, spline):
             handle_right = utils.toThreePos(
                 utils.toNumberList(point.handle_right, 4))
             data['points'].append([] + control + handle_left + handle_right)
+
+    params = {}
+    for key in obj.keys():
+        if key.startswith('_'):
+            continue
+        # if key != 'effect':
+        #     continue
+        v = obj[key]
+        if (
+            not isinstance(v, str)
+            and not isinstance(v, float)
+            and not isinstance(v, int)
+            and not isinstance(v, bool)
+        ):
+            continue
+        # Do not exports hard ops properties
+        params[key] = v
+
+    data['params'] = params
     print(data)
     curves.append(data)
 
@@ -77,6 +96,25 @@ def exportNurbs(curves, obj, type, name, spline):
         co = obj.matrix_world @ vertex.co
         pos = utils.toThreePos(utils.toNumberList(co, 4))
         data['points'].append(pos)
+
+    params = {}
+    for key in obj.keys():
+        if key.startswith('_'):
+            continue
+        # if key != 'effect':
+        #     continue
+        v = obj[key]
+        if (
+            not isinstance(v, str)
+            and not isinstance(v, float)
+            and not isinstance(v, int)
+            and not isinstance(v, bool)
+        ):
+            continue
+        # Do not exports hard ops properties
+        params[key] = v
+
+    data['params'] = params
     print(data)
     curves.append(data)
 
@@ -93,6 +131,26 @@ def exportPolyline(curves, obj, type, name, spline):
         for point in spline.points.values():
             pos = utils.toThreePos(utils.toNumberList(point.co, 4))
             data['points'].append(pos)
+
+    params = {}
+    for key in obj.keys():
+        if key.startswith('_'):
+            continue
+        # if key != 'effect':
+        #     continue
+        v = obj[key]
+        if (
+            not isinstance(v, str)
+            and not isinstance(v, float)
+            and not isinstance(v, int)
+            and not isinstance(v, bool)
+        ):
+            continue
+        # Do not exports hard ops properties
+        params[key] = v
+
+    data['params'] = params
+
     print(data)
     curves.append(data)
 

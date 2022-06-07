@@ -3,6 +3,7 @@ import signal from 'philbin-packages/signal';
 
 /// #if DEBUG
 import { CameraHelper } from 'three';
+import { store } from '@tools/Store';
 const debug = {
 	instance: null,
 	label: 'CameraController',
@@ -16,15 +17,13 @@ export default class CameraController {
 		this.cameras = {};
 		this.currentCamera = null;
 
+		signal.on('camera:switch', this.switch.bind(this));
+
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
 		this.devtool();
 		/// #endif
-	}
-
-	init() {
-		signal.on('cameraSwitch', this.switch.bind(this));
 	}
 
 	/// #if DEBUG
@@ -52,7 +51,7 @@ export default class CameraController {
 		});
 
 		debug.guiList.on('change', (e) => {
-			this.switch(e.value);
+			signal.emit('camera:switch', e.value);
 		});
 
 		const domEl = debug.guiList.controller_.view.valueElement.firstChild.firstChild;
@@ -68,15 +67,19 @@ export default class CameraController {
 	/// #endif
 
 	add(camera, autoSwitch) {
-		if (!this.cameras[camera.label]) {
-			this.cameras[camera.label] = camera;
-			/// #if DEBUG
-			this.addToDebug(camera.label, autoSwitch);
-			/// #endif
-			if (autoSwitch) this.switch(camera.label);
+		console.log(camera);
+		if (this.cameras[camera.label]) {
+			console.error('Camera ' + camera.label + ' already exists');
 			return;
 		}
-		console.error('Camera already exists');
+
+		this.cameras[camera.label] = camera;
+		/// #if DEBUG
+		this.addToDebug(camera.label, autoSwitch);
+		/// #endif
+		if (autoSwitch) this.switch(camera.label);
+
+		return this;
 	}
 
 	get(label) {
@@ -94,6 +97,7 @@ export default class CameraController {
 			if (this.currentCamera) this.currentCamera.gui.expanded = false;
 			/// #endif
 
+			store.player.canMove = label === 'player';
 			this.currentCamera = this.get(label);
 			this.currentCamera.resize();
 
