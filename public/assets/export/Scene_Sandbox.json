@@ -20,6 +20,7 @@
     "TreeC",
     "Urne",
     "Wall",
+    "LaserTowerBetween",
     "LaserTowerEnd",
     "LaserTowerStart",
     "Coin",
@@ -328,8 +329,37 @@
   ],
   "interactables": [
     {
+      "asset": "LaserTowerBetween",
+      "uid": "LaserTowerBetween.002",
+      "type": "interactable",
+      "traversable": false,
+      "movable": false,
+      "params": {
+        "distance": 10.0,
+        "gameId": 0
+      },
+      "transforms": {
+        "pos": [
+          0.066896,
+          0.0,
+          34.733128
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.008",
+      "uid": "LaserTowerEnd.001",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -338,9 +368,9 @@
       },
       "transforms": {
         "pos": [
-          23.042458,
-          1e-06,
-          -57.511898
+          -2.681951,
+          4e-06,
+          27.998405
         ],
         "scale": [
           1.0,
@@ -357,7 +387,7 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.008",
+      "uid": "LaserTowerStart.001",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -367,9 +397,9 @@
       },
       "transforms": {
         "pos": [
-          13.677015,
-          -4e-06,
-          -57.513908
+          -7.797124,
+          0.0,
+          34.734241
         ],
         "scale": [
           1.0,
@@ -378,9 +408,9 @@
         ],
         "qt": [
           0.0,
-          0.691841,
+          0.0,
           -0.0,
-          0.72205
+          1.0
         ]
       }
     },
