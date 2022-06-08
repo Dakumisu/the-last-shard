@@ -41,7 +41,7 @@ export default class SandboxScene extends BaseScene {
 		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
 		const directional = new BaseDirectionnal({
 			color: '#fff',
-			intensity: 7,
+			intensity: 2,
 			label: 'Directionnal',
 			position: new Vector3(-10, 0, 10),
 		});

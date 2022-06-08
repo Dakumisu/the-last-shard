@@ -1,8 +1,9 @@
-import Cinematrix from '@webgl/Camera/Cameras/Cinematrix';
-import { getPlayer } from '@webgl/World/Characters/Player';
+import { Vector3 } from 'three';
 import { wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
-import { Vector3 } from 'three';
+
+import Cinematrix from '@webgl/Camera/Cameras/Cinematrix';
+import { getPlayer } from '@webgl/World/Characters/Player';
 
 const params = {
 	speed: 1,
@@ -12,10 +13,11 @@ const params = {
 export class Intro {
 	constructor(datas) {
 		this.datas = datas;
-		this.label = 'sandbox_intro';
+
+		this.label = `sandbox_${this.datas.name}`;
 		this.controller = new Cinematrix(this.label);
 
-		this.isComplete = false;
+		this.isComplete = true;
 
 		this.listeners();
 		this.setup();
@@ -59,16 +61,11 @@ export class Intro {
 		if (label !== this.label) return;
 		if (this.isComplete) return;
 
-		const datas = {
-			cam: this.cam,
-			targets: this.targets,
-		};
-
 		signal.emit('postpro:transition');
 
 		await wait(params.delay);
-
 		signal.emit('camera:switch', this.label);
+		await wait(params.delay);
 		this.controller.play();
 
 		return this;

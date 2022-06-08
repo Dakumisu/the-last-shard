@@ -32,7 +32,7 @@ let hasSkipped = false;
 let isComplete = false;
 
 export default class Cinematrix extends PersCamera {
-	constructor(label = 'cinematrix_null') {
+	constructor(label = 'cinematrix_null', { useNormals = false } = {}) {
 		super(label);
 
 		this.label = label;
@@ -44,7 +44,7 @@ export default class Cinematrix extends PersCamera {
 		this.isActive = false;
 		this.isPlaying = false;
 		this.onPause = false;
-		this.useNormals = false;
+		this.useNormals = useNormals;
 
 		this.targetsList = {};
 

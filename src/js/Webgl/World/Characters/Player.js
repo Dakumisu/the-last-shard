@@ -26,7 +26,6 @@ import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
 import { loadDynamicGLTF as loadGLTF, loadTexture } from '@utils/loaders';
-import { mergeGeometry } from '@utils/webgl';
 import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
@@ -42,20 +41,25 @@ const model = '/assets/model/player.glb';
 
 const PI = Math.PI;
 const PI2 = PI * 2;
+
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
 const tVec3c = new Vector3();
 const tVec3d = new Vector3();
 const tVec3e = new Vector3();
+const playerVelocity = new Vector3();
+
 const tVec2a = new Vector2();
 const tVec2b = new Vector2();
+
 const tBox3a = new Box3();
 const tBox3b = new Box3();
 const tBox3c = new Box3();
+
 const tMat4a = new Matrix4();
 const tMat4b = new Matrix4();
+
 const tLine3 = new Line3();
-const playerVelocity = new Vector3();
 
 const params = {
 	speed: 3.25,
@@ -153,15 +157,14 @@ class Player extends BaseEntity {
 		debug.instance = webgl.debug;
 		/// #endif
 
-		signal.on('keyup', (e) => {
-			if (e === 'W') {
-				console.log(this.base.camera.orbit.sphericalTarget);
-				console.log(this.base.camera.orbit.spherical);
-				console.log(camInertie);
-			}
-		});
-
 		this.beforeInit();
+
+		signal.on('keydown', (e) => {
+			if (e === 'M') this.log = true;
+		});
+		signal.on('keyup', (e) => {
+			if (e === 'M') this.log = false;
+		});
 	}
 
 	/// #if DEBUG
@@ -295,7 +298,7 @@ class Player extends BaseEntity {
 
 		await this.setModel();
 		this.setAnimation();
-		this.setListeners();
+		this.listeners();
 
 		initialized = true;
 	}
@@ -351,7 +354,7 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.group);
 	}
 
-	setListeners() {
+	listeners() {
 		signal.on('checkpoint', this.setCheckpoint.bind(this));
 	}
 
@@ -380,7 +383,7 @@ class Player extends BaseEntity {
 		playerVelocity.y += this.state.isOnGround ? 0 : delta * this.params.gravity;
 		this.base.mesh.position.addScaledVector(playerVelocity, delta);
 
-		this.updateDirection(store.player.canMove);
+		this.updateDirection();
 		this.updateSpeed(delta, dt);
 
 		// adjust player position based on collisions
@@ -417,14 +420,20 @@ class Player extends BaseEntity {
 					const depth = this.base.capsuleInfo.radius.base - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
+					if (this.log) console.log(direction);
+
+					if (direction.y < 0.37) {
+						direction.y = 0;
+					}
+
 					tLine3.start.addScaledVector(direction, depth);
 					tLine3.end.addScaledVector(direction, depth);
 				}
 			},
 		});
 
-		if (!this.state.isMoving && player.realSpeed < params.speed * 0.97)
-			this.checkPlayerStuck(collider, dt);
+		// if (!this.state.isMoving && player.realSpeed < params.speed * 0.97)
+		// 	this.checkPlayerStuck(collider, dt);
 
 		// get the adjusted position of the capsule collider in world space after checking
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
@@ -436,11 +445,10 @@ class Player extends BaseEntity {
 		const deltaVector = tVec3b;
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
-		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
+		// if the player was primarily adjusted vertically
+		// we assume it's on something we should consider ground
 		if (collider.base.type === 'walkable')
 			this.state.isOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
-
-		// this.checkPlayerPosition(dt);
 
 		const offset = Math.max(0, deltaVector.length() - 1e-5);
 		deltaVector.normalize().multiplyScalar(offset);
@@ -461,11 +469,11 @@ class Player extends BaseEntity {
 		if (this.base.mesh.position.y < -25) this.reset();
 	}
 
-	updateDirection(canMove) {
+	updateDirection() {
 		playerDirection = this.base.mesh.rotation.y;
 		camDirection = this.base.camera.orbit.spherical.theta;
 
-		if (!canMove) {
+		if (!store.game.player.canMove) {
 			this.state.forwardPressed = false;
 			this.state.backwardPressed = false;
 			this.state.leftPressed = false;
@@ -519,7 +527,7 @@ class Player extends BaseEntity {
 		if (this.state.keysPressed) {
 			if (!this.tmpSlowDown && this.state.slowDown) {
 				speedTarget = 0;
-			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.05, dt, 0.1);
+			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.04, dt, 0.1);
 		} else speedTarget = 0;
 
 		this.tmpSlowDown = this.state.slowDown;
@@ -547,9 +555,11 @@ class Player extends BaseEntity {
 
 	async jump(delay = 0) {
 		if (this.state.isJumping) return;
+		if (!store.game.player.canMove) return;
+
 		this.state.hasJumped = this.state.isJumping = true;
 		await wait(delay);
-		playerVelocity.y = 12;
+		playerVelocity.y = 13;
 		this.state.isJumping = false;
 	}
 
@@ -636,10 +646,12 @@ class Player extends BaseEntity {
 		}
 
 		if (this.keyPressed.space && this.state.isOnGround && !this.state.isJumping) {
+			if (!store.game.player.canMove) return;
+
 			if (this.state.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
 				this.base.animation.playOnce(player.anim);
-				this.jump(100);
+				this.jump(0);
 			} else {
 				player.anim = this.base.animation.get('jump');
 				this.base.animation.playOnce(player.anim);

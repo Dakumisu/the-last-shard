@@ -169,7 +169,7 @@ def export(fp, col, textureOnly=False):
         export_lights=False,
         export_apply=True,
         export_colors=True,
-        # export_image_format = 'NONE'
+        export_image_format='NONE'
     )
 
     bpy.context.window.scene = scn

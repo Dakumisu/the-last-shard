@@ -34,8 +34,12 @@ const store = {
 		textures: new Map(),
 	},
 
-	player: {
-		canMove: true,
+	game: {
+		isPaused: false,
+
+		player: {
+			canMove: true,
+		},
 	},
 };
 

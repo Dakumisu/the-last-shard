@@ -218,6 +218,10 @@ export default class BaseScene {
 	async _loadBase() {
 		this.ground = new Ground(this);
 		await this.ground.init();
+
+		/// #if DEBUG
+		console.log('🔋 Base loaded');
+		/// #endif
 	}
 
 	async _loadProps(props) {
@@ -242,7 +246,6 @@ export default class BaseScene {
 				await _prop.init();
 			}
 		});
-		console.log('🔋 Props loaded');
 
 		this.collidersBroadphase = new CollidersBroadphase({
 			radius: 2,
@@ -250,6 +253,10 @@ export default class BaseScene {
 		});
 
 		this.instance.add(this.props);
+
+		/// #if DEBUG
+		console.log('🔋 Props loaded');
+		/// #endif
 	}
 
 	async _loadInteractables(interactables) {
@@ -274,14 +281,6 @@ export default class BaseScene {
 				});
 				await _interactable.init();
 				interactablesBp.push(_interactable);
-			} else if (asset.includes('Coin')) {
-				// const _interactable = new Coin({
-				// 	isInteractable: true,
-				// 	asset: interactable,
-				// 	group: this.interactables,
-				// });
-				// await _interactable.init();
-				// interactablesBp.push(_interactable);
 			} else if (asset.includes('Fragment')) {
 				const _interactable = new Fragment({
 					asset: interactable,
@@ -306,6 +305,10 @@ export default class BaseScene {
 		});
 
 		this.instance.add(this.interactables);
+
+		/// #if DEBUG
+		console.log('🔋 Props loaded');
+		/// #endif
 	}
 
 	async _loadCurves(curves) {
@@ -313,6 +316,8 @@ export default class BaseScene {
 
 		await curves.map(async (curve) => {
 			const _curve = new Curve({ curve, group: this.curves });
+
+			// create a cinematic camera
 			if (curve.type.includes('cam')) {
 				const name = curve.name.toLowerCase();
 
@@ -320,14 +325,15 @@ export default class BaseScene {
 
 				const Cinematrix = this.cinematrixClasses[name];
 
-				const datas = { cam: name, curve: _curve };
+				const datas = { name: name, curve: _curve };
 				new Cinematrix(datas);
-				// store.cinematrix.push(datas);
 			}
 		});
 
+		/// #if DEBUG
 		this.instance.add(this.curves);
 		console.log('🔋 Curves loaded');
+		/// #endif
 	}
 
 	async _loadPoints(points) {
@@ -351,7 +357,10 @@ export default class BaseScene {
 		});
 
 		this.checkpoints = new Checkpoints({ points: pointsList, scene: this });
+
+		/// #if DEBUG
 		console.log('🔋 Checkpoints loaded');
+		/// #endif
 	}
 
 	async _loadAreas(areas) {
@@ -368,7 +377,10 @@ export default class BaseScene {
 		});
 
 		this.areas = new Areas({ areas: areasList, scene: this });
+
+		/// #if DEBUG
 		console.log('🔋 Areas loaded');
+		/// #endif
 	}
 
 	setRenderTarget() {
