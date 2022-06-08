@@ -13,7 +13,7 @@ export default class Debug {
 		this.gui = new Pane();
 		this.gui.registerPlugin(EssentialsPlugin); // https://cocopon.github.io/tweakpane/plugins.html
 		this.gui.registerPlugin(TweakpaneRotationInputPlugin); // https://www.npmjs.com/package/@0b5vr/tweakpane-plugin-rotation
-		this.stats = new StatsJs();
+		// this.stats = new StatsJs();
 
 		this.debugFolders = {};
 		this.tabs = {};
