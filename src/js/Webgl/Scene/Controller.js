@@ -1,5 +1,6 @@
 import { getWebgl } from '../Webgl';
 import signal from 'philbin-packages/signal';
+import { wait } from 'philbin-packages/async';
 
 /// #if DEBUG
 const debug = {
@@ -90,19 +91,28 @@ export default class SceneController {
 		/// #endif
 
 		if (this.get(label)) {
+			signal.emit('postpro:transition-in', 500);
+			await wait(500);
+
 			if (this.currentScene) {
 				/// #if DEBUG
 				this.currentScene.gui.hidden = true;
 				/// #endif
+
 				this.currentScene.removeFrom(this.mainScene.instance);
 			}
+
 			this.currentScene = this.get(label);
+			localStorage.setItem('game:level', label);
 			if (!this.currentScene.isInitialized) this.currentScene.init();
 			await this.currentScene.initialized;
 			/// #if DEBUG
 			console.log('🌆 Switch Scene OK :', label);
 			/// #endif
 			this.currentScene.addTo(this.mainScene.instance);
+
+			await wait(500);
+			signal.emit('postpro:transition-out');
 
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;

@@ -150,6 +150,8 @@ class Player extends BaseEntity {
 			isBlocked: false,
 
 			slowDown: false,
+
+			isDead: false,
 		};
 		this.tmpSlowDown = this.state.slowDown;
 
@@ -340,7 +342,7 @@ class Player extends BaseEntity {
 				base: 0.4,
 				body: 0.27,
 			},
-			segment: new Line3(new Vector3(), new Vector3(0, -0.75, 0)),
+			segment: new Line3(new Vector3(), new Vector3(0, -0.5, 0)),
 		};
 
 		this.base.material = new PlayerMaterial({
@@ -367,8 +369,7 @@ class Player extends BaseEntity {
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
-		// this.base.model.scene.scale.set(1.5, 1.5, 1.5);
-		this.base.model.scene.translateOnAxis(params.upVector, -1.15);
+		this.base.model.scene.translateOnAxis(params.upVector, -0.9);
 
 		this.base.group.add(this.base.model.scene);
 	}
@@ -422,7 +423,7 @@ class Player extends BaseEntity {
 
 					if (this.log) console.log(direction);
 
-					if (direction.y < 0.37) {
+					if (Math.abs(direction.y) < 0.37) {
 						direction.y = 0;
 					}
 
@@ -665,13 +666,25 @@ class Player extends BaseEntity {
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
-	reset() {
+	async reset() {
+		if (this.state.isDead) return;
+
+		this.state.isDead = true;
+
+		signal.emit('postpro:transition-in', 250);
+		await wait(250);
+
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.copy(this.checkpoint.pos);
 		this.base.mesh.quaternion.copy(this.checkpoint.qt);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position || this.checkpoint.pos);
 		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y || 0);
+
+		await wait(200);
+
+		this.state.isDead = false;
+		signal.emit('postpro:transition-out');
 	}
 
 	resize() {

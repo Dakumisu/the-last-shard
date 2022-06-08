@@ -324,9 +324,7 @@ export default class BaseScene {
 				if (!this.cinematrixClasses[name]) return;
 
 				const Cinematrix = this.cinematrixClasses[name];
-
-				const datas = { name: name, curve: _curve };
-				new Cinematrix(datas);
+				new Cinematrix({ scene: this.label.toLowerCase(), name: name, curve: _curve });
 			}
 		});
 

@@ -15,7 +15,8 @@ export class Intro {
 	constructor(datas) {
 		this.datas = datas;
 
-		this.label = `sandbox_${this.datas.name}`;
+		this.label = `${this.datas.scene}_${this.datas.name}`;
+		console.log(this.label);
 		this.controller = new Cinematrix(this.label);
 
 		this.isComplete = false;
@@ -62,8 +63,8 @@ export class Intro {
 		if (label !== this.label) return;
 		if (this.isComplete) return;
 
-		signal.emit('postpro:transition-in');
-		await wait(store.game.transition.duration);
+		signal.emit('postpro:transition-in', 500);
+		await wait(500);
 
 		signal.emit('camera:switch', this.label);
 

@@ -74,11 +74,8 @@ export default class World {
 			this.sceneController.add(_scene);
 		});
 
-		// TODO: get saved scene from localStorage
-		signal.emit('sceneSwitch', 'Sandbox');
-
-		// signal.emit('cinematrix:switch', store.cinematrix[0]);
-		// signal.emit('camera:switch', 'cinematrix');
+		const currentLevel = localStorage.getItem('game:level') || 'Sandbox';
+		this.sceneController.switch(currentLevel);
 	}
 
 	setPlayer() {

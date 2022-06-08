@@ -243,8 +243,8 @@ export default class Cinematrix extends PersCamera {
 
 		await wait(this.delay);
 
-		signal.emit('postpro:transition-in');
-		await wait(store.game.transition.duration);
+		signal.emit('postpro:transition-in', 500);
+		await wait(500);
 
 		this.isPlaying = false;
 

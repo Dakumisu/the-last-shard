@@ -177,21 +177,21 @@ export default class PostFX {
 		this.currentLut = lut;
 	}
 
-	transitionIn() {
+	transitionIn(duration = 800, easing = 'linear') {
 		anime({
 			targets: this.material.uniforms.uTransition,
 			value: 1,
-			duration: store.game.transition.duration,
-			easing: store.game.transition.easing,
+			duration: duration,
+			easing: easing,
 		});
 	}
 
-	transitionOut() {
+	transitionOut(duration = 800, easing = 'linear') {
 		anime({
 			targets: this.material.uniforms.uTransition,
 			value: 0,
-			duration: store.game.transition.duration,
-			easing: store.game.transition.easing,
+			duration: duration,
+			easing: easing,
 		});
 	}
 
