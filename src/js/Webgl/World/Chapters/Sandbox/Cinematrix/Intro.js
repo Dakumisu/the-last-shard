@@ -4,6 +4,7 @@ import signal from 'philbin-packages/signal';
 
 import Cinematrix from '@webgl/Camera/Cameras/Cinematrix';
 import { getPlayer } from '@webgl/World/Characters/Player';
+import { store } from '@tools/Store';
 
 const params = {
 	speed: 1,
@@ -17,7 +18,7 @@ export class Intro {
 		this.label = `sandbox_${this.datas.name}`;
 		this.controller = new Cinematrix(this.label);
 
-		this.isComplete = true;
+		this.isComplete = false;
 
 		this.listeners();
 		this.setup();
@@ -61,10 +62,13 @@ export class Intro {
 		if (label !== this.label) return;
 		if (this.isComplete) return;
 
-		signal.emit('postpro:transition');
+		signal.emit('postpro:transition-in');
+		await wait(store.game.transition.duration);
 
-		await wait(params.delay);
 		signal.emit('camera:switch', this.label);
+
+		signal.emit('postpro:transition-out');
+
 		await wait(params.delay);
 		this.controller.play();
 
@@ -76,6 +80,8 @@ export class Intro {
 
 		this.isComplete = true;
 		signal.emit('camera:switch', 'player');
+
+		signal.emit('postpro:transition-out');
 
 		return this;
 	}

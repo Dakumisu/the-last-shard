@@ -9,6 +9,7 @@ uniform sampler2D uLut1;
 uniform sampler2D uLut2;
 uniform float uLutIntensity;
 uniform float uGlobalLutIntensity;
+uniform float uTransition;
 
 vec3 lutLookup(sampler2D tex, float size, vec3 rgb) {
 
@@ -41,21 +42,31 @@ void main() {
 	vec2 uv = gl_FragCoord.xy / uResolution.xy;
 	uv /= uResolution.z;
 
-	vec4 val = texture2D(uScene, uv);
+	vec4 scene = texture2D(uScene, uv);
+	vec4 finalLut = scene;
+	vec4 final = scene;
 
 	// pull the sample in by half a pixel so the sample begins
 	// at the center of the edge pixels.
 	float pixelWidth = 1.0 / uLutSize;
 	float halfPixelWidth = 0.5 / uLutSize;
-	vec3 uvw = vec3(halfPixelWidth) + val.rgb * (1.0 - pixelWidth);
+	vec3 uvw = vec3(halfPixelWidth) + scene.rgb * (1.0 - pixelWidth);
 
 	// Sample the two LUTs
-	vec4 lutVal1 = vec4(lutLookup(uLut1, uLutSize, uvw), val.a);
-	vec4 lutVal2 = vec4(lutLookup(uLut2, uLutSize, uvw), val.a);
+	vec3 lutVal1 = vec3(lutLookup(uLut1, uLutSize, uvw));
+	vec3 lutVal2 = vec3(lutLookup(uLut2, uLutSize, uvw));
 
 	// Blend the two LUTs
-	vec4 final = mix(lutVal1, lutVal2, uLutIntensity);
+	finalLut.rgb = mix(lutVal1, lutVal2, uLutIntensity);
+	finalLut = mix(scene, finalLut, uGlobalLutIntensity);
 
-	gl_FragColor = vec4(mix(val, final, uGlobalLutIntensity));
+	final = finalLut;
+
+	// Transition
+	vec3 transition = vec3(0.);
+
+	final.rgb = mix(final.rgb, transition, uTransition);
+
+	gl_FragColor = final;
 
 }

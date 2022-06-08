@@ -19,6 +19,8 @@ import { getWebgl } from '@webgl/Webgl';
 import PostFXMaterial from './basic/material';
 import Lut from './Lut';
 import anime from 'animejs';
+import signal from 'philbin-packages/signal';
+import { store } from '@tools/Store';
 
 const tVec2 = new Vector2();
 const tVec3 = new Vector3();
@@ -63,12 +65,15 @@ export default class PostFX {
 				uScene: { value: this.target.texture },
 				uResolution: { value: tVec3 },
 
+				// LUT
 				uLut1: { value: null },
 				uLut2: { value: null },
 				uLutSize: { value: 0 },
-
 				uLutIntensity: { value: 0 },
 				uGlobalLutIntensity: { value: 1 },
+
+				// Transition
+				uTransition: { value: 0 },
 			},
 		});
 
@@ -79,6 +84,7 @@ export default class PostFX {
 		this.currentLut = null;
 		this.luts = {};
 
+		this.listeners();
 		this.loadLuts();
 
 		PostFX.initialized = true;
@@ -113,6 +119,11 @@ export default class PostFX {
 		}).on('change', (e) => this.switch(this.luts[e.value], 1000));
 	}
 	/// #endif
+
+	listeners() {
+		signal.on('postpro:transition-in', this.transitionIn.bind(this));
+		signal.on('postpro:transition-out', this.transitionOut.bind(this));
+	}
 
 	async loadLuts() {
 		const lut1 = new Lut({ material: this.material, lutKey: 'lut-1' });
@@ -164,6 +175,24 @@ export default class PostFX {
 		}
 
 		this.currentLut = lut;
+	}
+
+	transitionIn() {
+		anime({
+			targets: this.material.uniforms.uTransition,
+			value: 1,
+			duration: store.game.transition.duration,
+			easing: store.game.transition.easing,
+		});
+	}
+
+	transitionOut() {
+		anime({
+			targets: this.material.uniforms.uTransition,
+			value: 0,
+			duration: store.game.transition.duration,
+			easing: store.game.transition.easing,
+		});
 	}
 
 	resize(width, height) {

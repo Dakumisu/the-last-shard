@@ -40,6 +40,11 @@ const store = {
 		player: {
 			canMove: true,
 		},
+
+		transition: {
+			duration: 800,
+			easing: 'linear',
+		},
 	},
 };
 
