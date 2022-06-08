@@ -49,10 +49,14 @@ export default class LaserTower extends BaseCollider {
 	async init() {
 		await super.init();
 
-		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
-		else this.base.mesh.getWorldDirection(this.direction);
+		this.rings = this.base.mesh.children.filter((children) => children.name.includes('ring'));
+		this.sphere = this.base.mesh.children.find((children) => children.name.includes('sphere'));
+		this.sphereWorldPos = this.base.mesh.position.clone().setY(this.sphere.position.y);
 
-		this.ray.set(this.base.mesh.position, this.direction);
+		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
+		else this.sphere.getWorldDirection(this.direction);
+
+		this.ray.set(this.sphereWorldPos, this.direction);
 
 		this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialInner);
 		this.outerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialOuter);
@@ -61,7 +65,7 @@ export default class LaserTower extends BaseCollider {
 		this.laserGroup.add(this.innerLaser, this.outerLaser);
 		this.laserGroup.visible = false;
 
-		this.base.mesh.add(this.laserGroup);
+		this.sphere.add(this.laserGroup);
 
 		if (this.type === 'start')
 			this.timer = new Timer(
@@ -80,7 +84,7 @@ export default class LaserTower extends BaseCollider {
 		if (this.type === 'start') {
 			signal.emit('sound:play-loop', 'laser');
 			this.timer.start();
-			this.game.pet.toggleFeeding(this.base.mesh.position.clone().setY(2));
+			this.game.pet.toggleFeeding(this.sphereWorldPos);
 		} else if (this.type === 'end') this.game.endEvent();
 
 		this.laserGroup.visible = true;
@@ -150,13 +154,13 @@ export default class LaserTower extends BaseCollider {
 
 		if (this.animation && !this.animation.paused) this.animation.pause();
 		const radOffset = reversed ? Math.PI * 0.05 : -Math.PI * 0.05;
-		let yOffset = this.base.mesh.rotation.y + radOffset;
+		let yOffset = this.sphere.rotation.y + radOffset;
 
 		if (this.nextTower) yOffset += Math.PI * 0.05;
 		// const updateHandler = this.isActivated ? this.update : () => this.base.mesh.updateMatrix();
 
 		this.animation = anime({
-			targets: this.base.mesh.rotation,
+			targets: this.sphere.rotation,
 			y: yOffset,
 			duration: 300,
 			easing: 'easeOutQuad',
@@ -177,9 +181,14 @@ export default class LaserTower extends BaseCollider {
 	update = (et, dt) => {
 		if (!this.initialized) return;
 
-		this.base.mesh.updateMatrix();
+		if (this.isActivated)
+			this.rings.forEach((ring, i) => {
+				ring.rotation.x += 0.01 * (i + 1);
+				ring.rotation.z += 0.01 * (i + 1);
+			});
+		this.sphere.updateMatrix();
 
-		this.base.mesh.getWorldDirection(this.ray.direction);
+		this.sphere.getWorldDirection(this.ray.direction);
 
 		if (this.laserGroup.scale.z !== this.maxDistance)
 			this.laserGroup.scale.z = this.maxDistance;
@@ -192,8 +201,8 @@ export default class LaserTower extends BaseCollider {
 
 		this.game.laserTowers.forEach((nextLaserTower) => {
 			// Don't test with the start, the same tower and if distance from current is above max
-			const distanceFromCurrent = nextLaserTower.base.mesh.position.distanceTo(
-				this.base.mesh.position,
+			const distanceFromCurrent = nextLaserTower.sphereWorldPos.distanceTo(
+				this.sphereWorldPos,
 			);
 			if (
 				nextLaserTower.towerType === 'start' ||
@@ -202,7 +211,7 @@ export default class LaserTower extends BaseCollider {
 			)
 				return;
 
-			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.base.mesh.position);
+			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.sphereWorldPos);
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
 			if (rayNextDistance <= 0.1 && !nextLaserTower.isActivated && this.isActivated) {
@@ -214,4 +223,6 @@ export default class LaserTower extends BaseCollider {
 			}
 		});
 	};
+
+	animate = (et, dt) => {};
 }

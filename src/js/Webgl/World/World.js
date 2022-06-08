@@ -76,7 +76,8 @@ export default class World {
 		});
 
 		// TODO: get saved scene from localStorage
-		this.sceneController.switch('IslandTuto');
+		// this.sceneController.switch('IslandTuto');
+		this.sceneController.switch('Sandbox');
 	}
 
 	setPlayer() {

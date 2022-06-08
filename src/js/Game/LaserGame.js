@@ -12,7 +12,7 @@ export default class LaserGame {
 	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 256, 256, true)
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
-		.translate(0, 2, 0.5);
+		.translate(0, 0, 0.5);
 
 	/**
 	 *
