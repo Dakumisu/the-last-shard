@@ -1,11 +1,14 @@
 import { OrthographicCamera, Vector2 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
+import VirtualScroll from 'virtual-scroll';
+import signal from 'philbin-packages/signal';
 
 const tVec2a = new Vector2();
 const tVec2b = new Vector2();
 const tVec2c = new Vector2();
 const tVec2d = new Vector2();
+const tVec2e = new Vector2();
 
 export default class Mouse {
 	constructor(opt = {}) {
@@ -14,7 +17,12 @@ export default class Mouse {
 
 		this.initMouses();
 
-		document.addEventListener('mousemove', this.getMousesPositions.bind(this));
+		document.addEventListener('mousemove', this.getMousesPositions);
+		this.virtualScroll = new VirtualScroll({
+			el: document,
+			useKeyboard: false,
+		});
+		this.virtualScroll.on(this.onScroll);
 	}
 
 	initMouses() {
@@ -30,9 +38,11 @@ export default class Mouse {
 		// ❗ Expérimental
 		// Mouse's positions in the scene compared to the DOM size and the camera (x: [?, ?], y:[?, ?])
 		this.sceneMap = tVec2d;
+
+		this.deltaScroll = tVec2e;
 	}
 
-	getMousesPositions(e) {
+	getMousesPositions = (e) => {
 		this.dom.set(e.clientX, e.clientY);
 
 		this.frag.set(this.dom.x / window.innerWidth, this.dom.y / window.innerHeight);
@@ -58,7 +68,7 @@ export default class Mouse {
 				this.viewSize().height / 2,
 			),
 		);
-	}
+	};
 
 	cursorMap(mousePos, in_min, in_max, out_min, out_max) {
 		return ((mousePos - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
@@ -81,7 +91,14 @@ export default class Mouse {
 		return { width, height, vFov };
 	}
 
+	onScroll = (e) => {
+		this.deltaScroll.set(e.deltaX, e.deltaY);
+		signal.emit('scroll', this.deltaScroll);
+	};
+
 	destroy() {
-		document.removeEventListener('mousemove', this.getMousesPositions.bind(this));
+		document.removeEventListener('mousemove', this.getMousesPositions);
+		this.virtualScroll.destroy();
+		signal.off('scroll');
 	}
 }

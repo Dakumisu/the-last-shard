@@ -1,19 +1,29 @@
 import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
 import anime from 'animejs';
-import { ArrowHelper, MathUtils, Mesh, Ray, Vector3 } from 'three';
+import { ArrowHelper, Box3, Box3Helper, MathUtils, Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
 import { Pet } from '@webgl/World/Characters/Pet';
 import Timer from '@game/Timer';
 import signal from 'philbin-packages/signal';
-import { dampPrecise } from 'philbin-packages/maths';
+import { clamp, damp, dampPrecise, lerp } from 'philbin-packages/maths';
+import { getWebgl } from '@webgl/Webgl';
+
+const params = {
+	ringRotationOffset: {
+		max: 0.02,
+		min: 0,
+	},
+	tiltYOffset: 0.0005,
+};
 
 export default class LaserTower extends BaseCollider {
 	/**
 	 *
 	 * @param {{ asset?: Object, direction?: Array<number>, game: LaserGame, group?: Group}} param0
 	 */
+
 	constructor({ asset = null, direction = null, game, group }) {
 		super({ type: 'nonWalkable', isInteractable: true });
 
@@ -23,9 +33,10 @@ export default class LaserTower extends BaseCollider {
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
 
-		this.laserGroup = new Group();
+		if (this.type !== 'end') this.laserGroup = new Group();
 
 		this.isActivated = false;
+		this.needsUpdate = false;
 
 		this.previousTower = null;
 		this.nextTower = null;
@@ -35,8 +46,10 @@ export default class LaserTower extends BaseCollider {
 		this.baseDirection = direction;
 		this.direction = new Vector3();
 
-		this.tiltY = 0;
-		this.tiltYTarget = 0;
+		this.tiltY = this.tiltYTarget = 0;
+		signal.on('scroll', this.tilt);
+
+		this.ringRotationOffset = params.ringRotationOffset.min;
 
 		this.animation = null;
 
@@ -50,8 +63,14 @@ export default class LaserTower extends BaseCollider {
 		await super.init();
 
 		this.rings = this.base.mesh.children.filter((children) => children.name.includes('ring'));
-		this.sphere = this.base.mesh.children.find((children) => children.name.includes('sphere'));
-		this.sphereWorldPos = this.base.mesh.position.clone().setY(this.sphere.position.y);
+		this.sphereGroup = this.base.mesh.children.find((children) =>
+			children.name.includes('sphereGroup'),
+		);
+		this.sphere = this.sphereGroup.children[0];
+		this.sphere.material = LaserGame.sphereMaterial;
+		this.sphereWorldPos = this.base.mesh.position.clone();
+		this.base.mesh.localToWorld(this.sphereWorldPos);
+		// .setY(this.sphereGroup.position.y + this.base.mesh.position.y);
 
 		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
 		else this.sphere.getWorldDirection(this.direction);
@@ -61,19 +80,14 @@ export default class LaserTower extends BaseCollider {
 		this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialInner);
 		this.outerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialOuter);
 
-		this.laserGroup.scale.set(1, 1, this.maxDistance);
-		this.laserGroup.add(this.innerLaser, this.outerLaser);
-		this.laserGroup.visible = false;
+		if (this.laserGroup) {
+			this.laserGroup.scale.set(1, 1, this.maxDistance);
+			this.laserGroup.add(this.innerLaser, this.outerLaser);
+			this.laserGroup.visible = false;
+			this.sphere.add(this.laserGroup);
+		}
 
-		this.sphere.add(this.laserGroup);
-
-		if (this.type === 'start')
-			this.timer = new Timer(
-				10000,
-				'laserTimer',
-				() => this.desactivate(),
-				// (et) => console.log(et),
-			);
+		if (this.type === 'start') this.timer = new Timer(200000, 'laserTimer', this.desactivate);
 
 		this.initialized = true;
 	}
@@ -87,14 +101,12 @@ export default class LaserTower extends BaseCollider {
 			this.game.pet.toggleFeeding(this.sphereWorldPos);
 		} else if (this.type === 'end') this.game.endEvent();
 
-		this.laserGroup.visible = true;
+		if (this.laserGroup) this.laserGroup.visible = true;
 
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);
-
-		this.update();
 	}
 
-	desactivate() {
+	desactivate = () => {
 		this.isActivated = false;
 
 		if (this.type === 'end') this.game.revertEndEvent();
@@ -104,16 +116,16 @@ export default class LaserTower extends BaseCollider {
 			this.game.pet.toggleFeeding();
 		}
 
-		this.laserGroup.visible = false;
-		this.laserGroup.scale.z = this.maxDistance;
+		if (this.laserGroup) {
+			this.laserGroup.visible = false;
+			this.laserGroup.scale.z = this.maxDistance;
+		}
 
 		if (this.nextTower && this.nextTower.isActivated) {
 			this.nextTower.desactivateBy(this);
 			this.nextTower = null;
 		}
-
-		this.update();
-	}
+	};
 
 	activateBy(laserTower) {
 		if (this.previousTower && this.previousTower !== laserTower) return;
@@ -138,66 +150,62 @@ export default class LaserTower extends BaseCollider {
 		if (
 			(key === controlsKeys.rotate[0] || key === controlsKeys.rotate[1]) &&
 			this.type !== 'end'
-		)
+		) {
+			this.needsUpdate = true;
 			this.rotate(key === controlsKeys.rotate[0]);
-		else if (key === controlsKeys.interact && this.type === 'start') {
+		} else if (key === controlsKeys.interact && this.type === 'start') {
+			this.needsUpdate = true;
+
 			if (this.isActivated) this.desactivate();
 			else this.activate();
 		}
-
-		if (key === controlsKeys.tilt && this.type !== 'end' && this.isActivated) this.tilt();
-		else if (key === 'untilt' && this.isActivated) this.untilt();
 	}
 
 	rotate(reversed) {
-		console.log('rotating');
+		this.needsUpdate = true;
 
 		if (this.animation && !this.animation.paused) this.animation.pause();
-		const radOffset = reversed ? Math.PI * 0.05 : -Math.PI * 0.05;
-		let yOffset = this.sphere.rotation.y + radOffset;
 
-		if (this.nextTower) yOffset += Math.PI * 0.05;
-		// const updateHandler = this.isActivated ? this.update : () => this.base.mesh.updateMatrix();
+		const radOffset = reversed ? Math.PI * 0.05 : -Math.PI * 0.05;
+		let yOffset = this.sphereGroup.rotation.y + radOffset;
 
 		this.animation = anime({
-			targets: this.sphere.rotation,
+			targets: this.sphereGroup.rotation,
 			y: yOffset,
 			duration: 300,
 			easing: 'easeOutQuad',
-			// update: updateHandler,
 		});
 	}
 
-	tilt() {
-		this.tiltYTarget -= 0.1;
-		console.log('tilting', this.tiltYTarget, this.tiltY);
-	}
+	tilt = (e) => {
+		if (
+			!this.isInBroadphaseRange ||
+			!this.base.isInteractable ||
+			!this.initialized ||
+			!this.isActivated
+		)
+			return;
 
-	untilt() {
-		this.tiltYTarget = 0;
-		console.log('untilting');
-	}
+		this.tiltYTarget -= e.y * params.tiltYOffset;
+		this.tiltYTarget = clamp(this.tiltYTarget, -Math.PI * 0.25, Math.PI * 0.25);
+	};
 
 	update = (et, dt) => {
 		if (!this.initialized) return;
 
-		if (this.isActivated)
-			this.rings.forEach((ring, i) => {
-				ring.rotation.x += 0.01 * (i + 1);
-				ring.rotation.z += 0.01 * (i + 1);
-			});
-		this.sphere.updateMatrix();
+		this.animate(et, dt);
 
+		if (!this.needsUpdate) return;
+
+		this.tiltY = lerp(this.tiltY, this.tiltYTarget, 0.1);
+		this.sphere.rotation.x = this.tiltY;
+		this.sphere.rotation.z = this.tiltY;
+
+		this.sphere.updateMatrix();
 		this.sphere.getWorldDirection(this.ray.direction);
 
-		if (this.laserGroup.scale.z !== this.maxDistance)
+		if (this.laserGroup && this.laserGroup.scale.z !== this.maxDistance)
 			this.laserGroup.scale.z = this.maxDistance;
-
-		// console.log(this.tiltY, this.tiltYTarget, dt);
-		this.tiltY = dampPrecise(this.tiltY, this.tiltYTarget, 0.1, dt, 0.1);
-
-		this.laserGroup.rotation.x = this.tiltYTarget;
-		this.laserGroup.updateMatrix();
 
 		this.game.laserTowers.forEach((nextLaserTower) => {
 			// Don't test with the start, the same tower and if distance from current is above max
@@ -214,15 +222,28 @@ export default class LaserTower extends BaseCollider {
 			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.sphereWorldPos);
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
-			if (rayNextDistance <= 0.1 && !nextLaserTower.isActivated && this.isActivated) {
+			if (rayNextDistance <= 0.2 && !nextLaserTower.isActivated && this.isActivated) {
 				if (this.animation && !this.animation.paused) this.animation.pause();
-				this.laserGroup.scale.z = distanceFromCurrent;
+				if (this.laserGroup) this.laserGroup.scale.z = distanceFromCurrent + 2;
 				nextLaserTower.activateBy(this);
+				this.needsUpdate = false;
 			} else if (nextLaserTower.isActivated && rayNextDistance > 0.1) {
 				nextLaserTower.desactivateBy(this);
 			}
 		});
 	};
 
-	animate = (et, dt) => {};
+	animate = (et, dt) => {
+		if (this.isActivated || this.ringRotationOffset >= 0.00001) {
+			this.ringRotationOffset = lerp(
+				this.ringRotationOffset,
+				this.isActivated ? params.ringRotationOffset.max : params.ringRotationOffset.min,
+				0.07,
+			);
+			this.rings.forEach((ring, i) => {
+				ring.rotation.x += this.ringRotationOffset * (i + 1);
+				ring.rotation.z += this.ringRotationOffset * (i + 1);
+			});
+		}
+	};
 }

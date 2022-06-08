@@ -12,7 +12,6 @@ export const controlsKeys = {
 	shift: 'SHIFT',
 	interact: 'F',
 	rotate: ['A', 'E'],
-	tilt: 'É',
 };
 
 export default class Control {
@@ -37,7 +36,6 @@ export default class Control {
 			shift: false,
 			interact: false,
 			rotate: false,
-			tilt: false,
 		};
 	}
 
@@ -66,15 +64,15 @@ export default class Control {
 				break;
 			case controlsKeys.interact:
 				this.keyPressed.interact = true;
-				signal.emit('user:interact', controlsKeys.interact);
+				signal.emit('user:interact', key);
 				break;
 			case controlsKeys.rotate[0]:
 				this.keyPressed.rotate = true;
-				signal.emit('user:interact', controlsKeys.rotate[0]);
+				signal.emit('user:interact', key);
 				break;
-			case controlsKeys.tilt:
-				this.keyPressed.tilt = true;
-				signal.emit('user:interact', controlsKeys.tilt);
+			case controlsKeys.rotate[1]:
+				this.keyPressed.rotate = true;
+				signal.emit('user:interact', key);
 				break;
 		}
 	}
@@ -110,10 +108,6 @@ export default class Control {
 				break;
 			case controlsKeys.rotate[1]:
 				this.keyPressed.rotate = false;
-				break;
-			case controlsKeys.tilt:
-				this.keyPressed.tilt = false;
-				signal.emit('user:interact', 'untilt');
 				break;
 		}
 	}

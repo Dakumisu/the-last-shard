@@ -312,9 +312,7 @@ class Player extends BaseEntity {
 
 				minDistance: 1,
 				maxDistance: 30,
-				/// #if !DEBUG
 				enableZoom: false,
-				/// #endif
 
 				enablePan: false,
 				rotateSpeed: 0.2,
