@@ -95,12 +95,25 @@ assetsMap.set('laser-rotate-sound', {
 	path: 'assets/sound/interactions/laser-rotate.mp3',
 	data: {},
 });
+assetsMap.set('laser-activate-sound', {
+	path: 'assets/sound/interactions/laser-activate.mp3',
+	data: {},
+});
 assetsMap.set('footsteps-sound', {
 	path: 'assets/sound/characters/walk.mp3',
 	data: {},
 });
 assetsMap.set('fall-sound', {
 	path: 'assets/sound/characters/fall.mp3',
+	data: {},
+});
+assetsMap.set('jump-sound', {
+	path: 'assets/sound/characters/jump.mp3',
+	data: {},
+});
+
+assetsMap.set('terrain-splatting-test', {
+	path: 'assets/export/Scene_Sandbox_TerrainSplatting-min.jpg',
 	data: {},
 });
 

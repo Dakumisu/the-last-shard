@@ -468,7 +468,12 @@ class Player extends BaseEntity {
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
 
-		if (this.state.isMoving && !this.state.hasJumped && player.realSpeed > 1)
+		if (
+			this.state.isMoving &&
+			this.state.isOnGround &&
+			player.realSpeed > 1 &&
+			!this.state.isFalling
+		)
 			signal.emit('sound:play', 'footsteps', { rate: player.realSpeed * 0.25 });
 		else if (this.state.isFalling && this.state.isOnGround) signal.emit('sound:play', 'fall');
 		else signal.emit('sound:stop', 'footsteps');
@@ -566,6 +571,7 @@ class Player extends BaseEntity {
 		await wait(delay);
 		playerVelocity.y = 13;
 		this.state.isJumping = false;
+		signal.emit('sound:play', 'jump');
 	}
 
 	checkPlayerStuck(collider, dt) {

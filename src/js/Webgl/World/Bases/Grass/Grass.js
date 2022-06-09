@@ -9,21 +9,28 @@ import {
 	BufferAttribute,
 	BufferGeometry,
 	Color,
+	DataTexture,
+	FloatType,
 	InstancedBufferAttribute,
 	InstancedBufferGeometry,
 	InstancedInterleavedBuffer,
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
+	PlaneGeometry,
+	RGBAFormat,
 	Texture,
+	UnsignedByteType,
+	UnsignedShortType,
 } from 'three';
-
+import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer';
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 
 const twigsCountList = [0, 0, 80000, 100000, 200000, 300000];
 
@@ -69,6 +76,8 @@ export default class Grass {
 		this.setTwigGeometry();
 		this.initGeometry(twigsCountList[5]);
 		this.setGrass();
+
+		this.setGPUCompute();
 
 		this.count = twigsCountList[store.quality];
 		this.updateCount(this.count);
@@ -172,6 +181,87 @@ export default class Grass {
 		// this.base.mesh.position.y = -0.2;
 		this.base.mesh.frustumCulled = false;
 		this.scene.instance.add(this.base.mesh);
+	}
+
+	setGPUCompute() {
+		console.log(this.params.minPosTexture);
+		this.gpuCompute = new GPUComputationRenderer(1, 1, this.renderer);
+		this.gpuCompute.setDataType(FloatType);
+
+		this.playerOnGrassTexture = this.gpuCompute.createTexture();
+		// this.playerOnGrassTexture.format = RGBAFormat;
+		// this.playerOnGrassTexture.type = UnsignedByteType;
+
+		this.playerOnGrassVariable = this.gpuCompute.addVariable(
+			'playerOnGrassBoolean',
+			`
+			uniform sampler2D uGrassTexture;
+			uniform vec3 uMaxMapBounds;
+			uniform vec3 uMinMapBounds;	
+			uniform vec3 uCharaPos;
+
+			float map(float value, float start1, float stop1, float start2, float stop2) {
+				return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+			}
+
+			void main() {
+				vec2 scaledCoords = vec2(map(uCharaPos.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(uCharaPos.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
+
+				vec4 playerOnGrass = texture2D(uGrassTexture, scaledCoords);
+
+				if (playerOnGrass.g > 0.5) 
+					gl_FragColor = vec4(0.);
+				 else
+					gl_FragColor = vec4(1.);
+
+			}
+		`,
+			this.playerOnGrassTexture,
+		);
+
+		this.playerOnGrassVariable.material.uniforms['uCharaPos'] = {
+			value: this.scene.player.base.mesh.position,
+		};
+		this.playerOnGrassVariable.material.uniforms['uMaxMapBounds'] = {
+			value: this.scene.maxBox,
+		};
+		this.playerOnGrassVariable.material.uniforms['uMinMapBounds'] = {
+			value: this.scene.minBox,
+		};
+		this.playerOnGrassVariable.material.uniforms['uGrassTexture'] = {
+			value: this.params.minPosTexture,
+		};
+
+		const error = this.gpuCompute.init();
+		if (error) console.error(error);
+
+		this.outputBuffer = new Float32Array(4);
+
+		this.plane = new Mesh(new PlaneGeometry(1, 1), new BaseBasicMaterial({ color: 0xffffff }));
+		this.plane.scale.setScalar(2);
+		this.scene.instance.add(this.plane);
+	}
+
+	updateGPUCompute() {
+		this.playerOnGrassVariable.material.uniforms['uCharaPos'].value.copy(
+			this.scene.player.base.mesh.position,
+		);
+
+		this.gpuCompute.compute();
+
+		// this.plane.material.map = this.gpuCompute.getCurrentRenderTarget(
+		// 	this.playerOnGrassVariable,
+		// ).texture;
+		this.renderer.readRenderTargetPixels(
+			this.gpuCompute.getCurrentRenderTarget(this.playerOnGrassVariable),
+			0,
+			0,
+			1,
+			1,
+			this.outputBuffer,
+		);
+		console.log(this.outputBuffer);
+		// this.plane.position.copy(this.scene.player.base.mesh.position);
 	}
 
 	async updateCount(count) {

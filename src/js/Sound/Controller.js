@@ -11,6 +11,8 @@ export default class SoundController {
 		 */
 		this.sounds = {};
 
+		this.player = getPlayer();
+
 		signal.on('sound:play', this.play);
 		signal.on('sound:stop', this.pause);
 
@@ -22,8 +24,10 @@ export default class SoundController {
 		await Promise.all([
 			this.add('laser', { loop: true, fadeDuration: 500, rate: 1 }),
 			this.add('laser-rotate', { loop: false, rate: 1 }),
+			this.add('laser-activate', { loop: false, rate: 1 }),
 			this.add('footsteps', { loop: true, fadeDuration: 50, rate: 1 }),
 			this.add('fall', { loop: false, rate: 1 }),
+			this.add('jump', { loop: false, rate: 1 }),
 		]);
 		this.isLoaded.resolve();
 	}
@@ -71,11 +75,11 @@ export default class SoundController {
 	};
 
 	update() {
-		if (getPlayer().base.mesh.position)
+		if (this.player?.base.mesh.position)
 			Howler.pos(
-				getPlayer().base.mesh.position.x,
-				getPlayer().base.mesh.position.y,
-				getPlayer().base.mesh.position.z,
+				this.player.base.mesh.position.x,
+				this.player.base.mesh.position.y,
+				this.player.base.mesh.position.z,
 			);
 	}
 
