@@ -86,6 +86,17 @@ assetsMap.set('flower', {
 	data: {},
 });
 
+// AUDIO
+assetsMap.set('laser-sound', {
+	path: 'assets/sound/interactions/laser.mp3',
+	data: {},
+});
+
+assetsMap.set('footsteps-sound', {
+	path: 'assets/sound/characters/walk.mp3',
+	data: {},
+});
+
 export async function loadManifest() {
 	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
 	const terrainsSplatting = import.meta.globEager('../../public/assets/export/Scene_*.png');
@@ -107,14 +118,13 @@ export async function loadManifest() {
 		if (_assets) {
 			_assets.forEach((asset) => {
 				if (assetsMap.get(asset)) return;
-	
+
 				assetsMap.set(asset, {
 					path: '/assets/export/Asset_' + asset + '.glb',
 					data: {},
 				});
 			});
 		}
-		
 	}
 
 	for (const key in terrainsSplatting) {

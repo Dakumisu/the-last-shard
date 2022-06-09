@@ -106,7 +106,7 @@ export default class LaserTower extends BaseCollider {
 		this.isActivated = true;
 
 		if (this.type === 'start') {
-			signal.emit('sound:play-loop', 'laser');
+			signal.emit('sound:play', 'laser');
 			this.timer.start();
 			this.game.pet.toggleFeeding(this.sphereWorldPos);
 		} else if (this.type === 'end') this.game.endEvent();
