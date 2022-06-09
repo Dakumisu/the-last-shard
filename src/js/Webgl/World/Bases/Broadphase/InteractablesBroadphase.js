@@ -36,9 +36,12 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 		let nearestObject;
 
 		this.objectsToTest.forEach((object) => {
+			let geometry =
+				object.base.mesh.geometry ||
+				object.base.mesh.children.find((child) => child.name.includes('base')).geometry;
 			tBox3c.makeEmpty();
 			// temporary
-			tBox3c.copy(object.base.mesh.geometry.boundingBox);
+			tBox3c.copy(geometry.boundingBox);
 			tMat4b.copy(object.base.mesh.matrixWorld);
 			tBox3c.applyMatrix4(tMat4b);
 

@@ -143,7 +143,7 @@ export class Pet extends BaseEntity {
 	toggleFeeding(targetPos = null) {
 		if (!this.isBlocked && targetPos) {
 			this.isBlocked = true;
-			this.targetPos.copy(targetPos);
+			this.targetPos.copy(targetPos).setY(targetPos.y - 0.3);
 			this.state = Pet.STATES.FEEDING;
 		} else {
 			this.state = Pet.STATES.FOLLOW;

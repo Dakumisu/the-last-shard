@@ -7,17 +7,15 @@ const debug = {
 import { getWebgl } from '@webgl/Webgl.js';
 /// #endif
 
-import signal from 'philbin-packages/signal';
-
-import SceneController from '@webgl/Scene/Controller.js';
+import baseUniforms from '@webgl/Materials/baseUniforms.js';
 import Timer from '@game/Timer';
 
-import { initPet } from './Characters/Pet.js';
+import SceneController from '@webgl/Scene/Controller.js';
+import { loadJSON } from 'philbin-packages/loader';
 import { initPlayer } from './Characters/Player.js';
-
 import { store } from '@tools/Store.js';
 import assetsMap from '@utils/manifest.js';
-import baseUniforms from '@webgl/Materials/baseUniforms.js';
+import { initPet } from './Characters/Pet.js';
 
 export default class World {
 	constructor() {
@@ -30,9 +28,10 @@ export default class World {
 		this.init();
 
 		/// #if DEBUG
-		const webgl = getWebgl();
-		debug.instance = webgl.debug;
-		this.setDebug();
+		if (!debug.instance) {
+			debug.instance = getWebgl().debug;
+			this.setDebug();
+		}
 		/// #endif
 	}
 
@@ -42,6 +41,8 @@ export default class World {
 		const gui = debug.instance.getFolder(debug.label);
 
 		gui.addInput(baseUniforms.uWindSpeed, 'value', { label: 'windSpeed' });
+
+		// add other global uniforms here
 	}
 	/// #endif
 

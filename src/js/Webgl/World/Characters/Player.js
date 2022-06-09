@@ -317,9 +317,7 @@ class Player extends BaseEntity {
 
 				minDistance: 1,
 				maxDistance: 30,
-				/// #if !DEBUG
 				enableZoom: false,
-				/// #endif
 
 				enablePan: false,
 				rotateSpeed: 0.2,
@@ -656,7 +654,7 @@ class Player extends BaseEntity {
 			} else {
 				player.anim = this.base.animation.get('jump');
 				this.base.animation.playOnce(player.anim);
-				this.jump(400);
+				this.jump(40);
 			}
 		}
 

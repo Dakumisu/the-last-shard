@@ -263,20 +263,20 @@ export default class BaseScene {
 		if (!interactables) return;
 
 		const interactablesBp = [];
-		const laserGames = [];
+		this.laserGames = [];
 
 		interactables.map(async (interactable) => {
 			const { asset, params } = interactable;
 
 			if (asset.includes('LaserTower')) {
-				if (!laserGames[params.gameId]) {
+				if (!this.laserGames[params.gameId]) {
 					const _laserGame = new LaserGame({ scene: this, id: params.gameId });
-					laserGames.push(_laserGame);
+					this.laserGames.push(_laserGame);
 				}
 
 				const _interactable = new LaserTower({
 					asset: interactable,
-					game: laserGames[params.gameId],
+					game: this.laserGames[params.gameId],
 					group: this.interactables,
 				});
 				await _interactable.init();
@@ -469,6 +469,7 @@ export default class BaseScene {
 		if (!this.initialized) return;
 
 		if (this.checkpoints) this.checkpoints.update(et, dt);
+		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.update(et, dt));
 		if (this.areas) this.areas.update(et, dt);
 		if (this.interactablesBroadphase)
 			this.interactablesBroadphase.update(this.player.base.mesh.position);

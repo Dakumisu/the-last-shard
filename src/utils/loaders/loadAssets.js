@@ -1,7 +1,15 @@
 import { store } from '@tools/Store';
 import manifest from '@utils/manifest';
 import { getWebgl } from '@webgl/Webgl';
-import { AudioLoader, CubeTexture, CubeTextureLoader, Group, Texture, TextureLoader } from 'three';
+import {
+	AudioLoader,
+	CubeTexture,
+	CubeTextureLoader,
+	Group,
+	sRGBEncoding,
+	Texture,
+	TextureLoader,
+} from 'three';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 import { LUTCubeLoader } from 'three/examples/jsm/loaders/LUTCubeLoader';
 import { loadGLTF } from './loadDynamicGLTF';
@@ -39,6 +47,7 @@ export async function loadTexture(key) {
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
 		loadedTexture = await loader.loadAsync(path);
+		loadedTexture.encoding = sRGBEncoding;
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
