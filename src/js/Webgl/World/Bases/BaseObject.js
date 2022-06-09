@@ -32,6 +32,8 @@ export default class BaseObject {
 			group,
 		};
 
+		this.initialized = false;
+
 		if (this.base.isInteractable) {
 			this.isInBroadphaseRange = false;
 			signal.on('user:interact', this.interact.bind(this));
@@ -40,6 +42,8 @@ export default class BaseObject {
 
 	async init() {
 		if (this.base.asset) await this.loadAsset();
+
+		this.initialized = true;
 	}
 
 	async loadAsset() {
@@ -110,7 +114,6 @@ export default class BaseObject {
 	}
 
 	hide() {
-		// this.base.mesh.updateMatrix();
 		anime({
 			targets: this.base.mesh.scale,
 			easing: 'spring(1, 190, 10, 1)',

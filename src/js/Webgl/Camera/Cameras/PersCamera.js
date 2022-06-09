@@ -14,7 +14,6 @@ export default class PersCamera {
 		this.cameraController = webgl.cameraController;
 
 		this.label = label;
-		console.log(`[CAMERA] ${this.label}`);
 		this.params = params;
 
 		this.initialized = deferredPromise();

@@ -67,7 +67,6 @@ export default class CameraController {
 	/// #endif
 
 	add(camera, autoSwitch) {
-		console.log(camera);
 		if (this.cameras[camera.label]) {
 			console.error('Camera ' + camera.label + ' already exists');
 			return;

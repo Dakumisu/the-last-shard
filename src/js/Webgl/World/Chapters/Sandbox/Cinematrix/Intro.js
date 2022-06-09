@@ -16,7 +16,6 @@ export class Intro {
 		this.datas = datas;
 
 		this.label = `${this.datas.scene}_${this.datas.name}`;
-		console.log(this.label);
 		this.controller = new Cinematrix(this.label);
 
 		this.isComplete = false;

@@ -62,7 +62,6 @@ export default class Ground extends BaseCollider {
 
 	async loadGround() {
 		const _asset = 'Scene_' + this.label;
-		console.log(_asset);
 		const modelBase = await loadModel(_asset);
 		// reload model because GLTFLoader sucks (ref issues)
 		const modelToMerge = await loadModel(_asset);

@@ -34,7 +34,6 @@ export default class Grass {
 	 */
 
 	constructor(scene, params = {}) {
-		console.log(scene);
 		this.scene = scene;
 		this.params = params;
 

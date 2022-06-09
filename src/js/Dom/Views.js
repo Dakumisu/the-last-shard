@@ -8,7 +8,7 @@ export default class Views {
 	constructor() {
 		this.setViewsList();
 
-		signal.on('updateView', (view) => this.changeView(view));
+		signal.on('view:change', this.changeView.bind(this));
 	}
 
 	setViewsList() {
@@ -49,7 +49,7 @@ export default class Views {
 		if (!this.viewList[view]) return console.error(`View '${view}' doesn't exist 🚫`);
 
 		this.currentView = this.viewList[view];
-		signal.emit('view:update', this.currentView);
+		signal.emit('view:updated', this.currentView);
 	}
 
 	getView() {

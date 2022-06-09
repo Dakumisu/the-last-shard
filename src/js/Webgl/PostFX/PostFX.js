@@ -100,7 +100,6 @@ export default class PostFX {
 		const gui = debug.instance.getFolder(debug.label);
 
 		const options = [];
-		console.log(this.luts);
 		for (const lut in this.luts) {
 			options.push({ text: this.luts[lut].lutKey, value: this.luts[lut].lutKey });
 		}

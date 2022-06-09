@@ -149,7 +149,7 @@ export default class Cinematrix extends PersCamera {
 
 	reset() {
 		if (!this.length) {
-			console.log('no path');
+			console.error('no path');
 			return;
 		}
 
@@ -201,7 +201,7 @@ export default class Cinematrix extends PersCamera {
 
 	async setTargets(targets) {
 		if (!targets) {
-			console.log('Need targets');
+			console.error('Need targets');
 			return this;
 		}
 
@@ -218,13 +218,11 @@ export default class Cinematrix extends PersCamera {
 
 	setSpeed(speed) {
 		if (!speed) {
-			console.log('no speed');
+			console.error('no speed');
 			return this;
 		}
 
 		dummySpeed = speed;
-
-		console.log('speed:', speed);
 
 		return this;
 	}
@@ -263,8 +261,6 @@ export default class Cinematrix extends PersCamera {
 	updateTarget(i) {
 		const _target = this.targetsList[i];
 		nextDummyTarget.set(..._target.pos);
-
-		console.log(_target);
 
 		return this;
 	}

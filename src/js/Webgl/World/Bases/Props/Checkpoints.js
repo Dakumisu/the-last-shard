@@ -67,7 +67,8 @@ export default class Checkpoints {
 			/// #if DEBUG
 			console.log('👊 Checkpoint reached');
 			/// #endif
-			signal.emit('checkpoint', this.getCurrent());
+
+			this.player.setCheckpoint(this.getCurrent());
 
 			// Tp mesh to next checkpoint to collide
 			if (this.points[this.checkpointsIndex]) {

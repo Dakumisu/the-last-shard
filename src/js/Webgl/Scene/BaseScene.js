@@ -31,6 +31,7 @@ import Areas from '@webgl/World/Bases/Props/Areas';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
 import Movable from '@webgl/World/Bases/Props/Movable';
+import Portal from '@webgl/World/Bases/Props/Portal';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import LaserGame from '@game/LaserGame';
 
@@ -60,6 +61,7 @@ export default class BaseScene {
 		this.curves = new Group();
 		this.checkpoints = null;
 		this.areas = null;
+		this.portals = [];
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
@@ -230,6 +232,18 @@ export default class BaseScene {
 		const collidersBp = [];
 
 		props.map(async (prop) => {
+			if (prop.asset.includes('Portal')) {
+				const portal = new Portal(this, {
+					name: this.label,
+					asset: prop,
+					group: this.props,
+				});
+				await portal.init();
+				this.portals.push(portal);
+
+				return;
+			}
+
 			if (prop.movable) {
 				const _prop = new Movable({
 					name: this.label,
@@ -238,13 +252,15 @@ export default class BaseScene {
 				});
 				await _prop.init();
 				collidersBp.push(_prop);
-			} else {
-				const _prop = new BaseObject({
-					asset: prop,
-					group: this.props,
-				});
-				await _prop.init();
+
+				return;
 			}
+
+			const _prop = new BaseObject({
+				asset: prop,
+				group: this.props,
+			});
+			await _prop.init();
 		});
 
 		this.collidersBroadphase = new CollidersBroadphase({
@@ -468,12 +484,13 @@ export default class BaseScene {
 	update(et, dt) {
 		if (!this.initialized) return;
 
+		if (this.portals)
+			this.portals.forEach((portal) => portal.update(this.player.getPosition()));
 		if (this.checkpoints) this.checkpoints.update(et, dt);
 		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.update(et, dt));
 		if (this.areas) this.areas.update(et, dt);
 		if (this.interactablesBroadphase)
-			this.interactablesBroadphase.update(this.player.base.mesh.position);
-		if (this.collidersBroadphase)
-			this.collidersBroadphase.update(this.player.base.mesh.position);
+			this.interactablesBroadphase.update(this.player.getPosition());
+		if (this.collidersBroadphase) this.collidersBroadphase.update(this.player.getPosition());
 	}
 }

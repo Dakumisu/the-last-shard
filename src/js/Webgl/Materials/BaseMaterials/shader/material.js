@@ -1,5 +1,5 @@
 import baseUniforms from '@webgl/Materials/baseUniforms';
-import { Material, UniformsUtils } from 'three';
+import { Material, ShaderLib, UniformsLib, UniformsUtils } from 'three';
 import defaultFragment from './defaultFragment.glsl';
 import defaultVertex from './defaultVertex.glsl';
 
@@ -13,6 +13,7 @@ class BaseShaderMaterial extends Material {
 		this.uniforms = {
 			...parameters.uniforms,
 			...baseUniforms,
+			...UniformsLib.fog,
 		};
 
 		delete parameters.uniforms;
@@ -25,7 +26,7 @@ class BaseShaderMaterial extends Material {
 		this.wireframe = false;
 		this.wireframeLinewidth = 1;
 
-		this.fog = false; // set to use scene fog
+		this.fog = true; // set to use scene fog
 		this.lights = false; // set to use scene lights
 		this.clipping = false; // set to use user-defined clipping planes
 

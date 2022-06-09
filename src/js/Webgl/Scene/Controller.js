@@ -1,6 +1,7 @@
 import { getWebgl } from '../Webgl';
 import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
+import { store } from '@tools/Store';
 
 /// #if DEBUG
 const debug = {
@@ -18,15 +19,15 @@ export default class SceneController {
 		this.scenes = {};
 		this.currentScene = null;
 
-		this.init();
+		this.listeners();
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		this.devtool();
 		/// #endif
 	}
 
-	init() {
-		signal.on('sceneSwitch', this.switch.bind(this));
+	listeners() {
+		signal.on('scene:switch', this.switch.bind(this));
 	}
 
 	/// #if DEBUG
@@ -91,6 +92,7 @@ export default class SceneController {
 		/// #endif
 
 		if (this.get(label)) {
+			store.game.player.canMove = false;
 			signal.emit('postpro:transition-in', 500);
 			await wait(500);
 
@@ -113,6 +115,8 @@ export default class SceneController {
 
 			await wait(500);
 			signal.emit('postpro:transition-out');
+			signal.emit('scene:complete');
+			store.game.player.canMove = true;
 
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;

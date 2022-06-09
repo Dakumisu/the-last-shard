@@ -218,24 +218,26 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
         params = {}
         # print(category, type, asset)
         # print('-------------', isMovable, isInteractable)
-        if isInteractable or isMovable:
-            for key in obj.keys():
-                if key.startswith('_'):
-                    continue
-                # if key != 'effect':
-                #     continue
-                v = obj[key]
-                if (
-                    not isinstance(v, str)
-                    and not isinstance(v, float)
-                    and not isinstance(v, int)
-                    and not isinstance(v, bool)
-                ):
-                    continue
-                # Do not exports hard ops properties
-                params[key] = v
+        # if isInteractable or isMovable:
 
-        print('----------------------------------')
+        for key in obj.keys():
+            print(key)
+            if key.startswith('_'):
+                continue
+            # if key != 'effect':
+            #     continue
+            v = obj[key]
+            if (
+                not isinstance(v, str)
+                and not isinstance(v, float)
+                and not isinstance(v, int)
+                and not isinstance(v, bool)
+            ):
+                continue
+            # Do not exports hard ops properties
+            params[key] = v
+
+        print('------------', obj.name)
         print(params)
         objData = {}
 
@@ -250,7 +252,7 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
 
         objData['movable'] = isMovable
 
-        if (isInteractable or isMovable and params != None):
+        if (params != None):
             objData['params'] = params
 
         # Pack transformations

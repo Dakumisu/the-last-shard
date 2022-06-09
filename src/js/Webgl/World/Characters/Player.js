@@ -160,13 +160,6 @@ class Player extends BaseEntity {
 		/// #endif
 
 		this.beforeInit();
-
-		signal.on('keydown', (e) => {
-			if (e === 'M') this.log = true;
-		});
-		signal.on('keyup', (e) => {
-			if (e === 'M') this.log = false;
-		});
 	}
 
 	/// #if DEBUG
@@ -216,10 +209,11 @@ class Player extends BaseEntity {
 				title: 'copy player pos',
 			})
 			.on('click', () => {
+				const { x, y, z } = this.getPosition();
 				const stuffToCopy = `[
-				${this.base.mesh.position.x.toPrecision(5)},
-				${this.base.mesh.position.y.toPrecision(5)},
-				${this.base.mesh.position.z.toPrecision(5)}
+				${x.toPrecision(5)},
+				${y.toPrecision(5)},
+				${z.toPrecision(5)}
 			]`;
 				if (navigator.clipboard) {
 					navigator.clipboard.writeText(stuffToCopy).then(
@@ -354,9 +348,7 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.group);
 	}
 
-	listeners() {
-		signal.on('checkpoint', this.setCheckpoint.bind(this));
-	}
+	listeners() {}
 
 	async setModel() {
 		const m = await loadGLTF(model);
@@ -419,8 +411,6 @@ class Player extends BaseEntity {
 					const depth = this.base.capsuleInfo.radius.base - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
-					if (this.log) console.log(direction);
-
 					if (Math.abs(direction.y) < 0.37) {
 						direction.y = 0;
 					}
@@ -430,9 +420,6 @@ class Player extends BaseEntity {
 				}
 			},
 		});
-
-		// if (!this.state.isMoving && player.realSpeed < params.speed * 0.97)
-		// 	this.checkPlayerStuck(collider, dt);
 
 		// get the adjusted position of the capsule collider in world space after checking
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
@@ -529,6 +516,8 @@ class Player extends BaseEntity {
 			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.04, dt, 0.1);
 		} else speedTarget = 0;
 
+		if (!store.game.player.canMove) speedTarget = 0;
+
 		this.tmpSlowDown = this.state.slowDown;
 
 		// Rotate only if the player is moving
@@ -562,35 +551,11 @@ class Player extends BaseEntity {
 		this.state.isJumping = false;
 	}
 
-	checkPlayerStuck(collider, dt) {
-		collider.base.mesh.geometry.boundsTree.shapecast({
-			intersectsBounds: (box) => box.intersectsBox(tBox3b),
-
-			intersectsTriangle: (tri) => {
-				// check if the triangle is intersecting the capsule and adjust the capsule position if it is.
-				const triPoint = tVec3c;
-				const capsulePoint = tVec3d;
-
-				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
-
-				if (distance < this.base.capsuleInfo.radius.body * 2) {
-					let dummyIsStuck =
-						!this.state.isMoving && player.realSpeed <= params.speed * 0.97;
-
-					if (this.state.isStuck !== dummyIsStuck) this.state.isStuck = dummyIsStuck;
-
-					if (this.state.isStuck) {
-						tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection - PI);
-						this.base.mesh.position.addScaledVector(tVec3a, dt);
-					}
-				}
-			},
-		});
-	}
-
 	checkPlayerPosition(dt) {
+		const playerPos = this.getPosition();
+
 		previousPlayerPos = playerPosY;
-		playerPosY = this.base.mesh.position.y;
+		playerPosY = playerPos.y;
 
 		let deltaPlayerPosY = Math.round((playerPosY - previousPlayerPos) * 100) * 0.001;
 
@@ -598,7 +563,7 @@ class Player extends BaseEntity {
 		this.state.isFalling = !this.state.isMounting && deltaPlayerPosY !== 0;
 
 		// get real speed based on the player's delta position
-		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
+		tVec2a.copy({ x: playerPos.x, y: playerPos.z });
 		const _d = tVec2b.distanceTo(tVec2a);
 
 		if (!dt) return;
@@ -654,7 +619,7 @@ class Player extends BaseEntity {
 			} else {
 				player.anim = this.base.animation.get('jump');
 				this.base.animation.playOnce(player.anim);
-				this.jump(40);
+				this.jump(400);
 			}
 		}
 
@@ -662,6 +627,10 @@ class Player extends BaseEntity {
 			player.anim = this.base.animation.get('falling');
 
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
+	}
+
+	getPosition() {
+		return this.base.mesh.position;
 	}
 
 	async reset() {
