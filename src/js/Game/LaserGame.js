@@ -1,11 +1,16 @@
 import BaseScene from '@webgl/Scene/BaseScene';
-import { DoubleSide, CylinderGeometry, AdditiveBlending, MeshBasicMaterial } from 'three';
+import {
+	DoubleSide,
+	CylinderGeometry,
+	AdditiveBlending,
+	MeshBasicMaterial,
+	IcosahedronGeometry,
+} from 'three';
 import { loadTexture } from '@utils/loaders';
 import { LaserMaterialInner } from '@webgl/Materials/Laser/inner/material';
 import { LaserMaterialOuter } from '@webgl/Materials/Laser/outer/material';
 import { getPet } from '@webgl/World/Characters/Pet';
 import signal from 'philbin-packages/signal';
-import { getWebgl } from '@webgl/Webgl';
 
 export default class LaserGame {
 	static laserMaterialInner;
@@ -15,6 +20,7 @@ export default class LaserGame {
 		.rotateY(Math.PI * 0.5)
 		.translate(0, 0, 0.5);
 	static sphereMaterial = new MeshBasicMaterial({ color: 0xffffff });
+	static sphereGeometry = new IcosahedronGeometry(0.2, 3);
 	/**
 	 *
 	 * @param {{scene: BaseScene, id: number}} param0

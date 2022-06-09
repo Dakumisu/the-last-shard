@@ -63,13 +63,20 @@ export default class LaserTower extends BaseCollider {
 		await super.init();
 
 		this.rings = this.base.mesh.children.filter((children) => children.name.includes('ring'));
-		this.sphereGroup = this.base.mesh.children.find((children) =>
-			children.name.includes('sphereGroup'),
+
+		this.sphereGroup = new Group();
+		this.sphereGroup.position.copy(this.rings[0].position);
+		this.base.mesh.add(this.sphereGroup);
+
+		this.sphere = new Mesh(LaserGame.sphereGeometry, LaserGame.sphereMaterial);
+		this.sphereGroup.add(this.sphere);
+
+		this.sphereWorldPos = new Vector3(
+			this.base.mesh.position.x,
+			this.base.mesh.position.y + this.sphereGroup.position.y,
+			this.base.mesh.position.z,
 		);
-		this.sphere = this.sphereGroup.children[0];
-		this.sphere.material = LaserGame.sphereMaterial;
-		this.sphereWorldPos = this.base.mesh.position.clone();
-		this.base.mesh.localToWorld(this.sphereWorldPos);
+		console.log(this.sphereWorldPos);
 		// .setY(this.sphereGroup.position.y + this.base.mesh.position.y);
 
 		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
