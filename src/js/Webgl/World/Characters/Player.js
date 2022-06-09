@@ -476,13 +476,14 @@ class Player extends BaseEntity {
 			!this.state.isFalling
 		) {
 			if (this.state.isOnGrass) {
-				signal.emit('sound:play', 'footsteps-grass', { rate: player.realSpeed * 0.25 });
+				signal.emit('sound:play', 'footsteps-grass', { rate: player.realSpeed * 0.3 });
 				signal.emit('sound:stop', 'footsteps-ground');
 			} else {
-				signal.emit('sound:play', 'footsteps-ground', { rate: player.realSpeed * 0.25 });
+				signal.emit('sound:play', 'footsteps-ground', { rate: player.realSpeed * 0.35 });
 				signal.emit('sound:stop', 'footsteps-grass');
 			}
-		} else if (this.state.isFalling && this.state.isOnGround) signal.emit('sound:play', 'fall');
+		} else if (this.state.isFalling && this.state.isOnGround && this.state.hasJumped)
+			signal.emit('sound:play', 'fall');
 		else {
 			if (this.state.isOnGrass) signal.emit('sound:stop', 'footsteps-grass');
 			else signal.emit('sound:stop', 'footsteps-ground');

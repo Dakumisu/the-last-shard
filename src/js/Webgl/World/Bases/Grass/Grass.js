@@ -211,7 +211,7 @@ export default class Grass {
 
 				vec4 playerOnGrass = texture2D(uGrassTexture, scaledCoords);
 
-				if (playerOnGrass.g > 0.5) 
+				if (playerOnGrass.g > 0.2) 
 					gl_FragColor = vec4(0.);
 				 else
 					gl_FragColor = vec4(1.);
@@ -238,10 +238,6 @@ export default class Grass {
 		if (error) console.error(error);
 
 		this.outputBuffer = new Uint8Array(4);
-
-		this.plane = new Mesh(new PlaneGeometry(1, 1), new BaseBasicMaterial({ color: 0xffffff }));
-		this.plane.scale.setScalar(2);
-		this.scene.instance.add(this.plane);
 	}
 
 	updateGPUCompute(et, dt) {
@@ -254,9 +250,6 @@ export default class Grass {
 
 		this.gpuCompute.compute();
 
-		// this.plane.material.map = this.gpuCompute.getCurrentRenderTarget(
-		// 	this.playerOnGrassVariable,
-		// ).texture;
 		this.renderer.readRenderTargetPixels(
 			this.gpuCompute.getCurrentRenderTarget(this.playerOnGrassVariable),
 			0,
@@ -266,8 +259,6 @@ export default class Grass {
 			this.outputBuffer,
 		);
 		this.scene.player.state.isOnGrass = this.outputBuffer.at(0) === 0;
-		console.log(this.scene.player.state.isOnGrass);
-		// this.plane.position.copy(this.scene.player.base.mesh.position);
 	}
 
 	async updateCount(count) {
