@@ -1,4 +1,3 @@
-import { SoundController } from '@js/Sound/Controller';
 import Keyboard from '@tools/Keyboard';
 import Control from './Control';
 
@@ -18,9 +17,6 @@ class Game {
 		this.keyboard = new Keyboard();
 
 		this.control = new Control();
-
-		this.soundController = new SoundController();
-		await this.soundController.init();
 
 		initialized = true;
 	}

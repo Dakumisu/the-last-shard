@@ -91,9 +91,16 @@ assetsMap.set('laser-sound', {
 	path: 'assets/sound/interactions/laser.mp3',
 	data: {},
 });
-
+assetsMap.set('laser-rotate-sound', {
+	path: 'assets/sound/interactions/laser-rotate.mp3',
+	data: {},
+});
 assetsMap.set('footsteps-sound', {
 	path: 'assets/sound/characters/walk.mp3',
+	data: {},
+});
+assetsMap.set('fall-sound', {
+	path: 'assets/sound/characters/fall.mp3',
 	data: {},
 });
 

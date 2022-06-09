@@ -16,10 +16,12 @@ import { initPlayer } from './Characters/Player.js';
 import { store } from '@tools/Store.js';
 import assetsMap from '@utils/manifest.js';
 import { initPet } from './Characters/Pet.js';
+import SoundController from '@js/Sound/Controller.js';
 
 export default class World {
 	constructor() {
 		this.sceneController = new SceneController();
+		this.soundController = new SoundController();
 
 		this.manifest = store.manifest;
 
@@ -51,6 +53,8 @@ export default class World {
 		this.setPet();
 		await this.getScenes();
 		await this.initScenes();
+
+		await this.soundController.isLoaded;
 	}
 
 	async getScenes() {
@@ -96,6 +100,7 @@ export default class World {
 		baseUniforms.uTime.value = et;
 
 		if (this.sceneController) this.sceneController.update(et, dt);
+		if (this.soundController) this.soundController.update();
 		// if (this.sky) this.sky.update(et, dt);
 		if (this.player) this.player.update(et, dt);
 		if (this.pet) this.pet.update(et, dt);
