@@ -13,72 +13,50 @@ export default class Checkpoints {
 		this.player = getPlayer();
 
 		this.scene = scene;
-		this.points = points;
 
-		this.checkpointsIndex = 1;
+		this.list = [];
+		points.forEach((point) => {
+			const cp = new Checkpoint(point);
+			this.list.push(cp);
+			this.scene.instance.add(cp.mesh);
+		});
+
+		this.currentCheckpoint = this.list[0];
+
 		this.isInside = false;
-
-		this.nextCheckpointPos = new Vector3();
-		this.nextCheckpointQt = new Quaternion();
-
-		this.initialized = false;
-
-		/// #if DEBUG
-		this.checkpointMesh = new Mesh(
-			new SphereGeometry(radius, 16, 16),
-			new BaseBasicMaterial({ color: new Color('red'), wireframe: true }),
-		);
-		/// #endif
-
-		if (this.points.length > 1) this.init();
-	}
-
-	init() {
 		this.initialized = true;
-
-		this.nextCheckpointPos.copy(this.points[1].pos);
-		this.nextCheckpointQt.copy(this.points[1].qt);
-
-		/// #if DEBUG
-		this.checkpointMesh.position.copy(this.nextCheckpointPos);
-		this.checkpointMesh.quaternion.copy(this.nextCheckpointQt);
-		this.scene.instance.add(this.checkpointMesh);
-		/// #endif
-	}
-
-	getCurrent() {
-		return {
-			pos: tVec3.copy(this.points[this.checkpointsIndex - 1].pos),
-			qt: tQuat.copy(this.points[this.checkpointsIndex - 1].qt),
-		};
 	}
 
 	update(et, dt) {
-		if (!this.initialized) return;
-		if (this.checkpointsIndex >= this.points.length) return;
+		if (!this.initialized || this.list.length === 1) return;
 
-		const inRange = this.player.base.mesh.position.distanceTo(this.nextCheckpointPos) < radius;
+		if (!this.isInside)
+			this.list.forEach((cp) => {
+				const inRange = this.player.base.mesh.position.distanceTo(cp.pos) < radius;
 
-		if (!this.isInside && inRange) {
-			this.isInside = true;
+				if (inRange && cp !== this.currentCheckpoint) {
+					this.isInside = true;
+					this.currentCheckpoint = cp;
 
-			this.checkpointsIndex++;
+					/// #if DEBUG
+					console.log('👊 Checkpoint reached');
+					/// #endif
+					this.player.setCheckpoint(this.currentCheckpoint);
+				} else if (!inRange && this.isInside) this.isInside = false;
+			});
+		else this.isInside = false;
+	}
+}
 
-			/// #if DEBUG
-			console.log('👊 Checkpoint reached');
-			/// #endif
+class Checkpoint {
+	static geometry = new SphereGeometry(radius, 16, 16);
+	static material = new BaseBasicMaterial({ color: new Color('red'), wireframe: true });
+	constructor({ pos, qt }) {
+		this.pos = pos;
+		this.qt = qt;
 
-			this.player.setCheckpoint(this.getCurrent());
-
-			// Tp mesh to next checkpoint to collide
-			if (this.points[this.checkpointsIndex]) {
-				this.nextCheckpointPos.copy(this.points[this.checkpointsIndex].pos);
-				this.nextCheckpointQt.copy(this.points[this.checkpointsIndex].qt);
-				/// #if DEBUG
-				this.checkpointMesh.position.copy(this.nextCheckpointPos);
-				this.checkpointMesh.quaternion.copy(this.nextCheckpointQt);
-				/// #endif
-			}
-		} else if (!inRange && this.isInside) this.isInside = false;
+		this.mesh = new Mesh(Checkpoint.geometry, Checkpoint.material);
+		this.mesh.position.copy(this.pos);
+		this.mesh.quaternion.copy(this.qt);
 	}
 }

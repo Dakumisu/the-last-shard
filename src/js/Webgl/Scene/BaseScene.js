@@ -106,7 +106,7 @@ export default class BaseScene {
 		const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
 
 		const checkpointsOptions = [];
-		for (let i = 0; i < this.checkpoints.points.length; i++) {
+		for (let i = 0; i < this.checkpoints.list.length; i++) {
 			checkpointsOptions.push({
 				text: i + '',
 				value: i,
@@ -121,13 +121,15 @@ export default class BaseScene {
 			})
 			.on('change', (e) => {
 				debug.debugCam.camObject.orbit.targetOffset.copy(
-					this.checkpoints.points[e.value].pos,
+					this.checkpoints.list[e.value].pos,
 				);
 			});
 
 		checkpointsFolder.addButton({ title: 'Tp debugCam to current' }).on('click', () => {
 			console.log('🪄 Tp debugCam to current');
-			debug.debugCam.camObject.orbit.targetOffset.copy(this.checkpoints.getCurrent().pos);
+			debug.debugCam.camObject.orbit.targetOffset.copy(
+				this.checkpoints.currentCheckpoint.pos,
+			);
 		});
 
 		checkpointsFolder.addSeparator();
@@ -140,21 +142,21 @@ export default class BaseScene {
 				value: 0,
 			})
 			.on('change', (e) => {
-				this.player.base.mesh.position.copy(this.checkpoints.points[e.value].pos);
-				this.player.base.mesh.quaternion.copy(this.checkpoints.points[e.value].qt);
+				this.player.base.mesh.position.copy(this.checkpoints.list[e.value].pos);
+				this.player.base.mesh.quaternion.copy(this.checkpoints.list[e.value].qt);
 			});
 
 		checkpointsFolder.addButton({ title: 'Tp player to current' }).on('click', () => {
 			console.log('🪄 Tp player to current');
 
-			const _checkpoint = this.checkpoints.getCurrent();
+			const _checkpoint = this.checkpoints.currentCheckpoint;
 			this.player.base.mesh.position.copy(_checkpoint.pos);
 			this.player.base.mesh.quaternion.copy(_checkpoint.qt);
 		});
 
-		checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
-			label: 'Sphere',
-		});
+		// checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
+		// 	label: 'Sphere',
+		// });
 
 		const canvas = document.createElement('canvas');
 		canvas.width = this.depthTexture.source.data.width;
@@ -437,7 +439,7 @@ export default class BaseScene {
 
 	addTo(mainScene) {
 		mainScene.add(this.instance);
-		this.player.setStartPosition(this.checkpoints.getCurrent());
+		this.player.setStartPosition(this.checkpoints.currentCheckpoint);
 
 		this.player.broadphase.setGroundCollider(this.ground);
 		if (this.collidersBroadphase)
