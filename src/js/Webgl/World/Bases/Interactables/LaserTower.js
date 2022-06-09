@@ -15,6 +15,10 @@ const params = {
 		max: 0.02,
 		min: 0,
 	},
+	laserRotationOffset: {
+		min: 0.05,
+		max: 0.1,
+	},
 	tiltYOffset: 0.0005,
 };
 
@@ -50,6 +54,8 @@ export default class LaserTower extends BaseCollider {
 		signal.on('scroll', this.tilt);
 
 		this.ringRotationOffset = params.ringRotationOffset.min;
+
+		this.laserRotationOffset = params.laserRotationOffset.min;
 
 		this.animation = null;
 
@@ -172,7 +178,13 @@ export default class LaserTower extends BaseCollider {
 
 		if (this.animation && !this.animation.paused) this.animation.pause();
 
-		const radOffset = reversed ? Math.PI * 0.05 : -Math.PI * 0.05;
+		this.laserRotationOffset = this.nextTower?.isActivated
+			? params.laserRotationOffset.max
+			: params.laserRotationOffset.min;
+
+		const radOffset = reversed
+			? Math.PI * params.laserRotationOffset.min
+			: -Math.PI * params.laserRotationOffset.min;
 		let yOffset = this.sphereGroup.rotation.y + radOffset;
 
 		this.animation = anime({
@@ -226,19 +238,19 @@ export default class LaserTower extends BaseCollider {
 				return;
 
 			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.sphereWorldPos);
+			console.log(rayNextDistance, 'rayNextDistance');
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
 			if (rayNextDistance <= 0.2 && !nextLaserTower.isActivated && this.isActivated) {
 				if (this.animation && !this.animation.paused) this.animation.pause();
 				if (this.laserGroup) {
 					this.laserGroup.scale.z = distanceFromCurrent;
-					this.laserGroup.lookAt(nextLaserTower.sphereWorldPos);
+					this.sphere.lookAt(nextLaserTower.sphereWorldPos);
 				}
 				nextLaserTower.activateBy(this);
 				this.needsUpdate = false;
-			} else if (nextLaserTower.isActivated && rayNextDistance > 0.1) {
+			} else if (nextLaserTower.isActivated && rayNextDistance >= 0.2)
 				nextLaserTower.desactivateBy(this);
-			}
 		});
 	};
 
