@@ -232,6 +232,7 @@ export default class LaserTower extends BaseCollider {
 				if (this.animation && !this.animation.paused) this.animation.pause();
 				if (this.laserGroup) {
 					this.laserGroup.scale.z = distanceFromCurrent;
+					this.laserGroup.lookAt(nextLaserTower.sphereWorldPos);
 				}
 				nextLaserTower.activateBy(this);
 				this.needsUpdate = false;
