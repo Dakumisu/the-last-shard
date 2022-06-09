@@ -1,14 +1,12 @@
 import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
 import anime from 'animejs';
-import { ArrowHelper, Box3, Box3Helper, MathUtils, Mesh, Ray, Vector3 } from 'three';
+import { Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
-import { Pet } from '@webgl/World/Characters/Pet';
 import Timer from '@game/Timer';
 import signal from 'philbin-packages/signal';
-import { clamp, damp, dampPrecise, lerp } from 'philbin-packages/maths';
-import { getWebgl } from '@webgl/Webgl';
+import { clamp, lerp } from 'philbin-packages/maths';
 
 const params = {
 	ringRotationOffset: {
