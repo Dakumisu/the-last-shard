@@ -76,7 +76,6 @@ export default class LaserTower extends BaseCollider {
 			this.base.mesh.position.y + this.sphereGroup.position.y,
 			this.base.mesh.position.z,
 		);
-		console.log(this.sphereWorldPos);
 		// .setY(this.sphereGroup.position.y + this.base.mesh.position.y);
 
 		if (this.baseDirection) this.direction.fromArray(this.baseDirection);

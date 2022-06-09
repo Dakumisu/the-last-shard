@@ -18,6 +18,7 @@ import {
 	Box3Helper,
 	MeshNormalMaterial,
 	sRGBEncoding,
+	Euler,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -355,7 +356,7 @@ class Player extends BaseEntity {
 	}
 
 	listeners() {
-		signal.on('checkpoint', this.setCheckpoint.bind(this));
+		signal.on('checkpoint', this.setCheckpoint);
 	}
 
 	async setModel() {
@@ -726,15 +727,17 @@ class Player extends BaseEntity {
 		this.base.animation.update(dt);
 	}
 
-	setCheckpoint({ pos, qt }) {
-		this.checkpoint = { pos, qt };
-	}
+	setCheckpoint = (cp) => {
+		this.checkpoint = cp;
+	};
 
-	setStartPosition(point) {
-		this.base.mesh.position.copy(point.pos);
-		this.base.mesh.quaternion.copy(point.qt);
+	setStartPosition(cp) {
+		this.base.mesh.position.copy(cp.pos);
+		// this.base.mesh.quaternion.copy(cp.qt);
+		const euler = new Euler().setFromQuaternion(cp.qt);
+		this.base.mesh.rotation.y = euler.y;
 
-		this.setCheckpoint({ pos: point.pos, qt: point.qt });
+		this.setCheckpoint(cp);
 	}
 }
 
