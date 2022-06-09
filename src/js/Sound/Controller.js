@@ -25,7 +25,8 @@ export default class SoundController {
 			this.add('laser', { loop: true, fadeDuration: 500, rate: 1 }),
 			this.add('laser-rotate', { loop: false, rate: 1 }),
 			this.add('laser-activate', { loop: false, rate: 1 }),
-			this.add('footsteps', { loop: true, fadeDuration: 50, rate: 1 }),
+			this.add('footsteps-grass', { loop: true, fadeDuration: 50, rate: 1 }),
+			this.add('footsteps-ground', { loop: true, fadeDuration: 50, rate: 1 }),
 			this.add('fall', { loop: false, rate: 1 }),
 			this.add('jump', { loop: false, rate: 1 }),
 		]);

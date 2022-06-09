@@ -58,6 +58,8 @@ export default class Grass {
 
 		this.count = twigsCountList[5];
 
+		this.previousEt = 0;
+
 		signal.on('quality', (quality) => {
 			this.count = twigsCountList[quality];
 			this.updateCount(this.count);
@@ -184,9 +186,9 @@ export default class Grass {
 	}
 
 	setGPUCompute() {
-		console.log(this.params.minPosTexture);
+		console.log(this.params.positionsTexture);
 		this.gpuCompute = new GPUComputationRenderer(1, 1, this.renderer);
-		this.gpuCompute.setDataType(FloatType);
+		this.gpuCompute.setDataType(UnsignedByteType);
 
 		this.playerOnGrassTexture = this.gpuCompute.createTexture();
 		// this.playerOnGrassTexture.format = RGBAFormat;
@@ -229,20 +231,23 @@ export default class Grass {
 			value: this.scene.minBox,
 		};
 		this.playerOnGrassVariable.material.uniforms['uGrassTexture'] = {
-			value: this.params.minPosTexture,
+			value: this.params.positionsTexture,
 		};
 
 		const error = this.gpuCompute.init();
 		if (error) console.error(error);
 
-		this.outputBuffer = new Float32Array(4);
+		this.outputBuffer = new Uint8Array(4);
 
 		this.plane = new Mesh(new PlaneGeometry(1, 1), new BaseBasicMaterial({ color: 0xffffff }));
 		this.plane.scale.setScalar(2);
 		this.scene.instance.add(this.plane);
 	}
 
-	updateGPUCompute() {
+	updateGPUCompute(et, dt) {
+		if (et - this.previousEt < 200) return;
+		this.previousEt = et;
+
 		this.playerOnGrassVariable.material.uniforms['uCharaPos'].value.copy(
 			this.scene.player.base.mesh.position,
 		);
@@ -260,7 +265,8 @@ export default class Grass {
 			1,
 			this.outputBuffer,
 		);
-		console.log(this.outputBuffer);
+		this.scene.player.state.isOnGrass = this.outputBuffer.at(0) === 0;
+		console.log(this.scene.player.state.isOnGrass);
 		// this.plane.position.copy(this.scene.player.base.mesh.position);
 	}
 

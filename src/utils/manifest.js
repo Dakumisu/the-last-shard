@@ -99,8 +99,12 @@ assetsMap.set('laser-activate-sound', {
 	path: 'assets/sound/interactions/laser-activate.mp3',
 	data: {},
 });
-assetsMap.set('footsteps-sound', {
-	path: 'assets/sound/characters/walk.mp3',
+assetsMap.set('footsteps-ground-sound', {
+	path: 'assets/sound/characters/footsteps-ground.mp3',
+	data: {},
+});
+assetsMap.set('footsteps-grass-sound', {
+	path: 'assets/sound/characters/footsteps-grass.mp3',
 	data: {},
 });
 assetsMap.set('fall-sound', {
@@ -109,11 +113,6 @@ assetsMap.set('fall-sound', {
 });
 assetsMap.set('jump-sound', {
 	path: 'assets/sound/characters/jump.mp3',
-	data: {},
-});
-
-assetsMap.set('terrain-splatting-test', {
-	path: 'assets/export/Scene_Sandbox_TerrainSplatting-min.jpg',
 	data: {},
 });
 

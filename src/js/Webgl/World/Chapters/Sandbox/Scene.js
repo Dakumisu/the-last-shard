@@ -66,7 +66,6 @@ export default class SandboxScene extends BaseScene {
 			halfBoxSize: 25,
 			scale: 1,
 			positionsTexture: this.terrainSplatting,
-			minPosTexture: await loadTexture('terrain-splatting-test'),
 		});
 
 		this.flowers = new Flowers(this, {
@@ -120,8 +119,6 @@ export default class SandboxScene extends BaseScene {
 		if (!this.isInitialized) return;
 
 		super.update(et, dt);
-
-		if (this.grass) this.grass.updateGPUCompute();
 	}
 
 	addTo(mainScene) {

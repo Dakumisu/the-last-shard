@@ -60,6 +60,7 @@ export default class BaseScene {
 		this.curves = new Group();
 		this.checkpoints = null;
 		this.areas = null;
+		this.grass = null;
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
@@ -477,5 +478,7 @@ export default class BaseScene {
 			this.interactablesBroadphase.update(this.player.base.mesh.position);
 		if (this.collidersBroadphase)
 			this.collidersBroadphase.update(this.player.base.mesh.position);
+
+		if (this.grass) this.grass.updateGPUCompute(et, dt);
 	}
 }
