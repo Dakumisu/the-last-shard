@@ -187,7 +187,6 @@ export default class BaseScene {
 		/// #if DEBUG
 		console.log('🔋 Preloading Scene :', this.label);
 		console.log(`🔋 Manifest of ${this.label}`);
-		console.log(this.manifest);
 		/// #endif
 		await this.loadTerrainSplatting();
 		this.setTerrainSplattingData();

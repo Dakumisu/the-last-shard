@@ -7,7 +7,7 @@ import { Group } from 'three';
 import Timer from '@game/Timer';
 import signal from 'philbin-packages/signal';
 import { clamp, lerp } from 'philbin-packages/maths';
-import { debounce } from 'philbin-packages/async';
+import { throttle } from 'philbin-packages/async';
 
 const params = {
 	ringRotationOffset: {
@@ -54,7 +54,7 @@ export default class LaserTower extends BaseCollider {
 
 		this.tiltY = this.tiltYTarget = 0;
 		this.tiltYOffset = params.tiltYOffset.min;
-		signal.on('scroll', this.throttle(this.tilt, 50));
+		signal.on('scroll', throttle(this.tilt, 50));
 
 		this.ringRotationOffset = params.ringRotationOffset.min;
 
@@ -101,7 +101,7 @@ export default class LaserTower extends BaseCollider {
 			this.sphere.add(this.laserGroup);
 		}
 
-		if (this.type === 'start') this.timer = new Timer(200000, 'laserTimer', this.desactivate);
+		if (this.type === 'start') this.timer = new Timer(20000, 'laserTimer', this.desactivate);
 
 		this.initialized = true;
 	}
@@ -289,26 +289,5 @@ export default class LaserTower extends BaseCollider {
 				ring.rotation.z += this.ringRotationOffset * (i + 1);
 			});
 		}
-	};
-
-	throttle = (callback, delay) => {
-		var last;
-		var timer;
-		return function () {
-			var context = this;
-			var now = +new Date();
-			var args = arguments;
-			if (last && now < last + delay) {
-				// le délai n'est pas écoulé on reset le timer
-				clearTimeout(timer);
-				timer = setTimeout(function () {
-					last = now;
-					callback.apply(context, args);
-				}, delay);
-			} else {
-				last = now;
-				callback.apply(context, args);
-			}
-		};
 	};
 }

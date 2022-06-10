@@ -113,7 +113,7 @@ export default class Cinematrix extends PersCamera {
 
 		this.curve = curve;
 
-		console.log('cinematrix switch', this.curve);
+		console.log('Cinematrix switch');
 
 		const { name, instance, params } = this.curve;
 
@@ -130,7 +130,7 @@ export default class Cinematrix extends PersCamera {
 		this.isPlaying = true;
 		this.onPause = false;
 
-		console.log('cinematrix play');
+		console.log('Cinematrix play');
 	}
 
 	stop() {
@@ -138,13 +138,13 @@ export default class Cinematrix extends PersCamera {
 
 		this.isPlaying = false;
 
-		console.log('cinematrix stop');
+		console.log('Cinematrix stop');
 	}
 
 	pause() {
 		this.onPause = true;
 
-		console.log('cinematrix pause');
+		console.log('Cinematrix pause');
 	}
 
 	reset() {
@@ -169,12 +169,12 @@ export default class Cinematrix extends PersCamera {
 
 		this.enter();
 
-		console.log('cinematrix reset');
+		console.log('Cinematrix reset');
 	}
 
 	enter() {
 		this.isActive = true;
-		console.log('cinematrix enter');
+		console.log('Cinematrix enter');
 
 		return this;
 	}
@@ -184,7 +184,7 @@ export default class Cinematrix extends PersCamera {
 
 		signal.emit('cinematrix:exit', this.label);
 
-		console.log('cinematrix exit');
+		console.log('Cinematrix exit');
 	}
 
 	setPosition({ x, y, z }) {
@@ -237,7 +237,7 @@ export default class Cinematrix extends PersCamera {
 		if (isComplete) return;
 
 		isComplete = true;
-		console.log('cinematrix complete');
+		console.log('Cinematrix complete');
 
 		await wait(this.delay);
 
@@ -252,7 +252,7 @@ export default class Cinematrix extends PersCamera {
 	skip() {
 		if (hasSkipped) return;
 
-		console.log('cinematrix skipped');
+		console.log('Cinematrix skipped');
 		hasSkipped = true;
 
 		this.onComplete();

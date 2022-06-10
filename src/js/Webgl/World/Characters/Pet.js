@@ -63,7 +63,6 @@ export class Pet extends BaseEntity {
 		this.base.group = await loadModel('lua');
 		this.base.group.scale.setScalar(1.5);
 
-		console.log(this.base.group);
 		// this.base.group.traverse((child) => {
 		// 	if (child.isMesh) child.material = this.base.material;
 		// });

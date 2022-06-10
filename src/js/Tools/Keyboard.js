@@ -1,25 +1,26 @@
+import { throttle } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 
 export default class Keyboard {
 	constructor() {
-		document.addEventListener('keydown', this.getKeyDown.bind(this));
-		document.addEventListener('keyup', this.getKeyUp.bind(this));
+		document.addEventListener('keydown', throttle(this.getKeyDown, 50));
+		document.addEventListener('keyup', this.getKeyUp);
 	}
 
-	getKeyDown(e) {
+	getKeyDown = (e) => {
 		const key = (e.key != ' ' ? e.key : e.code).toUpperCase();
 
 		signal.emit('keydown', key);
-	}
+	};
 
-	getKeyUp(e) {
+	getKeyUp = (e) => {
 		const key = (e.key != ' ' ? e.key : e.code).toUpperCase();
 
 		signal.emit('keyup', key);
-	}
+	};
 
 	destroy() {
-		document.removeEventListener('keydown', this.getKeyDown.bind(this));
-		document.removeEventListener('keyup', this.getKeyUp.bind(this));
+		document.removeEventListener('keydown', this.getKeyDown);
+		document.removeEventListener('keyup', this.getKeyUp);
 	}
 }
