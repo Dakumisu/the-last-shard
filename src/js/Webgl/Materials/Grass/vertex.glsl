@@ -72,7 +72,7 @@ void main() {
 	translation.z -= trailIntensity * trailDirection.y * 0.5;
 
 	float heightNoise = cnoise(translation.xz * 0.2);
-	translation.y += heightNoise * 0.4;
+	translation.y += abs(heightNoise) * 0.4;
 
 	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
 

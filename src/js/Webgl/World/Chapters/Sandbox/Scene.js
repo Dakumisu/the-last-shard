@@ -2,7 +2,7 @@ import BaseScene from '@webgl/Scene/BaseScene';
 import Grass from '@webgl/World/Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { Vector3 } from 'three';
-import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
+import { loadCubeTexture, loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
@@ -11,6 +11,7 @@ import Particles from '@webgl/World/Bases/Particles/Particles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 import Flowers2 from '@webgl/World/Bases/Flowers2/Flowers';
+import Flowers3 from '@webgl/World/Bases/Flowers3/Flowers';
 
 // import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
@@ -39,10 +40,10 @@ export default class SandboxScene extends BaseScene {
 		await this.manifestLoaded;
 
 		// Lights
-		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
+		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 0, label: 'Ambient' });
 		const directional = new BaseDirectionnal({
 			color: '#fff',
-			intensity: 2,
+			intensity: 5,
 			label: 'Directionnal',
 			position: new Vector3(-10, 0, 10),
 		});
@@ -50,8 +51,8 @@ export default class SandboxScene extends BaseScene {
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
 		this.fog = new BaseFog({
-			fogNearColor: '#664CB1',
-			fogFarColor: '#3e2e77',
+			fogNearColor: '#d4d4d4',
+			fogFarColor: '#f5f5f5',
 			fogNear: 0,
 			fogFar: 60,
 			fogNoiseSpeed: 0.003,
@@ -62,48 +63,33 @@ export default class SandboxScene extends BaseScene {
 
 		// Init grass after fog
 		this.grass = new Grass(this, {
-			color: '#66C0ef',
-			color2: '#664CB1',
+			color: '#829632',
+			color2: '#2d4312',
 			halfBoxSize: 15,
 			scale: 1,
 			grass: await loadTexture('grassPattern'),
 			positionsTexture: this.terrainSplatting,
 		});
 
-		// this.flowers = new Flowers(this, {
-		// 	color: '#66C0ef',
-		// 	color2: '#664CB1',
-		// 	verticeScale: 0.2,
-		// 	halfBoxSize: 15,
-		// 	noiseElevationIntensity: 0.75,
-		// 	noiseMouvementIntensity: 0.15,
-		// 	windColorIntensity: 0.11,
-		// 	displacement: 0.08,
-		// 	scale: 1,
-		// 	positionsTexture: this.terrainSplatting,
-		// });
-
-		// this.flowers2 = new Flowers2(this, {
-		// 	color: '#66C0ef',
-		// 	color2: '#664CB1',
-		// 	verticeScale: 0.2,
-		// 	// halfBoxSize: 15,
-		// 	noiseElevationIntensity: 0.75,
-		// 	noiseMouvementIntensity: 0.15,
-		// 	windColorIntensity: 0.11,
-		// 	displacement: 0.08,
-		// 	halfBoxSize: 25,
-		// 	scale: 1,
-		// 	positionsTexture: this.terrainSplatting,
-		// });
+		for (let index = 1; index < 5; index++) {
+			this.flowers = new Flowers(this, {
+				halfBoxSize: 10,
+				noiseElevationIntensity: 0.75,
+				noiseMouvementIntensity: 0.15,
+				windColorIntensity: 0.11,
+				displacement: 0.08,
+				scale: 1,
+				positionsTexture: this.terrainSplatting,
+				model: await loadModel('flower' + index),
+			});
+		}
 
 		this.particles = new Particles({
 			scene: this,
 			params: {
-				color: '#C1C2FF',
-				color2: '#664CB1',
-				count: 1000,
-				halfBoxSize: 25,
+				color: '#82ad46',
+				count: 250,
+				halfBoxSize: 15,
 				positionsTexture: this.terrainSplatting,
 			},
 		});
@@ -111,7 +97,7 @@ export default class SandboxScene extends BaseScene {
 		this.fogParticles = new FogParticles({
 			scene: this,
 			params: {
-				color: '#664CB1',
+				color: '#f0f0f0',
 				count: 3000,
 				halfBoxSize: 25,
 				positionsTexture: this.terrainSplatting,

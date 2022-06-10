@@ -46,7 +46,7 @@ void main() {
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
 	// Scale down out of range grass
-	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
+	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * 0.5, distance(uCharaPos.xz, translation.xz));
 	translation.y *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds
@@ -76,6 +76,9 @@ void main() {
 	translation.x -= trailIntensity * trailDirection.x * 0.25;
 	pos.y *= 1. - trailIntensity;
 	translation.z -= trailIntensity * trailDirection.y * 0.25;
+
+	float heightNoise = cnoise(translation.xz * 0.2);
+	translation.y += abs(heightNoise) * 0.6;
 
 	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity * 20. + time);
 

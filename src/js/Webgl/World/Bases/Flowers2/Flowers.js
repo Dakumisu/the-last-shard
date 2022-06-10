@@ -26,9 +26,9 @@ import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
-import FlowerMaterial from '@webgl/Materials/Flowers2/FlowerMaterial';
+import FlowerMaterial from '@webgl/Materials/Flowers/FlowerMaterial';
 
-const twigsCountList = [0, 0, 1000, 1000, 1000, 1000];
+const twigsCountList = [0, 0, 500, 500, 500, 500];
 
 export default class Flowers2 {
 	/**
@@ -70,8 +70,8 @@ export default class Flowers2 {
 
 	async init() {
 		const geometries = [];
-		this.model = await loadModel('lavande');
-		this.texture = await loadTexture('lavandeTexture');
+		this.model = await loadModel('flower2');
+		this.texture = await loadTexture('flowerTexture');
 		this.texture.flipY = false;
 
 		this.model.traverse((child) => {
@@ -128,7 +128,7 @@ export default class Flowers2 {
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(1, 1.25);
+			const scale = MathUtils.randFloat(0.45, 0.6);
 
 			const rX = 0;
 			const rY = Math.PI * Math.random() * 2;
@@ -170,6 +170,8 @@ export default class Flowers2 {
 
 	setGrass() {
 		this.base.material = new FlowerMaterial({
+			transparent: true,
+			depthWrite: false,
 			uniforms: {
 				uDisplacement: { value: 0.025 },
 				uWindColorIntensity: { value: 0.22 },
@@ -178,8 +180,6 @@ export default class Flowers2 {
 				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
-				uColor: { value: new Color().set(this.params.color) },
-				uColor2: { value: new Color().set(this.params.color2) },
 				uElevationTexture: { value: this.scene.depthTexture },
 				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
@@ -228,13 +228,6 @@ export default class Flowers2 {
 			min: 0,
 			max: 1,
 			step: 0.01,
-		});
-
-		gui.addInput(this.params, 'color').on('change', (color) => {
-			this.base.material.uniforms.uColor.value.set(color.value);
-		});
-		gui.addInput(this.params, 'color2').on('change', (color) => {
-			this.base.material.uniforms.uColor2.value.set(color.value);
 		});
 	}
 	/// #endif

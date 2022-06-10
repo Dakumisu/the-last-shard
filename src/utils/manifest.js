@@ -96,6 +96,11 @@ assetsMap.set('pissenliTexture', {
 	data: {},
 });
 
+assetsMap.set('flowerTexture', {
+	path: '/assets/image/flower.png',
+	data: {},
+});
+
 assetsMap.set('lavande', {
 	path: 'assets/model/lavande.glb',
 	data: {},
@@ -103,6 +108,29 @@ assetsMap.set('lavande', {
 
 assetsMap.set('lavandeTexture', {
 	path: '/assets/image/lavande.jpeg',
+	data: {},
+});
+
+assetsMap.set('flower1', {
+	path: 'assets/model/flower1.glb',
+	data: {},
+});
+
+assetsMap.set('flower2', {
+	path: 'assets/model/flower2.glb',
+	data: {},
+});
+
+assetsMap.set('flower3', {
+	path: 'assets/model/flower3.glb',
+	data: {},
+});
+assetsMap.set('flower4', {
+	path: 'assets/model/flower3.glb',
+	data: {},
+});
+assetsMap.set('flower5', {
+	path: 'assets/model/flower3.glb',
 	data: {},
 });
 

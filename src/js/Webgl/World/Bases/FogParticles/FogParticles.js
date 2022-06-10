@@ -68,10 +68,6 @@ export default class FogParticles {
 			'position',
 			new BufferAttribute(this.geometry.attributes.position.array, 3),
 		);
-		this.geometry.setAttribute(
-			'normal',
-			new BufferAttribute(this.geometry.attributes.normal.array, 3),
-		);
 		this.geometry.setAttribute('uv', new BufferAttribute(this.geometry.attributes.uv.array, 2));
 	}
 
@@ -93,7 +89,6 @@ export default class FogParticles {
 
 		this.base.geometry.index = this.geometry.index;
 		this.base.geometry.attributes.position = this.geometry.attributes.position;
-		this.base.geometry.attributes.normal = this.geometry.attributes.normal;
 		this.base.geometry.attributes.uv = this.geometry.attributes.uv;
 
 		this.base.geometry.setAttribute(
