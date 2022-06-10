@@ -37,12 +37,12 @@ export default class Device {
 	}
 
 	checkBrowser() {
-		const browser = Bowser;
+		const bowser = Bowser.parse(navigator.userAgent);
 
-		const osName = browser.osname.toLowerCase();
-		const osVersion = browser.osversion;
-		const browserName = browser.name.toLowerCase().replace(' ', '-');
-		const browserVersion = browser.version.split('.')[0];
+		const osName = bowser.os.name.toLowerCase();
+		const osVersion = bowser.os.version;
+		const browserName = bowser.browser.name.toLowerCase();
+		const browserVersion = bowser.browser.version;
 
 		html.classList.add(osName, browserName, browserVersion);
 		store.browser = browserName;

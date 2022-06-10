@@ -7,6 +7,7 @@ import { Group } from 'three';
 import Timer from '@game/Timer';
 import signal from 'philbin-packages/signal';
 import { clamp, lerp } from 'philbin-packages/maths';
+import { debounce } from 'philbin-packages/async';
 
 const params = {
 	ringRotationOffset: {
@@ -17,7 +18,10 @@ const params = {
 		min: 0.05,
 		max: 0.1,
 	},
-	tiltYOffset: 0.0005,
+	tiltYOffset: {
+		min: 0.0005,
+		max: 0.001,
+	},
 };
 
 export default class LaserTower extends BaseCollider {
@@ -49,7 +53,8 @@ export default class LaserTower extends BaseCollider {
 		this.direction = new Vector3();
 
 		this.tiltY = this.tiltYTarget = 0;
-		signal.on('scroll', this.tilt);
+		this.tiltYOffset = params.tiltYOffset.min;
+		signal.on('scroll', this.throttle(this.tilt, 50));
 
 		this.ringRotationOffset = params.ringRotationOffset.min;
 
@@ -104,8 +109,15 @@ export default class LaserTower extends BaseCollider {
 	activate() {
 		this.isActivated = true;
 
+		signal.emit('sound:play', 'laser-activate', { pos: this.base.mesh.position, replay: true });
+
+		// const laserGroupWorldPos = new Vector3();
+		// this.laserGroup.getWorldPosition(laserGroupWorldPos);
 		if (this.type === 'start') {
-			signal.emit('sound:play-loop', 'laser');
+			signal.emit('sound:play', 'laser', {
+				pos: this.base.mesh.position,
+				replay: true,
+			});
 			this.timer.start();
 			this.game.pet.toggleFeeding(this.sphereWorldPos);
 		} else if (this.type === 'end') this.game.endEvent();
@@ -117,6 +129,11 @@ export default class LaserTower extends BaseCollider {
 
 	desactivate = () => {
 		this.isActivated = false;
+
+		signal.emit('sound:play', 'laser-activate', {
+			pos: this.base.mesh.position,
+			replay: true,
+		});
 
 		if (this.type === 'end') this.game.revertEndEvent();
 		else if (this.type === 'start') {
@@ -158,7 +175,8 @@ export default class LaserTower extends BaseCollider {
 
 		if (
 			(key === controlsKeys.rotate[0] || key === controlsKeys.rotate[1]) &&
-			this.type !== 'end'
+			this.type !== 'end' &&
+			this.isActivated
 		) {
 			this.needsUpdate = true;
 			this.rotate(key === controlsKeys.rotate[0]);
@@ -171,6 +189,8 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	rotate(reversed) {
+		signal.emit('sound:play', 'laser-rotate', { replay: true });
+
 		this.needsUpdate = true;
 
 		if (this.animation && !this.animation.paused) this.animation.pause();
@@ -201,8 +221,15 @@ export default class LaserTower extends BaseCollider {
 		)
 			return;
 
-		this.tiltYTarget -= e.y * params.tiltYOffset;
+		this.needsUpdate = true;
+
+		this.tiltYOffset = this.nextTower?.isActivated
+			? params.tiltYOffset.max
+			: params.tiltYOffset.min;
+
+		this.tiltYTarget -= e.y * this.tiltYOffset;
 		this.tiltYTarget = clamp(this.tiltYTarget, -Math.PI * 0.25, Math.PI * 0.25);
+		signal.emit('sound:play', 'laser-rotate', { replay: true });
 	};
 
 	update = (et, dt) => {
@@ -214,7 +241,7 @@ export default class LaserTower extends BaseCollider {
 
 		this.tiltY = lerp(this.tiltY, this.tiltYTarget, 0.1);
 		this.sphere.rotation.x = this.tiltY;
-		this.sphere.rotation.z = this.tiltY;
+		// this.sphere.rotation.z = this.tiltY;
 
 		this.sphere.updateMatrix();
 		this.sphere.getWorldDirection(this.ray.direction);
@@ -262,5 +289,26 @@ export default class LaserTower extends BaseCollider {
 				ring.rotation.z += this.ringRotationOffset * (i + 1);
 			});
 		}
+	};
+
+	throttle = (callback, delay) => {
+		var last;
+		var timer;
+		return function () {
+			var context = this;
+			var now = +new Date();
+			var args = arguments;
+			if (last && now < last + delay) {
+				// le délai n'est pas écoulé on reset le timer
+				clearTimeout(timer);
+				timer = setTimeout(function () {
+					last = now;
+					callback.apply(context, args);
+				}, delay);
+			} else {
+				last = now;
+				callback.apply(context, args);
+			}
+		};
 	};
 }

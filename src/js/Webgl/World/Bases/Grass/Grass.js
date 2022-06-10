@@ -10,7 +10,6 @@ import {
 	BufferGeometry,
 	Color,
 	DoubleSide,
-	InstancedBufferAttribute,
 	InstancedBufferGeometry,
 	InstancedInterleavedBuffer,
 	InterleavedBufferAttribute,
@@ -18,7 +17,6 @@ import {
 	Mesh,
 	Texture,
 } from 'three';
-
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
@@ -50,6 +48,8 @@ export default class Grass {
 		this.triangle = null;
 
 		this.count = twigsCountList[5];
+
+		this.previousEt = 0;
 
 		signal.on('quality', (quality) => {
 			this.count = twigsCountList[quality];
