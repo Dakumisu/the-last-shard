@@ -20,11 +20,15 @@ export default class Movable extends BasePhysic {
 		this.currentAnim = null;
 		this.triggerId = this.base.asset.params.gameId;
 
-		signal.on(this.name + ':endGame', async (gameId, targetId = 0, opt = {}) => {
-			console.log('🎮 Test :', gameId, targetId, opt);
+		signal.on(name + ':endGame', (gameId, targetId = 0, opts = {}) => {
+			console.log('🎮 Test :', gameId, targetId, opts);
 			if (gameId !== this.triggerId) return;
-			await this.targetTo(targetId, opt);
-			this.play();
+			this.getTargetAnim(targetId, opts).play();
+		});
+
+		signal.on(name + ':endGameReverse', (gameId, targetId = 0, opts = {}) => {
+			if (gameId !== this.triggerId) return;
+			this.getReverseAnim(targetId, opts).play();
 		});
 
 		this.targets = this.base.asset.anim;
@@ -33,9 +37,11 @@ export default class Movable extends BasePhysic {
 	async init() {
 		await super.init();
 		this.initPhysics();
+
+		this.firstPos = this.base.mesh.position.clone();
 	}
 
-	async targetTo(id, opts = {}) {
+	getTargetAnim(id, opts = {}) {
 		// if (this.currentAnim) await this.currentAnim.finished;
 
 		const target = this.targets[id];
@@ -44,7 +50,7 @@ export default class Movable extends BasePhysic {
 		const easing = opts.easing || 'spring(1, 100, 10, 0)';
 		const delay = opts.delay || 0;
 
-		const animeOpts = {
+		return anime({
 			targets: this.base.mesh.position,
 			duration,
 			easing,
@@ -52,28 +58,30 @@ export default class Movable extends BasePhysic {
 			autoplay: false,
 			...opts,
 			...new Vector3().fromArray(target.pos),
-		};
-
-		console.log(animeOpts);
-
-		this.currentAnim = anime(animeOpts);
-
-		return this;
+			update: () => {
+				this.base.mesh.updateMatrix();
+			},
+		});
 	}
 
-	play() {
-		if (this.currentAnim) this.currentAnim.play();
-	}
+	getReverseAnim(id, opts = {}) {
+		const target = this.targets[id];
 
-	stop() {
-		if (this.currentAnim) this.currentAnim.pause();
-	}
+		const duration = opts.duration || 1000;
+		const easing = opts.easing || 'spring(1, 100, 10, 0)';
+		const delay = opts.delay || 0;
 
-	restart() {
-		if (this.currentAnim) this.currentAnim.restart();
-	}
-
-	reverse() {
-		if (this.currentAnim) this.currentAnim.reverse();
+		return anime({
+			targets: this.base.mesh.position,
+			duration,
+			easing,
+			delay,
+			autoplay: false,
+			...opts,
+			...this.firstPos,
+			update: () => {
+				this.base.mesh.updateMatrix();
+			},
+		});
 	}
 }

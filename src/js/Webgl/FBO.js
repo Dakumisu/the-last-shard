@@ -83,7 +83,7 @@ export default class FBO {
 		const gl = this.renderer.context;
 		const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 		if (status !== gl.FRAMEBUFFER_COMPLETE) {
-			console.log('FloatType not supported');
+			console.warn('FloatType not supported');
 			return HalfFloatType;
 		}
 		return FloatType;

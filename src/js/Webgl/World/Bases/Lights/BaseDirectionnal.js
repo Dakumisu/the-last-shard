@@ -4,7 +4,6 @@ import { DirectionalLightHelper } from 'three';
 
 const debug = {
 	instance: null,
-	color: null,
 };
 /// #endif
 
@@ -24,7 +23,6 @@ export default class BaseDirectionnal {
 		/// #if DEBUG
 		const webgl = getWebgl();
 		debug.instance = webgl.debug;
-		debug.color = color;
 		/// #endif
 	}
 
@@ -32,16 +30,14 @@ export default class BaseDirectionnal {
 	addTodebug(parentFolder) {
 		this.helper = new DirectionalLightHelper(this.light, 5);
 		this.helper.visible = false;
-		// this.light.add(helper);
 
 		const gui = parentFolder.addFolder({
 			title: this.light.name,
 		});
 
-		gui.addInput(debug, 'color').on('change', (color) => {
-			this.light.color.set(color.value);
+		gui.addInput(this.light, 'color', {
+			view: 'color-2',
 		});
-
 		gui.addInput(this.light, 'intensity', {
 			min: 0,
 			max: 10,

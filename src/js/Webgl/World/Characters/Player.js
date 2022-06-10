@@ -17,6 +17,8 @@ import {
 	Line,
 	Box3Helper,
 	MeshNormalMaterial,
+	sRGBEncoding,
+	Euler,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -24,8 +26,7 @@ import { getGame } from '@game/Game';
 import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
-import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
-import { mergeGeometry } from '@utils/webgl';
+import { loadDynamicGLTF as loadGLTF, loadTexture } from '@utils/loaders';
 import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
@@ -37,24 +38,29 @@ import { debounce, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
-const model = '/assets/model/Ayru.glb';
+const model = '/assets/model/player.glb';
 
 const PI = Math.PI;
 const PI2 = PI * 2;
+
 const tVec3a = new Vector3();
 const tVec3b = new Vector3();
 const tVec3c = new Vector3();
 const tVec3d = new Vector3();
 const tVec3e = new Vector3();
+const playerVelocity = new Vector3();
+
 const tVec2a = new Vector2();
 const tVec2b = new Vector2();
+
 const tBox3a = new Box3();
 const tBox3b = new Box3();
 const tBox3c = new Box3();
+
 const tMat4a = new Matrix4();
 const tMat4b = new Matrix4();
+
 const tLine3 = new Line3();
-const playerVelocity = new Vector3();
 
 const params = {
 	speed: 3.25,
@@ -145,20 +151,14 @@ class Player extends BaseEntity {
 			isBlocked: false,
 
 			slowDown: false,
+
+			isDead: false,
 		};
 		this.tmpSlowDown = this.state.slowDown;
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
 		/// #endif
-
-		signal.on('keyup', (e) => {
-			if (e === 'W') {
-				console.log(this.base.camera.orbit.sphericalTarget);
-				console.log(this.base.camera.orbit.spherical);
-				console.log(camInertie);
-			}
-		});
 
 		this.beforeInit();
 	}
@@ -210,10 +210,11 @@ class Player extends BaseEntity {
 				title: 'copy player pos',
 			})
 			.on('click', () => {
+				const { x, y, z } = this.getPosition();
 				const stuffToCopy = `[
-				${this.base.mesh.position.x.toPrecision(5)},
-				${this.base.mesh.position.y.toPrecision(5)},
-				${this.base.mesh.position.z.toPrecision(5)}
+				${x.toPrecision(5)},
+				${y.toPrecision(5)},
+				${z.toPrecision(5)}
 			]`;
 				if (navigator.clipboard) {
 					navigator.clipboard.writeText(stuffToCopy).then(
@@ -294,7 +295,7 @@ class Player extends BaseEntity {
 
 		await this.setModel();
 		this.setAnimation();
-		this.setListeners();
+		this.listeners();
 
 		initialized = true;
 	}
@@ -311,9 +312,7 @@ class Player extends BaseEntity {
 
 				minDistance: 1,
 				maxDistance: 30,
-				/// #if !DEBUG
 				enableZoom: false,
-				/// #endif
 
 				enablePan: false,
 				rotateSpeed: 0.2,
@@ -336,7 +335,7 @@ class Player extends BaseEntity {
 				base: 0.4,
 				body: 0.27,
 			},
-			segment: new Line3(new Vector3(), new Vector3(0, -0.75, 0)),
+			segment: new Line3(new Vector3(), new Vector3(0, -0.5, 0)),
 		};
 
 		this.base.material = new PlayerMaterial({
@@ -351,9 +350,7 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.group);
 	}
 
-	setListeners() {
-		signal.on('checkpoint', this.setCheckpoint.bind(this));
-	}
+	listeners() {}
 
 	async setModel() {
 		const m = await loadGLTF(model);
@@ -364,8 +361,7 @@ class Player extends BaseEntity {
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
-		// this.base.model.scene.scale.set(1.5, 1.5, 1.5);
-		this.base.model.scene.translateOnAxis(params.upVector, -1.15);
+		this.base.model.scene.translateOnAxis(params.upVector, -0.9);
 
 		this.base.group.add(this.base.model.scene);
 	}
@@ -417,14 +413,15 @@ class Player extends BaseEntity {
 					const depth = this.base.capsuleInfo.radius.base - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
+					if (Math.abs(direction.y) < 0.37) {
+						direction.y = 0;
+					}
+
 					tLine3.start.addScaledVector(direction, depth);
 					tLine3.end.addScaledVector(direction, depth);
 				}
 			},
 		});
-
-		if (!this.state.isMoving && player.realSpeed < params.speed * 0.97)
-			this.checkPlayerStuck(collider, dt);
 
 		// get the adjusted position of the capsule collider in world space after checking
 		// triangle collisions and moving it. capsuleInfo.segment.start is assumed to be
@@ -436,11 +433,10 @@ class Player extends BaseEntity {
 		const deltaVector = tVec3b;
 		deltaVector.subVectors(newPosition, this.base.mesh.position);
 
-		// if the player was primarily adjusted vertically we assume it's on something we should consider ground
+		// if the player was primarily adjusted vertically
+		// we assume it's on something we should consider ground
 		if (collider.base.type === 'walkable')
 			this.state.isOnGround = deltaVector.y > Math.abs(delta * playerVelocity.y * 0.25);
-
-		// this.checkPlayerPosition(dt);
 
 		const offset = Math.max(0, deltaVector.length() - 1e-5);
 		deltaVector.normalize().multiplyScalar(offset);
@@ -457,9 +453,6 @@ class Player extends BaseEntity {
 			playerVelocity.set(0, 0, 0);
 		}
 
-		// // adjust the camera
-		// this.updatePlayerCam(dt);
-
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
 	}
@@ -467,6 +460,15 @@ class Player extends BaseEntity {
 	updateDirection() {
 		playerDirection = this.base.mesh.rotation.y;
 		camDirection = this.base.camera.orbit.spherical.theta;
+
+		if (!store.game.player.canMove) {
+			this.state.forwardPressed = false;
+			this.state.backwardPressed = false;
+			this.state.leftPressed = false;
+			this.state.rightPressed = false;
+
+			return;
+		}
 
 		// gestion de la direction
 		this.state.forwardPressed = this.keyPressed.forward;
@@ -510,21 +512,19 @@ class Player extends BaseEntity {
 	updateSpeed(delta, dt) {
 		inertieTarget = this.keyPressed.shift ? params.sprint : params.speed;
 
-		if (
-			this.keyPressed.forward ||
-			this.keyPressed.backward ||
-			this.keyPressed.left ||
-			this.keyPressed.right
-		) {
+		if (this.state.keysPressed) {
 			if (!this.tmpSlowDown && this.state.slowDown) {
-				speedTarget = -1.5;
-			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.05, dt, 0.1);
+				speedTarget = 0;
+			} else speedTarget = dampPrecise(speedTarget, inertieTarget, 0.04, dt, 0.1);
 		} else speedTarget = 0;
+
+		if (!store.game.player.canMove) speedTarget = 0;
 
 		this.tmpSlowDown = this.state.slowDown;
 
 		// Rotate only if the player is moving
-		if (this.state.isMoving && player.realSpeed > params.speed * 0.02) {
+		directionTarget = currentDirection + camDirection;
+		if (this.state.isMoving && player.realSpeed > params.speed * 0.1) {
 			turnCounter = Math.abs(Math.trunc(camDirection / PI2));
 			if (camDirection <= -PI2 * turnCounter) camDirection += PI2 * turnCounter;
 			directionTarget = currentDirection + camDirection;
@@ -536,7 +536,7 @@ class Player extends BaseEntity {
 				dt,
 				0.01,
 			);
-		}
+		} else if (this.state.keysPressed) this.base.mesh.rotation.y = directionTarget;
 		tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection);
 		this.base.mesh.position.addScaledVector(tVec3a, speed * delta);
 
@@ -545,50 +545,27 @@ class Player extends BaseEntity {
 
 	async jump(delay = 0) {
 		if (this.state.isJumping) return;
+		if (!store.game.player.canMove) return;
+
 		this.state.hasJumped = this.state.isJumping = true;
 		await wait(delay);
-		playerVelocity.y = 12;
+		playerVelocity.y = 13;
 		this.state.isJumping = false;
 	}
 
-	checkPlayerStuck(collider, dt) {
-		collider.base.mesh.geometry.boundsTree.shapecast({
-			intersectsBounds: (box) => box.intersectsBox(tBox3b),
-
-			intersectsTriangle: (tri) => {
-				// check if the triangle is intersecting the capsule and adjust the capsule position if it is.
-				const triPoint = tVec3c;
-				const capsulePoint = tVec3d;
-
-				const distance = tri.closestPointToSegment(tLine3, triPoint, capsulePoint);
-
-				if (distance < this.base.capsuleInfo.radius.body * 2) {
-					let dummyIsStuck =
-						!this.state.isMoving && player.realSpeed <= params.speed * 0.97;
-
-					if (this.state.isStuck !== dummyIsStuck) this.state.isStuck = dummyIsStuck;
-
-					if (this.state.isStuck) {
-						tVec3a.set(0, 0, -1).applyAxisAngle(params.upVector, playerDirection - PI);
-						this.base.mesh.position.addScaledVector(tVec3a, dt);
-					}
-				}
-			},
-		});
-	}
-
 	checkPlayerPosition(dt) {
+		const playerPos = this.getPosition();
+
 		previousPlayerPos = playerPosY;
-		playerPosY = this.base.mesh.position.y;
+		playerPosY = playerPos.y;
 
 		let deltaPlayerPosY = Math.round((playerPosY - previousPlayerPos) * 100) * 0.001;
 
 		this.state.isMounting = deltaPlayerPosY >= 0 && deltaPlayerPosY !== 0;
 		this.state.isFalling = !this.state.isMounting && deltaPlayerPosY !== 0;
-		// this.state.isOnGround = deltaPlayerPosY === 0 && !this.state.isMounting;
 
 		// get real speed based on the player's delta position
-		tVec2a.copy({ x: this.base.mesh.position.x, y: this.base.mesh.position.z });
+		tVec2a.copy({ x: playerPos.x, y: playerPos.z });
 		const _d = tVec2b.distanceTo(tVec2a);
 
 		if (!dt) return;
@@ -635,10 +612,12 @@ class Player extends BaseEntity {
 		}
 
 		if (this.keyPressed.space && this.state.isOnGround && !this.state.isJumping) {
+			if (!store.game.player.canMove) return;
+
 			if (this.state.isMoving && player.realSpeed >= params.speed * 0.1) {
 				player.anim = this.base.animation.get('run_jump');
 				this.base.animation.playOnce(player.anim);
-				this.jump(100);
+				this.jump(0);
 			} else {
 				player.anim = this.base.animation.get('jump');
 				this.base.animation.playOnce(player.anim);
@@ -652,13 +631,29 @@ class Player extends BaseEntity {
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
-	reset() {
+	getPosition() {
+		return this.base.mesh.position;
+	}
+
+	async reset() {
+		if (this.state.isDead) return;
+
+		this.state.isDead = true;
+
+		signal.emit('postpro:transition-in', 250);
+		await wait(250);
+
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
 		this.base.mesh.position.copy(this.checkpoint.pos);
 		this.base.mesh.quaternion.copy(this.checkpoint.qt);
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position || this.checkpoint.pos);
 		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y || 0);
+
+		await wait(200);
+
+		this.state.isDead = false;
+		signal.emit('postpro:transition-out');
 	}
 
 	resize() {
@@ -693,18 +688,26 @@ class Player extends BaseEntity {
 		if (this.state.hasJumped && !this.state.isJumping)
 			this.state.hasJumped = !this.state.isOnGround;
 
+		this.state.keysPressed =
+			this.state.forwardPressed ||
+			this.state.backwardPressed ||
+			this.state.leftPressed ||
+			this.state.rightPressed;
+
 		this.base.animation.update(dt);
 	}
 
-	setCheckpoint({ pos, qt }) {
-		this.checkpoint = { pos, qt };
-	}
+	setCheckpoint = (cp) => {
+		this.checkpoint = cp;
+	};
 
-	setStartPosition(point) {
-		this.base.mesh.position.copy(point.pos);
-		this.base.mesh.quaternion.copy(point.qt);
+	setStartPosition(cp) {
+		this.base.mesh.position.copy(cp.pos);
+		// this.base.mesh.quaternion.copy(cp.qt);
+		const euler = new Euler().setFromQuaternion(cp.qt);
+		this.base.mesh.rotation.y = euler.y;
 
-		this.setCheckpoint({ pos: point.pos, qt: point.qt });
+		this.setCheckpoint(cp);
 	}
 }
 

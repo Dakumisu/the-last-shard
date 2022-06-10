@@ -33,6 +33,14 @@ const store = {
 		audios: new Map(),
 		textures: new Map(),
 	},
+
+	game: {
+		isPaused: false,
+
+		player: {
+			canMove: true,
+		},
+	},
 };
 
 export { store };

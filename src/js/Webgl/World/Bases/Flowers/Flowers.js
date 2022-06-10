@@ -1,7 +1,7 @@
 /// #if DEBUG
 const debug = {
 	instance: null,
-	label: 'Grass',
+	label: 'Flowers',
 };
 /// #endif
 
@@ -37,7 +37,6 @@ export default class Flowers {
 	 */
 
 	constructor(scene, params = {}) {
-		console.log(scene);
 		this.scene = scene;
 		this.params = params;
 
@@ -233,11 +232,13 @@ export default class Flowers {
 			step: 0.01,
 		});
 
-		gui.addInput(this.params, 'color').on('change', (color) => {
-			this.base.material.uniforms.uColor.value.set(color.value);
+		gui.addInput(this.base.material.uniforms.uColor, 'value', {
+			label: 'uColor',
+			view: 'color-2',
 		});
-		gui.addInput(this.params, 'color2').on('change', (color) => {
-			this.base.material.uniforms.uColor2.value.set(color.value);
+		gui.addInput(this.base.material.uniforms.uColor2, 'value', {
+			label: 'uColor2',
+			view: 'color-2',
 		});
 	}
 	/// #endif

@@ -7,6 +7,7 @@ import { DoubleSide } from 'three';
 import { Mesh } from 'three';
 import anime from 'animejs';
 import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
+import ObjectMaterial from '@webgl/Materials/Objects/ObjectMaterial';
 
 export default class BaseObject {
 	/**
@@ -31,14 +32,18 @@ export default class BaseObject {
 			group,
 		};
 
+		this.initialized = false;
+
 		if (this.base.isInteractable) {
 			this.isInBroadphaseRange = false;
-			signal.on('interact', this.interact.bind(this));
+			signal.on('user:interact', this.interact.bind(this));
 		}
 	}
 
 	async init() {
 		if (this.base.asset) await this.loadAsset();
+
+		this.initialized = true;
 	}
 
 	async loadAsset() {
@@ -51,30 +56,10 @@ export default class BaseObject {
 
 		const model = await loadModel(asset);
 
-		const gradient = await loadTexture('asset_gradient');
-		gradient.flipY = false;
-
-		/// #if DEBUG
-		if (asset.includes('Test')) {
-			console.log('🎮 Loaded :', asset, model);
-
-			debugger;
-		}
-		/// #endif
+		const material = ObjectMaterial.use();
 
 		model.traverse((obj) => {
-			if (obj.material) {
-				// define material in function of the type of the object
-				obj.material = this.base.isInteractable
-					? new BaseToonMaterial({
-							side: DoubleSide,
-							map: gradient,
-					  })
-					: new BaseToonMaterial({
-							side: DoubleSide,
-							map: gradient,
-					  });
-			}
+			if (obj.material) obj.material = material;
 
 			if (obj.geometry) obj.geometry.computeBoundingBox();
 
@@ -97,6 +82,8 @@ export default class BaseObject {
 		this.base.mesh.isInteractable = this.base.isInteractable;
 		this.base.mesh.isMovable = this.base.isMovable = movable;
 
+		this.base.mesh.matrixAutoUpdate = false;
+
 		if (this.base.isInteractable) this.base.mesh.userData.interact = this.base.asset.effect;
 
 		this.base.mesh.traversable = traversable;
@@ -107,6 +94,8 @@ export default class BaseObject {
 
 	show() {
 		const { scale } = this.base.asset.transforms;
+		this.base.mesh.matrixAutoUpdate = true;
+		// this.base.mesh.updateMatrix();
 		anime({
 			targets: this.base.mesh.scale,
 			easing: 'spring(1, 190, 10, 1)',
@@ -114,11 +103,12 @@ export default class BaseObject {
 			x: [0.00001, scale[0]],
 			y: [0.00001, scale[1]],
 			z: [0.00001, scale[2]],
+			begin: () => {
+				this.base.mesh.matrixAutoUpdate = true;
+			},
 			complete: () => {
-				if (!this.base.isInteractable && !this.base.isMovable) {
-					this.base.mesh.matrixAutoUpdate = false;
-					this.base.mesh.updateMatrix();
-				}
+				this.base.mesh.matrixAutoUpdate = false;
+				this.base.mesh.updateMatrix();
 			},
 		});
 	}
@@ -131,6 +121,13 @@ export default class BaseObject {
 			x: ['', 0.001],
 			y: ['', 0.001],
 			z: ['', 0.001],
+			begin: () => {
+				this.base.mesh.matrixAutoUpdate = true;
+			},
+			complete: () => {
+				this.base.mesh.matrixAutoUpdate = false;
+				this.base.mesh.updateMatrix();
+			},
 		});
 	}
 

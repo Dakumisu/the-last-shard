@@ -7,10 +7,12 @@ const debug = {
 import { getWebgl } from '@webgl/Webgl.js';
 /// #endif
 
+import baseUniforms from '@webgl/Materials/baseUniforms.js';
+import Timer from '@game/Timer';
+
 import SceneController from '@webgl/Scene/Controller.js';
 import { loadJSON } from 'philbin-packages/loader';
 import { initPlayer } from './Characters/Player.js';
-import baseUniforms from '@webgl/Materials/baseUniforms.js';
 import { store } from '@tools/Store.js';
 import assetsMap from '@utils/manifest.js';
 import { initPet } from './Characters/Pet.js';
@@ -73,8 +75,8 @@ export default class World {
 			this.sceneController.add(_scene);
 		});
 
-		// TODO: get saved scene from localStorage
-		this.sceneController.switch('Sandbox');
+		const currentLevel = localStorage.getItem('game:level') || 'Sandbox';
+		this.sceneController.switch(currentLevel);
 	}
 
 	setPlayer() {
@@ -90,6 +92,9 @@ export default class World {
 	}
 
 	update(et, dt) {
+		Timer.update();
+		baseUniforms.uTime.value = et;
+
 		if (this.sceneController) this.sceneController.update(et, dt);
 		// if (this.sky) this.sky.update(et, dt);
 		if (this.player) this.player.update(et, dt);

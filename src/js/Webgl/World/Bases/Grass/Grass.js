@@ -35,7 +35,6 @@ export default class Grass {
 	 */
 
 	constructor(scene, params = {}) {
-		console.log(scene);
 		this.scene = scene;
 		this.params = params;
 
@@ -186,7 +185,7 @@ export default class Grass {
 
 	/// #if DEBUG
 	devtools() {
-		const gui = debug.instance.addFolder({ title: debug.label });
+		const gui = debug.instance.addFolder({ title: debug.label, expanded: false });
 
 		gui.addInput(this.base.mesh.material.uniforms.uDisplacement, 'value', {
 			label: 'displace',
@@ -214,12 +213,8 @@ export default class Grass {
 			step: 0.01,
 		});
 
-		gui.addInput(this.params, 'color').on('change', (color) => {
-			this.base.material.uniforms.uColor.value.set(color.value);
-		});
-		gui.addInput(this.params, 'color2').on('change', (color) => {
-			this.base.material.uniforms.uColor2.value.set(color.value);
-		});
+		gui.addInput(this.base.material.uniforms.uColor, 'value', { view: 'color-2' });
+		gui.addInput(this.base.material.uniforms.uColor2, 'value', { view: 'color-2' });
 	}
 	/// #endif
 }

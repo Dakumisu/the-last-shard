@@ -1,5 +1,11 @@
 import BaseScene from '@webgl/Scene/BaseScene';
-import { DoubleSide, CylinderGeometry, AdditiveBlending } from 'three';
+import {
+	DoubleSide,
+	CylinderGeometry,
+	AdditiveBlending,
+	MeshBasicMaterial,
+	IcosahedronGeometry,
+} from 'three';
 import { loadTexture } from '@utils/loaders';
 import { LaserMaterialInner } from '@webgl/Materials/Laser/inner/material';
 import { LaserMaterialOuter } from '@webgl/Materials/Laser/outer/material';
@@ -12,8 +18,9 @@ export default class LaserGame {
 	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 256, 256, true)
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
-		.translate(0, 2, 0.5);
-
+		.translate(0, 0, 0.5);
+	static sphereMaterial = new MeshBasicMaterial({ color: 0xffffff });
+	static sphereGeometry = new IcosahedronGeometry(0.2, 3);
 	/**
 	 *
 	 * @param {{scene: BaseScene, id: number}} param0
@@ -28,37 +35,45 @@ export default class LaserGame {
 	}
 
 	endEvent() {
-		this.laserTowers.forEach((tower) => {
-			tower.base.isInteractable = false;
-		});
 		signal.emit(this.scene.label + ':endGame', this.id);
 		console.log('🕹 Game ended');
+	}
+
+	revertEndEvent() {
+		signal.emit(this.scene.label + ':endGameReverse', this.id);
+		console.log('🕹 Game end reverted');
 	}
 
 	async init() {
 		const texture = await loadTexture('laserTexture');
 
-		LaserGame.laserMaterialInner = new LaserMaterialInner({
-			transparent: true,
-			side: DoubleSide,
-			uniforms: {
-				uTexture: { value: texture },
-				uTimeIntensity: { value: 0.0012 },
-			},
-		});
+		if (!LaserGame.laserMaterialInner && !LaserGame.laserMaterialOuter) {
+			LaserGame.laserMaterialInner = new LaserMaterialInner({
+				transparent: true,
+				side: DoubleSide,
+				uniforms: {
+					uTexture: { value: texture },
+					uTimeIntensity: { value: 0.0012 },
+				},
+			});
 
-		LaserGame.laserMaterialOuter = new LaserMaterialOuter({
-			transparent: true,
-			side: DoubleSide,
-			blending: AdditiveBlending,
-			uniforms: {
-				uTimeIntensity: { value: 0.0012 },
-			},
-		});
+			LaserGame.laserMaterialOuter = new LaserMaterialOuter({
+				transparent: true,
+				side: DoubleSide,
+				blending: AdditiveBlending,
+				uniforms: {
+					uTimeIntensity: { value: 0.0012 },
+				},
+			});
+		}
 
 		this.laserGeometry = LaserGame.laserGeometry;
 		this.laserMaterialInner = LaserGame.laserMaterialInner;
 		this.laserMaterialOuter = LaserGame.laserMaterialOuter;
 		// this.laserMaterial.defines.USE_TANGENT = ''
+	}
+
+	update(et, dt) {
+		this.laserTowers.forEach((laserTower) => laserTower.update(et, dt));
 	}
 }

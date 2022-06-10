@@ -1,4 +1,4 @@
-import { Scene } from 'three';
+import { Fog, Scene } from 'three';
 
 export default class MainScene {
 	constructor(opt = {}) {

@@ -8,11 +8,10 @@ export const controlsKeys = {
 	backward: 'S',
 	right: 'D',
 	space: 'SPACE',
+	escape: 'ESCAPE',
 	shift: 'SHIFT',
-	interact: {
-		default: 'F',
-		rotate: 'R',
-	},
+	interact: 'F',
+	rotate: ['A', 'E'],
 };
 
 export default class Control {
@@ -33,8 +32,10 @@ export default class Control {
 			backward: false,
 			right: false,
 			space: false,
+			escape: false,
 			shift: false,
 			interact: false,
+			rotate: false,
 		};
 	}
 
@@ -55,16 +56,23 @@ export default class Control {
 			case controlsKeys.space:
 				this.keyPressed.space = true;
 				break;
+			case controlsKeys.escape:
+				this.keyPressed.escape = true;
+				break;
 			case controlsKeys.shift:
 				this.keyPressed.shift = true;
 				break;
-			case controlsKeys.interact.default:
+			case controlsKeys.interact:
 				this.keyPressed.interact = true;
-				signal.emit('interact', controlsKeys.interact.default);
+				signal.emit('user:interact', key);
 				break;
-			case controlsKeys.interact.rotate:
-				this.keyPressed.interact = true;
-				signal.emit('interact', controlsKeys.interact.rotate);
+			case controlsKeys.rotate[0]:
+				this.keyPressed.rotate = true;
+				signal.emit('user:interact', key);
+				break;
+			case controlsKeys.rotate[1]:
+				this.keyPressed.rotate = true;
+				signal.emit('user:interact', key);
 				break;
 		}
 	}
@@ -86,11 +94,20 @@ export default class Control {
 			case controlsKeys.space:
 				this.keyPressed.space = false;
 				break;
+			case controlsKeys.escape:
+				this.keyPressed.escape = false;
+				break;
 			case controlsKeys.shift:
 				this.keyPressed.shift = false;
 				break;
 			case controlsKeys.interact:
 				this.keyPressed.interact = false;
+				break;
+			case controlsKeys.rotate[0]:
+				this.keyPressed.rotate = false;
+				break;
+			case controlsKeys.rotate[1]:
+				this.keyPressed.rotate = false;
 				break;
 		}
 	}

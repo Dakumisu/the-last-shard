@@ -27,9 +27,11 @@ import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
 import { Quaternion } from 'three';
 import { deferredPromise } from 'philbin-packages/async';
 import Curve from '@webgl/World/Bases/Props/Curve';
+import Areas from '@webgl/World/Bases/Props/Areas';
 import Ground from '@webgl/World/Bases/Props/Ground';
 import BaseObject from '@webgl/World/Bases/BaseObject';
 import Movable from '@webgl/World/Bases/Props/Movable';
+import Portal from '@webgl/World/Bases/Props/Portal';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import LaserGame from '@game/LaserGame';
 
@@ -39,6 +41,7 @@ import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 import signal from 'philbin-packages/signal';
 import CollidersBroadphase from '@webgl/World/Bases/Broadphase/CollidersBroadphase';
 import { loadTexture } from '@utils/loaders';
+import { store } from '@tools/Store';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 
@@ -57,11 +60,15 @@ export default class BaseScene {
 		this.interactables = new Group();
 		this.curves = new Group();
 		this.checkpoints = null;
+		this.areas = null;
+		this.portals = [];
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
 		this.initialized = deferredPromise();
 		this.isInitialized = false;
+
+		this.cinematrixClasses = {};
 
 		// Render target
 		this.updateRenderTarget = this.updateRenderTarget.bind(this);
@@ -99,7 +106,7 @@ export default class BaseScene {
 		const checkpointsFolder = this.gui.addFolder({ title: 'Checkpoints' });
 
 		const checkpointsOptions = [];
-		for (let i = 0; i < this.checkpoints.points.length; i++) {
+		for (let i = 0; i < this.checkpoints.list.length; i++) {
 			checkpointsOptions.push({
 				text: i + '',
 				value: i,
@@ -114,13 +121,15 @@ export default class BaseScene {
 			})
 			.on('change', (e) => {
 				debug.debugCam.camObject.orbit.targetOffset.copy(
-					this.checkpoints.points[e.value].pos,
+					this.checkpoints.list[e.value].pos,
 				);
 			});
 
 		checkpointsFolder.addButton({ title: 'Tp debugCam to current' }).on('click', () => {
 			console.log('🪄 Tp debugCam to current');
-			debug.debugCam.camObject.orbit.targetOffset.copy(this.checkpoints.getCurrent().pos);
+			debug.debugCam.camObject.orbit.targetOffset.copy(
+				this.checkpoints.currentCheckpoint.pos,
+			);
 		});
 
 		checkpointsFolder.addSeparator();
@@ -133,21 +142,21 @@ export default class BaseScene {
 				value: 0,
 			})
 			.on('change', (e) => {
-				this.player.base.mesh.position.copy(this.checkpoints.points[e.value].pos);
-				this.player.base.mesh.quaternion.copy(this.checkpoints.points[e.value].qt);
+				this.player.base.mesh.position.copy(this.checkpoints.list[e.value].pos);
+				this.player.base.mesh.quaternion.copy(this.checkpoints.list[e.value].qt);
 			});
 
 		checkpointsFolder.addButton({ title: 'Tp player to current' }).on('click', () => {
 			console.log('🪄 Tp player to current');
 
-			const _checkpoint = this.checkpoints.getCurrent();
+			const _checkpoint = this.checkpoints.currentCheckpoint;
 			this.player.base.mesh.position.copy(_checkpoint.pos);
 			this.player.base.mesh.quaternion.copy(_checkpoint.qt);
 		});
 
-		checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
-			label: 'Sphere',
-		});
+		// checkpointsFolder.addInput(this.checkpoints.checkpointMesh, 'visible', {
+		// 	label: 'Sphere',
+		// });
 
 		const canvas = document.createElement('canvas');
 		canvas.width = this.depthTexture.source.data.width;
@@ -178,6 +187,7 @@ export default class BaseScene {
 		console.log(this.manifest);
 		/// #endif
 		await this.loadTerrainSplatting();
+		await loadTexture('asset_gradient');
 	}
 
 	async init() {
@@ -204,13 +214,18 @@ export default class BaseScene {
 		await this._loadInteractables(this.manifest.interactables);
 		await this._loadCurves(this.manifest.curves);
 		await this._loadPoints(this.manifest.points);
+		await this._loadAreas(this.manifest.areas);
 
-		this.manifestLoaded.resolve(true);
+		this.manifestLoaded.resolve();
 	}
 
 	async _loadBase() {
 		this.ground = new Ground(this);
 		await this.ground.init();
+
+		/// #if DEBUG
+		console.log('🔋 Base loaded');
+		/// #endif
 	}
 
 	async _loadProps(props) {
@@ -219,6 +234,18 @@ export default class BaseScene {
 		const collidersBp = [];
 
 		props.map(async (prop) => {
+			if (prop.asset.includes('Portal')) {
+				const portal = new Portal(this, {
+					name: this.label,
+					asset: prop,
+					group: this.props,
+				});
+				await portal.init();
+				this.portals.push(portal);
+
+				return;
+			}
+
 			if (prop.movable) {
 				const _prop = new Movable({
 					name: this.label,
@@ -227,15 +254,16 @@ export default class BaseScene {
 				});
 				await _prop.init();
 				collidersBp.push(_prop);
-			} else {
-				const _prop = new BaseObject({
-					asset: prop,
-					group: this.props,
-				});
-				await _prop.init();
+
+				return;
 			}
+
+			const _prop = new BaseObject({
+				asset: prop,
+				group: this.props,
+			});
+			await _prop.init();
 		});
-		console.log('🔋 Props loaded');
 
 		this.collidersBroadphase = new CollidersBroadphase({
 			radius: 2,
@@ -243,38 +271,34 @@ export default class BaseScene {
 		});
 
 		this.instance.add(this.props);
+
+		/// #if DEBUG
+		console.log('🔋 Props loaded');
+		/// #endif
 	}
 
 	async _loadInteractables(interactables) {
 		if (!interactables) return;
 
 		const interactablesBp = [];
-		const laserGames = [];
+		this.laserGames = [];
 
 		interactables.map(async (interactable) => {
 			const { asset, params } = interactable;
 
 			if (asset.includes('LaserTower')) {
-				if (!laserGames[params.gameId]) {
+				if (!this.laserGames[params.gameId]) {
 					const _laserGame = new LaserGame({ scene: this, id: params.gameId });
-					laserGames.push(_laserGame);
+					this.laserGames.push(_laserGame);
 				}
 
 				const _interactable = new LaserTower({
 					asset: interactable,
-					game: laserGames[params.gameId],
+					game: this.laserGames[params.gameId],
 					group: this.interactables,
 				});
 				await _interactable.init();
 				interactablesBp.push(_interactable);
-			} else if (asset.includes('Coin')) {
-				// const _interactable = new Coin({
-				// 	isInteractable: true,
-				// 	asset: interactable,
-				// 	group: this.interactables,
-				// });
-				// await _interactable.init();
-				// interactablesBp.push(_interactable);
 			} else if (asset.includes('Fragment')) {
 				const _interactable = new Fragment({
 					asset: interactable,
@@ -299,24 +323,39 @@ export default class BaseScene {
 		});
 
 		this.instance.add(this.interactables);
+
+		/// #if DEBUG
+		console.log('🔋 Props loaded');
+		/// #endif
 	}
 
 	async _loadCurves(curves) {
 		if (!curves) return;
 
-		await Promise.all(
-			curves.map(async (curve) => {
-				const _curve = new Curve({ curve, group: this.curves });
-			}),
-		);
+		await curves.map(async (curve) => {
+			const _curve = new Curve({ curve, group: this.curves });
 
+			// create a cinematic camera
+			if (curve.type.includes('cam')) {
+				const name = curve.name.toLowerCase();
+
+				if (!this.cinematrixClasses[name]) return;
+
+				const Cinematrix = this.cinematrixClasses[name];
+				new Cinematrix({ scene: this.label.toLowerCase(), name: name, curve: _curve });
+			}
+		});
+
+		/// #if DEBUG
 		this.instance.add(this.curves);
+		console.log('🔋 Curves loaded');
+		/// #endif
 	}
 
 	async _loadPoints(points) {
 		if (!points) return;
 
-		const checkpoints = [];
+		const pointsList = [];
 
 		points.forEach((point) => {
 			const _t = point.type.toLowerCase();
@@ -324,17 +363,40 @@ export default class BaseScene {
 			if (_t === 'checkpoint') {
 				const pos = new Vector3().fromArray(point.pos);
 				const qt = new Quaternion().fromArray(point.qt);
-				checkpoints.push({ pos, qt });
+				pointsList.push({ pos, qt });
 			}
 			if (_t === 'spawn') {
 				const pos = new Vector3().fromArray(point.pos);
 				const qt = new Quaternion().fromArray(point.qt);
-				checkpoints.unshift({ pos, qt });
+				pointsList.unshift({ pos, qt });
 			}
 		});
 
-		this.checkpoints = new Checkpoints({ points: checkpoints, scene: this });
+		this.checkpoints = new Checkpoints({ points: pointsList, scene: this });
+
+		/// #if DEBUG
 		console.log('🔋 Checkpoints loaded');
+		/// #endif
+	}
+
+	async _loadAreas(areas) {
+		if (!areas) return;
+
+		const areasList = [];
+
+		areas.forEach((area) => {
+			const zone = area.zone.toLowerCase();
+			const pos = new Vector3().fromArray(area.pos);
+			const size = area.size;
+
+			areasList.push({ pos, zone, size });
+		});
+
+		this.areas = new Areas({ areas: areasList, scene: this });
+
+		/// #if DEBUG
+		console.log('🔋 Areas loaded');
+		/// #endif
 	}
 
 	setRenderTarget() {
@@ -377,7 +439,7 @@ export default class BaseScene {
 
 	addTo(mainScene) {
 		mainScene.add(this.instance);
-		this.player.setStartPosition(this.checkpoints.getCurrent());
+		this.player.setStartPosition(this.checkpoints.currentCheckpoint);
 
 		this.player.broadphase.setGroundCollider(this.ground);
 		if (this.collidersBroadphase)
@@ -424,10 +486,13 @@ export default class BaseScene {
 	update(et, dt) {
 		if (!this.initialized) return;
 
+		if (this.portals)
+			this.portals.forEach((portal) => portal.update(this.player.getPosition()));
 		if (this.checkpoints) this.checkpoints.update(et, dt);
+		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.update(et, dt));
+		if (this.areas) this.areas.update(et, dt);
 		if (this.interactablesBroadphase)
-			this.interactablesBroadphase.update(this.player.base.mesh.position);
-		if (this.collidersBroadphase)
-			this.collidersBroadphase.update(this.player.base.mesh.position);
+			this.interactablesBroadphase.update(this.player.getPosition());
+		if (this.collidersBroadphase) this.collidersBroadphase.update(this.player.getPosition());
 	}
 }

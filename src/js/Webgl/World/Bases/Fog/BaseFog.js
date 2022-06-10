@@ -11,6 +11,7 @@ const debug = {
 	instance: null,
 	label: 'Fog',
 	tab: 'Env',
+	folder: null,
 };
 /// #endif
 
@@ -48,7 +49,6 @@ export default class BaseFog {
 		/// #if DEBUG
 		if (!debug.instance) {
 			debug.instance = this.webgl.debug;
-			this.setdevtool();
 		}
 		/// #endif
 	}
@@ -62,64 +62,62 @@ export default class BaseFog {
 		// const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
 		const fog = new FogExp2(this.params.fogNearColor, 0);
 		this.scene.fog = fog;
+
 		this.scene.background = this.params.background;
+
+		/// #if DEBUG
+		this.setdevtool();
+		/// #endif
 	}
 
 	/// #if DEBUG
 	setdevtool() {
 		debug.instance.setFolder(debug.label, debug.tab, true);
 		const gui = debug.instance.getFolder(debug.label);
-		gui.addInput(this.params, 'fogFarColor', { label: 'farColor', view: 'color' }).on(
-			'change',
-			(fogFarColor) => {
-				this.scene.fog.color.set(fogFarColor.value);
-			},
-		);
-		gui.addInput(this.params, 'fogNearColor', {
+		if (debug.folder) debug.folder.dispose();
+
+		debug.folder = gui;
+
+		gui.addInput(this.scene.fog, 'color', { label: 'farColor', view: 'color-2' });
+
+		gui.addInput(baseUniforms.uFogNearColor, 'value', {
 			label: 'nearColor',
-			view: 'color',
-		}).on('change', (fogNearColor) => {
-			baseUniforms.uFogNearColor.value.set(fogNearColor.value);
+			view: 'color-2',
 		});
-		gui.addInput(this.params, 'fogFar', {
-			label: 'farRange',
-			min: 0,
-			max: 150,
-			step: 0.01,
-		}).on('change', (fogFar) => {
-			this.scene.fog.far = fogFar.value;
-		});
-		gui.addInput(this.params, 'fogNear', {
-			label: 'nearRange',
-			min: 0,
-			max: 50,
-			step: 0.01,
-		}).on('change', (fogNear) => {
-			this.scene.fog.near = fogNear.value;
-		});
+
+		// gui.addInput(this.scene.fog, 'far', {
+		// 	label: 'farRange',
+		// 	min: 0,
+		// 	max: 150,
+		// 	step: 0.01,
+		// });
+
+		// gui.addInput(this.scene.fog, 'near', {
+		// 	label: 'nearRange',
+		// 	min: 0,
+		// 	max: 50,
+		// 	step: 0.01,
+		// });
+
 		gui.addInput(baseUniforms.uFogNoiseSpeed, 'value', {
 			label: 'speed',
 			min: 0,
 			max: 0.02,
 			step: 0.001,
-		}).on('change', (speed) => {
-			baseUniforms.uFogNoiseSpeed.value = speed.value;
 		});
+
 		gui.addInput(baseUniforms.uFogNoiseFreq, 'value', {
 			label: 'frequency',
 			min: 0,
 			max: 2,
 			step: 0.001,
-		}).on('change', (freq) => {
-			baseUniforms.uFogNoiseFreq.value = freq.value;
 		});
+
 		gui.addInput(baseUniforms.uFogNoiseImpact, 'value', {
 			label: 'impact',
 			min: 0,
 			max: 1,
 			step: 0.001,
-		}).on('change', (imp) => {
-			baseUniforms.uFogNoiseImpact.value = imp.value;
 		});
 	}
 	/// #endif
