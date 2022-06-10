@@ -15,6 +15,7 @@ import {
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
+	PlaneBufferGeometry,
 	Texture,
 } from 'three';
 import { getWebgl } from '@webgl/Webgl';
@@ -24,7 +25,7 @@ import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 
-const twigsCountList = [0, 0, 100000, 100000, 100000, 100000];
+const twigsCountList = [0, 0, 150000, 150000, 150000, 150000];
 
 export default class Grass {
 	/**
@@ -81,30 +82,31 @@ export default class Grass {
 	}
 
 	setTwigGeometry() {
-		this.triangle = new BufferGeometry();
+		// this.triangle = new BufferGeometry();
+		this.triangle = new PlaneBufferGeometry();
 
-		const vertices = new Float32Array([
-			-0.15 * 0.2,
-			-0.15 * 0.2,
-			0 * 0.2, // bl
-			0.15 * 0.2,
-			-0.15 * 0.2,
-			0 * 0.2, // br
-			0 * 0.2,
-			0.75 * 0.2,
-			0 * 0.2, // tc
-		]);
+		// const vertices = new Float32Array([
+		// 	-0.15 * 0.2,
+		// 	-0.15 * 0.2,
+		// 	0 * 0.2, // bl
+		// 	0.15 * 0.2,
+		// 	-0.15 * 0.2,
+		// 	0 * 0.2, // br
+		// 	0 * 0.2,
+		// 	0.75 * 0.2,
+		// 	0 * 0.2, // tc
+		// ]);
 
 		// const normal = new Float32Array([
 		// 	0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
 		// ]);
-		const uv = new Float32Array([0, 1, 1, 1, 0, 0]);
-		const indices = new Uint16Array([0, 1, 2]);
+		// const uv = new Float32Array([0, 1, 1, 1, 0, 0]);
+		// const indices = new Uint16Array([0, 1, 2]);
 
-		this.triangle.setIndex(new BufferAttribute(indices, 1));
-		this.triangle.setAttribute('position', new BufferAttribute(vertices, 3));
-		// this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
-		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
+		// this.triangle.setIndex(new BufferAttribute(indices, 1));
+		// this.triangle.setAttribute('position', new BufferAttribute(vertices, 3));
+		// // this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
+		// this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
 	}
 
 	initGeometry(count) {
@@ -114,17 +116,23 @@ export default class Grass {
 		geo.attributes.position = this.triangle.attributes.position;
 		// geo.attributes.normal = this.triangle.attributes.normal;
 		geo.attributes.uv = this.triangle.attributes.uv;
-		geo.scale(this.params.scale, this.params.scale, this.params.scale);
+		geo.scale(this.params.scale * 0.075, this.params.scale, this.params.scale);
 
 		const array = [];
 		let id = 0;
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(1, 3);
+			const scale = MathUtils.randFloat(1, 4);
+
+			const rX = 0;
+			const rY = Math.PI * Math.random() * 2;
+			const rZ = 0;
+			const rW = Math.PI * Math.random() * 2;
+
 			id++;
 
-			array.push(x, 0, z, scale);
+			array.push(x, 0, z, scale, rX, rY, rZ, rW);
 		}
 
 		// pos + scale
@@ -135,15 +143,21 @@ export default class Grass {
 
 		geo.setAttribute('aPositions', new InterleavedBufferAttribute(ib, 3, 0, false));
 		geo.setAttribute('aScale', new InterleavedBufferAttribute(ib, 1, 3, false));
+		geo.setAttribute('aRotate', new InterleavedBufferAttribute(ib, 4, 4, false));
 
 		const buf = this.buffer;
 
 		for (let i = 0; i < id; i++) {
-			buf[i * this.stride] = array[i * this.stride];
+			buf[i * this.stride + 0] = array[i * this.stride + 0];
 			buf[i * this.stride + 1] = array[i * this.stride + 1];
 			buf[i * this.stride + 2] = array[i * this.stride + 2];
 
 			buf[i * this.stride + 3] = array[i * this.stride + 3];
+
+			buf[i * this.stride + 4] = array[i * this.stride + 4];
+			buf[i * this.stride + 5] = array[i * this.stride + 5];
+			buf[i * this.stride + 6] = array[i * this.stride + 6];
+			buf[i * this.stride + 7] = array[i * this.stride + 7];
 		}
 
 		this.base.geometry = geo;
@@ -153,8 +167,8 @@ export default class Grass {
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
-				uDisplacement: { value: 0.12 },
-				uWindColorIntensity: { value: 0.15 },
+				uDisplacement: { value: 0.06 },
+				uWindColorIntensity: { value: 0.11 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },
 				uNoiseElevationIntensity: { value: 0.75 },
@@ -167,6 +181,8 @@ export default class Grass {
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
 				uGrass: { value: this.params.grass },
+				uDiffuse: { value: this.params.diffuse },
+				uAlpha: { value: this.params.alpha },
 			},
 		});
 

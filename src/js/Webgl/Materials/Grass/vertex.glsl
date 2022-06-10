@@ -56,7 +56,7 @@ void main() {
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	// pos *= scaleFromTexture;
 
-	translation.y += pos.y;
+	// translation.y += pos.y;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
@@ -71,10 +71,10 @@ void main() {
 	pos.y *= 1. - trailIntensity;
 	translation.z -= trailIntensity * trailDirection.y * 0.5;
 
-	float heightNoise = cnoise(translation.xz * 0.2);
-	translation.y += abs(heightNoise) * 0.4;
+	float heightNoise = cnoise(translation.xz * 0.5);
+	translation.y += abs(heightNoise) * 0.35;
 
-	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
+	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time * 1.5);
 
 	if(instancedPos.y > 0.) {
 		translation.xz += vNoiseMouvement * uDisplacement;
@@ -85,7 +85,7 @@ void main() {
 	if(elevation >= 1.) {
 		translation = vec3(0.);
 	} else {
-		mv.xz += pos.xz;
+		mv.xyz += pos;
 	}
 
 	#ifdef USE_FOG

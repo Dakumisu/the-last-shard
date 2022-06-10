@@ -11,6 +11,9 @@ varying vec3 vNormal;
 
 uniform sampler2D uGrass;
 
+uniform sampler2D uDiffuse;
+uniform sampler2D uAlpha;
+
 #include <fog_pars_fragment>
 
 void main() {
@@ -19,10 +22,23 @@ void main() {
 
 	vec3 render = color + noiseElevation;
 
-	if(vFade == 1.)
-		discard;
+	// if(vFade == 1.)
+	// 	discard;
 
-	gl_FragColor = vec4(render, 1.);
+	// gl_FragColor = vec4(render, 1.);
+
+//Get transparency information from alpha map
+  float alpha = texture2D(uAlpha, vUv).r;
+  //If transparent, don't draw
+  if(alpha < 0.1){
+    discard;
+  }
+  //Get colour data from texture
+  vec4 col = vec4(texture2D(uDiffuse, vUv));
+  col.rgb *= uColor;
+  col.rgb = mix(col.rgb, uColor, vPos.y);
+
+  gl_FragColor = col;
 
 	#include <fog_fragment>
 

@@ -63,11 +63,13 @@ export default class SandboxScene extends BaseScene {
 
 		// Init grass after fog
 		this.grass = new Grass(this, {
-			color: '#829632',
-			color2: '#2d4312',
-			halfBoxSize: 15,
-			scale: 1,
+			color: '#c1f376',
+			color2: '#664cb1',
+			halfBoxSize: 10,
+			scale: 0.15,
 			grass: await loadTexture('grassPattern'),
+			diffuse: await loadTexture('grassDiffuse'),
+			alpha: await loadTexture('grassAlpha'),
 			positionsTexture: this.terrainSplatting,
 		});
 

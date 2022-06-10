@@ -56,6 +56,16 @@ assetsMap.set('grassPattern', {
 	data: {},
 });
 
+assetsMap.set('grassAlpha', {
+	path: '/assets/image/alpha.jpg',
+	data: {},
+});
+
+assetsMap.set('grassDiffuse', {
+	path: '/assets/image/diffuse.jpg',
+	data: {},
+});
+
 assetsMap.set('laserTexture', {
 	path: '/assets/image/laser.png',
 	data: {},
