@@ -14,12 +14,17 @@ void main() {
 
 	vec4 text = texture2D(uTexture, vUv);
 
-	vec4 render = text + noiseElevation;
+	vec4 render = text;
+	render.rgb += noiseElevation;
 
 	if(vFade == 1.)
 		discard;
 
 	gl_FragColor = render;
+
+	if(gl_FragColor.a <= .5) {
+		discard;
+	}
 
 	#include <fog_fragment>
 

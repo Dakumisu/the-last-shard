@@ -52,7 +52,7 @@ assetsMap.set('fogTexture', {
 });
 
 assetsMap.set('grassPattern', {
-	path: '/assets/image/grassPattern.png',
+	path: '/assets/image/grassTest.png',
 	data: {},
 });
 

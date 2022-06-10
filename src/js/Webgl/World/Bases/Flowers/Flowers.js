@@ -171,7 +171,6 @@ export default class Flowers {
 	setGrass() {
 		this.base.material = new FlowerMaterial({
 			transparent: true,
-			depthWrite: false,
 			uniforms: {
 				uDisplacement: { value: 0.025 },
 				uWindColorIntensity: { value: 0.22 },

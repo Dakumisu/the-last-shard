@@ -74,10 +74,6 @@ export default class SandboxScene extends BaseScene {
 		for (let index = 1; index < 5; index++) {
 			this.flowers = new Flowers(this, {
 				halfBoxSize: 10,
-				noiseElevationIntensity: 0.75,
-				noiseMouvementIntensity: 0.15,
-				windColorIntensity: 0.11,
-				displacement: 0.08,
 				scale: 1,
 				positionsTexture: this.terrainSplatting,
 				model: await loadModel('flower' + index),
