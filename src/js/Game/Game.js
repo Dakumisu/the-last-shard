@@ -1,5 +1,8 @@
+import signal from 'philbin-packages/signal';
+
 import Keyboard from '@tools/Keyboard';
 import Control from './Control';
+import Dialog from './Dialog';
 
 let initialized = false;
 
@@ -10,23 +13,29 @@ class Game {
 		Game.instance = this;
 
 		this.init();
-		this.event();
+		this.listeners();
 	}
 
 	async init() {
 		this.keyboard = new Keyboard();
-
 		this.control = new Control();
+		this.dialog = new Dialog();
 
 		initialized = true;
 	}
 
-	event() {
+	listeners() {
 		if (!initialized) return;
+
+		signal.on('raf', () => {
+			this.update();
+		});
 	}
 
 	update() {
 		if (!initialized) return;
+
+		this.dialog.update();
 	}
 
 	destroy() {

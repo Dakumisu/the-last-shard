@@ -38,7 +38,7 @@ class Webgl {
 		Webgl.instance = this;
 
 		this.beforeInit();
-		this.event();
+		this.listeners();
 	}
 
 	beforeInit() {
@@ -96,7 +96,7 @@ class Webgl {
 		this.resize();
 	}
 
-	event() {
+	listeners() {
 		if (!initialized) return;
 
 		signal.on('raycast', (e) => {
