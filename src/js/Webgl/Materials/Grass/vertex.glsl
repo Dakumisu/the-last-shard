@@ -19,7 +19,9 @@ attribute vec3 aPositions;
 varying float vFade;
 varying float vNoiseMouvement;
 varying vec2 vUv;
+varying vec3 vNormal;
 varying vec3 vPos;
+varying vec3 vGlobalPos;
 
 #include <fog_pars_vertex>
 
@@ -48,6 +50,7 @@ void main() {
 
 	vFade = elevation;
 	vUv = uv;
+	vNormal = normalize(normalMatrix * normal);
 
 	// float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
@@ -67,6 +70,9 @@ void main() {
 	translation.x -= trailIntensity * trailDirection.x * 0.5;
 	pos.y *= 1. - trailIntensity;
 	translation.z -= trailIntensity * trailDirection.y * 0.5;
+
+	float heightNoise = cnoise(translation.xz * 0.2);
+	translation.y += heightNoise * 0.4;
 
 	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
 
@@ -89,4 +95,5 @@ void main() {
 	gl_Position = projectionMatrix * mv;
 
 	vPos = pos;
+	vGlobalPos = translation;
 }

@@ -51,6 +51,11 @@ assetsMap.set('fogTexture', {
 	data: {},
 });
 
+assetsMap.set('grassPattern', {
+	path: '/assets/image/grassPattern.png',
+	data: {},
+});
+
 assetsMap.set('laserTexture', {
 	path: '/assets/image/laser.png',
 	data: {},

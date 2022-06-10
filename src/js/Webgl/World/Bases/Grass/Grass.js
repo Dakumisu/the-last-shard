@@ -85,15 +85,15 @@ export default class Grass {
 		this.triangle = new BufferGeometry();
 
 		const vertices = new Float32Array([
-			-0.15 * 0.2,
-			-0.15 * 0.2,
-			0 * 0.2, // bl
-			0.15 * 0.2,
-			-0.15 * 0.2,
-			0 * 0.2, // br
-			0 * 0.2,
-			0.75 * 0.2,
-			0 * 0.2, // tc
+			-0.085 * 0.225,
+			-0.085 * 0.225,
+			0 * 0.225, // bl
+			0.085 * 0.225,
+			-0.085 * 0.225,
+			0 * 0.225, // br
+			0 * 0.225,
+			0.85 * 0.225,
+			0 * 0.225, // tc
 		]);
 
 		const normal = new Float32Array([
@@ -167,6 +167,7 @@ export default class Grass {
 				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
+				uGrass: { value: this.params.grass },
 			},
 		});
 

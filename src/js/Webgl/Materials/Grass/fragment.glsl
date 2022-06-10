@@ -1,11 +1,15 @@
 uniform float uTime;
-varying float vFade;
-varying float vNoiseMouvement;
-varying vec3 vPos;
-
 uniform float uWindColorIntensity;
 uniform vec3 uColor;
 uniform vec3 uColor2;
+
+varying float vFade;
+varying float vNoiseMouvement;
+varying vec2 vUv;
+varying vec3 vPos;
+varying vec3 vNormal;
+
+uniform sampler2D uGrass;
 
 #include <fog_pars_fragment>
 

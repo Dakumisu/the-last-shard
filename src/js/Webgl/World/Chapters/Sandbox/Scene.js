@@ -58,66 +58,67 @@ export default class SandboxScene extends BaseScene {
 		// });
 
 		// Init grass after fog
-		// this.grass = new Grass(this, {
-		// 	color: '#66C0ef',
-		// 	color2: '#664CB1',
-		// 	verticeScale: 0.2,
-		// 	halfBoxSize: 25,
-		// 	noiseElevationIntensity: 0.75,
-		// 	noiseMouvementIntensity: 0.15,
-		// 	windColorIntensity: 0.11,
-		// 	displacement: 0.08,
-		// 	scale: 1,
-		// 	positionsTexture: await loadTexture('grassTexture'),
-		// });
+		this.grass = new Grass(this, {
+			color: '#66C0ef',
+			color2: '#664CB1',
+			verticeScale: 0.2,
+			halfBoxSize: 25,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.15,
+			windColorIntensity: 0.11,
+			displacement: 0.08,
+			scale: 1,
+			positionsTexture: await loadTexture('grassTexture'),
+			grass: await loadTexture('grassPattern'),
+		});
 
-		// this.flowers = new Flowers(this, {
-		// 	color: '#66C0ef',
-		// 	color2: '#664CB1',
-		// 	verticeScale: 0.2,
-		// 	halfBoxSize: 15,
-		// 	noiseElevationIntensity: 0.75,
-		// 	noiseMouvementIntensity: 0.15,
-		// 	windColorIntensity: 0.11,
-		// 	displacement: 0.08,
-		// 	scale: 1,
-		// 	positionsTexture: this.terrainSplatting,
-		// });
+		this.flowers = new Flowers(this, {
+			color: '#66C0ef',
+			color2: '#664CB1',
+			verticeScale: 0.2,
+			halfBoxSize: 15,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.15,
+			windColorIntensity: 0.11,
+			displacement: 0.08,
+			scale: 1,
+			positionsTexture: this.terrainSplatting,
+		});
 
-		// this.flowers2 = new Flowers2(this, {
-		// 	color: '#66C0ef',
-		// 	color2: '#664CB1',
-		// 	verticeScale: 0.2,
-		// 	halfBoxSize: 15,
-		// 	noiseElevationIntensity: 0.75,
-		// 	noiseMouvementIntensity: 0.15,
-		// 	windColorIntensity: 0.11,
-		// 	displacement: 0.08,
-		// 	scale: 1,
-		// 	positionsTexture: this.terrainSplatting,
-		// });
+		this.flowers2 = new Flowers2(this, {
+			color: '#66C0ef',
+			color2: '#664CB1',
+			verticeScale: 0.2,
+			halfBoxSize: 15,
+			noiseElevationIntensity: 0.75,
+			noiseMouvementIntensity: 0.15,
+			windColorIntensity: 0.11,
+			displacement: 0.08,
+			scale: 1,
+			positionsTexture: this.terrainSplatting,
+		});
 
-		// this.particles = new Particles({
-		// 	scene: this,
-		// 	params: {
-		// 		color: '#C1C2FF',
-		// 		color2: '#664CB1',
-		// 		count: 1000,
-		// 		halfBoxSize: 25,
-		// 		positionsTexture: this.terrainSplatting,
-		// 	},
-		// });
+		this.particles = new Particles({
+			scene: this,
+			params: {
+				color: '#C1C2FF',
+				color2: '#664CB1',
+				count: 1000,
+				halfBoxSize: 25,
+				positionsTexture: this.terrainSplatting,
+			},
+		});
 
-		// this.fogParticles = new FogParticles({
-		// 	scene: this,
-		// 	params: {
-		// 		color: '#664CB1',
-		// 		count: 3000,
-		// 		halfBoxSize: 25,
-		// 		positionsTexture: this.terrainSplatting,
-		// 		fogTexture: await loadTexture('fogTexture'),
-		// 	},
-		// });
+		this.fogParticles = new FogParticles({
+			scene: this,
+			params: {
+				color: '#664CB1',
+				count: 3000,
+				halfBoxSize: 25,
+				positionsTexture: this.terrainSplatting,
+				fogTexture: await loadTexture('fogTexture'),
+			},
+		});
 
 		this.initialized.resolve(true);
 		this.isInitialized = true;
