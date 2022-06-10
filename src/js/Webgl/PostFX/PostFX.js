@@ -73,7 +73,7 @@ export default class PostFX {
 				uGlobalLutIntensity: { value: 1 },
 
 				// Transition
-				uTransition: { value: 0 },
+				uTransition: { value: 1 },
 			},
 		});
 

@@ -56,7 +56,7 @@ void main() {
 
 	vec4 basic = vec4(outgoingLight, diffuseColor.a);
 
-	gl_FragColor = vec4(render, diffuseColor.a);
+	gl_FragColor = vec4(uColor2, diffuseColor.a);
 
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>

@@ -52,7 +52,7 @@ export default class SandboxScene extends BaseScene {
 			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
 			fogNear: 0,
-			fogFar: 25,
+			fogFar: 60,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
 			fogNoiseImpact: 0.1,
