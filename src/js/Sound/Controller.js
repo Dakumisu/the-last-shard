@@ -76,12 +76,18 @@ export default class SoundController {
 	};
 
 	update() {
-		if (this.player?.base.mesh.position)
+		if (this.player?.base.mesh.position) {
 			Howler.pos(
 				this.player.base.mesh.position.x,
 				this.player.base.mesh.position.y,
 				this.player.base.mesh.position.z,
 			);
+			Howler.orientation(
+				this.player.base.mesh.rotation.x,
+				this.player.base.mesh.rotation.y,
+				this.player.base.mesh.rotation.z,
+			);
+		}
 	}
 
 	destroy() {

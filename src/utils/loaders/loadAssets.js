@@ -137,7 +137,6 @@ export async function loadAudio(key) {
 		loadedAudio = URL.createObjectURL(blob);
 		store.loadedAssets.audios.set(key, loadedAudio);
 	}
-	console.log(loadedAudio);
 
 	return loadedAudio;
 }

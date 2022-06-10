@@ -58,5 +58,7 @@ class Checkpoint {
 		this.mesh = new Mesh(Checkpoint.geometry, Checkpoint.material);
 		this.mesh.position.copy(this.pos);
 		this.mesh.quaternion.copy(this.qt);
+
+		this.mesh.visible = false;
 	}
 }

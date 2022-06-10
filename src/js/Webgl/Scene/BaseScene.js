@@ -7,6 +7,7 @@ const debug = {
 
 import {
 	Box3,
+	DataTexture,
 	DepthFormat,
 	DepthTexture,
 	FloatType,
@@ -41,6 +42,7 @@ import signal from 'philbin-packages/signal';
 import CollidersBroadphase from '@webgl/World/Bases/Broadphase/CollidersBroadphase';
 import { loadTexture } from '@utils/loaders';
 import { store } from '@tools/Store';
+import { map } from 'philbin-packages/maths';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 
@@ -186,6 +188,7 @@ export default class BaseScene {
 		console.log(this.manifest);
 		/// #endif
 		await this.loadTerrainSplatting();
+		this.setTerrainSplattingData();
 		await loadTexture('asset_gradient');
 	}
 
@@ -422,6 +425,16 @@ export default class BaseScene {
 		requestAnimationFrame(this.updateRenderTarget);
 	}
 
+	setTerrainSplattingData() {
+		const canvas = document.createElement('canvas');
+		canvas.width = canvas.height = this.terrainSplatting.source.data.width;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(this.terrainSplatting.source.data, 0, 0);
+		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		this.terrainSplattingData = imageData.data;
+		canvas.remove();
+	}
+
 	addTo(mainScene) {
 		mainScene.add(this.instance);
 		this.player.setStartPosition(this.checkpoints.currentCheckpoint);
@@ -479,6 +492,27 @@ export default class BaseScene {
 		if (this.collidersBroadphase)
 			this.collidersBroadphase.update(this.player.base.mesh.position);
 
-		if (this.grass) this.grass.updateGPUCompute(et, dt);
+		// vec2 scaledCoords = vec2(map(uCharaPos.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(uCharaPos.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
+		const playerXTexture = map(
+			this.player.base.mesh.position.x,
+			this.minBox.x,
+			this.maxBox.x,
+			0,
+			this.terrainSplatting.source.data.width,
+		);
+		const playerYTexture = map(
+			this.player.base.mesh.position.z,
+			this.minBox.z,
+			this.maxBox.z,
+			0,
+			this.terrainSplatting.source.data.width,
+		);
+
+		this.player.state.isOnGrass =
+			this.terrainSplattingData.at(
+				Math.floor(playerYTexture) * (this.terrainSplatting.source.data.width * 4) +
+					Math.floor(playerXTexture) * 4 +
+					1,
+			) >= 100;
 	}
 }

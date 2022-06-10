@@ -17,6 +17,7 @@ import {
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
+	MeshBasicMaterial,
 	PlaneGeometry,
 	RGBAFormat,
 	Texture,
@@ -78,8 +79,6 @@ export default class Grass {
 		this.setTwigGeometry();
 		this.initGeometry(twigsCountList[5]);
 		this.setGrass();
-
-		this.setGPUCompute();
 
 		this.count = twigsCountList[store.quality];
 		this.updateCount(this.count);
@@ -183,82 +182,6 @@ export default class Grass {
 		// this.base.mesh.position.y = -0.2;
 		this.base.mesh.frustumCulled = false;
 		this.scene.instance.add(this.base.mesh);
-	}
-
-	setGPUCompute() {
-		console.log(this.params.positionsTexture);
-		this.gpuCompute = new GPUComputationRenderer(1, 1, this.renderer);
-		this.gpuCompute.setDataType(UnsignedByteType);
-
-		this.playerOnGrassTexture = this.gpuCompute.createTexture();
-		// this.playerOnGrassTexture.format = RGBAFormat;
-		// this.playerOnGrassTexture.type = UnsignedByteType;
-
-		this.playerOnGrassVariable = this.gpuCompute.addVariable(
-			'playerOnGrassBoolean',
-			`
-			uniform sampler2D uGrassTexture;
-			uniform vec3 uMaxMapBounds;
-			uniform vec3 uMinMapBounds;	
-			uniform vec3 uCharaPos;
-
-			float map(float value, float start1, float stop1, float start2, float stop2) {
-				return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
-			}
-
-			void main() {
-				vec2 scaledCoords = vec2(map(uCharaPos.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(uCharaPos.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
-
-				vec4 playerOnGrass = texture2D(uGrassTexture, scaledCoords);
-
-				if (playerOnGrass.g > 0.2) 
-					gl_FragColor = vec4(0.);
-				 else
-					gl_FragColor = vec4(1.);
-
-			}
-		`,
-			this.playerOnGrassTexture,
-		);
-
-		this.playerOnGrassVariable.material.uniforms['uCharaPos'] = {
-			value: this.scene.player.base.mesh.position,
-		};
-		this.playerOnGrassVariable.material.uniforms['uMaxMapBounds'] = {
-			value: this.scene.maxBox,
-		};
-		this.playerOnGrassVariable.material.uniforms['uMinMapBounds'] = {
-			value: this.scene.minBox,
-		};
-		this.playerOnGrassVariable.material.uniforms['uGrassTexture'] = {
-			value: this.params.positionsTexture,
-		};
-
-		const error = this.gpuCompute.init();
-		if (error) console.error(error);
-
-		this.outputBuffer = new Uint8Array(4);
-	}
-
-	updateGPUCompute(et, dt) {
-		if (et - this.previousEt < 200) return;
-		this.previousEt = et;
-
-		this.playerOnGrassVariable.material.uniforms['uCharaPos'].value.copy(
-			this.scene.player.base.mesh.position,
-		);
-
-		this.gpuCompute.compute();
-
-		this.renderer.readRenderTargetPixels(
-			this.gpuCompute.getCurrentRenderTarget(this.playerOnGrassVariable),
-			0,
-			0,
-			1,
-			1,
-			this.outputBuffer,
-		);
-		this.scene.player.state.isOnGrass = this.outputBuffer.at(0) === 0;
 	}
 
 	async updateCount(count) {

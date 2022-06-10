@@ -21,7 +21,6 @@ import SoundController from '@js/Sound/Controller.js';
 export default class World {
 	constructor() {
 		this.sceneController = new SceneController();
-		this.soundController = new SoundController();
 
 		this.manifest = store.manifest;
 
@@ -54,6 +53,7 @@ export default class World {
 		await this.getScenes();
 		await this.initScenes();
 
+		this.soundController = new SoundController();
 		await this.soundController.isLoaded;
 	}
 

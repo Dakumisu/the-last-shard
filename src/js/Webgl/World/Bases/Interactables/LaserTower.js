@@ -85,7 +85,6 @@ export default class LaserTower extends BaseCollider {
 			this.base.mesh.position.y + this.sphereGroup.position.y,
 			this.base.mesh.position.z,
 		);
-		// .setY(this.sphereGroup.position.y + this.base.mesh.position.y);
 
 		if (this.baseDirection) this.direction.fromArray(this.baseDirection);
 		else this.sphere.getWorldDirection(this.direction);
@@ -112,9 +111,12 @@ export default class LaserTower extends BaseCollider {
 
 		signal.emit('sound:play', 'laser-activate', { pos: this.base.mesh.position, replay: true });
 
+		// const laserGroupWorldPos = new Vector3();
+		// this.laserGroup.getWorldPosition(laserGroupWorldPos);
 		if (this.type === 'start') {
 			signal.emit('sound:play', 'laser', {
-				pos: this.laserGroup.getWorldPosition(new Vector3()),
+				pos: this.base.mesh.position,
+				replay: true,
 			});
 			this.timer.start();
 			this.game.pet.toggleFeeding(this.sphereWorldPos);
