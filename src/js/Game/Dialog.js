@@ -33,6 +33,7 @@ export default class Dialog {
 	}
 
 	async open({ scene = '', sequence = '' }) {
+		console.log(scene, sequence);
 		const dialog = this.dialog[scene][sequence];
 		console.log('[DIALOG]', dialog);
 
@@ -42,7 +43,8 @@ export default class Dialog {
 
 		signal.emit('postpro:transition-in', 500);
 		await wait(500);
-		// signal.emit('camera:switch', 'dialog');
+		signal.emit('dialog:start');
+		signal.emit('camera:switch', 'dialog');
 		signal.emit('postpro:transition-out');
 
 		store.game.player.canMove = false;
@@ -62,12 +64,13 @@ export default class Dialog {
 	}
 
 	nextLine = throttle(() => {
-		console.log('[DIALOG] nextline');
 		if (index >= length) {
 			this.close();
 
 			return;
 		}
+
+		console.log('[DIALOG] nextline');
 
 		this.speak({ line: pool[index] });
 		index++;
@@ -86,7 +89,7 @@ export default class Dialog {
 		signal.emit('postpro:transition-in', 500);
 		await wait(500);
 		store.game.player.canMove = true;
-		// signal.emit('camera:switch', 'player');
+		signal.emit('camera:switch', 'player');
 		signal.emit('postpro:transition-out');
 
 		console.log('[DIALOG] close');

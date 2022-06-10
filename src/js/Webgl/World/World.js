@@ -17,6 +17,7 @@ import { store } from '@tools/Store.js';
 import assetsMap from '@utils/manifest.js';
 import { initPet } from './Characters/Pet.js';
 import SoundController from '@js/Sound/Controller.js';
+import DialogCamera from '@webgl/Camera/Cameras/DialogCamera.js';
 
 export default class World {
 	constructor() {
@@ -50,6 +51,7 @@ export default class World {
 	async init() {
 		this.setPlayer();
 		this.setPet();
+		this.dialogCamera = new DialogCamera();
 		await this.getScenes();
 		await this.initScenes();
 

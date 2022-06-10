@@ -341,7 +341,30 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
         pos = utils.toThreePos(utils.toNumberList(pos, 6))
         scale = utils.toThreeScale(utils.toNumberList(scale, 6))
 
-        areaData = {'zone': zone, 'pos': pos, 'size': scale[0]}
+        dialog = False
+        for key in obj.keys():
+            if key.startswith('_'):
+                continue
+
+            if (key == 'dialog'):
+                dialog = obj[key]
+
+                if (
+                    not isinstance(dialog, str)
+                    and not isinstance(dialog, float)
+                    and not isinstance(dialog, int)
+                    and not isinstance(dialog, bool)
+                ):
+                    continue
+
+                break
+
+        areaData = {
+            'zone': zone,
+            'pos': pos,
+            'size': scale[0],
+            'dialog': dialog
+        }
 
         data['areas'].append(areaData)
 

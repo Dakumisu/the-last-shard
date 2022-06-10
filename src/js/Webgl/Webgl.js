@@ -10,7 +10,8 @@ import Size from '@tools/Size';
 
 import CameraController from './Camera/Controller';
 import MainCamera from './Camera/Cameras/MainCamera';
-import Cinematrix from './Camera/Cameras/Cinematrix';
+
+import SoundController from '@js/Sound/Controller';
 
 import Renderer from './Renderer';
 import MainScene from './Scene/MainScene';
@@ -19,7 +20,6 @@ import World from './World/World';
 /// #if DEBUG
 import Debug from '@tools/Debug';
 import OrbitCamera from './Camera/Cameras/OrbitCamera';
-import SoundController from '@js/Sound/Controller';
 /// #endif
 
 let initialized = false;
@@ -58,7 +58,6 @@ class Webgl {
 	async init() {
 		this.cameraController = new CameraController();
 		this.camera = new MainCamera();
-		// this.cinematrixCamera = new Cinematrix();
 
 		/// #if DEBUG
 		this.debugOrbitCam = new OrbitCamera(

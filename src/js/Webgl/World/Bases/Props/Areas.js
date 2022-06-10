@@ -49,6 +49,39 @@ export default class Areas {
 		return this.currentArea;
 	}
 
+	enter(area) {
+		/// #if DEBUG
+		console.log('👊 Area enter:', area);
+		/// #endif
+
+		this.currentArea = area;
+		this.isInside = true;
+
+		const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
+		signal.emit('area:enter', name);
+
+		if (!area.dialog) return;
+
+		signal.emit('dialog:open', { scene: this.scene.label, sequence: area.dialog });
+		area.dialog = false;
+
+		return;
+	}
+
+	leave() {
+		/// #if DEBUG
+		console.log('👊 Area leave');
+		/// #endif
+
+		const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
+		signal.emit('area:leave', name);
+
+		this.isInside = false;
+		this.currentArea = null;
+
+		return;
+	}
+
 	update(et, dt) {
 		if (!this.initialized) return;
 
@@ -59,30 +92,14 @@ export default class Areas {
 				this.currentArea.size;
 			if (inRange && this.isInside) return;
 
-			const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
-			signal.emit('area:leave', name);
-
-			this.isInside = false;
-			this.currentArea = null;
-
-			/// #if DEBUG
-			console.log('👊 Area leave');
-			/// #endif
+			this.leave();
 		} else {
 			// check if the player enter in an area
 			this.areas.forEach((area) => {
 				const inRange = this.player.base.mesh.position.distanceTo(area.pos) < area.size;
 				if (!inRange) return;
 
-				this.currentArea = area;
-				this.isInside = true;
-
-				const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
-				signal.emit('area:enter', name);
-
-				/// #if DEBUG
-				console.log('👊 Area enter:', this.currentArea.zone);
-				/// #endif
+				this.enter(area);
 			});
 		}
 	}

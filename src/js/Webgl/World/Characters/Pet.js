@@ -1,10 +1,22 @@
-import { loadModel } from '@utils/loaders/loadAssets';
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
-import { getWebgl } from '@webgl/Webgl';
+import {
+	Euler,
+	Group,
+	IcosahedronGeometry,
+	Mesh,
+	MeshBasicMaterial,
+	Quaternion,
+	Vector3,
+} from 'three';
 import anime from 'animejs';
+import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
 import { dampPrecise } from 'philbin-packages/maths';
-import { Euler, IcosahedronGeometry, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from 'three';
+
+import { loadModel } from '@utils/loaders/loadAssets';
+import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
+import AnimationController from '@webgl/Animation/Controller';
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
+import { getWebgl } from '@webgl/Webgl';
 import BaseEntity from '../Bases/BaseEntity';
 import { getPlayer } from './Player';
 
@@ -16,17 +28,28 @@ const debug = {
 };
 /// #endif
 
+const PI = Math.PI;
+
+const model = '/assets/model/lua.glb';
+
 const params = {
 	offsetFromPlayer: new Vector3(-1, 1, 1),
 	idleRadius: 2,
 	statesTimeouts: [4000, 2000],
 };
 
+const pet = {
+	anim: null,
+};
+
+let previousAnim = null;
+
 export class Pet extends BaseEntity {
 	static STATES = {
 		FOLLOW: 0,
 		IDLE: 1,
 		FEEDING: 2,
+		SPEAKING: 3,
 	};
 	static instance;
 
@@ -36,8 +59,8 @@ export class Pet extends BaseEntity {
 		Pet.instance = this;
 
 		const webgl = getWebgl();
-
 		this.player = getPlayer();
+
 		this.scene = webgl.mainScene.instance;
 
 		this.state = Pet.STATES.IDLE;
@@ -46,6 +69,7 @@ export class Pet extends BaseEntity {
 
 		this.lastPlayerPos = new Vector3();
 		this.targetPos = new Vector3();
+		this.base.group = new Group();
 
 		/// #if DEBUG
 		debug.instance = webgl.debug;
@@ -53,40 +77,12 @@ export class Pet extends BaseEntity {
 
 		this.isInitialized = false;
 
+		this.listeners();
 		this.init();
 	}
 
-	async init() {
-		this.base.geometry = new IcosahedronGeometry(0.1, 3);
-		// this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
-
-		this.base.group = await loadModel('lua');
-		this.base.group.scale.setScalar(1.5);
-
-		console.log(this.base.group);
-		// this.base.group.traverse((child) => {
-		// 	if (child.isMesh) child.material = this.base.material;
-		// });
-
-		this.base.mesh = new Mesh(this.base.geometry);
-
-		this.initPhysics();
-
-		/// #if DEBUG
-		this.devltools();
-		/// #endif
-
-		this.targetPos.copy(this.player.base.mesh.position).add(params.offsetFromPlayer);
-
-		this.base.group.position.copy(this.targetPos);
-		this.lastPlayerPos.copy(this.player.base.mesh.position);
-
-		this.scene.add(this.base.group);
-		this.isInitialized = true;
-	}
-
 	/// #if DEBUG
-	devltools() {
+	devtools() {
 		debug.instance.setFolder(debug.label, debug.tab);
 		const gui = debug.instance.getFolder(debug.label);
 
@@ -96,10 +92,59 @@ export class Pet extends BaseEntity {
 	}
 	/// #endif
 
+	async init() {
+		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
+
+		const m = await loadGLTF(model);
+
+		m.scene.traverse((child) => {
+			if (child.isMesh) child.material = this.base.material;
+		});
+
+		this.base.model = m;
+		console.log(m);
+		this.base.model.scene.rotateY(PI);
+		this.base.group.add(this.base.model.scene);
+
+		// this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
+
+		this.base.geometry = new IcosahedronGeometry(0.1, 3);
+		this.base.mesh = new Mesh(this.base.geometry);
+
+		this.initPhysics();
+
+		/// #if DEBUG
+		this.devtools();
+		/// #endif
+
+		this.targetPos.copy(this.player.getPosition()).add(params.offsetFromPlayer);
+
+		this.base.group.position.copy(this.targetPos);
+		this.lastPlayerPos.copy(this.player.getPosition());
+
+		this.scene.add(this.base.group);
+		this.isInitialized = true;
+	}
+
+	listeners() {
+		signal.on('dialog:start', () => {
+			this.state = Pet.STATES.SPEAKING;
+		});
+		signal.on('dialog:complete', () => {
+			this.state = Pet.STATES.IDLE;
+		});
+	}
+
 	update(et, dt) {
 		if (!this.isInitialized) return;
 
-		if (!this.timeOutStarted && this.state !== Pet.STATES.FEEDING) this.stateTimeout();
+		console.log(this.state);
+		if (
+			!this.timeOutStarted &&
+			this.state !== Pet.STATES.FEEDING &&
+			this.state !== Pet.STATES.SPEAKING
+		)
+			this.stateTimeout();
 
 		// TODO: TP if distance to far
 
@@ -112,6 +157,10 @@ export class Pet extends BaseEntity {
 				break;
 			case Pet.STATES.FEEDING:
 				this.feed(et, dt);
+				break;
+			case Pet.STATES.SPEAKINK:
+				this.speak(et, dt);
+				break;
 		}
 	}
 
@@ -119,13 +168,13 @@ export class Pet extends BaseEntity {
 		this.lookAtPlayer();
 		this.dampPosition(dt, 0.05);
 
-		this.lastPlayerPos.copy(this.player.base.mesh.position);
+		this.lastPlayerPos.copy(this.player.getPosition());
 
 		const _dir = new Vector3();
 		// this.player.base.mesh.getWorldDirection(_dir);
 		// _dir.negate();
 
-		this.targetPos.copy(this.player.base.mesh.position).add(_dir).add(params.offsetFromPlayer);
+		this.targetPos.copy(this.player.getPosition()).add(_dir).add(params.offsetFromPlayer);
 	}
 
 	idle(et, dt) {
@@ -141,6 +190,18 @@ export class Pet extends BaseEntity {
 
 	feed(et, dt) {
 		this.dampPosition(dt, 0.1);
+	}
+
+	speak(et, dt) {
+		this.lookAtPlayer();
+
+		// pet.anim = this.base.animation.get('speak')
+		// if (previousAnim != pet.anim) this.base.animation.switch(pet.anim)
+		// this.base.animation.update(et, dt)
+	}
+
+	getPosition() {
+		return this.base.group.position;
 	}
 
 	toggleFeeding(targetPos = null) {
@@ -182,11 +243,8 @@ export class Pet extends BaseEntity {
 	}
 
 	lookAtPlayer() {
-		this.base.group.lookAt(
-			this.player.base.mesh.position.x,
-			this.base.group.position.y,
-			this.player.base.mesh.position.z,
-		);
+		const { x, z } = this.player.getPosition();
+		this.base.group.lookAt(x, this.base.group.position.y, z);
 	}
 
 	async stateTimeout() {
