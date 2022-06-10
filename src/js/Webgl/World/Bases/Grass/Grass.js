@@ -24,7 +24,7 @@ import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 
-const twigsCountList = [0, 0, 80000, 100000, 200000, 300000];
+const twigsCountList = [0, 0, 100000, 100000, 100000, 100000];
 
 export default class Grass {
 	/**
@@ -84,11 +84,11 @@ export default class Grass {
 		this.triangle = new BufferGeometry();
 
 		const vertices = new Float32Array([
-			-0.085 * 0.225,
-			-0.085 * 0.225,
+			-0.05 * 0.225,
+			-0.05 * 0.225,
 			0 * 0.225, // bl
-			0.085 * 0.225,
-			-0.085 * 0.225,
+			0.05 * 0.225,
+			-0.05 * 0.225,
 			0 * 0.225, // br
 			0 * 0.225,
 			0.85 * 0.225,

@@ -61,12 +61,12 @@ export default class BaseFog {
 
 		// const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
 		const fog = new FogExp2(this.params.fogNearColor, 0);
-		this.scene.fog = fog;
+		// this.scene.fog = fog;
 
 		this.scene.background = this.params.background;
 
 		/// #if DEBUG
-		this.setdevtool();
+		// this.setdevtool();
 		/// #endif
 	}
 

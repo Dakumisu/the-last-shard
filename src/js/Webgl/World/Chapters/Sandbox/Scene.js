@@ -64,38 +64,38 @@ export default class SandboxScene extends BaseScene {
 		this.grass = new Grass(this, {
 			color: '#66C0ef',
 			color2: '#664CB1',
-			halfBoxSize: 25,
+			halfBoxSize: 15,
 			scale: 1,
 			grass: await loadTexture('grassPattern'),
 			positionsTexture: this.terrainSplatting,
 		});
 
-		this.flowers = new Flowers(this, {
-			color: '#66C0ef',
-			color2: '#664CB1',
-			verticeScale: 0.2,
-			halfBoxSize: 15,
-			noiseElevationIntensity: 0.75,
-			noiseMouvementIntensity: 0.15,
-			windColorIntensity: 0.11,
-			displacement: 0.08,
-			scale: 1,
-			positionsTexture: this.terrainSplatting,
-		});
+		// this.flowers = new Flowers(this, {
+		// 	color: '#66C0ef',
+		// 	color2: '#664CB1',
+		// 	verticeScale: 0.2,
+		// 	halfBoxSize: 15,
+		// 	noiseElevationIntensity: 0.75,
+		// 	noiseMouvementIntensity: 0.15,
+		// 	windColorIntensity: 0.11,
+		// 	displacement: 0.08,
+		// 	scale: 1,
+		// 	positionsTexture: this.terrainSplatting,
+		// });
 
-		this.flowers2 = new Flowers2(this, {
-			color: '#66C0ef',
-			color2: '#664CB1',
-			verticeScale: 0.2,
-			// halfBoxSize: 15,
-			noiseElevationIntensity: 0.75,
-			noiseMouvementIntensity: 0.15,
-			windColorIntensity: 0.11,
-			displacement: 0.08,
-			halfBoxSize: 25,
-			scale: 1,
-			positionsTexture: this.terrainSplatting,
-		});
+		// this.flowers2 = new Flowers2(this, {
+		// 	color: '#66C0ef',
+		// 	color2: '#664CB1',
+		// 	verticeScale: 0.2,
+		// 	// halfBoxSize: 15,
+		// 	noiseElevationIntensity: 0.75,
+		// 	noiseMouvementIntensity: 0.15,
+		// 	windColorIntensity: 0.11,
+		// 	displacement: 0.08,
+		// 	halfBoxSize: 25,
+		// 	scale: 1,
+		// 	positionsTexture: this.terrainSplatting,
+		// });
 
 		this.particles = new Particles({
 			scene: this,
