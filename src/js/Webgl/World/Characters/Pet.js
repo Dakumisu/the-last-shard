@@ -58,12 +58,15 @@ export class Pet extends BaseEntity {
 
 	async init() {
 		this.base.geometry = new IcosahedronGeometry(0.1, 3);
-		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
+		// this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
 
 		this.base.group = await loadModel('lua');
-		this.base.group.traverse((child) => {
-			if (child.isMesh) child.material = this.base.material;
-		});
+		this.base.group.scale.setScalar(1.5);
+
+		console.log(this.base.group);
+		// this.base.group.traverse((child) => {
+		// 	if (child.isMesh) child.material = this.base.material;
+		// });
 
 		this.base.mesh = new Mesh(this.base.geometry);
 

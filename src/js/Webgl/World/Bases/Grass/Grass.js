@@ -9,21 +9,29 @@ import {
 	BufferAttribute,
 	BufferGeometry,
 	Color,
+	DataTexture,
+	FloatType,
 	InstancedBufferAttribute,
 	InstancedBufferGeometry,
 	InstancedInterleavedBuffer,
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
+	MeshBasicMaterial,
+	PlaneGeometry,
+	RGBAFormat,
 	Texture,
+	UnsignedByteType,
+	UnsignedShortType,
 } from 'three';
-
+import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer';
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 
 const twigsCountList = [0, 0, 80000, 100000, 200000, 300000];
 
@@ -49,6 +57,8 @@ export default class Grass {
 		this.triangle = null;
 
 		this.count = twigsCountList[5];
+
+		this.previousEt = 0;
 
 		signal.on('quality', (quality) => {
 			this.count = twigsCountList[quality];

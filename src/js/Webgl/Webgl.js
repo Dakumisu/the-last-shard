@@ -19,6 +19,7 @@ import World from './World/World';
 /// #if DEBUG
 import Debug from '@tools/Debug';
 import OrbitCamera from './Camera/Cameras/OrbitCamera';
+import SoundController from '@js/Sound/Controller';
 /// #endif
 
 let initialized = false;
@@ -54,7 +55,7 @@ class Webgl {
 		this.init();
 	}
 
-	init() {
+	async init() {
 		this.cameraController = new CameraController();
 		this.camera = new MainCamera();
 		// this.cinematrixCamera = new Cinematrix();
@@ -135,6 +136,8 @@ class Webgl {
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
 		if (this.renderer) this.renderer.render();
 		if (this.camera) this.camera.update(this.raf.elapsed, this.raf.delta);
+
+		if (this.soundController) this.soundController.update();
 	}
 
 	resize() {

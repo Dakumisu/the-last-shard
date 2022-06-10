@@ -135,6 +135,7 @@ class Player extends BaseEntity {
 
 		this.state = {
 			isOnGround: true,
+			isOnGrass: false,
 
 			forwardPressed: false,
 			backwardPressed: false,
@@ -454,6 +455,26 @@ class Player extends BaseEntity {
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
+
+		if (
+			this.state.isMoving &&
+			this.state.isOnGround &&
+			player.realSpeed > 1 &&
+			!this.state.isFalling
+		) {
+			if (this.state.isOnGrass) {
+				signal.emit('sound:play', 'footsteps-grass', { rate: player.realSpeed * 0.3 });
+				signal.emit('sound:stop', 'footsteps-ground');
+			} else {
+				signal.emit('sound:play', 'footsteps-ground', { rate: player.realSpeed * 0.35 });
+				signal.emit('sound:stop', 'footsteps-grass');
+			}
+		} else if (this.state.isFalling && this.state.isOnGround && this.state.hasJumped)
+			signal.emit('sound:play', 'fall');
+		else {
+			if (this.state.isOnGrass) signal.emit('sound:stop', 'footsteps-grass');
+			else signal.emit('sound:stop', 'footsteps-ground');
+		}
 	}
 
 	updateDirection() {
@@ -550,6 +571,7 @@ class Player extends BaseEntity {
 		await wait(delay);
 		playerVelocity.y = 13;
 		this.state.isJumping = false;
+		signal.emit('sound:play', 'jump');
 	}
 
 	checkPlayerPosition(dt) {
