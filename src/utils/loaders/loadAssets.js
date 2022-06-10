@@ -119,7 +119,7 @@ export async function loadLUTTexture(key) {
 /**
  *
  * @param {string} key
- * @returns {Promise<AudioBuffer | null>}
+ * @returns {Promise<String | null>}
  */
 export async function loadAudio(key) {
 	const path = manifest.get(key)?.path;
@@ -132,7 +132,9 @@ export async function loadAudio(key) {
 
 	let loadedAudio = store.loadedAssets.audios.get(key);
 	if (!loadedAudio) {
-		loadedAudio = await audioLoader.loadAsync(path);
+		const arrayBuffer = await (await fetch(new Request(path))).arrayBuffer();
+		const blob = new Blob([arrayBuffer], { type: 'audio/mp3' });
+		loadedAudio = URL.createObjectURL(blob);
 		store.loadedAssets.audios.set(key, loadedAudio);
 	}
 
