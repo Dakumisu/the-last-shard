@@ -17,6 +17,12 @@ export default class BaseDirectionnal {
 		label = 'noname',
 	} = {}) {
 		this.light = new DirectionalLight(color, intensity);
+		this.light.castShadow = true;
+		this.light.shadow.mapSize.width = 512; // default
+		this.light.shadow.mapSize.height = 512; // default
+		this.light.shadow.camera.near = 0.5; // default
+		this.light.shadow.camera.far = 1000; // default
+
 		this.light.position.copy(position);
 		this.light.name = label;
 
