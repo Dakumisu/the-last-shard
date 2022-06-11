@@ -6,8 +6,8 @@ import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
 import Timer from '@game/Timer';
 import signal from 'philbin-packages/signal';
-import { clamp, lerp } from 'philbin-packages/maths';
-import { debounce } from 'philbin-packages/async';
+import { clamp, lerp, map } from 'philbin-packages/maths';
+import { throttle, wait } from 'philbin-packages/async';
 
 const params = {
 	ringRotationOffset: {
@@ -15,12 +15,18 @@ const params = {
 		min: 0,
 	},
 	laserRotationOffset: {
-		min: 0.05,
-		max: 0.1,
+		y: {
+			min: 0.01,
+			max: 0.05,
+		},
+		x: {
+			min: 0.0001,
+			max: 0.0005,
+		},
 	},
-	tiltYOffset: {
-		min: 0.0005,
-		max: 0.001,
+	distance: {
+		min: 10,
+		max: 50,
 	},
 };
 
@@ -39,6 +45,7 @@ export default class LaserTower extends BaseCollider {
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
 
+		if (this.type === 'start') this.timerDuration = asset.params.timerDuration || 30000;
 		if (this.type !== 'end') this.laserGroup = new Group();
 
 		this.isActivated = false;
@@ -53,12 +60,26 @@ export default class LaserTower extends BaseCollider {
 		this.direction = new Vector3();
 
 		this.tiltY = this.tiltYTarget = 0;
-		this.tiltYOffset = params.tiltYOffset.min;
-		signal.on('scroll', this.throttle(this.tilt, 50));
+
+		this.laserRotationOffsetX = map(
+			this.maxDistance,
+			params.distance.min,
+			params.distance.max,
+			params.laserRotationOffset.x.max,
+			params.laserRotationOffset.x.min,
+		);
+		this.laserRotationOffsetY = map(
+			this.maxDistance,
+			params.distance.min,
+			params.distance.max,
+			params.laserRotationOffset.y.max,
+			params.laserRotationOffset.y.min,
+		);
+
+		signal.on('scroll', throttle(this.tilt, 100));
+		this.preventScroll = false;
 
 		this.ringRotationOffset = params.ringRotationOffset.min;
-
-		this.laserRotationOffset = params.laserRotationOffset.min;
 
 		this.animation = null;
 
@@ -91,17 +112,18 @@ export default class LaserTower extends BaseCollider {
 
 		this.ray.set(this.sphereWorldPos, this.direction);
 
-		this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialInner);
-		this.outerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialOuter);
-
 		if (this.laserGroup) {
+			this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialInner);
+			this.outerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialOuter);
+
 			this.laserGroup.scale.set(1, 1, this.maxDistance);
 			this.laserGroup.add(this.innerLaser, this.outerLaser);
 			this.laserGroup.visible = false;
 			this.sphere.add(this.laserGroup);
 		}
 
-		if (this.type === 'start') this.timer = new Timer(200000, 'laserTimer', this.desactivate);
+		if (this.type === 'start')
+			this.timer = new Timer(this.timerDuration, 'laserTimer', this.desactivate);
 
 		this.initialized = true;
 	}
@@ -195,13 +217,13 @@ export default class LaserTower extends BaseCollider {
 
 		if (this.animation && !this.animation.paused) this.animation.pause();
 
-		this.laserRotationOffset = this.nextTower?.isActivated
-			? params.laserRotationOffset.max
-			: params.laserRotationOffset.min;
+		// this.laserRotationOffsetY = this.nextTower?.isActivated
+		// 	? params.laserRotationOffset.y.max
+		// 	: params.laserRotationOffset.y.min;
 
 		const radOffset = reversed
-			? Math.PI * params.laserRotationOffset.min
-			: -Math.PI * params.laserRotationOffset.min;
+			? Math.PI * this.laserRotationOffsetY
+			: -Math.PI * this.laserRotationOffsetY;
 		let yOffset = this.sphereGroup.rotation.y + radOffset;
 
 		this.animation = anime({
@@ -212,7 +234,7 @@ export default class LaserTower extends BaseCollider {
 		});
 	}
 
-	tilt = (e) => {
+	tilt = async (e) => {
 		if (
 			!this.isInBroadphaseRange ||
 			!this.base.isInteractable ||
@@ -221,13 +243,19 @@ export default class LaserTower extends BaseCollider {
 		)
 			return;
 
+		if (this.preventScroll) {
+			await wait(500);
+			this.preventScroll = false;
+			return;
+		}
+
 		this.needsUpdate = true;
 
-		this.tiltYOffset = this.nextTower?.isActivated
-			? params.tiltYOffset.max
-			: params.tiltYOffset.min;
+		// this.laserRotationOffsetX = this.nextTower?.isActivated
+		// 	? params.laserRotationOffset.x.max
+		// 	: params.laserRotationOffset.x.min;
 
-		this.tiltYTarget -= e.y * this.tiltYOffset;
+		this.tiltYTarget -= e.y * this.laserRotationOffsetX;
 		this.tiltYTarget = clamp(this.tiltYTarget, -Math.PI * 0.25, Math.PI * 0.25);
 		signal.emit('sound:play', 'laser-rotate', { replay: true });
 	};
@@ -270,6 +298,7 @@ export default class LaserTower extends BaseCollider {
 					this.laserGroup.scale.z = distanceFromCurrent;
 					this.sphere.lookAt(nextLaserTower.sphereWorldPos);
 				}
+				this.preventScroll = true;
 				nextLaserTower.activateBy(this);
 				this.needsUpdate = false;
 			} else if (nextLaserTower.isActivated && rayNextDistance >= 0.2)
@@ -289,26 +318,5 @@ export default class LaserTower extends BaseCollider {
 				ring.rotation.z += this.ringRotationOffset * (i + 1);
 			});
 		}
-	};
-
-	throttle = (callback, delay) => {
-		var last;
-		var timer;
-		return function () {
-			var context = this;
-			var now = +new Date();
-			var args = arguments;
-			if (last && now < last + delay) {
-				// le délai n'est pas écoulé on reset le timer
-				clearTimeout(timer);
-				timer = setTimeout(function () {
-					last = now;
-					callback.apply(context, args);
-				}, delay);
-			} else {
-				last = now;
-				callback.apply(context, args);
-			}
-		};
 	};
 }

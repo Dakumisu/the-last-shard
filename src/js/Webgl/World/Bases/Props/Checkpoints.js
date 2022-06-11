@@ -42,6 +42,8 @@ export default class Checkpoints {
 					console.log('👊 Checkpoint reached');
 					/// #endif
 					this.player.setCheckpoint(this.currentCheckpoint);
+
+					signal.emit('sound:play', 'checkpoint');
 				} else if (!inRange && this.isInside) this.isInside = false;
 			});
 		else this.isInside = false;
@@ -59,6 +61,6 @@ class Checkpoint {
 		this.mesh.position.copy(this.pos);
 		this.mesh.quaternion.copy(this.qt);
 
-		this.mesh.visible = false;
+		// this.mesh.visible = false;
 	}
 }

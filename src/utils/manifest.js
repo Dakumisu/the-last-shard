@@ -99,6 +99,14 @@ assetsMap.set('laser-activate-sound', {
 	path: 'assets/sound/interactions/laser-activate.mp3',
 	data: {},
 });
+assetsMap.set('checkpoint-sound', {
+	path: 'assets/sound/interactions/checkpoint.mp3',
+	data: {},
+});
+assetsMap.set('timer-sound', {
+	path: 'assets/sound/interactions/timer.mp3',
+	data: {},
+});
 assetsMap.set('footsteps-ground-sound', {
 	path: 'assets/sound/characters/footsteps-ground.mp3',
 	data: {},
