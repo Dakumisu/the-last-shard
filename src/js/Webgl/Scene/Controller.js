@@ -92,7 +92,7 @@ export default class SceneController {
 		/// #endif
 
 		if (this.get(label)) {
-			store.game.player.canMove = false;
+			store.game.player.canMove = store.game.player.canInteract = false;
 			signal.emit('postpro:transition-in', 500);
 			await wait(500);
 
@@ -116,7 +116,7 @@ export default class SceneController {
 			await wait(500);
 			signal.emit('postpro:transition-out');
 			signal.emit('scene:complete');
-			store.game.player.canMove = true;
+			store.game.player.canMove = store.game.player.canInteract = true;
 
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;

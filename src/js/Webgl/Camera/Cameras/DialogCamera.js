@@ -1,10 +1,10 @@
 import { getPet } from '@webgl/World/Characters/Pet';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import PersCamera from './PersCamera';
+import { Vector3 } from 'three';
 
 /// #if DEBUG
 import { getWebgl } from '@webgl/Webgl';
-import { Vector3 } from 'three';
 const debug = {
 	instance: null,
 	scene: null,
@@ -54,6 +54,6 @@ export default class DialogCamera extends PersCamera {
 
 		TEMP_POS.copy(this.player.getPosition()).addScaledVector(UP_VECTOR, 1);
 		this.instance.position.copy(TEMP_POS);
-		this.instance.lookAt(this.pet.getPosition());
+		this.instance.lookAt(this.pet.getFocusPosition());
 	}
 }

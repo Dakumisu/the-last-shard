@@ -38,6 +38,7 @@ export default class LaserTower extends BaseCollider {
 
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
+		this.timeDuration = asset.params.duration || 30;
 
 		if (this.type !== 'end') this.laserGroup = new Group();
 
@@ -119,7 +120,7 @@ export default class LaserTower extends BaseCollider {
 				replay: true,
 			});
 			this.timer.start();
-			this.game.pet.toggleFeeding(this.sphereWorldPos);
+			this.game.pet.feedOn(this.sphereWorldPos);
 		} else if (this.type === 'end') this.game.endEvent();
 
 		if (this.laserGroup) this.laserGroup.visible = true;
@@ -139,7 +140,7 @@ export default class LaserTower extends BaseCollider {
 		else if (this.type === 'start') {
 			signal.emit('sound:stop', 'laser');
 			this.timer.stop();
-			this.game.pet.toggleFeeding();
+			this.game.pet.feedOff();
 		}
 
 		if (this.laserGroup) {

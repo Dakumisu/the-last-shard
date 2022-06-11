@@ -47,7 +47,7 @@ export default class Dialog {
 		signal.emit('camera:switch', 'dialog');
 		signal.emit('postpro:transition-out');
 
-		store.game.player.canMove = false;
+		store.game.player.canMove = store.game.player.canInteract = false;
 
 		const dialogPool = [];
 		dialog.forEach((line) => {
@@ -84,11 +84,11 @@ export default class Dialog {
 
 	async close() {
 		dialogSet = false;
-		signal.emit('dialog:complete');
 
 		signal.emit('postpro:transition-in', 500);
 		await wait(500);
-		store.game.player.canMove = true;
+		store.game.player.canMove = store.game.player.canInteract = true;
+		signal.emit('dialog:complete');
 		signal.emit('camera:switch', 'player');
 		signal.emit('postpro:transition-out');
 

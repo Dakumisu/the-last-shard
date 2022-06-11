@@ -19,6 +19,7 @@ import { initPet } from './Characters/Pet.js';
 import SoundController from '@js/Sound/Controller.js';
 import DialogCamera from '@webgl/Camera/Cameras/DialogCamera.js';
 
+let initialized = false;
 export default class World {
 	constructor() {
 		this.sceneController = new SceneController();
@@ -49,14 +50,17 @@ export default class World {
 	/// #endif
 
 	async init() {
-		this.setPlayer();
-		this.setPet();
+		this.player = initPlayer();
+		this.pet = initPet();
 		this.dialogCamera = new DialogCamera();
+
 		await this.getScenes();
 		await this.initScenes();
 
 		this.soundController = new SoundController();
 		await this.soundController.isLoaded;
+
+		initialized = true;
 	}
 
 	async getScenes() {
@@ -85,19 +89,13 @@ export default class World {
 		this.sceneController.switch(currentLevel);
 	}
 
-	setPlayer() {
-		this.player = initPlayer();
-	}
-
-	setPet() {
-		this.pet = initPet();
-	}
-
 	resize() {
 		// if (this.player) this.player.resize();
 	}
 
 	update(et, dt) {
+		if (!initialized) return;
+
 		Timer.update();
 		baseUniforms.uTime.value = et;
 

@@ -39,6 +39,7 @@ const store = {
 
 		player: {
 			canMove: true,
+			canInteract: true,
 		},
 	},
 };

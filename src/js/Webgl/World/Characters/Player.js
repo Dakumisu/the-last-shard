@@ -656,6 +656,14 @@ class Player extends BaseEntity {
 		return this.base.mesh.position;
 	}
 
+	getDirection(vec) {
+		return this.base.mesh.getWorldDirection(vec);
+	}
+
+	getQuaternion() {
+		return this.base.mesh.quaternion;
+	}
+
 	async reset() {
 		if (this.state.isDead) return;
 

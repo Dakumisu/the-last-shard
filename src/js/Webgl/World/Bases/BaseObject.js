@@ -8,6 +8,7 @@ import { Mesh } from 'three';
 import anime from 'animejs';
 import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
 import ObjectMaterial from '@webgl/Materials/Objects/ObjectMaterial';
+import { store } from '@tools/Store';
 
 export default class BaseObject {
 	/**

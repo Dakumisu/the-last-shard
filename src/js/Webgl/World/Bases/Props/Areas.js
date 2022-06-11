@@ -51,7 +51,7 @@ export default class Areas {
 
 	enter(area) {
 		/// #if DEBUG
-		console.log('👊 Area enter:', area);
+		console.log('👊 Area enter:', area.zone);
 		/// #endif
 
 		this.currentArea = area;
