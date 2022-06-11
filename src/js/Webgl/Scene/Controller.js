@@ -121,6 +121,8 @@ export default class SceneController {
 
 			this.renderer.shadowMap.needsUpdate = true;
 
+			this.renderer.shadowMap.needsUpdate = true;
+
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;
 			/// #endif
