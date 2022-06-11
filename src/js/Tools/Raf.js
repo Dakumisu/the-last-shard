@@ -8,7 +8,7 @@ export default class Raf {
 		this.delta = 16;
 		this.playing = true;
 
-		signal.on('visibility', (visible) => {
+		signal.on('dom:visibility', (visible) => {
 			!visible ? this.pause() : this.play();
 		});
 

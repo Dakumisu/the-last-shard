@@ -347,7 +347,6 @@ class Player extends BaseEntity {
 		this.base.mesh.visible = false;
 
 		this.scene.add(this.base.mesh);
-		this.scene.add(this.base.group);
 	}
 
 	listeners() {}
@@ -364,6 +363,7 @@ class Player extends BaseEntity {
 		this.base.model.scene.translateOnAxis(params.upVector, -0.9);
 
 		this.base.group.add(this.base.model.scene);
+		this.scene.add(this.base.group);
 	}
 
 	setAnimation() {
@@ -455,26 +455,6 @@ class Player extends BaseEntity {
 
 		// if the player has fallen too far below the level reset their position to the start
 		if (this.base.mesh.position.y < -25) this.reset();
-
-		if (
-			this.state.isMoving &&
-			this.state.isOnGround &&
-			player.realSpeed > 1 &&
-			!this.state.isFalling
-		) {
-			if (this.state.isOnGrass) {
-				signal.emit('sound:play', 'footsteps-grass', { rate: player.realSpeed * 0.3 });
-				signal.emit('sound:stop', 'footsteps-ground');
-			} else {
-				signal.emit('sound:play', 'footsteps-ground', { rate: player.realSpeed * 0.35 });
-				signal.emit('sound:stop', 'footsteps-grass');
-			}
-		} else if (this.state.isFalling && this.state.isOnGround && this.state.hasJumped)
-			signal.emit('sound:play', 'fall');
-		else {
-			if (this.state.isOnGrass) signal.emit('sound:stop', 'footsteps-grass');
-			else signal.emit('sound:stop', 'footsteps-ground');
-		}
 	}
 
 	updateDirection() {
@@ -652,6 +632,28 @@ class Player extends BaseEntity {
 		if (previousPlayerAnim != player.anim) this.base.animation.switch(player.anim);
 	}
 
+	updateSounds() {
+		if (
+			this.state.isMoving &&
+			this.state.isOnGround &&
+			player.realSpeed > 1 &&
+			!this.state.isFalling
+		) {
+			if (this.state.isOnGrass) {
+				signal.emit('sound:play', 'footsteps-grass', { rate: player.realSpeed * 0.3 });
+				signal.emit('sound:stop', 'footsteps-ground');
+			} else {
+				signal.emit('sound:play', 'footsteps-ground', { rate: player.realSpeed * 0.35 });
+				signal.emit('sound:stop', 'footsteps-grass');
+			}
+		} else if (this.state.isFalling && this.state.isOnGround && this.state.hasJumped)
+			signal.emit('sound:play', 'fall');
+		else {
+			if (this.state.isOnGrass) signal.emit('sound:stop', 'footsteps-grass');
+			else signal.emit('sound:stop', 'footsteps-ground');
+		}
+	}
+
 	getPosition() {
 		return this.base.mesh.position;
 	}
@@ -674,8 +676,10 @@ class Player extends BaseEntity {
 
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
+
 		this.base.mesh.position.copy(this.checkpoint.pos);
-		this.base.mesh.quaternion.copy(this.checkpoint.qt);
+		this.base.mesh.rotation.setFromQuaternion(this.checkpoint.qt);
+
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position || this.checkpoint.pos);
 		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y || 0);
 
@@ -705,14 +709,16 @@ class Player extends BaseEntity {
 
 		this.checkPlayerPosition(dt);
 		this.updateAnimation();
+		this.updateSounds();
 
 		// adjust the camera
 		this.updatePlayerCam(dt);
 
 		speed = dampPrecise(speed, speedTarget, 0.1, dt, 0.1);
 
+		// update the player's model position
 		this.base.group.position.copy(this.base.mesh.position);
-		this.base.group.quaternion.copy(this.base.mesh.quaternion);
+		this.base.group.rotation.y = this.base.mesh.rotation.y;
 
 		if (this.state.hasJumped && !this.state.isJumping)
 			this.state.hasJumped = !this.state.isOnGround;
@@ -726,15 +732,13 @@ class Player extends BaseEntity {
 		this.base.animation.update(dt);
 	}
 
-	setCheckpoint = (cp) => {
+	setCheckpoint(cp) {
 		this.checkpoint = cp;
-	};
+	}
 
 	setStartPosition(cp) {
 		this.base.mesh.position.copy(cp.pos);
-		// this.base.mesh.quaternion.copy(cp.qt);
-		const euler = new Euler().setFromQuaternion(cp.qt);
-		this.base.mesh.rotation.y = euler.y;
+		this.base.mesh.rotation.setFromQuaternion(cp.qt);
 
 		this.setCheckpoint(cp);
 	}

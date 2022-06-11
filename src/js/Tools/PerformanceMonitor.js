@@ -73,7 +73,7 @@ export default class PerfomanceMonitor {
 
 		if (!hasQuality) this.getGPU();
 
-		signal.on('visibility', (visible) => {
+		signal.on('dom:visibility', (visible) => {
 			if (visible) fpsHistoryIndex = 0;
 		});
 

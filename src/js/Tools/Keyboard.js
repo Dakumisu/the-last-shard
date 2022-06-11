@@ -3,7 +3,7 @@ import signal from 'philbin-packages/signal';
 
 export default class Keyboard {
 	constructor() {
-		document.addEventListener('keydown', throttle(this.getKeyDown, 50));
+		document.addEventListener('keydown', this.getKeyDown);
 		document.addEventListener('keyup', this.getKeyUp);
 	}
 

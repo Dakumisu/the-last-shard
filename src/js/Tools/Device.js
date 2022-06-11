@@ -86,7 +86,7 @@ export default class Device {
 	}
 
 	checkVisibility() {
-		signal.emit('visibility', !document.hidden);
+		signal.emit('dom:visibility', !document.hidden);
 	}
 
 	resize() {
