@@ -15,6 +15,7 @@ export default class SoundController {
 
 		signal.on('sound:play', this.play);
 		signal.on('sound:stop', this.pause);
+		signal.on('sound:setParams', this.setParams);
 
 		this.isLoaded = deferredPromise();
 		this.init();
@@ -25,6 +26,8 @@ export default class SoundController {
 			this.add('laser', { loop: true, fadeDuration: 500, rate: 1 }),
 			this.add('laser-rotate', { loop: false, rate: 1 }),
 			this.add('laser-activate', { loop: false, rate: 1 }),
+			this.add('checkpoint', { loop: false, rate: 1 }),
+			this.add('timer', { loop: true, rate: 1 }),
 			this.add('footsteps-grass', { loop: true, fadeDuration: 50, rate: 1 }),
 			this.add('footsteps-ground', { loop: true, fadeDuration: 50, rate: 1 }),
 			this.add('fall', { loop: false, rate: 1 }),
@@ -44,8 +47,6 @@ export default class SoundController {
 			}),
 			params,
 		};
-
-		console.log(this.sounds);
 	}
 
 	remove(key) {}
@@ -73,6 +74,14 @@ export default class SoundController {
 			await wait(sound.params.fadeDuration);
 		}
 		sound.howl.pause();
+	};
+
+	setParams = (key, params) => {
+		const sound = this.sounds[key];
+		if (!sound) return;
+
+		if (params.volume) sound.howl.volume(params.volume);
+		if (params.rate) sound.howl.rate(params.rate);
 	};
 
 	update() {

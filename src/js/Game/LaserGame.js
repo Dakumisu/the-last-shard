@@ -15,7 +15,7 @@ import signal from 'philbin-packages/signal';
 export default class LaserGame {
 	static laserMaterialInner;
 	static laserMaterialOuter;
-	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 256, 256, true)
+	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 16, 1, true)
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
 		.translate(0, 0, 0.5);

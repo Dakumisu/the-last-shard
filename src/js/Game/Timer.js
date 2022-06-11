@@ -1,6 +1,6 @@
 import { getWebgl } from '@webgl/Webgl';
-import { debounce } from 'philbin-packages/async';
-
+import { throttle } from 'philbin-packages/async';
+import signal from 'philbin-packages/signal';
 /// #if DEBUG
 const debug = {
 	instance: null,
@@ -41,6 +41,8 @@ export default class Timer {
 		console.log('🕦 Timer started');
 		/// #endif
 
+		signal.emit('sound:play', 'timer');
+
 		this.playing = true;
 		this.startTime = Date.now();
 	}
@@ -49,6 +51,8 @@ export default class Timer {
 		/// #if DEBUG
 		console.log('🕦 Timer paused');
 		/// #endif
+
+		signal.emit('sound:stop', 'timer');
 
 		this.pausedTime = Date.now() - this.startTime;
 
@@ -59,6 +63,8 @@ export default class Timer {
 		/// #if DEBUG
 		console.log('🕦 Timer resumed');
 		/// #endif
+
+		signal.emit('sound:play', 'timer');
 
 		this.startTime = Date.now() - this.pausedTime;
 
@@ -73,6 +79,8 @@ export default class Timer {
 		/// #endif
 		this.playing = false;
 		this.reset();
+
+		signal.emit('sound:stop', 'timer');
 
 		this.onComplete();
 	}
@@ -108,6 +116,8 @@ export default class Timer {
 		if (!this.playing) return;
 
 		this.elapsedTime = Date.now() - this.startTime;
+
+		signal.emit('sound:setParams', 'timer', { rate: this.elapsedTime / this.duration + 1 });
 
 		this.onUpdate(this.elapsedTime);
 

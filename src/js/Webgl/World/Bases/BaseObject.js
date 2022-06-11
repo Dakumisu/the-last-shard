@@ -9,6 +9,7 @@ import anime from 'animejs';
 import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
 import ObjectMaterial from '@webgl/Materials/Objects/ObjectMaterial';
 import { store } from '@tools/Store';
+import { throttle } from 'philbin-packages/async';
 
 export default class BaseObject {
 	/**
@@ -37,6 +38,7 @@ export default class BaseObject {
 
 		if (this.base.isInteractable) {
 			this.isInBroadphaseRange = false;
+
 			signal.on('user:interact', this.interact.bind(this));
 		}
 	}
