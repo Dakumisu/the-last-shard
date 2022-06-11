@@ -16,6 +16,7 @@ export default class SceneController {
 	constructor() {
 		const webgl = getWebgl();
 		this.mainScene = webgl.mainScene;
+		this.renderer = webgl.renderer.renderer;
 		this.scenes = {};
 		this.currentScene = null;
 
@@ -117,6 +118,8 @@ export default class SceneController {
 			signal.emit('postpro:transition-out');
 			signal.emit('scene:complete');
 			store.game.player.canMove = store.game.player.canInteract = true;
+
+			this.renderer.shadowMap.needsUpdate = true;
 
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;
