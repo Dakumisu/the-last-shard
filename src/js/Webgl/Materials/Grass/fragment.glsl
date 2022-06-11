@@ -17,28 +17,22 @@ uniform sampler2D uAlpha;
 #include <fog_pars_fragment>
 
 void main() {
-	float noiseElevation = vNoiseMouvement * uWindColorIntensity;
-	vec3 color = mix(uColor2, uColor, vPos.y);
-
-	vec3 render = color + noiseElevation;
-
-	// if(vFade == 1.)
-	// 	discard;
-
-	// gl_FragColor = vec4(render, 1.);
 
 //Get transparency information from alpha map
   float alpha = texture2D(uAlpha, vUv).r;
   //If transparent, don't draw
-  if(alpha < 0.1){
+  if(alpha < 0.15){
     discard;
   }
-  //Get colour data from texture
-  vec4 col = vec4(texture2D(uDiffuse, vUv));
-  col.rgb *= uColor;
-  col.rgb = mix(col.rgb, uColor, vPos.y);
 
-  gl_FragColor = col;
+  float noiseElevation = vNoiseMouvement * uWindColorIntensity;
+
+  //Get colour data from texture
+  vec4 text = vec4(texture2D(uDiffuse, vUv));
+  text.rgb += uColor2;
+  text.rgb *= mix(uColor * 0.5, uColor2, vPos.y);
+
+  gl_FragColor = text;
 
 	#include <fog_fragment>
 

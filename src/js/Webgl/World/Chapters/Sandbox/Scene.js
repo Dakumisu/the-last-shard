@@ -51,8 +51,10 @@ export default class SandboxScene extends BaseScene {
 		this.lights = new Lights(this, [baseAmbient, directional]);
 
 		this.fog = new BaseFog({
-			fogNearColor: '#d4d4d4',
-			fogFarColor: '#f5f5f5',
+			// fogNearColor: '#d4d4d4',
+			// fogFarColor: '#f5f5f5',
+			fogNearColor: '#cf80f1',
+			fogFarColor: '#3e2e77',
 			fogNear: 0,
 			fogFar: 60,
 			fogNoiseSpeed: 0.003,
@@ -63,8 +65,10 @@ export default class SandboxScene extends BaseScene {
 
 		// Init grass after fog
 		this.grass = new Grass(this, {
-			color: '#c1f376',
-			color2: '#664cb1',
+			// color: '#c1f376',
+			// color2: '#55C233',
+			color: '#cfa1f1',
+			color2: '#8277ff',
 			halfBoxSize: 10,
 			scale: 0.15,
 			grass: await loadTexture('grassPattern'),
@@ -75,8 +79,12 @@ export default class SandboxScene extends BaseScene {
 
 		for (let index = 1; index < 5; index++) {
 			this.flowers = new Flowers(this, {
+				color: '#cfa1f1',
+				color2: '#8277ff',
+				// color: '#c1f376',
+				// color2: '#55C233',
 				halfBoxSize: 10,
-				scale: 1,
+				scale: 0.9,
 				positionsTexture: this.terrainSplatting,
 				model: await loadModel('flower' + index),
 			});
@@ -85,7 +93,8 @@ export default class SandboxScene extends BaseScene {
 		this.particles = new Particles({
 			scene: this,
 			params: {
-				color: '#82ad46',
+				// color: '#82ad46',
+				color: '#cfa1f1',
 				count: 250,
 				halfBoxSize: 15,
 				positionsTexture: this.terrainSplatting,
@@ -95,7 +104,8 @@ export default class SandboxScene extends BaseScene {
 		this.fogParticles = new FogParticles({
 			scene: this,
 			params: {
-				color: '#f0f0f0',
+				// color: '#f0f0f0',
+				color: '#cfa1f1',
 				count: 3000,
 				halfBoxSize: 25,
 				positionsTexture: this.terrainSplatting,

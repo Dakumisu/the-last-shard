@@ -28,7 +28,7 @@ import { store } from '@tools/Store';
 import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import FlowerMaterial from '@webgl/Materials/Flowers/FlowerMaterial';
 
-const twigsCountList = [0, 0, 200, 200, 200, 200];
+const twigsCountList = [0, 0, 100, 100, 100, 100];
 
 export default class Flowers {
 	/**
@@ -172,7 +172,7 @@ export default class Flowers {
 		this.base.material = new FlowerMaterial({
 			transparent: true,
 			uniforms: {
-				uDisplacement: { value: 0.025 },
+				uDisplacement: { value: 0.015 },
 				uWindColorIntensity: { value: 0.22 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },
@@ -184,6 +184,8 @@ export default class Flowers {
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
 				uTexture: { value: this.texture },
+				uColor: { value: new Color().set(this.params.color) },
+				uColor2: { value: new Color().set(this.params.color2) },
 			},
 		});
 

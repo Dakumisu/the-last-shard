@@ -76,7 +76,7 @@ export default class Ground extends BaseCollider {
 		// });
 		const material = new BaseToonMaterial({
 			side: DoubleSide,
-			color: new Color('#c1f376'),
+			color: new Color('#664CB1'),
 		});
 		base.material = material;
 
