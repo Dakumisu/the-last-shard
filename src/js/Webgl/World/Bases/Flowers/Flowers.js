@@ -172,7 +172,7 @@ export default class Flowers {
 		this.base.material = new FlowerMaterial({
 			transparent: true,
 			uniforms: {
-				uDisplacement: { value: 0.015 },
+				uDisplacement: { value: 0.03 },
 				uWindColorIntensity: { value: 0.22 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },

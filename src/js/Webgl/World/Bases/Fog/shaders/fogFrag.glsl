@@ -4,20 +4,20 @@
 vec3 windDir = vec3(uTime, uTime, uTime);
 vec3 scrollingPos = vFogWorldPosition.xyz + uFogNoiseSpeed * windDir;
 float noise = cnoise(uFogNoiseFreq * scrollingPos.xz);
-// float vFogDepth = (1.0 - noise) * vFogDepth;
-// float fogFactor = smoothstep(fogNear, fogFar, vFogDepth);
-float fogFactor = smoothstep(0., 100., vFogDepth);
+float fogFactor = smoothstep(uFogNear, uFogFar, vFogDepth);
 
-gl_FragColor.rgb = mix(gl_FragColor.rgb, mix(uFogNearColor, fogColor, fogFactor), fogFactor);
+vec3 farFog = mix(gl_FragColor.rgb, mix(uFogNearColor, uFogFarColor, fogFactor), fogFactor);
 
 
 // Ground fog
-float uHeightPropagation = 5.0;
-float uFogHeightDensity = 1.0;
 
-float fogHeightFactor = max(0.0, vFogWorldPosition.y * uHeightPropagation + noise);
+float fogHeightFactor = max(0.0, vFogWorldPosition.y * uFogHeightPropagation + noise);
 fogHeightFactor = exp2(- fogHeightFactor * fogHeightFactor);
 
-gl_FragColor.rgb = mix(gl_FragColor.rgb, uFogNearColor, fogHeightFactor * uFogHeightDensity);
+vec3 heightFog = mix(gl_FragColor.rgb, uFogNearColor, fogHeightFactor * uFogHeightDensity);
+
+vec3 r = mix(heightFog, farFog, fogFactor);
+gl_FragColor.rgb = r;
+
 
 #endif

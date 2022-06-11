@@ -7,7 +7,6 @@ varying float vFade;
 varying float vNoiseMouvement;
 varying vec2 vUv;
 varying vec3 vPos;
-varying vec3 vNormal;
 
 uniform sampler2D uGrass;
 
@@ -29,10 +28,13 @@ void main() {
 
   //Get colour data from texture
   vec4 text = vec4(texture2D(uDiffuse, vUv));
+  float textR = text.r;
+
   text.rgb += uColor2;
   text.rgb *= mix(uColor * 0.5, uColor2, vPos.y);
 
-  gl_FragColor = text;
+  gl_FragColor = text ;
+  gl_FragColor = vec4(textR) + vec4(mix(uColor * 0.5, uColor2, vPos.y)  * uColor2, 1.0);
 
 	#include <fog_fragment>
 

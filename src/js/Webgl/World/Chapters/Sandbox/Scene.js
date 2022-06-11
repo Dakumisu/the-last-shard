@@ -59,7 +59,8 @@ export default class SandboxScene extends BaseScene {
 			fogFar: 60,
 			fogNoiseSpeed: 0.003,
 			fogNoiseFreq: 0.125,
-			fogNoiseImpact: 0.1,
+			fogHeightPropagation: 4,
+			fogHeightDensity: 0.75,
 			background: await this.envMapTexture,
 		});
 
@@ -67,8 +68,11 @@ export default class SandboxScene extends BaseScene {
 		this.grass = new Grass(this, {
 			// color: '#c1f376',
 			// color2: '#55C233',
-			color: '#cfa1f1',
-			color2: '#8277ff',
+			color: '#664cb1',
+			color2: '#9b92ff',
+			// color: '#cfa1f1',
+			// color: '#6997a7',
+			// color2: '#8277ff',
 			halfBoxSize: 10,
 			scale: 0.15,
 			grass: await loadTexture('grassPattern'),

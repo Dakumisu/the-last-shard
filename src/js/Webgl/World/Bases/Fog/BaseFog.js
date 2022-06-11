@@ -29,7 +29,8 @@ export default class BaseFog {
 		fogFar,
 		fogNoiseSpeed,
 		fogNoiseFreq,
-		fogNoiseImpact,
+		fogHeightPropagation,
+		fogHeightDensity,
 		background,
 	}) {
 		this.webgl = getWebgl();
@@ -42,7 +43,8 @@ export default class BaseFog {
 			fogFar,
 			fogNoiseSpeed,
 			fogNoiseFreq,
-			fogNoiseImpact,
+			fogHeightPropagation,
+			fogHeightDensity,
 			background,
 		};
 
@@ -55,18 +57,22 @@ export default class BaseFog {
 
 	set() {
 		baseUniforms.uFogNearColor.value = new Color(this.params.fogNearColor);
+		baseUniforms.uFogFarColor.value = new Color(this.params.fogFarColor);
+		baseUniforms.uFogNear.value = this.params.fogNear;
+		baseUniforms.uFogFar.value = this.params.fogFar;
 		baseUniforms.uFogNoiseFreq.value = this.params.fogNoiseFreq;
 		baseUniforms.uFogNoiseSpeed.value = this.params.fogNoiseSpeed;
-		baseUniforms.uFogNoiseImpact.value = this.params.fogNoiseImpact;
+		baseUniforms.uFogHeightPropagation.value = this.params.fogHeightPropagation;
+		baseUniforms.uFogHeightDensity.value = this.params.fogHeightDensity;
 
 		// const fog = new Fog(this.params.fogFarColor, this.params.fogNear, this.params.fogFar);
 		const fog = new FogExp2(this.params.fogNearColor, 0);
-		// this.scene.fog = fog;
+		this.scene.fog = fog;
 
 		this.scene.background = this.params.background;
 
 		/// #if DEBUG
-		// this.setdevtool();
+		this.setdevtool();
 		/// #endif
 	}
 
@@ -78,26 +84,27 @@ export default class BaseFog {
 
 		debug.folder = gui;
 
-		gui.addInput(this.scene.fog, 'color', { label: 'farColor', view: 'color-2' });
-
 		gui.addInput(baseUniforms.uFogNearColor, 'value', {
 			label: 'nearColor',
 			view: 'color-2',
 		});
+		gui.addInput(baseUniforms.uFogFarColor, 'value', {
+			label: 'farColor',
+			view: 'color-2',
+		});
 
-		// gui.addInput(this.scene.fog, 'far', {
-		// 	label: 'farRange',
-		// 	min: 0,
-		// 	max: 150,
-		// 	step: 0.01,
-		// });
-
-		// gui.addInput(this.scene.fog, 'near', {
-		// 	label: 'nearRange',
-		// 	min: 0,
-		// 	max: 50,
-		// 	step: 0.01,
-		// });
+		gui.addInput(baseUniforms.uFogNear, 'value', {
+			label: 'farRange',
+			min: 0,
+			max: 150,
+			step: 0.01,
+		});
+		gui.addInput(baseUniforms.uFogFar, 'value', {
+			label: 'farRange',
+			min: 0,
+			max: 50,
+			step: 0.01,
+		});
 
 		gui.addInput(baseUniforms.uFogNoiseSpeed, 'value', {
 			label: 'speed',
@@ -112,11 +119,16 @@ export default class BaseFog {
 			max: 2,
 			step: 0.001,
 		});
-
-		gui.addInput(baseUniforms.uFogNoiseImpact, 'value', {
-			label: 'impact',
+		gui.addInput(baseUniforms.uFogHeightPropagation, 'value', {
+			label: 'height',
 			min: 0,
-			max: 1,
+			max: 10,
+			step: 0.001,
+		});
+		gui.addInput(baseUniforms.uFogHeightDensity, 'value', {
+			label: 'density',
+			min: 0,
+			max: 2,
 			step: 0.001,
 		});
 	}

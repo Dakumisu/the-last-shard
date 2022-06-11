@@ -77,10 +77,11 @@ void main() {
 	pos.y *= 1. - trailIntensity;
 	translation.z -= trailIntensity * trailDirection.y * 0.25;
 
-	float heightNoise = cnoise(translation.xz * 0.5);
-	translation.y += abs(heightNoise) * 0.3;
+	float heightNoise = cnoise(translation.xz * 0.4);
+	float heightNoiseSmall = cnoise(translation.xz * 0.2);
+	translation.y += (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
 
-	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity * 20. + time * 1.5);
+	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity * 20. + time * 2.);
 
 	if(instancedPos.y > 0.) {
 		translation.xz += vNoiseMouvement * uDisplacement;

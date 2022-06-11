@@ -16,8 +16,10 @@ void main() {
 
   //Get colour data from texture
   vec4 text = vec4(texture2D(uTexture, vUv));
-  text.rgb *= uColor;
-  text.rgb += mix(uColor * 0.5, uColor2, vPos.y + text.r * 0.5);
+//   text.rgb += uColor;
+//   text.rgb *= mix(uColor * 0.5, uColor2 * 1.3, vPos.y);
+  text.rgb += mix(uColor, uColor2, vPos.y) * 0.6;
+
 
   gl_FragColor = text;
 

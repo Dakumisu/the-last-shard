@@ -167,7 +167,7 @@ export default class Grass {
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
-				uDisplacement: { value: 0.06 },
+				uDisplacement: { value: 0.07 },
 				uWindColorIntensity: { value: 0.11 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },

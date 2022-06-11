@@ -340,8 +340,8 @@ class Player extends BaseEntity {
 		};
 
 		this.base.material = new PlayerMaterial({
-			// color: new Color('#d29ddc'),
-			fog: false,
+			color: new Color('#d29ddc'),
+			// fog: false,
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
@@ -356,9 +356,9 @@ class Player extends BaseEntity {
 	async setModel() {
 		const m = await loadGLTF(model);
 
-		// m.scene.traverse((object) => {
-		// 	if (object.material) object.material = this.base.material;
-		// });
+		m.scene.traverse((object) => {
+			if (object.material) object.material = this.base.material;
+		});
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
