@@ -64,8 +64,6 @@ export default class SoundController {
 		});
 	}
 
-	remove(key) {}
-
 	play = (key, params = {}) => {
 		const sound = this.sounds[key];
 
