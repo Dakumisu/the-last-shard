@@ -47,7 +47,7 @@ import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 import LaserGame from '@game/LaserGame';
 import LaserTower from '../World/Bases/Interactables/LaserTower';
 
-import { loadTexture } from '@utils/loaders';
+import { loadAudio, loadTexture } from '@utils/loaders';
 import { store } from '@tools/Store';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
@@ -58,6 +58,7 @@ export default class BaseScene {
 
 		this.label = label;
 		this.player = getPlayer();
+		this.soundController = webgl.world.soundController;
 		this.colliders = [];
 
 		this.instance = new Group();
@@ -194,6 +195,7 @@ export default class BaseScene {
 		console.log(`🔋 Manifest of ${this.label}`);
 		/// #endif
 		await this.loadTerrainSplatting();
+		await this.loadSounds();
 		this.setTerrainSplattingData();
 		await loadTexture('asset_gradient');
 	}
@@ -212,6 +214,10 @@ export default class BaseScene {
 		const terrain = await loadTexture(path);
 
 		this.terrainSplatting = terrain;
+	}
+
+	async loadSounds() {
+		await this.soundController.addAmbient(this.label);
 	}
 
 	async loadManifest() {

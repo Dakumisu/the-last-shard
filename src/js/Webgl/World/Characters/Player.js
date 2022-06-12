@@ -32,11 +32,9 @@ import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
 import AnimationController from '@webgl/Animation/Controller';
-import DebugMaterial from '@webgl/Materials/Debug/DebugMaterial';
 import BaseEntity from '../Bases/BaseEntity';
-import { debounce, wait } from 'philbin-packages/async';
+import { wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
-import { BaseToonMaterial } from '@webgl/Materials/BaseMaterials/toon/material';
 
 const model = '/assets/model/player.glb';
 
