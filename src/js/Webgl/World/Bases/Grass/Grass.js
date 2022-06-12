@@ -9,31 +9,23 @@ import {
 	BufferAttribute,
 	BufferGeometry,
 	Color,
-	DataTexture,
-	FloatType,
-	InstancedBufferAttribute,
+	DoubleSide,
 	InstancedBufferGeometry,
 	InstancedInterleavedBuffer,
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
-	MeshBasicMaterial,
-	PlaneGeometry,
-	RGBAFormat,
+	PlaneBufferGeometry,
 	Texture,
-	UnsignedByteType,
-	UnsignedShortType,
 } from 'three';
-import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer';
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
 import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 
-const twigsCountList = [0, 0, 80000, 100000, 200000, 300000];
+const twigsCountList = [0, 0, 300000, 300000, 300000, 300000];
 
 export default class Grass {
 	/**
@@ -91,6 +83,7 @@ export default class Grass {
 
 	setTwigGeometry() {
 		this.triangle = new BufferGeometry();
+		// this.triangle = new PlaneBufferGeometry();
 
 		const vertices = new Float32Array([
 			-0.15 * 0.2,
@@ -112,7 +105,7 @@ export default class Grass {
 
 		this.triangle.setIndex(new BufferAttribute(indices, 1));
 		this.triangle.setAttribute('position', new BufferAttribute(vertices, 3));
-		this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
+		// this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
 		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
 	}
 
@@ -121,19 +114,25 @@ export default class Grass {
 
 		geo.index = this.triangle.index;
 		geo.attributes.position = this.triangle.attributes.position;
-		geo.attributes.normal = this.triangle.attributes.normal;
+		// geo.attributes.normal = this.triangle.attributes.normal;
 		geo.attributes.uv = this.triangle.attributes.uv;
-		geo.scale(this.params.scale, this.params.scale, this.params.scale);
+		geo.scale(this.params.scale * 0.5, this.params.scale * 0.75, this.params.scale);
 
 		const array = [];
 		let id = 0;
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(1, 3);
+			const scale = MathUtils.randFloat(3, 4);
+
+			const rX = 0;
+			const rY = Math.PI * Math.random() * 2;
+			const rZ = 0;
+			const rW = Math.PI * Math.random() * 2;
+
 			id++;
 
-			array.push(x, 0, z, scale);
+			array.push(x, 0, z, scale, rX, rY, rZ, rW);
 		}
 
 		// pos + scale
@@ -144,15 +143,21 @@ export default class Grass {
 
 		geo.setAttribute('aPositions', new InterleavedBufferAttribute(ib, 3, 0, false));
 		geo.setAttribute('aScale', new InterleavedBufferAttribute(ib, 1, 3, false));
+		geo.setAttribute('aRotate', new InterleavedBufferAttribute(ib, 4, 4, false));
 
 		const buf = this.buffer;
 
 		for (let i = 0; i < id; i++) {
-			buf[i * this.stride] = array[i * this.stride];
+			buf[i * this.stride + 0] = array[i * this.stride + 0];
 			buf[i * this.stride + 1] = array[i * this.stride + 1];
 			buf[i * this.stride + 2] = array[i * this.stride + 2];
 
 			buf[i * this.stride + 3] = array[i * this.stride + 3];
+
+			buf[i * this.stride + 4] = array[i * this.stride + 4];
+			buf[i * this.stride + 5] = array[i * this.stride + 5];
+			buf[i * this.stride + 6] = array[i * this.stride + 6];
+			buf[i * this.stride + 7] = array[i * this.stride + 7];
 		}
 
 		this.base.geometry = geo;
@@ -160,8 +165,9 @@ export default class Grass {
 
 	setGrass() {
 		this.base.material = new GrassMaterial({
+			side: DoubleSide,
 			uniforms: {
-				uDisplacement: { value: 0.08 },
+				uDisplacement: { value: 0.15 },
 				uWindColorIntensity: { value: 0.11 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },
@@ -174,11 +180,15 @@ export default class Grass {
 				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
+				uGrass: { value: this.params.grass },
+				uDiffuse: { value: this.params.diffuse },
+				uAlpha: { value: this.params.alpha },
 			},
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		// this.base.mesh.position.y = -0.2;
+		// this.base.mesh.renderOrder = 100;
 		this.base.mesh.frustumCulled = false;
 		this.scene.instance.add(this.base.mesh);
 	}

@@ -1,29 +1,28 @@
-$bp_w: (
-	desktop-lg: 2000px,
-	desktop-md: 1680px,
-	desktop-sm: 1280px,
+$desktop-lg-xxl: 3440px;
+$desktop-lg-xl: 2160px;
+$desktop-lg: 1920px;
+$desktop-md: 1680px;
+$desktop-sm-xl: 1440px;
+$desktop-sm: 1280px;
 
-	tablet: 987px,
-	tablet-portrait: 987px,
-	tablet-landscape: 987px,
-	tablet-sm: 767px,
+$tablet-xl: 1140px;
+$tablet: 1024px;
+$tablet-portrait: 987px;
+$tablet-landscape: 987px;
+$tablet-sm: 767px;
 
-	phone: 576px,
-	phone-landscape: 767px,
-	phone-sm: 400px,
-	phone-xs: 360px
-);
-
-$bp_h: (
-	lg: 1400px,
-	md: 1080px,
-	sm: 720px,
-	xs: 480px
-);
+$phone: 576px;
+$phone-landscape: 767px;
+$phone-sm: 400px;
+$phone-xs: 360px;
+$lg: 1400px;
+$md: 1080px;
+$sm: 720px;
+$xs: 480px;
 
 // WIDTH MIXINS
 @mixin below($max) {
-	@media (max-width: #{ $max - 1px }) {
+	@media (max-width: $max) {
 		@content;
 	}
 }
@@ -35,7 +34,7 @@ $bp_h: (
 }
 
 @mixin above($min) {
-	@media (min-width: #{ $min + 1px }) {
+	@media (min-width: $min) {
 		@content;
 	}
 }

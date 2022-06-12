@@ -1,4 +1,7 @@
 #ifdef USE_FOG
-fogDepth = - mvPosition.z;
-vFogWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;
+vFogDepth = - mvPosition.z;
+vFogHeight = - mvPosition.y;
+
+fogDepth = mvPosition.y;
+vFogWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
 #endif

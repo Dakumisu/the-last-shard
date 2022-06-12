@@ -5,18 +5,15 @@ uniform vec3 uColor;
 uniform sampler2D uFogTexture;
 
 varying float vNoise;
+varying float vFadePos;
 varying float vFade;
 varying float vLoop;
 varying vec2 vUv;
 
 #define PI 3.1415926535897932384626433832795
 
-vec2 rotate(vec2 uv, float rotation, vec2 mid)
-{
-    return vec2(
-      cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x,
-      cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
-    );
+vec2 rotate(vec2 uv, float rotation, vec2 mid) {
+	return vec2(cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x, cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y);
 }
 
 void main() {
@@ -32,10 +29,13 @@ void main() {
 	float dist = length(rotatedUv - 0.5);
 	dist = 1.0 - dist * 2.;
 
+	if(vFade == 1.)
+		discard;
+
 	// Smooth apparition with mouvement
 	float loopEnd = 1.0 - vLoop;
 	float loopStart = vLoop;
 	float loop = loopStart * loopEnd;
 
-	gl_FragColor = vec4(vec3(text) * uColor, text * dist * vFade * loop );
+	gl_FragColor = vec4(vec3(text) * uColor, text * dist * vFade * loop);
 }
