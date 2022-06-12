@@ -134,10 +134,16 @@ export async function loadManifest() {
 		const _c = await scenesManifest[key];
 		const _json = _c.default;
 		const _n = key.split('/').pop().split('.')[0];
+
 		manifest.push(_json);
 
 		assetsMap.set(_n, {
 			path: '/assets/export/' + _n + '.glb',
+			data: {},
+		});
+
+		assetsMap.set(_n + '-sound', {
+			path: '/assets/sound/ambient/' + _n + '.mp3',
 			data: {},
 		});
 
