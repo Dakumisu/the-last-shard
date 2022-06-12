@@ -340,13 +340,14 @@ class Player extends BaseEntity {
 		};
 
 		const texture = await loadTexture('characterTexture');
-		// texture.flipY = false;
-		console.log(texture);
+		texture.flipY = false;
+		texture.encoding = sRGBEncoding;
 
 		this.base.material = new PlayerMaterial({
-			color: new Color('#d29ddc'),
-			// map: texture,
-			fog: false,
+			map: texture,
+			uniforms: {
+				// uTexture: { value: texture },
+			},
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);

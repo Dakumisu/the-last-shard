@@ -78,14 +78,14 @@ export default class GrassParticles {
 	setGeometry() {
 		const positions = new Float32Array(this.params.count * 3);
 		const scale = new Float32Array(this.params.count * 1);
-		const offset = new Float32Array(this.params.count * 1);
+		const randomColor = new Float32Array(this.params.count * 1);
 
 		for (let i = 0; i < this.params.count; i++) {
 			positions[i * 3 + 0] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
 			positions[i * 3 + 2] = MathUtils.randFloatSpread(this.params.halfBoxSize * 2);
 
 			scale[i] = MathUtils.randFloat(1, 2);
-			offset[i] = MathUtils.randFloat(0, 10);
+			randomColor[i] = MathUtils.randFloat(0, 1);
 		}
 
 		this.base.geometry = new InstancedBufferGeometry();
@@ -100,7 +100,10 @@ export default class GrassParticles {
 			new InstancedBufferAttribute(positions, 3, false),
 		);
 		this.base.geometry.setAttribute('aScale', new InstancedBufferAttribute(scale, 1, false));
-		this.base.geometry.setAttribute('aOffset', new InstancedBufferAttribute(offset, 1, false));
+		this.base.geometry.setAttribute(
+			'aRandomColor',
+			new InstancedBufferAttribute(randomColor, 1, false),
+		);
 	}
 
 	setMaterial() {

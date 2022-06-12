@@ -17,7 +17,7 @@ void main() {
 	if(vFade == 1.)
 		discard;
 
-	vec3 render = mix(uColor, uColor2, vNoise * 5.0);
+	vec3 render = mix(uColor, uColor2, vNoise * 2.);
 
 	gl_FragColor = vec4(render, strength * vFadePos * globalSmooth);
 }

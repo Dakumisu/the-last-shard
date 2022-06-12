@@ -154,11 +154,15 @@ assetsMap.set('flower3', {
 	data: {},
 });
 assetsMap.set('flower4', {
-	path: 'assets/model/flower3.glb',
+	path: 'assets/model/flower4.glb',
 	data: {},
 });
 assetsMap.set('flower5', {
-	path: 'assets/model/flower3.glb',
+	path: 'assets/model/flower5.glb',
+	data: {},
+});
+assetsMap.set('flower6', {
+	path: 'assets/model/flower6.glb',
 	data: {},
 });
 

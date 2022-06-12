@@ -56,8 +56,8 @@ export default class SandboxScene extends BaseScene {
 			// fogFarColor: '#f5f5f5',
 			fogNearColor: '#9e9fc8',
 			fogFarColor: '#3e2e77',
-			fogNear: 0,
-			fogFar: 60,
+			fogNear: 30,
+			fogFar: 50,
 			fogNoiseSpeed: 0.00225,
 			fogNoiseFreq: 0.25,
 			fogHeightPropagation: 4,
@@ -65,7 +65,6 @@ export default class SandboxScene extends BaseScene {
 			background: await this.envMapTexture,
 		});
 
-		// Init grass after fog
 		this.grass = new Grass(this, {
 			// color: '#c1f376',
 			// color2: '#55C233',
@@ -76,7 +75,7 @@ export default class SandboxScene extends BaseScene {
 			// color: '#cfa1f1',
 			// color: '#6997a7',
 			// color2: '#8277ff',
-			halfBoxSize: 10,
+			halfBoxSize: 20,
 			scale: 1,
 			grass: await loadTexture('grassPattern'),
 			diffuse: await loadTexture('grassDiffuse'),
@@ -90,8 +89,8 @@ export default class SandboxScene extends BaseScene {
 				color2: '#000832',
 				// color: '#c1f376',
 				// color2: '#55C233',
-				halfBoxSize: 10,
-				scale: 0.9,
+				halfBoxSize: 20,
+				scale: 1,
 				positionsTexture: this.terrainSplatting,
 				model: await loadModel('flower' + index),
 			});
@@ -101,10 +100,10 @@ export default class SandboxScene extends BaseScene {
 			scene: this,
 			params: {
 				// color: '#82ad46',
-				color: '#cfa1f1',
-				color2: '#8277ff',
-				count: 250,
-				halfBoxSize: 15,
+				color: '#8277ff',
+				color2: '#31d7ff',
+				count: 500,
+				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},
 		});
@@ -113,10 +112,10 @@ export default class SandboxScene extends BaseScene {
 			scene: this,
 			params: {
 				// color: '#82ad46',
-				color: '#8277ff',
-				color2: '#cfa1f1',
-				count: 2500,
-				halfBoxSize: 10,
+				color: '#31d7ff',
+				color2: '#c1f376',
+				count: 1500,
+				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},
 		});
@@ -126,8 +125,8 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				// color: '#f0f0f0',
 				color: '#8277ff',
-				count: 1000,
-				halfBoxSize: 15,
+				count: 2000,
+				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),
 			},

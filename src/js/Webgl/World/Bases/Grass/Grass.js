@@ -25,7 +25,7 @@ import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 
-const twigsCountList = [0, 0, 150000, 150000, 150000, 150000];
+const twigsCountList = [0, 0, 300000, 300000, 300000, 300000];
 
 export default class Grass {
 	/**
@@ -123,7 +123,7 @@ export default class Grass {
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(2, 4);
+			const scale = MathUtils.randFloat(3, 4);
 
 			const rX = 0;
 			const rY = Math.PI * Math.random() * 2;
@@ -167,7 +167,7 @@ export default class Grass {
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
-				uDisplacement: { value: 0.09 },
+				uDisplacement: { value: 0.15 },
 				uWindColorIntensity: { value: 0.11 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },

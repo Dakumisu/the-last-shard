@@ -26,7 +26,7 @@ export default class BasePhysic extends BaseObject {
 			!this.base.mesh.geometry ||
 			!(this.base.mesh.geometry instanceof BufferGeometry)
 		) {
-			console.error('Need geometry in Mesh, check if this.base.mesh exists');
+			// console.error('Need geometry in Mesh, check if this.base.mesh exists');
 			return null;
 		}
 

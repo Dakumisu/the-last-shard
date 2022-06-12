@@ -1,6 +1,3 @@
-#pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
-
-
 vec2 rotate(vec2 uv, float rotation, vec2 mid)
 {
     return vec2(
@@ -36,6 +33,7 @@ void main() {
 	// render += smoothDist * text1.r * 4.;
 	vec4 render = (text1 + text2) * smoothDist;
 	render *=  text1.b + text2.b;
+
 	// render =  mix(render, textMask, text1.b) * vec4(uColor2, 1.0);
 
 	gl_FragColor = vec4(vUv, vUv);

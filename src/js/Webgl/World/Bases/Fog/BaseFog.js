@@ -94,7 +94,7 @@ export default class BaseFog {
 		});
 
 		gui.addInput(baseUniforms.uFogNear, 'value', {
-			label: 'farRange',
+			label: 'nearRange',
 			min: 0,
 			max: 150,
 			step: 0.01,

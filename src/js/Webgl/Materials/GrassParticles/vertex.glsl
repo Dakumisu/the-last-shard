@@ -9,14 +9,14 @@ uniform vec3 uMaxMapBounds;
 uniform vec3 uMinMapBounds;
 
 attribute float aScale;
-attribute float aOffset;
+attribute float aRandomColor;
 attribute vec3 aPositions;
 
 varying vec2 vUv;
 varying float vFade;
 varying float vFadePos;
 varying float vLoop;
-varying float vNoise;
+varying float vRandomColor;
 
 float N(vec2 st) {
 	return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
@@ -44,6 +44,8 @@ float map(float value, float start1, float stop1, float start2, float stop2) {
 }
 
 void main() {
+	vRandomColor = aRandomColor;
+
 	float boxSize = uHalfBoxSize * 2.;
 
 	float time = uTime * 0.0001 * aScale;
@@ -96,11 +98,8 @@ void main() {
 
 	float loop = mod(time * 1.5 * aScale * maxDuration, maxDuration) / maxDuration;
 	vLoop = loop;
-	
-	float loopRange = 0.75;
 
-	// translation.y += loop * loopRange - 1.0;
-	translation.y += 0.3;
+	translation.y += 0.4;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 
