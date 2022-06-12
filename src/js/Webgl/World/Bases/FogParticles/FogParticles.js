@@ -121,6 +121,7 @@ export default class FogParticles {
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		this.scene.instance.add(this.base.mesh);
 		this.base.mesh.frustumCulled = false;
+		// this.base.mesh.renderOrder = 1;
 	}
 
 	/// #if DEBUG

@@ -95,7 +95,7 @@ void main() {
 
 	translation.x += noise * aScale;
 	translation.z += noise * aScale;
-	translation.y += noise * aScale;
+	translation.y += abs(noise) * aScale;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 

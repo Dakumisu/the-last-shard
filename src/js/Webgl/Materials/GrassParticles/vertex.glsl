@@ -57,15 +57,15 @@ void main() {
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
-	float fade = 1.0 - smoothstep(0., 1., (0.05 * distance(uCharaPos.xz, translation.xz)));
+	float fade = 1.0 - smoothstep(0., 1., (0.075 * distance(uCharaPos.xz, translation.xz)));
 
 	vFadePos = fade;
 	vUv = uv;
 
 	// Scale down out of range grass
 	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
-	pos.y += scaleFromRange;
-	pos *= scaleFromRange;
+	// pos.y += scaleFromRange;
+	// pos *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds
 	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
@@ -77,26 +77,38 @@ void main() {
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	// pos *= scaleFromTexture;
 
+	translation.y += pos.y * 0.5;
+
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
 	translation.y += translationOffset;
 
+	// Player trail
+	float trailIntensity = smoothstep(1.8, 0., distance(uCharaPos, translation.xyz));
+	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
+
+	float heightNoise = cnoise(translation.xz * 0.4);
+	float heightNoiseSmall = cnoise(translation.xz * 0.2);
+	translation.y += (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
+
 	// Looping on Y axis
 	float maxDuration = 1.0;
 
-	float loop = mod(time * aScale * maxDuration, maxDuration) / maxDuration;
+	float loop = mod(time * 1.5 * aScale * maxDuration, maxDuration) / maxDuration;
 	vLoop = loop;
 	
-	float loopRange = 0.5;
+	float loopRange = 0.75;
 
-	translation.y -= 0.5;
+	// translation.y += loop * loopRange - 1.0;
+	translation.y += 0.3;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 
 	if(elevation >= 1.) {
 		pos = vec3(0.);
 	} else {
-		mv.xyz += pos;
+		mv.xz += pos.xz;
+		mv.y += pos.y * 0.5;
 	}
 
 	gl_Position = projectionMatrix * mv;

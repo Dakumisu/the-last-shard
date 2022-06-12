@@ -103,8 +103,8 @@ export default class SandboxScene extends BaseScene {
 				// color: '#82ad46',
 				color: '#cfa1f1',
 				color2: '#8277ff',
-				count: 300,
-				halfBoxSize: 25,
+				count: 250,
+				halfBoxSize: 15,
 				positionsTexture: this.terrainSplatting,
 			},
 		});
@@ -113,10 +113,10 @@ export default class SandboxScene extends BaseScene {
 			scene: this,
 			params: {
 				// color: '#82ad46',
-				color: '#31d7ff',
+				color: '#8277ff',
 				color2: '#cfa1f1',
-				count: 2000,
-				halfBoxSize: 25,
+				count: 2500,
+				halfBoxSize: 10,
 				positionsTexture: this.terrainSplatting,
 			},
 		});
@@ -126,8 +126,8 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				// color: '#f0f0f0',
 				color: '#8277ff',
-				count: 3000,
-				halfBoxSize: 25,
+				count: 1000,
+				halfBoxSize: 15,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),
 			},

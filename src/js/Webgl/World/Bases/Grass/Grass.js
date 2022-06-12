@@ -188,6 +188,7 @@ export default class Grass {
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
 		// this.base.mesh.position.y = -0.2;
+		// this.base.mesh.renderOrder = 100;
 		this.base.mesh.frustumCulled = false;
 		this.scene.instance.add(this.base.mesh);
 	}

@@ -76,6 +76,11 @@ assetsMap.set('characterTexture', {
 	data: {},
 });
 
+assetsMap.set('portalTexture', {
+	path: '/assets/image/portal.jpg',
+	data: {},
+});
+
 assetsMap.set('lut-1', {
 	path: '/assets/luts/lut-1.cube',
 	data: {},
