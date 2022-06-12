@@ -37,7 +37,7 @@ export default class LaserGame {
 
 	endEvent() {
 		signal.emit(this.scene.label + ':endGame', this.id);
-		console.log('🕹 Game ended');
+		console.log(this.scene.label + ':endGame', '🕹 Game ended');
 	}
 
 	revertEndEvent() {
