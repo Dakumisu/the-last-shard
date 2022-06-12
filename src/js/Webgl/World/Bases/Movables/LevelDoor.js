@@ -7,7 +7,7 @@ import { easings, getEase } from 'philbin-packages/easing';
 
 export default class LevelDoor extends BasePhysic {
 	/**
-	 * @param {{name?: string, isInteractable: boolean, isRawMesh: boolean, asset?: Object, group?: Group}} param0
+	 * @param {{scene: BaseScene, name?: string, isInteractable: boolean, isRawMesh: boolean, asset?: Object, group?: Group}} param0
 	 */
 	constructor(
 		scene,
@@ -20,8 +20,8 @@ export default class LevelDoor extends BasePhysic {
 		this.gameId = this.base.asset.params.gameId;
 		this.target = {};
 
-		this.ease = getEase(easings.outSwift);
-		console.log(this.ease);
+		// this.ease = getEase(easings.outSwift);
+		// console.log(this.ease);
 
 		this.listeners();
 	}
@@ -31,7 +31,7 @@ export default class LevelDoor extends BasePhysic {
 		this.initPhysics();
 
 		this.defaultPos = this.base.mesh.position.clone();
-		this.target.pos = this.defaultPos.add(new Vector3(0, -3, 0));
+		this.target.pos = this.defaultPos.add(new Vector3(0, -4.75, 0));
 	}
 
 	listeners() {
@@ -48,8 +48,8 @@ export default class LevelDoor extends BasePhysic {
 	}
 
 	trigger(opts = {}) {
-		const duration = opts.duration || 1000;
-		const easing = opts.easing || 'spring(1, 100, 10, 0)';
+		const duration = opts.duration || 2000;
+		const easing = opts.easing || 'linear';
 		const delay = opts.delay || 0;
 
 		return anime({

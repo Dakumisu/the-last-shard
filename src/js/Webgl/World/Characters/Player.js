@@ -413,7 +413,7 @@ class Player extends BaseEntity {
 					const depth = this.base.capsuleInfo.radius.base - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
-					if (Math.abs(direction.y) < 0.37) {
+					if (Math.abs(direction.y) < 0.5) {
 						direction.y = 0;
 					}
 
