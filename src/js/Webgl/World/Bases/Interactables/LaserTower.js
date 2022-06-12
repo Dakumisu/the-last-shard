@@ -132,6 +132,8 @@ export default class LaserTower extends BaseCollider {
 	activate() {
 		this.isActivated = true;
 
+		this.needsUpdate = true;
+
 		signal.emit('sound:play', 'laser-activate', { pos: this.base.mesh.position, replay: true });
 
 		// const laserGroupWorldPos = new Vector3();

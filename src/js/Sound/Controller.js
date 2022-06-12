@@ -6,6 +6,7 @@ import signal from 'philbin-packages/signal';
 
 export default class SoundController {
 	constructor() {
+		Howler.volume(0.5);
 		/**
 		 * @type {Object.<string, {howl: Howl, params: Object}>}
 		 */
@@ -131,5 +132,8 @@ export default class SoundController {
 	destroy() {
 		signal.off('sound:play', this.play);
 		signal.off('sound:stop', this.pause);
+		signal.off('sound:setParams', this.setParams);
+		signal.off('sound:beforeSwitch', this.beforeSwitch);
+		signal.off('sound:afterSwitch', this.afterSwitch);
 	}
 }
