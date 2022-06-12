@@ -71,6 +71,11 @@ assetsMap.set('laserTexture', {
 	data: {},
 });
 
+assetsMap.set('characterTexture', {
+	path: '/assets/image/character.jpg',
+	data: {},
+});
+
 assetsMap.set('lut-1', {
 	path: '/assets/luts/lut-1.cube',
 	data: {},

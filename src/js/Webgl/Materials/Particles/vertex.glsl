@@ -89,10 +89,11 @@ void main() {
 
 	float loop = mod(time * aScale * maxDuration, maxDuration) / maxDuration;
 	vLoop = loop;
-
-	float loopRange = 4.5;
+	
+	float loopRange = 6.;
 
 	translation.y += loop * loopRange - (loopRange * 0.25);
+	translation.x += loop * loopRange - (loopRange * 0.25);
 
 	translation.x += noise * aOffset;
 	translation.z += noise * aOffset;

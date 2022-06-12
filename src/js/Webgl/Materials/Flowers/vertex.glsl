@@ -18,6 +18,7 @@ attribute vec3 aPositions;
 attribute vec4 aRotate;
 
 varying float vFade;
+varying float vFadePos;
 varying float vNoiseMouvement;
 varying vec2 vUv;
 varying vec3 vPos;
@@ -44,6 +45,10 @@ void main() {
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
+
+	float fade = 1.0 - smoothstep(0., 1., (0.085 * distance(uCharaPos.xz, translation.xz)));
+
+	vFadePos = fade;
 
 	// Scale down out of range grass
 	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * 0.5, distance(uCharaPos.xz, translation.xz));

@@ -82,31 +82,31 @@ export default class Grass {
 	}
 
 	setTwigGeometry() {
-		// this.triangle = new BufferGeometry();
-		this.triangle = new PlaneBufferGeometry();
+		this.triangle = new BufferGeometry();
+		// this.triangle = new PlaneBufferGeometry();
 
-		// const vertices = new Float32Array([
-		// 	-0.15 * 0.2,
-		// 	-0.15 * 0.2,
-		// 	0 * 0.2, // bl
-		// 	0.15 * 0.2,
-		// 	-0.15 * 0.2,
-		// 	0 * 0.2, // br
-		// 	0 * 0.2,
-		// 	0.75 * 0.2,
-		// 	0 * 0.2, // tc
-		// ]);
+		const vertices = new Float32Array([
+			-0.15 * 0.2,
+			-0.15 * 0.2,
+			0 * 0.2, // bl
+			0.15 * 0.2,
+			-0.15 * 0.2,
+			0 * 0.2, // br
+			0 * 0.2,
+			0.75 * 0.2,
+			0 * 0.2, // tc
+		]);
 
-		// const normal = new Float32Array([
-		// 	0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
-		// ]);
-		// const uv = new Float32Array([0, 1, 1, 1, 0, 0]);
-		// const indices = new Uint16Array([0, 1, 2]);
+		const normal = new Float32Array([
+			0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
+		]);
+		const uv = new Float32Array([0, 1, 1, 1, 0, 0]);
+		const indices = new Uint16Array([0, 1, 2]);
 
-		// this.triangle.setIndex(new BufferAttribute(indices, 1));
-		// this.triangle.setAttribute('position', new BufferAttribute(vertices, 3));
-		// // this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
-		// this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
+		this.triangle.setIndex(new BufferAttribute(indices, 1));
+		this.triangle.setAttribute('position', new BufferAttribute(vertices, 3));
+		// this.triangle.setAttribute('normal', new BufferAttribute(normal, 3));
+		this.triangle.setAttribute('uv', new BufferAttribute(uv, 2));
 	}
 
 	initGeometry(count) {
@@ -116,14 +116,14 @@ export default class Grass {
 		geo.attributes.position = this.triangle.attributes.position;
 		// geo.attributes.normal = this.triangle.attributes.normal;
 		geo.attributes.uv = this.triangle.attributes.uv;
-		geo.scale(this.params.scale * 0.075, this.params.scale, this.params.scale);
+		geo.scale(this.params.scale * 0.5, this.params.scale * 0.75, this.params.scale);
 
 		const array = [];
 		let id = 0;
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(1, 4);
+			const scale = MathUtils.randFloat(2, 4);
 
 			const rX = 0;
 			const rY = Math.PI * Math.random() * 2;
@@ -167,7 +167,7 @@ export default class Grass {
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
-				uDisplacement: { value: 0.07 },
+				uDisplacement: { value: 0.09 },
 				uWindColorIntensity: { value: 0.11 },
 				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },

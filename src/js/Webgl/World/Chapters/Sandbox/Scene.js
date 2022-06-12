@@ -15,6 +15,7 @@ import Flowers3 from '@webgl/World/Bases/Flowers3/Flowers';
 
 // import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
+import GrassParticles from '@webgl/World/Bases/GrassParticles/GrassParticles';
 
 export default class SandboxScene extends BaseScene {
 	constructor(manifest) {
@@ -53,14 +54,14 @@ export default class SandboxScene extends BaseScene {
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',
 			// fogFarColor: '#f5f5f5',
-			fogNearColor: '#cf80f1',
+			fogNearColor: '#9e9fc8',
 			fogFarColor: '#3e2e77',
 			fogNear: 0,
 			fogFar: 60,
-			fogNoiseSpeed: 0.003,
-			fogNoiseFreq: 0.125,
+			fogNoiseSpeed: 0.00225,
+			fogNoiseFreq: 0.25,
 			fogHeightPropagation: 4,
-			fogHeightDensity: 0.75,
+			fogHeightDensity: 0.5,
 			background: await this.envMapTexture,
 		});
 
@@ -68,13 +69,15 @@ export default class SandboxScene extends BaseScene {
 		this.grass = new Grass(this, {
 			// color: '#c1f376',
 			// color2: '#55C233',
-			color: '#664cb1',
-			color2: '#9b92ff',
+			color: '#31d7ff',
+			color2: '#000832',
+			// color: '#664cb1',
+			// color2: '#9b92ff',
 			// color: '#cfa1f1',
 			// color: '#6997a7',
 			// color2: '#8277ff',
 			halfBoxSize: 10,
-			scale: 0.15,
+			scale: 1,
 			grass: await loadTexture('grassPattern'),
 			diffuse: await loadTexture('grassDiffuse'),
 			alpha: await loadTexture('grassAlpha'),
@@ -83,8 +86,8 @@ export default class SandboxScene extends BaseScene {
 
 		for (let index = 1; index < 5; index++) {
 			this.flowers = new Flowers(this, {
-				color: '#cfa1f1',
-				color2: '#8277ff',
+				color: '#31d7ff',
+				color2: '#000832',
 				// color: '#c1f376',
 				// color2: '#55C233',
 				halfBoxSize: 10,
@@ -99,8 +102,21 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				// color: '#82ad46',
 				color: '#cfa1f1',
-				count: 250,
-				halfBoxSize: 15,
+				color2: '#8277ff',
+				count: 300,
+				halfBoxSize: 25,
+				positionsTexture: this.terrainSplatting,
+			},
+		});
+
+		this.grassParticles = new GrassParticles({
+			scene: this,
+			params: {
+				// color: '#82ad46',
+				color: '#31d7ff',
+				color2: '#cfa1f1',
+				count: 2000,
+				halfBoxSize: 25,
 				positionsTexture: this.terrainSplatting,
 			},
 		});
@@ -109,7 +125,7 @@ export default class SandboxScene extends BaseScene {
 			scene: this,
 			params: {
 				// color: '#f0f0f0',
-				color: '#cfa1f1',
+				color: '#8277ff',
 				count: 3000,
 				halfBoxSize: 25,
 				positionsTexture: this.terrainSplatting,

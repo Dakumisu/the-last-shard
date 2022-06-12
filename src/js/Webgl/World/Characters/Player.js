@@ -327,7 +327,7 @@ class Player extends BaseEntity {
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
-	setBodyMesh() {
+	async setBodyMesh() {
 		this.base.geometry = new CapsuleGeometry(0.5, 0.5, 10, 20);
 		this.base.geometry.translate(0, -0.75, 0);
 
@@ -339,9 +339,14 @@ class Player extends BaseEntity {
 			segment: new Line3(new Vector3(), new Vector3(0, -0.5, 0)),
 		};
 
+		const texture = await loadTexture('characterTexture');
+		// texture.flipY = false;
+		console.log(texture);
+
 		this.base.material = new PlayerMaterial({
 			color: new Color('#d29ddc'),
-			// fog: false,
+			// map: texture,
+			fog: false,
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
