@@ -94,8 +94,8 @@ export default class SceneController {
 
 		if (this.get(label)) {
 			store.game.player.canMove = store.game.player.canInteract = false;
+
 			signal.emit('postpro:transition-in', 500);
-			await wait(500);
 
 			if (this.currentScene) {
 				/// #if DEBUG
@@ -105,6 +105,8 @@ export default class SceneController {
 				signal.emit('sound:beforeSwitch', this.currentScene.label);
 				this.currentScene.removeFrom(this.mainScene.instance);
 			}
+
+			await wait(500);
 
 			this.currentScene = this.get(label);
 			localStorage.setItem('game:level', label);

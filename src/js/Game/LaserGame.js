@@ -74,9 +74,7 @@ export default class LaserGame {
 	}
 
 	reset() {
-		this.laserTowers.forEach((laserTower) => {
-			laserTower.reset();
-		});
+		this.laserTowers.find((laserTower) => laserTower.type == 'start').desactivate();
 	}
 
 	update(et, dt) {
