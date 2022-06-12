@@ -123,6 +123,10 @@ assetsMap.set('jump-sound', {
 	path: 'assets/sound/characters/jump.mp3',
 	data: {},
 });
+assetsMap.set('pet-tp-sound', {
+	path: 'assets/sound/characters/pet-tp.mp3',
+	data: {},
+});
 
 export async function loadManifest() {
 	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');

@@ -4,6 +4,10 @@ import { Howl, Howler } from 'howler';
 import { deferredPromise, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 
+const params = {
+	ambiantVolume: 0.5,
+};
+
 export default class SoundController {
 	constructor() {
 		Howler.volume(0.5);
@@ -39,6 +43,7 @@ export default class SoundController {
 			this.add('footsteps-ground', { loop: true, fadeDuration: 50, rate: 1 }),
 			this.add('fall', { loop: false, rate: 1 }),
 			this.add('jump', { loop: false, rate: 1 }),
+			this.add('pet-tp', { loop: false, rate: 1 }),
 		]);
 		this.isLoaded.resolve();
 	}
@@ -61,6 +66,7 @@ export default class SoundController {
 			src: [await loadAudio('Scene_' + sceneName + '-sound')],
 			format: ['mp3'],
 			loop: true,
+			volume: params.ambiantVolume,
 		});
 	}
 
@@ -69,8 +75,9 @@ export default class SoundController {
 
 		if (params.pos) sound.howl.pos(params.pos.x, params.pos.y, params.pos.z);
 		if (params.rate) sound.howl.rate(Math.max(params.rate || 1, sound.params.rate));
-		if (params.volume) sound.howl.volume(params.volume);
 		if (!params.replay && sound.howl.playing()) return;
+
+		sound.howl.volume(params.volume || sound.params.volume || 1);
 
 		if (sound.params.fadeDuration)
 			sound.howl.fade(sound.howl.volume(), 1, sound.params.fadeDuration);
@@ -101,15 +108,15 @@ export default class SoundController {
 		for (const key in this.sounds)
 			this.sounds[key].howl
 				.fade(this.sounds[key].howl.volume(), 0, 500)
-				.once('fade', () => this.sounds[key].howl.pause());
+				.once('fade', () => this.sounds[key].howl.stop());
 
 		this.ambients[sceneName]
-			.fade(1, 0, 500)
+			.fade(params.ambiantVolume, 0, 500)
 			.once('fade', () => this.ambients[sceneName].stop());
 	};
 
 	afterSwitch = (sceneName) => {
-		this.ambients[sceneName].fade(0, 1, 500).play();
+		this.ambients[sceneName].fade(0, params.ambiantVolume, 500).play();
 	};
 
 	update() {
