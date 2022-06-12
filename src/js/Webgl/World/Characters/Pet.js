@@ -148,7 +148,7 @@ export class Pet extends BaseEntity {
 		const d = this.getDistanceToPlayer();
 		this.isTooFar = d >= 10;
 
-		if (this.isTooFar && !isTeleporting) {
+		if (this.isTooFar && !isTeleporting && this.state !== Pet.STATES.FEEDING) {
 			isTeleporting = true;
 			await this.teleport();
 			isTeleporting = false;
