@@ -261,8 +261,6 @@ export default class LaserTower extends BaseCollider {
 		signal.emit('sound:play', 'laser-rotate', { replay: true });
 	};
 
-	reset() {}
-
 	update = (et, dt) => {
 		if (!this.initialized) return;
 

@@ -482,6 +482,7 @@ export default class BaseScene {
 	}
 
 	removeFrom(mainScene) {
+		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.reset());
 		mainScene.remove(this.instance);
 	}
 
@@ -516,12 +517,6 @@ export default class BaseScene {
 
 		this.renderer.setRenderTarget(null);
 		/// #endif
-	}
-
-	reset() {
-		if (!this.initialized) return;
-
-		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.reset());
 	}
 
 	update(et, dt) {
