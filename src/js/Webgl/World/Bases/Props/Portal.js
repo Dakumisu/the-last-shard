@@ -56,15 +56,14 @@ export default class Portal extends BaseObject {
 
 		this.base.mesh.updateWorldMatrix(true, true);
 
-		const text = await loadTexture('portalTexture');
-		console.log(text);
-
 		this.base.material = new PortalMaterial({
 			side: DoubleSide,
 			uniforms: {
-				uColor: { value: new Color(0xffffff) },
-				uColor2: { value: new Color(0xff0000) },
-				uTexture: { value: text },
+				uColor: { value: new Color(0x8277ff) },
+				uColor2: { value: new Color(0x31d7ff) },
+				uTexture: { value: await loadTexture('portalTexture') },
+				uTexture2: { value: await loadTexture('portalTexture2') },
+				uTextureMask: { value: await loadTexture('portalTextureMask') },
 			},
 		});
 

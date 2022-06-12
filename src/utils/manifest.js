@@ -77,7 +77,15 @@ assetsMap.set('characterTexture', {
 });
 
 assetsMap.set('portalTexture', {
-	path: '/assets/image/portal.jpg',
+	path: '/assets/image/portalTexture.png',
+	data: {},
+});
+assetsMap.set('portalTexture2', {
+	path: '/assets/image/portalTexture2.png',
+	data: {},
+});
+assetsMap.set('portalTextureMask', {
+	path: '/assets/image/portalMask.jpg',
 	data: {},
 });
 

@@ -18,11 +18,11 @@ uniform sampler2D uAlpha;
 void main() {
 
 //Get transparency information from alpha map
-  float alpha = texture2D(uAlpha, vUv).r;
+  // float alpha = texture2D(uAlpha, vUv).r;
   //If transparent, don't draw
-  if(alpha < 0.15){
-    discard;
-  }
+  // if(alpha < 0.15){
+  //   discard;
+  // }
 
   float noiseElevation = vNoiseMouvement * uWindColorIntensity;
 
