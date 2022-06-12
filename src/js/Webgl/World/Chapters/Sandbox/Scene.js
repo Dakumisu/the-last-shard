@@ -10,8 +10,6 @@ import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
-import Flowers2 from '@webgl/World/Bases/Flowers2/Flowers';
-import Flowers3 from '@webgl/World/Bases/Flowers3/Flowers';
 
 // import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
