@@ -15,8 +15,11 @@ import {
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 
 const TEMP_POS = new Vector3();
+const TRIGGER_POS = new Vector3();
 const TEMP_BOX = new Box3();
 const TEMP_MAT = new Matrix4();
+
+const UP_VECTOR = new Vector3(0, -1, 0);
 
 export default class Portal extends BaseObject {
 	constructor(
@@ -73,10 +76,11 @@ export default class Portal extends BaseObject {
 		if (this.isEnter) return;
 
 		TEMP_POS.copy(playerPos);
-		const distance = TEMP_POS.distanceTo(this.base.mesh.position);
-		const sub = TEMP_POS.subVectors(playerPos, this.base.mesh.position);
+		TRIGGER_POS.copy(this.base.mesh.position).add(UP_VECTOR);
+		const distance = TEMP_POS.distanceTo(TRIGGER_POS);
+		const sub = TEMP_POS.subVectors(playerPos, TRIGGER_POS);
 
-		let limit = sub.y < 3 ? 2 : 5;
+		let limit = sub.y < 3 ? 2.5 : 4;
 		if (distance < limit) {
 			console.log('enter');
 			this.isEnter = true;

@@ -117,7 +117,7 @@ export default class Cinematrix extends PersCamera {
 
 		const { name, instance, params } = this.curve;
 
-		const _points = instance.getPoints(800);
+		const _points = instance.getPoints(1000);
 		this.path = _points;
 		this.length = _points.length;
 
@@ -156,11 +156,13 @@ export default class Cinematrix extends PersCamera {
 		index = 0;
 		this.setPosition({ ...this.path[index] });
 
-		const _target = this.targetsList[0];
-		nextDummyTarget.set(..._target.pos);
-		dummyTarget.copy(nextDummyTarget);
+		if (!this.useNormals) {
+			const _target = this.targetsList[0];
+			nextDummyTarget.set(..._target.pos);
+			dummyTarget.copy(nextDummyTarget);
 
-		this.instance.lookAt(dummyTarget);
+			this.instance.lookAt(dummyTarget);
+		}
 
 		dummyFov = this.instance.fov;
 
@@ -268,8 +270,7 @@ export default class Cinematrix extends PersCamera {
 	getTangent(a, b, dt) {
 		dummyTangent.subVectors(a, b).normalize();
 
-		dummyTarget.copy(tmpPos.copy(this.instance.position).sub(dummyTangent));
-		this.instance.lookAt(dummyTarget);
+		nextDummyTarget.copy(tmpPos.copy(this.instance.position).sub(dummyTangent));
 	}
 
 	updatePath(length, index, dt) {
@@ -293,10 +294,6 @@ export default class Cinematrix extends PersCamera {
 				if (dummySpeed !== target.speed) this.setSpeed(target.speed);
 			}
 		});
-
-		dummyTarget.x = dampPrecise(dummyTarget.x, nextDummyTarget.x, 0.01, dt, 0.001);
-		dummyTarget.y = dampPrecise(dummyTarget.y, nextDummyTarget.y, 0.01, dt, 0.001);
-		dummyTarget.z = dampPrecise(dummyTarget.z, nextDummyTarget.z, 0.01, dt, 0.001);
 	}
 
 	update(et, dt) {
@@ -352,6 +349,28 @@ export default class Cinematrix extends PersCamera {
 				0.1,
 				dt,
 				0.01,
+			);
+
+			dummyTarget.x = dampPrecise(
+				dummyTarget.x,
+				nextDummyTarget.x,
+				this.useNormals ? 0.05 : 0.01,
+				dt,
+				0.001,
+			);
+			dummyTarget.y = dampPrecise(
+				dummyTarget.y,
+				nextDummyTarget.y,
+				this.useNormals ? 0.05 : 0.01,
+				dt,
+				0.001,
+			);
+			dummyTarget.z = dampPrecise(
+				dummyTarget.z,
+				nextDummyTarget.z,
+				this.useNormals ? 0.05 : 0.01,
+				dt,
+				0.001,
 			);
 
 			this.instance.lookAt(dummyTarget);

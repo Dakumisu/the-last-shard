@@ -52,7 +52,7 @@ def exportCollection(fp=None, textureOnly=False):
     if not scn:
         return
     if textureOnly == False:
-        store.setPersistent('mmLastAction', 'Export selected')
+        store.setPersistent('tlsLastAction', 'Export selected')
     exportCollections(fp, cols, textureOnly)
     bpy.context.window.scene = scn
 
@@ -66,7 +66,7 @@ def exportScene(fp=None, textureOnly=False):
     if not scn:
         return
     if textureOnly == False:
-        store.setPersistent('mmLastAction', 'Export scene')
+        store.setPersistent('tlsLastAction', 'Export scene')
     exportCollections(fp, scn.collection.children, textureOnly)
 
 
@@ -76,18 +76,18 @@ def exportAll(fp=None):
     utils.log('Export all')
     if fp == None:
         fp = env.paths.temp
-    store.setPersistent('mmLastAction', 'Export all')
+    store.setPersistent('tlsLastAction', 'Export all')
     exportCollections(fp, bpy.data.collections)
     bpy.context.window.scene = scn
 
 
 def exportCollectionTextures(fp=None):
-    store.setPersistent('mmLastAction', 'Export selected textures')
+    store.setPersistent('tlsLastAction', 'Export selected textures')
     exportCollection(fp, True)
 
 
 def exportSceneTextures(fp=None):
-    store.setPersistent('mmLastAction', 'Export scene textures')
+    store.setPersistent('tlsLastAction', 'Export scene textures')
     exportScene(fp, True)
 
 
@@ -140,7 +140,7 @@ def exportCollections(fp, cols, textureOnly=False):
 
 
 def execLastAction():
-    lastAction = store.getPersistent('mmLastAction', None)
+    lastAction = store.getPersistent('tlsLastAction', None)
     if lastAction == None or lastAction not in actionTypes:
         return
     action = actionTypes[lastAction]

@@ -262,9 +262,6 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
             'qt': qt,
         }
 
-        if isMovable:
-            objData['anim'] = []
-
         data[newType].append(objData)
 
     # Export points
@@ -291,30 +288,6 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
             ptData = {'type': ptName, 'uid': uid, 'pos': pos, 'qt': qt}
             data['points'].append(ptData)
 
-        if type.lower().strip() == 'transform':
-            ptName = seg[1]
-            uid = rawSeg[1]
-            rawTarget = ptName.split('_')
-            target = rawTarget[0]
-            id = rawTarget[1]
-
-            pos, qt, scale = obj.matrix_world.decompose()
-            pos = utils.toThreePos(utils.toNumberList(pos, 6))
-            qt = utils.toThreeQuaternion(utils.toNumberList(qt, 6))
-            scale = utils.toThreeScale(utils.toNumberList(scale, 8))
-
-            transformData = {
-                'pos': pos,
-                'qt': qt,
-                'scale': scale
-            }
-
-            for prop in data['props']:
-                if (prop['asset'] == target and prop['movable']):
-                    for param in prop['params']:
-                        if (prop['params'][param] != ptName):
-                            continue
-                        prop['anim'].append(transformData)
         else:
             continue
 

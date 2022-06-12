@@ -6,9 +6,9 @@ import store
 from bpy_extras.io_utils import ExportHelper
 
 
-class MM_OT_exec_last_action(bpy.types.Operator):
+class TLS_OT_exec_last_action(bpy.types.Operator):
     """Re-execute last action"""
-    bl_idname = 'mm.exec_last_action'
+    bl_idname = 'tls.exec_last_action'
     bl_label = 'Choose folder'
     directory: bpy.props.StringProperty(subtype='DIR_PATH', default='NONE')
 
@@ -27,9 +27,9 @@ class MM_OT_exec_last_action(bpy.types.Operator):
             return {'CANCELLED'}
 
 
-class MM_OT_export_collection_texture(bpy.types.Operator):
+class TLS_OT_export_collection_texture(bpy.types.Operator):
     """Export on your disk textures from the selected collection"""
-    bl_idname = 'mm.export_collection_texture'
+    bl_idname = 'tls.export_collection_texture'
     bl_label = 'Choose folder'
     directory: bpy.props.StringProperty(subtype='DIR_PATH', default='NONE')
 
@@ -54,9 +54,9 @@ class MM_OT_export_collection_texture(bpy.types.Operator):
             return {'CANCELLED'}
 
 
-class MM_OT_export_collection(bpy.types.Operator):
+class TLS_OT_export_collection(bpy.types.Operator):
     """Export on your disk all resources from the selected collection"""
-    bl_idname = 'mm.export_collection'
+    bl_idname = 'tls.export_collection'
     bl_label = 'Choose folder'
     directory: bpy.props.StringProperty(subtype='DIR_PATH', default='NONE')
 
@@ -81,9 +81,9 @@ class MM_OT_export_collection(bpy.types.Operator):
             return {'CANCELLED'}
 
 
-class MM_OT_export_scene_texture(bpy.types.Operator):
+class TLS_OT_export_scene_texture(bpy.types.Operator):
     """Export on your disk textures from the current scene"""
-    bl_idname = 'mm.export_scene_texture'
+    bl_idname = 'tls.export_scene_texture'
     bl_label = 'Choose folder'
     directory: bpy.props.StringProperty(subtype='DIR_PATH', default='NONE')
 
@@ -108,9 +108,9 @@ class MM_OT_export_scene_texture(bpy.types.Operator):
             return {'CANCELLED'}
 
 
-class MM_OT_export_scene(bpy.types.Operator):
+class TLS_OT_export_scene(bpy.types.Operator):
     """Export on your disk resources from the current scene"""
-    bl_idname = 'mm.export_scene'
+    bl_idname = 'tls.export_scene'
     bl_label = 'Choose folder'
     directory: bpy.props.StringProperty(subtype='DIR_PATH', default='NONE')
 
@@ -135,9 +135,9 @@ class MM_OT_export_scene(bpy.types.Operator):
             return {'CANCELLED'}
 
 
-class MM_OT_export_all(bpy.types.Operator):
+class TLS_OT_export_all(bpy.types.Operator):
     """Export on your disk all resources from the current file"""
-    bl_idname = 'mm.export_all'
+    bl_idname = 'tls.export_all'
     bl_label = 'Choose folder'
     directory: bpy.props.StringProperty(subtype='DIR_PATH', default='NONE')
 
@@ -162,47 +162,47 @@ class MM_OT_export_all(bpy.types.Operator):
             return {'CANCELLED'}
 
 
-class MM_MT_menu(bpy.types.Menu):
+class TLS_MT_menu(bpy.types.Menu):
     ''' Blender tooling suite'''
-    bl_label = "  MM eco+ "
+    bl_label = " TLS "
 
     def draw(self, context):
         scene = context.scene
         layout = self.layout
         layout.label(text="Project: " + env.settings.project)
         layout.separator()
-        lastAction = store.getPersistent('mmLastAction', None)
+        lastAction = store.getPersistent('tlsLastAction', None)
         if lastAction:
             layout.operator(
-                "mm.exec_last_action",
+                "tls.exec_last_action",
                 text="Last: " + lastAction,
                 icon="LOOP_FORWARDS"
             )
             layout.separator()
         layout.operator(
-            "mm.export_collection_texture",
+            "tls.export_collection_texture",
             text="Export textures from selected",
             icon="IMAGE_RGB"
         )
         layout.operator(
-            "mm.export_collection",
+            "tls.export_collection",
             text="Export selected collection",
             icon="UGLYPACKAGE"
         )
         layout.separator()
         layout.operator(
-            "mm.export_scene_texture",
+            "tls.export_scene_texture",
             text="Export textures from scene",
             icon="IMAGE_RGB"
         )
         layout.operator(
-            "mm.export_scene",
+            "tls.export_scene",
             text="Export current scene",
             icon="UGLYPACKAGE"
         )
         layout.separator()
         layout.operator(
-            "mm.export_all",
+            "tls.export_all",
             text="Export all resources",
             icon="UGLYPACKAGE"
         )
@@ -213,17 +213,17 @@ class MM_MT_menu(bpy.types.Menu):
 
     def menu_draw(self, context):
         layout = self.layout
-        layout.menu("MM_MT_menu", icon='SHADERFX')
+        layout.menu("TLS_MT_menu", icon='SHADERFX')
 
 
 classes = [
-    MM_OT_exec_last_action,
-    MM_OT_export_collection_texture,
-    MM_OT_export_collection,
-    MM_OT_export_scene_texture,
-    MM_OT_export_scene,
-    MM_OT_export_all,
-    MM_MT_menu
+    TLS_OT_exec_last_action,
+    TLS_OT_export_collection_texture,
+    TLS_OT_export_collection,
+    TLS_OT_export_scene_texture,
+    TLS_OT_export_scene,
+    TLS_OT_export_all,
+    TLS_MT_menu
 ]
 
 
@@ -241,8 +241,8 @@ def init():
     destroy()
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.types.TOPBAR_MT_editor_menus.append(MM_MT_menu.menu_draw)
-    bpy.types.TOPBAR_MT_editor_menus.MMDestroy = destroy
+    bpy.types.TOPBAR_MT_editor_menus.append(TLS_MT_menu.menu_draw)
+    bpy.types.TOPBAR_MT_editor_menus.TLSDestroy = destroy
     bpy.app.handlers.load_pre.append(destroy)
     initProperties()
     utils.log('UI Initialized')
@@ -251,14 +251,14 @@ def init():
 def destroy(a=None, b=None):
     destroyed = False
     # Destroy UI Menu
-    if hasattr(bpy.types, 'MM_MT_menu'):
+    if hasattr(bpy.types, 'TLS_MT_menu'):
         destroyed = True
-        menu = getattr(bpy.types, 'MM_MT_menu')
+        menu = getattr(bpy.types, 'TLS_MT_menu')
         utils.info('Remove panel menu')
         bpy.types.TOPBAR_MT_editor_menus.remove(menu.menu_draw)
     # Remove load_pre callback
-    if hasattr(bpy.types.TOPBAR_MT_editor_menus, 'MMDestroy'):
-        cb = bpy.types.TOPBAR_MT_editor_menus.MMDestroy
+    if hasattr(bpy.types.TOPBAR_MT_editor_menus, 'TLSDestroy'):
+        cb = bpy.types.TOPBAR_MT_editor_menus.TLSDestroy
         if (cb in bpy.app.handlers.load_pre):
             destroyed = True
             utils.info('Destroy load_pre listener')

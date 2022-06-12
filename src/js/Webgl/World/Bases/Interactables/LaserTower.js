@@ -46,7 +46,7 @@ export default class LaserTower extends BaseCollider {
 		this.maxDistance = asset.params.distance;
 		this.timeDuration = asset.params.duration || 30;
 
-		if (this.type === 'start') this.timerDuration = asset.params.timerDuration || 30000;
+		if (this.type === 'start') this.timerDuration = asset.params.timerDuration || 3000000;
 		if (this.type !== 'end') this.laserGroup = new Group();
 
 		this.isActivated = false;
@@ -260,6 +260,8 @@ export default class LaserTower extends BaseCollider {
 		this.tiltYTarget = clamp(this.tiltYTarget, -Math.PI * 0.25, Math.PI * 0.25);
 		signal.emit('sound:play', 'laser-rotate', { replay: true });
 	};
+
+	reset() {}
 
 	update = (et, dt) => {
 		if (!this.initialized) return;

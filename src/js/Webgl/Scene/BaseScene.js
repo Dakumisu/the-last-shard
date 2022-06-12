@@ -21,29 +21,34 @@ import {
 	UnsignedShortType,
 	Vector3,
 	WebGLRenderTarget,
+	Quaternion,
 } from 'three';
+import { deferredPromise } from 'philbin-packages/async';
+import { map } from 'philbin-packages/maths';
+import signal from 'philbin-packages/signal';
+
 import { getWebgl } from '@webgl/Webgl';
 import { getPlayer } from '@webgl/World/Characters/Player';
-import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
-import { Quaternion } from 'three';
-import { deferredPromise } from 'philbin-packages/async';
-import Curve from '@webgl/World/Bases/Props/Curve';
-import Areas from '@webgl/World/Bases/Props/Areas';
-import Ground from '@webgl/World/Bases/Props/Ground';
-import BaseObject from '@webgl/World/Bases/BaseObject';
-import Movable from '@webgl/World/Bases/Props/Movable';
-import Portal from '@webgl/World/Bases/Props/Portal';
-import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
-import LaserGame from '@game/LaserGame';
 
-import LaserTower from '../World/Bases/Interactables/LaserTower';
+import BaseObject from '@webgl/World/Bases/BaseObject';
+
+import Ground from '@webgl/World/Bases/Props/Ground';
+import Curve from '@webgl/World/Bases/Props/Curve';
+import Checkpoints from '@webgl/World/Bases/Props/Checkpoints';
+import Areas from '@webgl/World/Bases/Props/Areas';
+
+import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
+import CollidersBroadphase from '@webgl/World/Bases/Broadphase/CollidersBroadphase';
+
+import Portal from '@webgl/World/Bases/Props/Portal';
+import LevelDoor from '@webgl/World/Bases/Movables/LevelDoor';
 import Fragment from '@webgl/World/Bases/Interactables/Fragment';
 
-import signal from 'philbin-packages/signal';
-import CollidersBroadphase from '@webgl/World/Bases/Broadphase/CollidersBroadphase';
+import LaserGame from '@game/LaserGame';
+import LaserTower from '../World/Bases/Interactables/LaserTower';
+
 import { loadTexture } from '@utils/loaders';
 import { store } from '@tools/Store';
-import { map } from 'philbin-packages/maths';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 
@@ -250,13 +255,23 @@ export default class BaseScene {
 			}
 
 			if (prop.movable) {
-				const _prop = new Movable({
-					name: this.label,
-					asset: prop,
-					group: this.props,
-				});
-				await _prop.init();
-				collidersBp.push(_prop);
+				// door
+				if (prop.asset.includes('Door')) {
+					const levelDoor = new LevelDoor(this, {
+						asset: prop,
+						group: this.props,
+					});
+					await levelDoor.init();
+					collidersBp.push(levelDoor);
+				}
+
+				// const _prop = new Movable({
+				// 	name: this.label,
+				// 	asset: prop,
+				// 	group: this.props,
+				// });
+				// await _prop.init();
+				// collidersBp.push(_prop);
 
 				return;
 			}
@@ -495,6 +510,12 @@ export default class BaseScene {
 
 		this.renderer.setRenderTarget(null);
 		/// #endif
+	}
+
+	reset() {
+		if (!this.initialized) return;
+
+		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.reset());
 	}
 
 	update(et, dt) {

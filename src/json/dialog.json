@@ -18,5 +18,19 @@
     "laser": [
       "bip boop encores les lasers"
     ]
+  },
+  "FloatingIsland": {
+    "intro": [
+      "re Yo Mec",
+      "ça va? moi oe tjrs",
+      "sauve temple stp"
+    ],
+    "laser": [
+      "bip boop encores les lasers"
+    ],
+    "fragment": [
+      "HUH",
+      "tema la dinguerie"
+    ]
   }
 }
