@@ -345,9 +345,6 @@ class Player extends BaseEntity {
 
 		this.base.material = new PlayerMaterial({
 			map: texture,
-			// uniforms: {
-			// uTexture: { value: texture },
-			// },
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
