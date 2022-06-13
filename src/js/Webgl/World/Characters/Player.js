@@ -361,6 +361,11 @@ class Player extends BaseEntity {
 
 		m.scene.traverse((object) => {
 			if (object.material) object.material = this.base.material;
+			// if (object.isMesh) {
+			// 	object.name = 'player';
+			// 	// object.castShadow = true;
+			// 	// object.receiveShadow = true;
+			// }
 		});
 
 		this.base.model = m;
