@@ -1,66 +1,46 @@
-uniform vec3 diffuse;
-uniform float opacity;
+vec2 rotate(vec2 uv, float rotation, vec2 mid)
+{
+    return vec2(
+      cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x,
+      cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
+    );
+}
 
+uniform float uTime;
 uniform vec3 uColor;
 uniform vec3 uColor2;
+uniform sampler2D uTexture;
+uniform sampler2D uTexture2;
+uniform sampler2D uTextureMask;
 
 varying vec2 vUv;
 
-#ifndef FLAT_SHADED
-varying vec3 vNormal;
-#endif
+void main() {	
+	vec4 textMask = texture2D(uTextureMask, vUv);
 
-#include <common>
-#include <dithering_pars_fragment>
-#include <color_pars_fragment>
-#include <uv_pars_fragment>
-#include <uv2_pars_fragment>
-#include <map_pars_fragment>
-#include <alphamap_pars_fragment>
-#include <aomap_pars_fragment>
-#include <lightmap_pars_fragment>
-#include <envmap_common_pars_fragment>
-#include <envmap_pars_fragment>
-#include <cube_uv_reflection_fragment>
-#include <fog_pars_fragment>
-#include <specularmap_pars_fragment>
-#include <logdepthbuf_pars_fragment>
-#include <clipping_planes_pars_fragment>
+	float dist = length(vUv - 0.5);
+	vec2 rotatedUv = rotate(vUv, uTime * 0.00075 + (textMask.b ), vec2(0.5));
 
-void main() {
-	#include <clipping_planes_fragment>
-	vec4 diffuseColor = vec4(diffuse, opacity);
-	#include <logdepthbuf_fragment>
-	#include <map_fragment>
-	#include <color_fragment>
-	#include <alphamap_fragment>
-	#include <alphatest_fragment>
-	#include <specularmap_fragment>
-	ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
+	vec4 text1 = texture2D(uTexture, rotatedUv);
+	vec4 text2 = texture2D(uTexture2, rotatedUv);
 
-	#ifdef USE_LIGHTMAP
-	vec4 lightMapTexel = texture2D(lightMap, vUv2);
-	reflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapTexel).rgb * lightMapIntensity;
-	#else
-	reflectedLight.indirectDiffuse += vec3(1.0);
-	#endif
+	float smoothDist = smoothstep(0., 0.35, dist);
 
-	#include <aomap_fragment>
-	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
-	vec3 outgoingLight = reflectedLight.indirectDiffuse;
-	#include <envmap_fragment>
+	text1.rgb *= uColor;
+	text2.rgb *= uColor2;
 
-	//	---------
-	float time = uTime * 0.001;
-	vec3 render = mix(uColor, uColor2, sin(time));
+	// vec4 render = (text1 + text2) * smoothDist;
+	// render += smoothDist * text1.r * 4.;
+	vec4 render = (text1 + text2) * smoothDist;
+	render *=  text1.b + text2.b;
 
-	vec4 basic = vec4(outgoingLight, diffuseColor.a);
+	// render =  mix(render, textMask, text1.b) * vec4(uColor2, 1.0);
 
-	gl_FragColor = vec4(uColor2, diffuseColor.a);
-
-	#include <tonemapping_fragment>
-	#include <encodings_fragment>
-	#include <fog_fragment>
-	#include <premultiplied_alpha_fragment>
-	#include <dithering_fragment>
+	gl_FragColor = vec4(vUv, vUv);
+	gl_FragColor = vec4(vUv, 1.0, 1.0);
+	gl_FragColor = vec4(dist);
+	gl_FragColor = vec4(text2.r);
+	gl_FragColor = vec4(text1.b) * vec4(text2.g) * vec4(uColor2, 1.0);
+	gl_FragColor = text2 * smoothstep(0., 0.2, dist);
+	gl_FragColor = render;
 }

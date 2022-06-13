@@ -43,6 +43,7 @@ export default class TempleScene extends BaseScene {
 		});
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
+
 		this.fog = new BaseFog({
 			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
@@ -68,7 +69,7 @@ export default class TempleScene extends BaseScene {
 			params: {
 				color: '#C1C2FF',
 				color2: '#664CB1',
-				count: 250,
+				count: 350,
 				halfBoxSize: 25,
 				positionsTexture: this.terrainSplatting,
 			},

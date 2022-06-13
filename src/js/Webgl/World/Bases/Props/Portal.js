@@ -7,12 +7,14 @@ import {
 	Box3Helper,
 	BoxBufferGeometry,
 	Color,
+	DoubleSide,
 	Matrix4,
 	Mesh,
 	SphereGeometry,
 	Vector3,
 } from 'three';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
+import { loadTexture } from '@utils/loaders';
 
 const TEMP_POS = new Vector3();
 const TRIGGER_POS = new Vector3();
@@ -57,10 +59,21 @@ export default class Portal extends BaseObject {
 
 		this.base.mesh.updateWorldMatrix(true, true);
 
+		this.base.material = new PortalMaterial({
+			side: DoubleSide,
+			uniforms: {
+				uColor: { value: new Color(0x8277ff) },
+				uColor2: { value: new Color(0x31d7ff) },
+				uTexture: { value: await loadTexture('portalTexture') },
+				uTexture2: { value: await loadTexture('portalTexture2') },
+				uTextureMask: { value: await loadTexture('portalTextureMask') },
+			},
+		});
+
 		this.base.mesh.traverse((child) => {
 			if (child.name.includes('portal')) {
 				this.innerPortal = child;
-				child.material = PortalMaterial.use();
+				child.material = this.base.material;
 			}
 		});
 	}

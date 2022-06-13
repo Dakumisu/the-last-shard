@@ -70,7 +70,7 @@ export default class PostFX {
 				uLut2: { value: null },
 				uLutSize: { value: 0 },
 				uLutIntensity: { value: 0 },
-				uGlobalLutIntensity: { value: 1 },
+				uGlobalLutIntensity: { value: 0 },
 
 				// Transition
 				uTransition: { value: 1 },

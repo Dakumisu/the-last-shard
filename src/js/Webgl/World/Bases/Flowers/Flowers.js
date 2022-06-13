@@ -22,13 +22,13 @@ import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUti
 
 import { getWebgl } from '@webgl/Webgl';
 import BaseScene from '@webgl/Scene/BaseScene';
-import FlowerMaterial from '@webgl/Materials/Flowers/FlowerMaterial';
 import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
-import { loadModel } from '@utils/loaders/loadAssets';
+import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
+import FlowerMaterial from '@webgl/Materials/Flowers/FlowerMaterial';
 
-const twigsCountList = [0, 0, 1000, 1000, 1000, 1000];
+const twigsCountList = [0, 0, 100, 100, 100, 100];
 
 export default class Flowers {
 	/**
@@ -37,6 +37,7 @@ export default class Flowers {
 	 */
 
 	constructor(scene, params = {}) {
+		console.log(scene);
 		this.scene = scene;
 		this.params = params;
 
@@ -69,14 +70,15 @@ export default class Flowers {
 
 	async init() {
 		const geometries = [];
-		this.model = await loadModel('flower');
+		this.model = this.params.model;
+		this.texture = await loadTexture('flowerTexture');
+		this.texture.flipY = false;
 
 		this.model.traverse((child) => {
 			if (child.geometry) {
 				const cloned = child.geometry.clone();
 				cloned.applyMatrix4(child.matrixWorld);
-				cloned.scale(0.01, 0.01, 0.01);
-				cloned.rotateX(Math.PI * 0.5);
+				cloned.scale(1.4, 1.4, 1.4);
 				geometries.push(cloned);
 			}
 		});
@@ -102,10 +104,10 @@ export default class Flowers {
 			'position',
 			new BufferAttribute(this.model.children[0].geometry.attributes.position.array, 3),
 		);
-		this.geom.setAttribute(
-			'normal',
-			new BufferAttribute(this.model.children[0].geometry.attributes.normal.array, 3),
-		);
+		// this.geom.setAttribute(
+		// 	'normal',
+		// 	new BufferAttribute(this.model.children[0].geometry.attributes.normal.array, 3),
+		// );
 		this.geom.setAttribute(
 			'uv',
 			new BufferAttribute(this.model.children[0].geometry.attributes.uv.array, 2),
@@ -117,7 +119,7 @@ export default class Flowers {
 
 		instancecGeom.index = this.geom.index;
 		instancecGeom.attributes.position = this.geom.attributes.position;
-		instancecGeom.attributes.normal = this.geom.attributes.normal;
+		// instancecGeom.attributes.normal = this.geom.attributes.normal;
 		instancecGeom.attributes.uv = this.geom.attributes.uv;
 		instancecGeom.scale(this.params.scale, this.params.scale, this.params.scale);
 
@@ -126,7 +128,7 @@ export default class Flowers {
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(1, 1.2);
+			const scale = MathUtils.randFloat(0.4, 0.6);
 
 			const rX = 0;
 			const rY = Math.PI * Math.random() * 2;
@@ -168,19 +170,22 @@ export default class Flowers {
 
 	setGrass() {
 		this.base.material = new FlowerMaterial({
+			transparent: true,
 			uniforms: {
-				uDisplacement: { value: 0.08 },
-				uWindColorIntensity: { value: 0.11 },
+				uDisplacement: { value: 0.03 },
+				uWindColorIntensity: { value: 0.22 },
+				uMaskRange: { value: 0.04 },
 				uNoiseMouvementIntensity: { value: 0.15 },
 				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
-				uColor: { value: new Color().set(this.params.color) },
-				uColor2: { value: new Color().set(this.params.color2) },
 				uElevationTexture: { value: this.scene.depthTexture },
 				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
+				uTexture: { value: this.texture },
+				uColor: { value: new Color().set(this.params.color) },
+				uColor2: { value: new Color().set(this.params.color2) },
 			},
 		});
 
@@ -224,15 +229,6 @@ export default class Flowers {
 			min: 0,
 			max: 1,
 			step: 0.01,
-		});
-
-		gui.addInput(this.base.material.uniforms.uColor, 'value', {
-			label: 'uColor',
-			view: 'color-2',
-		});
-		gui.addInput(this.base.material.uniforms.uColor2, 'value', {
-			label: 'uColor2',
-			view: 'color-2',
 		});
 	}
 	/// #endif
