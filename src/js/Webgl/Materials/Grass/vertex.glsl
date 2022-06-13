@@ -53,6 +53,8 @@ void main() {
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	pos *= scaleFromTexture;
 
+	// translation.y += pos.y;
+
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
 	translation.y += translationOffset;
