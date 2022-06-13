@@ -170,7 +170,6 @@ export async function loadModel(key) {
 			child.receiveShadow = true;
 		}
 	});
-
 	return loadedModel.clone(true);
 }
 

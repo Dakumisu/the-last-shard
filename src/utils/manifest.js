@@ -38,7 +38,7 @@ assetsMap.set('asset_gradient', {
 });
 
 assetsMap.set('noiseTexture', {
-	path: '/assets/image/pattern.png',
+	path: '/assets/image/noiseTexture.png',
 	data: {},
 });
 
