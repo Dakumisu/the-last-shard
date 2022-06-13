@@ -24,18 +24,18 @@ void main() {
   //   discard;
   // }
 
-  float noiseElevation = vNoiseMouvement * uWindColorIntensity;
+	float noiseElevation = vNoiseMouvement * uWindColorIntensity;
 
   //Get colour data from texture
-  vec4 text = vec4(texture2D(uDiffuse, vUv));
-  float textR = text.r;
+	vec4 text = vec4(texture2D(uDiffuse, vUv));
+	float textR = text.r;
 
-  text.rgb += uColor2;
-  text.rgb *= mix(uColor * 0.5, uColor2, vPos.y);
+	text.rgb += uColor2;
+	text.rgb *= mix(uColor * 0.5, uColor2, vPos.y);
 
-  gl_FragColor = text;
-  gl_FragColor = vec4(textR) + vec4(mix(uColor * 0.5, uColor2, vPos.y) * uColor2, 1.0);
-  gl_FragColor = vec4(mix(uColor2, uColor, vPos.y + textR), 1.0);
+	gl_FragColor = text;
+	gl_FragColor = vec4(textR) + vec4(mix(uColor * 0.5, uColor2, vPos.y) * uColor2, 1.0);
+	gl_FragColor = vec4(mix(uColor2, uColor, vPos.y + textR), 1.0);
 
 	#include <fog_fragment>
 

@@ -72,12 +72,12 @@ export default class BaseFog {
 		this.scene.background = this.params.background;
 
 		/// #if DEBUG
-		this.setdevtool();
+		// this.devtools();
 		/// #endif
 	}
 
 	/// #if DEBUG
-	setdevtool() {
+	devtools() {
 		debug.instance.setFolder(debug.label, debug.tab, true);
 		const gui = debug.instance.getFolder(debug.label);
 		if (debug.folder) debug.folder.dispose();

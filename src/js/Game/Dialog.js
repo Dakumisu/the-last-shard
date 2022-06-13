@@ -1,5 +1,6 @@
 import signal from 'philbin-packages/signal';
 import { wait, throttle } from 'philbin-packages/async';
+import { tryCatch } from 'philbin-packages/misc';
 
 import dialog from '@json/dialog.json?json';
 import { store } from '@tools/Store';
@@ -34,8 +35,20 @@ export default class Dialog {
 
 	async open({ scene = '', sequence = '' }) {
 		console.log(scene, sequence);
-		const dialog = this.dialog[scene][sequence];
-		console.log('[DIALOG]', dialog);
+
+		let dialog = null;
+
+		try {
+			dialog = this.dialog[scene][sequence];
+			/// #if DEBUG
+			console.log('[DIALOG]', dialog);
+			/// #endif
+		} catch (error) {
+			/// #if DEBUG
+			console.error('no dialog here');
+			/// #endif
+			return;
+		}
 
 		dialogSet = false;
 
