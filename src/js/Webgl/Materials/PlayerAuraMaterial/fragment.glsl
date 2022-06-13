@@ -65,9 +65,7 @@ void main() {
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
 
-	gl_FragColor.rgb /= mix(gl_FragColor.rgb, uColor, a ) * 1.5;
-	// gl_FragColor.rgb /= test;
-	// gl_FragColor.a = step(1.0, vPos.x);
+	gl_FragColor.a *= pow(0.0005, a) * 0.5;
+	gl_FragColor.rgb *= pow(0.0005, a) * uColor;
 
-    //   gl_FragColor += vec4( uColor, test );
 }

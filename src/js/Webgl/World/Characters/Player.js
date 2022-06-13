@@ -19,6 +19,8 @@ import {
 	MeshNormalMaterial,
 	sRGBEncoding,
 	Euler,
+	CylinderBufferGeometry,
+	AdditiveBlending,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -31,6 +33,7 @@ import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
+import PlayerAuraMaterial from '@webgl/Materials/PlayerAuraMaterial/PlayerMaterial';
 import AnimationController from '@webgl/Animation/Controller';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/async';
@@ -326,7 +329,8 @@ class Player extends BaseEntity {
 	}
 
 	async setBodyMesh() {
-		this.base.geometry = new CapsuleGeometry(0.5, 0.5, 10, 20);
+		this.base.geometry = new CapsuleGeometry(0.5, 0.5, 8, 64);
+		this.base.auraGeom = this.base.geometry.clone();
 		this.base.geometry.translate(0, -0.75, 0);
 
 		this.base.capsuleInfo = {
@@ -348,10 +352,19 @@ class Player extends BaseEntity {
 			},
 		});
 
+		this.base.auraMaterial = new PlayerAuraMaterial({
+			transparent: true,
+			blending: AdditiveBlending,
+			depthWrite: false,
+			uniforms: {
+				uColor: { value: new Color(0x31d7ff) },
+			},
+		});
+
 		this.base.mesh = new Mesh(this.base.geometry);
 		this.base.mesh.visible = false;
 
-		// this.scene.add(this.base.mesh);
+		this.scene.add(this.base.mesh);
 	}
 
 	listeners() {}
@@ -367,7 +380,11 @@ class Player extends BaseEntity {
 		this.base.model.scene.rotateY(PI);
 		this.base.model.scene.translateOnAxis(params.upVector, -0.9);
 
-		this.base.group.add(this.base.model.scene);
+		this.base.auraGeom.translate(0, -0.25, 0);
+		this.base.auraGeom.scale(2.5, 2.5, 2.5);
+		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
+
+		this.base.group.add(this.base.model.scene, this.base.auraMesh);
 		this.scene.add(this.base.group);
 	}
 
