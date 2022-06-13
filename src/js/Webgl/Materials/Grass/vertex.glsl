@@ -58,6 +58,8 @@ void main() {
 
 	// translation.y += pos.y;
 
+	// translation.y += pos.y;
+
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
 	translation.y += translationOffset;

@@ -154,16 +154,15 @@ export async function loadModel(key) {
 		/// #endif
 		return;
 	}
-
+	let loadedModel;
 	if (path.includes('Scene_')) {
-		let loadedModel = (await loadGLTF(path)).scene;
-		return loadedModel;
-	}
-
-	let loadedModel = store.loadedAssets.models.get(key);
-	if (!loadedModel) {
 		loadedModel = (await loadGLTF(path)).scene;
-		store.loadedAssets.models.set(key, loadedModel);
+	} else {
+		loadedModel = store.loadedAssets.models.get(key);
+		if (!loadedModel) {
+			loadedModel = (await loadGLTF(path)).scene;
+			store.loadedAssets.models.set(key, loadedModel);
+		}
 	}
 
 	return loadedModel.clone(true);

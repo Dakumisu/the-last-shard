@@ -54,11 +54,11 @@ export default class World {
 		this.pet = initPet();
 		this.dialogCamera = new DialogCamera();
 
-		await this.getScenes();
-		await this.initScenes();
-
 		this.soundController = new SoundController();
 		await this.soundController.isLoaded;
+
+		await this.getScenes();
+		await this.initScenes();
 
 		initialized = true;
 	}

@@ -2,7 +2,7 @@ import BaseScene from '@webgl/Scene/BaseScene';
 import Grass from '@webgl/World/Bases/Grass/Grass';
 import BaseFog from '@webgl/World/Bases/Fog/BaseFog';
 import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
-import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
+import { loadCubeTexture, loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
@@ -10,6 +10,7 @@ import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
+import GrassParticles from '@webgl/World/Bases/GrassParticles/GrassParticles';
 
 export default class CaveScene extends BaseScene {
 	constructor(manifest) {
@@ -44,62 +45,85 @@ export default class CaveScene extends BaseScene {
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
 		this.fog = new BaseFog({
-			fogNearColor: '#664CB1',
+			// fogNearColor: '#d4d4d4',
+			// fogFarColor: '#f5f5f5',
+			fogNearColor: '#9e9fc8',
 			fogFarColor: '#3e2e77',
-			fogNear: 0,
-			fogFar: 25,
-			fogNoiseSpeed: 0.003,
-			fogNoiseFreq: 0.125,
-			fogNoiseImpact: 0.1,
+			fogNear: 30,
+			fogFar: 50,
+			fogNoiseSpeed: 0.00225,
+			fogNoiseFreq: 0.25,
+			fogHeightPropagation: 4,
+			fogHeightDensity: 0.5,
 			background: await this.envMapTexture,
 		});
 
-		// Init grass after fog
 		this.grass = new Grass(this, {
-			color: '#66C0ef',
-			color2: '#664CB1',
-			halfBoxSize: 25,
+			// color: '#c1f376',
+			// color2: '#55C233',
+			color: '#31d7ff',
+			color2: '#000832',
+			// color: '#664cb1',
+			// color2: '#9b92ff',
+			// color: '#cfa1f1',
+			// color: '#6997a7',
+			// color2: '#8277ff',
+			halfBoxSize: 20,
 			scale: 1,
+			grass: await loadTexture('grassPattern'),
+			diffuse: await loadTexture('grassDiffuse'),
+			alpha: await loadTexture('grassAlpha'),
 			positionsTexture: this.terrainSplatting,
 		});
+
+		for (let index = 1; index < 5; index++) {
+			this.flowers = new Flowers(this, {
+				color: '#31d7ff',
+				color2: '#000832',
+				// color: '#c1f376',
+				// color2: '#55C233',
+				halfBoxSize: 20,
+				scale: 1,
+				positionsTexture: this.terrainSplatting,
+				model: await loadModel('flower' + index),
+			});
+		}
 
 		this.particles = new Particles({
 			scene: this,
 			params: {
-				color: '#C1C2FF',
-				color2: '#664CB1',
-				count: 250,
-				halfBoxSize: 25,
+				// color: '#82ad46',
+				color: '#8277ff',
+				color2: '#31d7ff',
+				count: 500,
+				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},
 		});
 
-		this.flowers = new Flowers(this, {
-			color: '#66C0ef',
-			// color: '#9799f7',
-			// color: '#66C0ef',
-			color2: '#664CB1',
-			verticeScale: 0.2,
-			halfBoxSize: 25,
-			noiseElevationIntensity: 0.75,
-			noiseMouvementIntensity: 0.15,
-			windColorIntensity: 0.11,
-			displacement: 0.08,
-			scale: 1,
-			positionsTexture: this.terrainSplatting,
+		this.grassParticles = new GrassParticles({
+			scene: this,
+			params: {
+				// color: '#82ad46',
+				color: '#31d7ff',
+				color2: '#c1f376',
+				count: 1500,
+				halfBoxSize: 20,
+				positionsTexture: this.terrainSplatting,
+			},
 		});
 
 		this.fogParticles = new FogParticles({
 			scene: this,
 			params: {
-				color: '#664CB1',
-				count: 3000,
-				halfBoxSize: 25,
+				// color: '#f0f0f0',
+				color: '#8277ff',
+				count: 2000,
+				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),
 			},
 		});
-
 
 		// this.instance.add(...this.colliders.map((collider) => collider.base.mesh));
 		this.initialized.resolve(true);
