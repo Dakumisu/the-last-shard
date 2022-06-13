@@ -71,9 +71,9 @@ void main() {
 	pos.y *= 1. - trailIntensity;
 	translation.z -= trailIntensity * trailDirection.y * 0.5;
 
-	float heightNoise = cnoise(translation.xz * 0.4);
-	float heightNoiseSmall = cnoise(translation.xz * 0.2);
-	translation.y += (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
+	// float heightNoise = cnoise(translation.xz * 0.4);
+	// float heightNoiseSmall = cnoise(translation.xz * 0.2);
+	// translation.y += (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
 
 	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time * 1.5);
 
@@ -196,4 +196,3 @@ void main() {
 
 // 	gl_Position = projectionMatrix * mv;
 // }
-

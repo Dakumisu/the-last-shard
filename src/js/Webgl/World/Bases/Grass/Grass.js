@@ -25,7 +25,7 @@ import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 
-const twigsCountList = [0, 0, 300000, 300000, 300000, 300000];
+const twigsCountList = [0, 0, 300000, 300000, 300000, 400000];
 
 export default class Grass {
 	/**

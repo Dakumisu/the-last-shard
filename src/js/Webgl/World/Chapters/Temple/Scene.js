@@ -43,6 +43,7 @@ export default class TempleScene extends BaseScene {
 		});
 
 		this.lights = new Lights(this, [baseAmbient, directional]);
+
 		this.fog = new BaseFog({
 			fogNearColor: '#664CB1',
 			fogFarColor: '#3e2e77',
