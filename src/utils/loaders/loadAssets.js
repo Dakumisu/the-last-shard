@@ -164,6 +164,12 @@ export async function loadModel(key) {
 			store.loadedAssets.models.set(key, loadedModel);
 		}
 	}
+	loadedModel.traverse((child) => {
+		if (child.isMesh) {
+			child.castShadow = true;
+			child.receiveShadow = true;
+		}
+	});
 
 	return loadedModel.clone(true);
 }

@@ -1,6 +1,6 @@
 /// #if DEBUG
 import { getWebgl } from '@webgl/Webgl';
-import { DirectionalLightHelper } from 'three';
+import { CameraHelper, DirectionalLightHelper } from 'three';
 
 const debug = {
 	instance: null,
@@ -15,15 +15,40 @@ export default class BaseDirectionnal {
 		intensity = 5,
 		position = new Vector3(0, 0, 0),
 		label = 'noname',
+		minBox = null,
+		maxBox = null,
+		boxCenter = null,
 	} = {}) {
+		const _maxBox = maxBox.clone();
+		const _minBox = minBox.clone();
+		_minBox.z -= 10;
+		_maxBox.z += 10;
+		_minBox.x -= 10;
+		_maxBox.x += 10;
+		_maxBox.y += 10;
+		const camNear = 1;
+		const camWidth = _maxBox.x + Math.abs(_minBox.x);
+		const camHeight = _maxBox.z + Math.abs(_minBox.z);
+
 		this.light = new DirectionalLight(color, intensity);
 		this.light.castShadow = true;
-		this.light.shadow.mapSize.width = 512; // default
-		this.light.shadow.mapSize.height = 512; // default
-		this.light.shadow.camera.near = 0.5; // default
-		this.light.shadow.camera.far = 1000; // default
+		this.light.shadow.camera.left = camWidth / -2;
+		this.light.shadow.camera.right = camWidth / 2;
+		this.light.shadow.camera.top = camHeight / 2;
+		this.light.shadow.camera.bottom = camHeight / -2;
 
-		this.light.position.copy(position);
+		this.light.shadow.mapSize.width = 2048;
+		this.light.shadow.mapSize.height = 2048;
+		this.light.shadow.camera.near = camNear;
+		this.light.shadow.camera.far = _maxBox.y + Math.abs(_minBox.y) + camNear;
+
+		this.light.position.set(boxCenter.x, _maxBox.y + camNear, boxCenter.z);
+
+		this.light.rotation.x = -Math.PI * 0.5;
+
+		// this.light.position.copy(rtCamera.position);
+
+		// this.light.shadow.camera.rotation.x = -Math.PI * 0.5;
 		this.light.name = label;
 
 		/// #if DEBUG
@@ -36,6 +61,8 @@ export default class BaseDirectionnal {
 	addTodebug(parentFolder) {
 		this.helper = new DirectionalLightHelper(this.light, 5);
 		this.helper.visible = false;
+
+		this.camHelper = new CameraHelper(this.light.shadow.camera);
 
 		const gui = parentFolder.addFolder({
 			title: this.light.name,
@@ -63,6 +90,23 @@ export default class BaseDirectionnal {
 		});
 
 		gui.addInput(this.helper, 'visible', { label: 'Helper' });
+
+		const shadowsFolder = parentFolder.addFolder({
+			title: 'Shadows',
+		});
+		shadowsFolder.addInput(this.light.shadow.camera, 'near');
+		shadowsFolder.addInput(this.light.shadow.camera, 'far');
+		shadowsFolder.addInput(this.light.shadow, 'radius');
+		shadowsFolder.addInput(this.light.shadow, 'bias', {
+			min: -0.005,
+			max: 0.005,
+			step: 0.0000001,
+		});
+		shadowsFolder.addInput(this.light.shadow, 'normalBias', {
+			min: -0.005,
+			max: 0.005,
+			step: 0.0000001,
+		});
 	}
 
 	/// #endif

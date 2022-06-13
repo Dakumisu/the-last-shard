@@ -6,7 +6,6 @@ import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
-import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
@@ -43,9 +42,10 @@ export default class Faille extends BaseScene {
 			intensity: 2,
 			label: 'Directionnal',
 			position: new Vector3(-10, 0, 10),
+			rtCamera: this.rtCamera,
 		});
 
-		this.lights = new Lights(this, [baseAmbient, directional]);
+		this.lights.add(baseAmbient.light, directional.light);
 
 		this.fog = new BaseFog({
 			fogNearColor: '#664CB1',

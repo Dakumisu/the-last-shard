@@ -6,7 +6,6 @@ import { loadCubeTexture, loadModel, loadTexture } from '@utils/loaders/loadAsse
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
-import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
@@ -41,9 +40,10 @@ export default class IslandTutoScene extends BaseScene {
 			intensity: 7,
 			label: 'Directionnal',
 			position: new Vector3(-10, 0, 10),
+			rtCamera: this.rtCamera,
 		});
+		this.lights.add(baseAmbient.light, directional.light);
 
-		this.lights = new Lights(this, [baseAmbient, directional]);
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',
 			// fogFarColor: '#f5f5f5',

@@ -6,7 +6,6 @@ import { loadCubeTexture, loadModel, loadTexture } from '@utils/loaders/loadAsse
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
 import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
-import Lights from '@webgl/World/Bases/Lights/Lights';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
@@ -40,15 +39,26 @@ export default class FloatingIsland extends BaseScene {
 		await this.manifestLoaded;
 
 		// Lights
-		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
-		const directional = new BaseDirectionnal({
+		this.baseAmbient = new BaseAmbient({ color: '#fff', intensity: 0, label: 'Ambient' });
+		this.directional = new BaseDirectionnal({
 			color: '#fff',
-			intensity: 2,
+			intensity: 5,
 			label: 'Directionnal',
-			position: new Vector3(-10, 0, 10),
+			position: new Vector3(0, 0, 0),
+			minBox: this.minBox,
+			maxBox: this.maxBox,
+			boxCenter: this.boxCenter,
 		});
 
-		this.lights = new Lights(this, [baseAmbient, directional]);
+		this.lights.add(this.baseAmbient.light, this.directional.light);
+		/// #if DEBUG
+		const lightsFolder = this.gui.addFolder({
+			title: 'Lights',
+		});
+		this.baseAmbient.addTodebug(lightsFolder);
+		this.directional.addTodebug(lightsFolder);
+		this.lights.add(this.directional.helper, this.directional.camHelper);
+		/// #endif
 
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',

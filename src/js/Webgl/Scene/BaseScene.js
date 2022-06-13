@@ -71,6 +71,8 @@ export default class BaseScene {
 		this.areas = null;
 		this.portals = [];
 		this.grass = null;
+		this.lights = new Group();
+		this.instance.add(this.lights);
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
@@ -435,8 +437,8 @@ export default class BaseScene {
 		this.minBox.copy(boundingBox.min);
 		this.maxBox.copy(boundingBox.max);
 
-		const center = new Vector3();
-		boundingBox.getCenter(center);
+		this.boxCenter = new Vector3();
+		boundingBox.getCenter(this.boxCenter);
 
 		const camNear = 1;
 		const camWidth = this.maxBox.x + Math.abs(this.minBox.x);
@@ -451,7 +453,7 @@ export default class BaseScene {
 			this.maxBox.y + Math.abs(this.minBox.y) + camNear,
 		);
 
-		this.rtCamera.position.set(center.x, this.maxBox.y + camNear, center.z);
+		this.rtCamera.position.set(this.boxCenter.x, this.maxBox.y + camNear, this.boxCenter.z);
 
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
 

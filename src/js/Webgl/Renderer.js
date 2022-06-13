@@ -1,5 +1,12 @@
 import signal from 'philbin-packages/signal';
-import { NoToneMapping, PCFShadowMap, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer } from 'three';
+import {
+	NoToneMapping,
+	PCFShadowMap,
+	PCFSoftShadowMap,
+	sRGBEncoding,
+	VSMShadowMap,
+	WebGLRenderer,
+} from 'three';
 
 import { getWebgl } from './Webgl';
 import PostFX from './PostFX/PostFX';
