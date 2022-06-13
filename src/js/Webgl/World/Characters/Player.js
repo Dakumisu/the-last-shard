@@ -299,6 +299,8 @@ class Player extends BaseEntity {
 		initialized = true;
 	}
 
+	listeners() {}
+
 	setCameraPlayer() {
 		// Create OrbitCam for the player and add it to controller
 		const playerOrbitCam = new OrbitCamera(
@@ -353,8 +355,6 @@ class Player extends BaseEntity {
 
 		this.scene.add(this.base.mesh);
 	}
-
-	listeners() {}
 
 	async setModel() {
 		const m = await loadGLTF(model);

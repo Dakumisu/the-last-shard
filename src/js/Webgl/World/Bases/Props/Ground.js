@@ -17,8 +17,6 @@ import BaseCollider from '@webgl/World/Bases/BaseCollider';
 import { loadModel } from '@utils/loaders/loadAssets';
 import { Group } from 'three';
 import { wait } from 'philbin-packages/async';
-import { loadDynamicGLTF } from '@utils/loaders';
-import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 
 const twoPI = Math.PI * 2;
 
@@ -70,10 +68,6 @@ export default class Ground extends BaseCollider {
 
 		this.base.realMesh = base;
 
-		// const material = new BaseBasicMaterial({
-		// 	side: DoubleSide,
-		// 	color: new Color('#664CB1'),
-		// });
 		const material = new BaseToonMaterial({
 			side: DoubleSide,
 			color: new Color('#664CB1'),

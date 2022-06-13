@@ -19,6 +19,7 @@ export default class LevelDoor extends BasePhysic {
 
 		this.gameId = this.base.asset.params.gameId;
 		this.target = {};
+		this.anime = null;
 
 		// this.ease = getEase(easings.outSwift);
 		// console.log(this.ease);
@@ -52,7 +53,7 @@ export default class LevelDoor extends BasePhysic {
 		const easing = opts.easing || 'linear';
 		const delay = opts.delay || 0;
 
-		return anime({
+		this.anime = anime({
 			targets: this.base.mesh.position,
 			duration,
 			easing,
@@ -64,14 +65,16 @@ export default class LevelDoor extends BasePhysic {
 				this.base.mesh.updateMatrix();
 			},
 		});
+
+		return this.anime;
 	}
 
 	reverse(opts = {}) {
-		const duration = opts.duration || 1000;
-		const easing = opts.easing || 'spring(1, 100, 10, 0)';
+		const duration = opts.duration || 1500;
+		const easing = opts.easing || 'linear';
 		const delay = opts.delay || 0;
 
-		return anime({
+		this.anime = anime({
 			targets: this.base.mesh.position,
 			duration,
 			easing,
@@ -83,5 +86,7 @@ export default class LevelDoor extends BasePhysic {
 				this.base.mesh.updateMatrix();
 			},
 		});
+
+		return this.anime;
 	}
 }
