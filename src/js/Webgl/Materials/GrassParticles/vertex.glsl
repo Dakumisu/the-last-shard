@@ -89,10 +89,6 @@ void main() {
 	float trailIntensity = smoothstep(1.8, 0., distance(uCharaPos, translation.xyz));
 	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
 
-	float heightNoise = cnoise(translation.xz * 0.4);
-	float heightNoiseSmall = cnoise(translation.xz * 0.2);
-	translation.y += (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
-
 	// Looping on Y axis
 	float maxDuration = 1.0;
 
