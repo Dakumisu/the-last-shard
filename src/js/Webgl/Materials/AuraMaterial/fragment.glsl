@@ -1,3 +1,5 @@
+uniform float uIntensity;
+uniform float uRadius;
 uniform vec3 diffuse;
 uniform vec3 uColor;
 
@@ -30,8 +32,6 @@ varying vec3 vPositionNormal;
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
 
-
-
 void main() {
 	#include <clipping_planes_fragment>
 	vec4 diffuseColor = vec4(diffuse, opacity);
@@ -57,7 +57,7 @@ void main() {
 
   	// Fresnel
 	float a = (1.0 - -min(dot(vPositionNormal, normalize(vNormal)), 0.0));
-      float test = pow( b + s * abs(dot(vNormal, vPositionNormal)), p );
+	float test = pow(b + s * abs(dot(vNormal, vPositionNormal)), p);
 
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
@@ -65,7 +65,7 @@ void main() {
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
 
-	gl_FragColor.a *= pow(0.0005, a) * 0.5;
-	gl_FragColor.rgb *= pow(0.0005, a) * uColor;
+	gl_FragColor.a *= pow(uRadius, a) * uIntensity;
+	gl_FragColor.rgb *= pow(uRadius, a) * uColor;
 
 }

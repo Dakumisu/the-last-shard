@@ -33,7 +33,7 @@ import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
-import PlayerAuraMaterial from '@webgl/Materials/PlayerAuraMaterial/PlayerMaterial';
+import AuraMaterial from '@webgl/Materials/AuraMaterial/AuraMaterial';
 import AnimationController from '@webgl/Animation/Controller';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/async';
@@ -352,12 +352,14 @@ class Player extends BaseEntity {
 			},
 		});
 
-		this.base.auraMaterial = new PlayerAuraMaterial({
+		this.base.auraMaterial = new AuraMaterial({
 			transparent: true,
 			blending: AdditiveBlending,
 			depthWrite: false,
 			uniforms: {
 				uColor: { value: new Color(0x31d7ff) },
+				uIntensity: { value: 0.4 },
+				uRadius: { value: 0.005 },
 			},
 		});
 
