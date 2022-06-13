@@ -266,6 +266,8 @@ export class Pet extends BaseEntity {
 		TMP_PLAYER_POS.copy(playerPos);
 		this.base.group.position.copy(TARGET_POS);
 
+		signal.emit('sound:play', 'pet-tp');
+
 		await this.show();
 
 		return this;

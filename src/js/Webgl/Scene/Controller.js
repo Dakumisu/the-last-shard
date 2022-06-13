@@ -16,6 +16,7 @@ export default class SceneController {
 	constructor() {
 		const webgl = getWebgl();
 		this.mainScene = webgl.mainScene;
+		this.renderer = webgl.renderer.renderer;
 		this.scenes = {};
 		this.currentScene = null;
 
@@ -93,6 +94,7 @@ export default class SceneController {
 
 		if (this.get(label)) {
 			store.game.player.canMove = store.game.player.canInteract = false;
+
 			signal.emit('postpro:transition-in', 500);
 			await wait(500);
 
@@ -101,6 +103,7 @@ export default class SceneController {
 				this.currentScene.gui.hidden = true;
 				/// #endif
 
+				signal.emit('sound:beforeSwitch', this.currentScene.label);
 				this.currentScene.removeFrom(this.mainScene.instance);
 			}
 
@@ -116,7 +119,12 @@ export default class SceneController {
 			await wait(500);
 			signal.emit('postpro:transition-out');
 			signal.emit('scene:complete');
+			signal.emit('sound:afterSwitch', label);
 			store.game.player.canMove = store.game.player.canInteract = true;
+
+			this.renderer.shadowMap.needsUpdate = true;
+
+			this.renderer.shadowMap.needsUpdate = true;
 
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;

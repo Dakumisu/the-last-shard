@@ -203,6 +203,10 @@ assetsMap.set('jump-sound', {
 	path: 'assets/sound/characters/jump.mp3',
 	data: {},
 });
+assetsMap.set('pet-tp-sound', {
+	path: 'assets/sound/characters/pet-tp.mp3',
+	data: {},
+});
 
 export async function loadManifest() {
 	const scenesManifest = import.meta.globEager('../../public/assets/export/Scene_*.json');
@@ -214,10 +218,16 @@ export async function loadManifest() {
 		const _c = await scenesManifest[key];
 		const _json = _c.default;
 		const _n = key.split('/').pop().split('.')[0];
+
 		manifest.push(_json);
 
 		assetsMap.set(_n, {
 			path: '/assets/export/' + _n + '.glb',
+			data: {},
+		});
+
+		assetsMap.set(_n + '-sound', {
+			path: '/assets/sound/ambient/' + _n + '.mp3',
 			data: {},
 		});
 

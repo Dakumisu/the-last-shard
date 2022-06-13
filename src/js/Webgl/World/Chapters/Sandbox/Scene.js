@@ -52,7 +52,7 @@ export default class SandboxScene extends BaseScene {
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',
 			// fogFarColor: '#f5f5f5',
-			fogNearColor: '#9e9fc8',
+			fogNearColor: '#6050cf',
 			fogFarColor: '#3e2e77',
 			fogNear: 30,
 			fogFar: 50,
@@ -88,7 +88,7 @@ export default class SandboxScene extends BaseScene {
 				// color: '#c1f376',
 				// color2: '#55C233',
 				halfBoxSize: 20,
-				scale: 1,
+				scale: 1.2,
 				positionsTexture: this.terrainSplatting,
 				model: await loadModel('flower' + index),
 			});
@@ -111,8 +111,8 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				// color: '#82ad46',
 				color: '#31d7ff',
-				color2: '#c1f376',
-				count: 1500,
+				color2: '#8277ff',
+				count: 2000,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},

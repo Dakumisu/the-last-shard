@@ -132,6 +132,8 @@ export default class LaserTower extends BaseCollider {
 	activate() {
 		this.isActivated = true;
 
+		this.needsUpdate = true;
+
 		signal.emit('sound:play', 'laser-activate', { pos: this.base.mesh.position, replay: true });
 
 		// const laserGroupWorldPos = new Vector3();
@@ -260,8 +262,6 @@ export default class LaserTower extends BaseCollider {
 		this.tiltYTarget = clamp(this.tiltYTarget, -Math.PI * 0.25, Math.PI * 0.25);
 		signal.emit('sound:play', 'laser-rotate', { replay: true });
 	};
-
-	reset() {}
 
 	update = (et, dt) => {
 		if (!this.initialized) return;
