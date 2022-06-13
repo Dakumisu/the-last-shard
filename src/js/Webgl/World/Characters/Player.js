@@ -248,7 +248,7 @@ class Player extends BaseEntity {
 		gui.addInput(this.physicsVisualizer, 'visible', { label: 'BVH' });
 
 		const axesHelper = new AxesHelper(2);
-		// axesHelper.visible = false;
+		axesHelper.visible = false;
 		this.base.group.add(axesHelper);
 
 		this.broadphaseHelper = new Mesh(

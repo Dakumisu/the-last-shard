@@ -46,6 +46,7 @@ const TMP_PLAYER_POS = new Vector3();
 const TARGET_POS = new Vector3();
 const TMP_DIR = new Vector3();
 const OFFSET = new Vector3();
+const UP_VECTOR = new Vector3(0, 1, 0);
 
 let previousAnim = null;
 
@@ -235,8 +236,11 @@ export class Pet extends BaseEntity {
 		this.player.getDirection(TMP_DIR);
 		TMP_DIR.negate();
 
-		TARGET_POS.copy(playerPos).add(TMP_DIR).addScalar(0.5);
-		this.focusPos.copy(TARGET_POS);
+		const playerQt = this.player.getQuaternion();
+		OFFSET.set(-1, 0, 0).applyQuaternion(playerQt);
+
+		TARGET_POS.copy(playerPos).add(TMP_DIR).add(OFFSET);
+		this.focusPos.copy(TARGET_POS).addScaledVector(UP_VECTOR, 0.5);
 
 		// pet.anim = this.base.animation.get('speak')
 
