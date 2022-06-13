@@ -344,14 +344,14 @@ class Player extends BaseEntity {
 		this.base.material = new PlayerMaterial({
 			map: texture,
 			uniforms: {
-				// uTexture: { value: texture },
+				uColor: { value: new Color(0xffffff) },
 			},
 		});
 
-		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		this.base.mesh = new Mesh(this.base.geometry);
 		this.base.mesh.visible = false;
 
-		this.scene.add(this.base.mesh);
+		// this.scene.add(this.base.mesh);
 	}
 
 	listeners() {}

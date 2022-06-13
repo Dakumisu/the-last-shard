@@ -23,7 +23,7 @@ void main() {
 	float smoothUvEdges = smoothUvStart * smoothUvEnd;
 
 // Render
-	vec3 pos = position + normal * (noise) * 0.035;
+	vec3 pos = position + normal * (noise) * 0.06;
 	// pos += normal * smoothUvEdges * 0.25;
 
 // Varying

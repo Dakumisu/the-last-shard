@@ -1,8 +1,11 @@
 uniform vec3 diffuse;
 uniform float opacity;
+
 #ifndef FLAT_SHADED
 varying vec3 vNormal;
 #endif
+varying vec3 vEye;
+
 #include <common>
 #include <dithering_pars_fragment>
 #include <color_pars_fragment>
@@ -19,6 +22,9 @@ varying vec3 vNormal;
 #include <specularmap_pars_fragment>
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
+
+uniform vec3 uColor;
+
 void main() {
 	#include <clipping_planes_fragment>
 	vec4 diffuseColor = vec4(diffuse, opacity);
@@ -41,9 +47,15 @@ void main() {
 	vec3 outgoingLight = reflectedLight.indirectDiffuse;
 	#include <envmap_fragment>
 	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
+
+  	// Fresnel
+	float a = (1.0 - -min(dot(vEye, normalize(vNormal)), 0.0));
+
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
+
+	gl_FragColor.rgb /= mix(gl_FragColor.rgb, uColor, a) * 1.2;
 }

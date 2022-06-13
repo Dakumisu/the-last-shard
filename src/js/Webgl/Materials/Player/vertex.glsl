@@ -8,6 +8,10 @@
 #include <skinning_pars_vertex>
 #include <logdepthbuf_pars_vertex>
 #include <clipping_planes_pars_vertex>
+
+varying vec3 vNormal;
+varying vec3 vEye;
+
 void main() {
 	#include <uv_vertex>
 	#include <uv2_vertex>
@@ -28,4 +32,7 @@ void main() {
 	#include <clipping_planes_vertex>
 	#include <envmap_vertex>
 	#include <fog_vertex>
+
+	vNormal = normalize(normalMatrix * normal);
+	vEye = normalize(vec3(modelViewMatrix * vec4(position, 1.0)).xyz);
 }
