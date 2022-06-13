@@ -85,9 +85,6 @@ export default class FloatingIsland extends BaseScene {
 			// color2: '#8277ff',
 			halfBoxSize: 20,
 			scale: 1,
-			grass: await loadTexture('grassPattern'),
-			diffuse: await loadTexture('grassDiffuse'),
-			alpha: await loadTexture('grassAlpha'),
 			positionsTexture: this.terrainSplatting,
 		});
 

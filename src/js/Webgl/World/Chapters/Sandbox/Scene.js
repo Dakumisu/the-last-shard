@@ -37,7 +37,6 @@ export default class SandboxScene extends BaseScene {
 		this.baseAmbient = new BaseAmbient({ color: '#fff', label: 'Ambient' });
 		this.directionalLight = new BaseDirectionalLight({
 			color: '#fff',
-			intensity: 5,
 			label: 'DirectionalLight',
 			minBox: this.minBox,
 			maxBox: this.maxBox,
