@@ -325,7 +325,7 @@ class Player extends BaseEntity {
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
-	setBodyMesh() {
+	async setBodyMesh() {
 		this.base.geometry = new CapsuleGeometry(0.5, 0.5, 10, 20);
 		this.base.geometry.translate(0, -0.75, 0);
 
@@ -337,8 +337,15 @@ class Player extends BaseEntity {
 			segment: new Line3(new Vector3(), new Vector3(0, -0.5, 0)),
 		};
 
+		const texture = await loadTexture('characterTexture');
+		texture.flipY = false;
+		texture.encoding = sRGBEncoding;
+
 		this.base.material = new PlayerMaterial({
-			color: new Color('#d29ddc'),
+			map: texture,
+			uniforms: {
+				// uTexture: { value: texture },
+			},
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
@@ -352,9 +359,9 @@ class Player extends BaseEntity {
 	async setModel() {
 		const m = await loadGLTF(model);
 
-		// m.scene.traverse((object) => {
-		// 	if (object.material) object.material = this.base.material;
-		// });
+		m.scene.traverse((object) => {
+			if (object.material) object.material = this.base.material;
+		});
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
@@ -411,7 +418,7 @@ class Player extends BaseEntity {
 					const depth = this.base.capsuleInfo.radius.base - distance;
 					const direction = capsulePoint.sub(triPoint).normalize();
 
-					if (Math.abs(direction.y) < 0.37) {
+					if (Math.abs(direction.y) < 0.5) {
 						direction.y = 0;
 					}
 

@@ -11,6 +11,7 @@ import { LaserMaterialInner } from '@webgl/Materials/Laser/inner/material';
 import { LaserMaterialOuter } from '@webgl/Materials/Laser/outer/material';
 import { getPet } from '@webgl/World/Characters/Pet';
 import signal from 'philbin-packages/signal';
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 
 export default class LaserGame {
 	static laserMaterialInner;
@@ -19,7 +20,7 @@ export default class LaserGame {
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
 		.translate(0, 0, 0.5);
-	static sphereMaterial = new MeshBasicMaterial({ color: 0xffffff });
+	static sphereMaterial = new BaseBasicMaterial({ color: 0xffffff });
 	static sphereGeometry = new IcosahedronGeometry(0.2, 3);
 	/**
 	 *
@@ -36,7 +37,7 @@ export default class LaserGame {
 
 	endEvent() {
 		signal.emit(this.scene.label + ':endGame', this.id);
-		console.log('🕹 Game ended');
+		console.log(this.scene.label + ':endGame', '🕹 Game ended');
 	}
 
 	revertEndEvent() {

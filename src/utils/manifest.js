@@ -51,8 +51,41 @@ assetsMap.set('fogTexture', {
 	data: {},
 });
 
+assetsMap.set('grassPattern', {
+	path: '/assets/image/grassTest.png',
+	data: {},
+});
+
+assetsMap.set('grassAlpha', {
+	path: '/assets/image/alpha.jpg',
+	data: {},
+});
+
+assetsMap.set('grassDiffuse', {
+	path: '/assets/image/diffuse.jpg',
+	data: {},
+});
+
 assetsMap.set('laserTexture', {
 	path: '/assets/image/laser.png',
+	data: {},
+});
+
+assetsMap.set('characterTexture', {
+	path: '/assets/image/character.jpg',
+	data: {},
+});
+
+assetsMap.set('portalTexture', {
+	path: '/assets/image/portalTexture.png',
+	data: {},
+});
+assetsMap.set('portalTexture2', {
+	path: '/assets/image/portalTexture2.png',
+	data: {},
+});
+assetsMap.set('portalTextureMask', {
+	path: '/assets/image/portalMask.jpg',
 	data: {},
 });
 
@@ -81,8 +114,55 @@ assetsMap.set('lua', {
 	data: {},
 });
 
-assetsMap.set('flower', {
-	path: 'assets/model/flower.glb',
+assetsMap.set('pissenli', {
+	path: 'assets/model/pissenli.glb',
+	data: {},
+});
+
+assetsMap.set('pissenliTexture', {
+	path: '/assets/image/pissenli.jpeg',
+	data: {},
+});
+
+assetsMap.set('flowerTexture', {
+	path: '/assets/image/flower.png',
+	data: {},
+});
+
+assetsMap.set('lavande', {
+	path: 'assets/model/lavande.glb',
+	data: {},
+});
+
+assetsMap.set('lavandeTexture', {
+	path: '/assets/image/lavande.jpeg',
+	data: {},
+});
+
+assetsMap.set('flower1', {
+	path: 'assets/model/flower1.glb',
+	data: {},
+});
+
+assetsMap.set('flower2', {
+	path: 'assets/model/flower2.glb',
+	data: {},
+});
+
+assetsMap.set('flower3', {
+	path: 'assets/model/flower3.glb',
+	data: {},
+});
+assetsMap.set('flower4', {
+	path: 'assets/model/flower4.glb',
+	data: {},
+});
+assetsMap.set('flower5', {
+	path: 'assets/model/flower5.glb',
+	data: {},
+});
+assetsMap.set('flower6', {
+	path: 'assets/model/flower6.glb',
 	data: {},
 });
 

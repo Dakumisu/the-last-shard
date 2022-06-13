@@ -17,52 +17,23 @@ attribute float aScale;
 attribute vec3 aPositions;
 attribute vec4 aRotate;
 
-varying vec3 vPos;
 varying float vFade;
+varying float vFadePos;
 varying float vNoiseMouvement;
+varying vec2 vUv;
+varying vec3 vPos;
 
-vec4 quat_from_axis_angle(vec3 axis, float angle) {
-	vec4 qr;
-	float half_angle = (angle * 0.5) * 3.14159 / 180.0;
-	qr.x = axis.x * sin(half_angle);
-	qr.y = axis.y * sin(half_angle);
-	qr.z = axis.z * sin(half_angle);
-	qr.w = cos(half_angle);
-	return qr;
-}
-
-vec4 quat_conj(vec4 q) {
-	return vec4(-q.x, -q.y, -q.z, q.w);
-}
-
-vec4 quat_mult(vec4 q1, vec4 q2) {
-	vec4 qr;
-	qr.x = (q1.w * q2.x) + (q1.x * q2.w) + (q1.y * q2.z) - (q1.z * q2.y);
-	qr.y = (q1.w * q2.y) - (q1.x * q2.z) + (q1.y * q2.w) + (q1.z * q2.x);
-	qr.z = (q1.w * q2.z) + (q1.x * q2.y) - (q1.y * q2.x) + (q1.z * q2.w);
-	qr.w = (q1.w * q2.w) - (q1.x * q2.x) - (q1.y * q2.y) - (q1.z * q2.z);
-	return qr;
-}
-
-vec3 rotate(vec3 position, vec3 axis, float angle) {
-	vec4 qr = quat_from_axis_angle(axis, angle);
-	vec4 qr_conj = quat_conj(qr);
-	vec4 q_pos = vec4(position.x, position.y, position.z, 0);
-
-	vec4 q_tmp = quat_mult(qr, q_pos);
-	qr = quat_mult(q_tmp, qr_conj);
-
-	return vec3(qr.x, qr.y, qr.z);
-}
+#include <fog_pars_vertex>
 
 void main() {
 	float boxSize = uHalfBoxSize * 2.;
 	float time = uTime * uWindSpeed * 0.002;
 
 	vec3 pos = position * aScale;
+	vec3 instancedPos = pos + aPositions;
 
 	vPos = pos;
-	// vec3 rotatedPos = pos;
+	vUv = uv;
 
 	vec4 orientation = normalize(aRotate);
 	vec3 vcV = cross(orientation.xyz, pos);
@@ -75,18 +46,23 @@ void main() {
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
-	// translation.xz += pos.xz;
+	float fade = 1.0 - smoothstep(0., 1., (0.085 * distance(uCharaPos.xz, translation.xz)));
+
+	vFadePos = fade;
 
 	// Scale down out of range grass
-	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
-	pos.y += scaleFromRange * .1;
-	pos *= scaleFromRange;
+	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * 0.5, distance(uCharaPos.xz, translation.xz));
+	translation.y *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds
 	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
 	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
 
 	vFade = elevation;
+
+	if(elevation >= 1.) {
+		translation = vec3(0.);
+	}
 
 	// float scaleFromTexture = 1. - texture2D(uGrassTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
@@ -102,20 +78,25 @@ void main() {
 	vec3 trailDirection = normalize(uCharaPos.xyz - translation.xyz);
 
 	// Grass displacement according to player trail
-	translation.x -= trailIntensity * trailDirection.x * 0.25;
+	translation.x -= trailIntensity * trailDirection.x * 0.35;
 	pos.y *= 1. - trailIntensity;
-	translation.z -= trailIntensity * trailDirection.y * 0.25;
+	translation.z -= trailIntensity * trailDirection.y * 0.35;
 
-	// vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time);
+	float heightNoise = cnoise(translation.xz * 0.4);
+	float heightNoiseSmall = cnoise(translation.xz * 0.2);
+	translation.y += (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
 
-	// if(instancedPos.y > 0.) {
-	// 	translation.xz += vNoiseMouvement * uDisplacement;
-	// }
+	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity * 20. + time * 2.);
 
-	// gl_Position = projectionMatrix * modelViewMatrix * vec4(new_x, new_y, p.z, 1.0);
+	if(instancedPos.y > 0.) {
+		translation.xz += vNoiseMouvement * uDisplacement;
+	}
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
-	// mv.xyz += pos;
+
+	#ifdef USE_FOG
+	vFogWorldPosition = translation;
+	#endif
 
 	gl_Position = projectionMatrix * mv;
 }

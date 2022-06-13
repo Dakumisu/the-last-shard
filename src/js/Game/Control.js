@@ -1,3 +1,4 @@
+import { store } from '@tools/Store';
 import signal from 'philbin-packages/signal';
 
 import { getGame } from './Game';
@@ -63,16 +64,22 @@ export default class Control {
 				this.keyPressed.shift = true;
 				break;
 			case controlsKeys.interact:
-				this.keyPressed.interact = true;
-				signal.emit('user:interact', key);
+				if (store.game.player.canInteract) {
+					this.keyPressed.interact = true;
+					signal.emit('user:interact', key);
+				}
 				break;
 			case controlsKeys.rotate[0]:
-				this.keyPressed.rotate = true;
-				signal.emit('user:interact', key);
+				if (store.game.player.canInteract) {
+					this.keyPressed.rotate = true;
+					signal.emit('user:interact', key);
+				}
 				break;
 			case controlsKeys.rotate[1]:
-				this.keyPressed.rotate = true;
-				signal.emit('user:interact', key);
+				if (store.game.player.canInteract) {
+					this.keyPressed.rotate = true;
+					signal.emit('user:interact', key);
+				}
 				break;
 		}
 	}
