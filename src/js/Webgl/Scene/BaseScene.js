@@ -57,6 +57,7 @@ export default class BaseScene {
 	constructor({ label, manifest }) {
 		const webgl = getWebgl();
 
+		this.mainScene = webgl.mainScene.instance;
 		this.raf = webgl.raf;
 
 		this.label = label;
@@ -76,6 +77,7 @@ export default class BaseScene {
 		this.grass = null;
 		this.lights = new Group();
 		this.baseAmbient = this.directionalLight = null;
+		this.shadowsBaked = false;
 		this.instance.add(this.lights);
 
 		this.isPreloaded = deferredPromise();
@@ -527,16 +529,24 @@ export default class BaseScene {
 		/// #endif
 	}
 
+	traverseForShadows() {
+		// this.mainScene.traverse((child) => {
+		// 	if (child.isMesh && child.name !== 'player') {
+		// 		console.log(child.name);
+		// 		child.castShadow = false;
+		// 		// child.receiveShadow = false;
+		// 	}
+		// });
+		this.directionalLight.light.shadow.autoUpdate = false;
+		this.shadowsBaked = true;
+	}
+
 	update(et, dt) {
 		if (!this.initialized) return;
 
-		// if (
-		// 	this.directionalLight &&
-		// 	this.directionalLight.light.shadow.autoUpdate &&
-		// 	et - this.currentTime > bakeDuration
-		// ) {
-		// 	this.directionalLight.light.shadow.autoUpdate = false;
-		// }
+		if (this.directionalLight && !this.shadowsBaked && et - this.currentTime > bakeDuration) {
+			this.traverseForShadows();
+		}
 
 		if (this.portals)
 			this.portals.forEach((portal) => portal.update(this.player.getPosition()));

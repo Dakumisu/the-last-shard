@@ -85,9 +85,6 @@ export default class Renderer {
 		});
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = VSMShadowMap;
-		// this.renderer.shadowMap.needsUpdate = true;
-		// this.renderer.shadowMap.render()
-		// this.renderer.shadowMap.autoUpdate = false;
 
 		const { width, height, dpr } = store.resolution;
 
