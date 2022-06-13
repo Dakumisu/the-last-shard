@@ -40,10 +40,10 @@ export default class FloatingIsland extends BaseScene {
 		await this.manifestLoaded;
 
 		// Lights
-		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
+		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 0, label: 'Ambient' });
 		const directional = new BaseDirectionnal({
 			color: '#fff',
-			intensity: 2,
+			intensity: 5,
 			label: 'Directionnal',
 			position: new Vector3(-10, 0, 10),
 		});
@@ -53,7 +53,7 @@ export default class FloatingIsland extends BaseScene {
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',
 			// fogFarColor: '#f5f5f5',
-			fogNearColor: '#9e9fc8',
+			fogNearColor: '#6050cf',
 			fogFarColor: '#3e2e77',
 			fogNear: 30,
 			fogFar: 50,
@@ -89,7 +89,7 @@ export default class FloatingIsland extends BaseScene {
 				// color: '#c1f376',
 				// color2: '#55C233',
 				halfBoxSize: 20,
-				scale: 1,
+				scale: 1.2,
 				positionsTexture: this.terrainSplatting,
 				model: await loadModel('flower' + index),
 			});
@@ -99,7 +99,7 @@ export default class FloatingIsland extends BaseScene {
 			scene: this,
 			params: {
 				// color: '#82ad46',
-				color: '#8277ff',
+				color: '#9b92ff',
 				color2: '#31d7ff',
 				count: 500,
 				halfBoxSize: 20,
@@ -112,8 +112,8 @@ export default class FloatingIsland extends BaseScene {
 			params: {
 				// color: '#82ad46',
 				color: '#31d7ff',
-				color2: '#c1f376',
-				count: 1500,
+				color2: '#8277ff',
+				count: 2000,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},
@@ -124,7 +124,7 @@ export default class FloatingIsland extends BaseScene {
 			params: {
 				// color: '#f0f0f0',
 				color: '#8277ff',
-				count: 2000,
+				count: 2500,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),
