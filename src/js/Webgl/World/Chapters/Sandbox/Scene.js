@@ -44,7 +44,7 @@ export default class SandboxScene extends BaseScene {
 			color: '#fff',
 			intensity: 5,
 			label: 'Directionnal',
-			position: new Vector3(-10, 0, 10),
+			position: new Vector3(0, 30, 0),
 		});
 
 		this.lights = new Lights(this, [baseAmbient, directional]);

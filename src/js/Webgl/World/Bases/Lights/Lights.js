@@ -33,6 +33,7 @@ export default class Lights {
 			/// #if DEBUG
 			light.addTodebug(debug.parentFolder);
 			if (light.helper) this.group.add(light.helper);
+			if (light.camHelper) this.group.add(light.camHelper);
 			/// #endif
 		});
 	}

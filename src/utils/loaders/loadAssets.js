@@ -164,8 +164,14 @@ export async function loadModel(key) {
 			store.loadedAssets.models.set(key, loadedModel);
 		}
 	}
-
-	return loadedModel.clone(true);
+	const loadedModelClone = loadedModel.clone(true);
+	loadedModelClone.traverse((child) => {
+		if (child.isMesh) {
+			child.castShadow = true;
+			child.receiveShadow = true;
+		}
+	});
+	return loadedModelClone;
 }
 
 function detectBasisSupport() {
