@@ -12,7 +12,7 @@ import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
 import { dampPrecise } from 'philbin-packages/maths';
 
-import { loadModel } from '@utils/loaders/loadAssets';
+import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
 import AnimationController from '@webgl/Animation/Controller';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
@@ -100,7 +100,10 @@ export class Pet extends BaseEntity {
 	/// #endif
 
 	async init() {
-		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
+		const texture = await loadTexture('petTexture');
+		texture.flipY = false;
+
+		this.base.material = new BaseBasicMaterial({ map: texture });
 
 		const m = await loadGLTF(model);
 		m.scene.traverse((child) => {
