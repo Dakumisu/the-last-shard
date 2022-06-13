@@ -84,7 +84,9 @@ export default class Renderer {
 			autoClear: false,
 		});
 		this.renderer.shadowMap.enabled = true;
-		this.renderer.shadowMap.type = PCFShadowMap;
+		this.renderer.shadowMap.type = VSMShadowMap;
+		// this.renderer.shadowMap.needsUpdate = true;
+		// this.renderer.shadowMap.render()
 		// this.renderer.shadowMap.autoUpdate = false;
 
 		const { width, height, dpr } = store.resolution;
@@ -95,8 +97,8 @@ export default class Renderer {
 
 		this.renderer.physicallyCorrectLights = true;
 		this.renderer.outputEncoding = sRGBEncoding;
-		this.renderer.toneMapping = NoToneMapping;
-		this.renderer.toneMappingExposure = 1;
+		// this.renderer.toneMapping = NoToneMapping;
+		// this.renderer.toneMappingExposure = 1;
 
 		store.isWebGL2 = this.renderer.capabilities.isWebGL2;
 	}

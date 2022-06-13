@@ -47,7 +47,7 @@ export async function loadTexture(key) {
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
 		loadedTexture = await loader.loadAsync(path);
-		loadedTexture.encoding = sRGBEncoding;
+		// loadedTexture.encoding = sRGBEncoding;
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;

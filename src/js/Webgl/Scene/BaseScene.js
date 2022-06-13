@@ -51,10 +51,13 @@ import { loadAudio, loadTexture } from '@utils/loaders';
 import { store } from '@tools/Store';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
+const bakeDuration = 2000;
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
 		const webgl = getWebgl();
+
+		this.raf = webgl.raf;
 
 		this.label = label;
 		this.player = getPlayer();
@@ -72,6 +75,7 @@ export default class BaseScene {
 		this.portals = [];
 		this.grass = null;
 		this.lights = new Group();
+		this.baseAmbient = this.directionalLight = null;
 		this.instance.add(this.lights);
 
 		this.isPreloaded = deferredPromise();
@@ -207,6 +211,8 @@ export default class BaseScene {
 		await this.manifestLoaded;
 
 		this.setRenderTarget();
+
+		this.currentTime = this.raf.elapsed;
 
 		console.log('🔋 Scene initialized :', this.label);
 	}
@@ -524,6 +530,14 @@ export default class BaseScene {
 	update(et, dt) {
 		if (!this.initialized) return;
 
+		// if (
+		// 	this.directionalLight &&
+		// 	this.directionalLight.light.shadow.autoUpdate &&
+		// 	et - this.currentTime > bakeDuration
+		// ) {
+		// 	this.directionalLight.light.shadow.autoUpdate = false;
+		// }
+
 		if (this.portals)
 			this.portals.forEach((portal) => portal.update(this.player.getPosition()));
 		if (this.checkpoints) this.checkpoints.update(et, dt);
@@ -533,7 +547,6 @@ export default class BaseScene {
 			this.interactablesBroadphase.update(this.player.getPosition());
 		if (this.collidersBroadphase) this.collidersBroadphase.update(this.player.getPosition());
 
-		// vec2 scaledCoords = vec2(map(uCharaPos.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(uCharaPos.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
 		const playerXTexture = map(
 			this.player.base.mesh.position.x,
 			this.minBox.x,

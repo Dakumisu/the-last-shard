@@ -8,7 +8,7 @@ const debug = {
 import { AmbientLight } from 'three';
 
 export default class BaseAmbient {
-	constructor({ color = '#fff', intensity = 1, label = 'noname' } = {}) {
+	constructor({ color = '#fff', intensity = 2.5, label = 'noname' } = {}) {
 		this.light = new AmbientLight(color, intensity);
 		this.light.name = label;
 
@@ -28,7 +28,7 @@ export default class BaseAmbient {
 		});
 		gui.addInput(this.light, 'intensity', {
 			min: 0,
-			max: 2,
+			max: 50,
 			step: 0.01,
 		});
 	}

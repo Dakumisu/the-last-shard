@@ -5,7 +5,7 @@ import { Vector3 } from 'three';
 import { loadCubeTexture, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
-import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
+import BaseDirectionalLight from '@webgl/World/Bases/Lights/BaseDirectionalLight';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
@@ -36,16 +36,25 @@ export default class Faille extends BaseScene {
 		await this.manifestLoaded;
 
 		// Lights
-		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
-		const directional = new BaseDirectionnal({
+		this.baseAmbient = new BaseAmbient({ color: '#fff', label: 'Ambient' });
+		this.directionalLight = new BaseDirectionalLight({
 			color: '#fff',
-			intensity: 2,
-			label: 'Directionnal',
-			position: new Vector3(-10, 0, 10),
-			rtCamera: this.rtCamera,
+			label: 'DirectionalLight',
+			minBox: this.minBox,
+			maxBox: this.maxBox,
+			boxCenter: this.boxCenter,
 		});
 
-		this.lights.add(baseAmbient.light, directional.light);
+		this.lights.add(this.baseAmbient.light, this.directionalLight.light);
+
+		/// #if DEBUG
+		const lightsFolder = this.gui.addFolder({
+			title: 'Lights',
+		});
+		this.baseAmbient.addTodebug(lightsFolder);
+		this.directionalLight.addTodebug(lightsFolder);
+		this.lights.add(this.directionalLight.helper, this.directionalLight.camHelper);
+		/// #endif
 
 		this.fog = new BaseFog({
 			fogNearColor: '#664CB1',

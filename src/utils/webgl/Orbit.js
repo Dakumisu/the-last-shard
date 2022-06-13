@@ -77,7 +77,7 @@ class Spherical {
 function orbitController(
 	object,
 	{
-		element = document,
+		element = document.querySelector('.canvas-container'),
 		enabled = true,
 		target = new Vec3(),
 		ease = 0.15,
