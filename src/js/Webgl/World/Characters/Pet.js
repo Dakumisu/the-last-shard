@@ -24,7 +24,7 @@ import { getPlayer } from './Player';
 const debug = {
 	instance: null,
 	label: 'Pet',
-	tab: 'Player',
+	tab: 'Entity',
 };
 /// #endif
 
@@ -39,7 +39,7 @@ const params = {
 };
 
 const pet = {
-	anim: null,
+	anim: 'idle',
 };
 
 const TMP_PLAYER_POS = new Vector3();
@@ -78,14 +78,15 @@ export class Pet extends BaseEntity {
 
 		this.base.group = new Group();
 
-		/// #if DEBUG
-		debug.instance = webgl.debug;
-		/// #endif
-
 		this.initialized = false;
 
 		this.listeners();
 		this.init();
+
+		/// #if DEBUG
+		debug.instance = webgl.debug;
+		this.devtools();
+		/// #endif
 	}
 
 	/// #if DEBUG
@@ -95,7 +96,7 @@ export class Pet extends BaseEntity {
 
 		gui.addInput(this, 'speed');
 
-		this.initPhysicsVisualizer();
+		// this.initPhysicsVisualizer();
 	}
 	/// #endif
 
@@ -114,7 +115,7 @@ export class Pet extends BaseEntity {
 		this.base.model.scene.rotateY(PI);
 		this.base.group.add(this.base.model.scene);
 
-		// this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
+		this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
 
 		this.base.geometry = new IcosahedronGeometry(0.1, 3);
 		this.base.mesh = new Mesh(this.base.geometry);
@@ -131,10 +132,6 @@ export class Pet extends BaseEntity {
 		this.scene.add(this.base.group);
 
 		this.initialized = true;
-
-		/// #if DEBUG
-		this.devtools();
-		/// #endif
 	}
 
 	listeners() {
@@ -176,11 +173,11 @@ export class Pet extends BaseEntity {
 				break;
 		}
 
-		// this.base.animation.update(et, dt)
-		// if (previousAnim != pet.anim) {
-		// 	previousAnim = pet.anim;
-		// 	this.base.animation.switch(pet.anim)
-		// }
+		if (previousAnim != pet.anim) {
+			previousAnim = pet.anim;
+			this.base.animation.switch(pet.anim);
+		}
+		this.base.animation.update(dt);
 	}
 
 	updateState(force) {
@@ -219,7 +216,7 @@ export class Pet extends BaseEntity {
 
 		TARGET_POS.copy(playerPos).add(OFFSET);
 
-		// pet.anim = this.base.animation.get('idle')
+		pet.anim = this.base.animation.get('idle');
 
 		return this;
 	}
@@ -245,7 +242,7 @@ export class Pet extends BaseEntity {
 		TARGET_POS.copy(playerPos).add(TMP_DIR).add(OFFSET);
 		this.focusPos.copy(TARGET_POS).addScaledVector(UP_VECTOR, 0.5);
 
-		// pet.anim = this.base.animation.get('speak')
+		pet.anim = this.base.animation.get('speak');
 
 		return this;
 	}

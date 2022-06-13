@@ -106,7 +106,7 @@ let camAxisTarget = 0;
 const debug = {
 	instance: null,
 	label: 'Player',
-	tab: 'Player',
+	tab: 'Entity',
 };
 /// #endif
 
@@ -345,9 +345,6 @@ class Player extends BaseEntity {
 
 		this.base.material = new PlayerMaterial({
 			map: texture,
-			// uniforms: {
-			// 	// uTexture: { value: texture },
-			// },
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
