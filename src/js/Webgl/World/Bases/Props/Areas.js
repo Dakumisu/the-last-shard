@@ -61,11 +61,11 @@ export default class Areas {
 		this.isInside = true;
 
 		const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
-		signal.emit('area:enter', name);
+		// signal.emit('area:enter', name);
 
 		if (!area.dialog) return;
 
-		signal.emit('dialog:open', { scene: this.scene.label, sequence: area.dialog });
+		// signal.emit('dialog:open', { scene: this.scene.label, sequence: area.dialog });
 		area.dialog = false;
 
 		return;

@@ -5,8 +5,7 @@ import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import { loadCubeTexture, loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import InteractablesBroadphase from '@webgl/World/Bases/Broadphase/InteractablesBroadphase';
 import BaseAmbient from '@webgl/World/Bases/Lights/BaseAmbient';
-import BaseDirectionnal from '@webgl/World/Bases/Lights/BaseDirectionnal';
-import Lights from '@webgl/World/Bases/Lights/Lights';
+import BaseDirectionalLight from '@webgl/World/Bases/Lights/BaseDirectionalLight';
 import Particles from '@webgl/World/Bases/Particles/Particles';
 import FogParticles from '@webgl/World/Bases/FogParticles/FogParticles';
 import Flowers from '@webgl/World/Bases/Flowers/Flowers';
@@ -35,15 +34,26 @@ export default class CaveScene extends BaseScene {
 		await this.manifestLoaded;
 
 		// Lights
-		const baseAmbient = new BaseAmbient({ color: '#fff', intensity: 1, label: 'Ambient' });
-		const directional = new BaseDirectionnal({
-			color: '#45b1e7',
-			intensity: 7,
-			label: 'Directionnal',
-			position: new Vector3(-10, 0, 10),
+		this.baseAmbient = new BaseAmbient({ color: '#fff', label: 'Ambient' });
+		this.directionalLight = new BaseDirectionalLight({
+			color: '#fff',
+			label: 'DirectionalLight',
+			minBox: this.minBox,
+			maxBox: this.maxBox,
+			boxCenter: this.boxCenter,
 		});
 
-		this.lights = new Lights(this, [baseAmbient, directional]);
+		this.lights.add(this.baseAmbient.light, this.directionalLight.light);
+
+		/// #if DEBUG
+		const lightsFolder = this.gui.addFolder({
+			title: 'Lights',
+		});
+		this.baseAmbient.addTodebug(lightsFolder);
+		this.directionalLight.addTodebug(lightsFolder);
+		this.lights.add(this.directionalLight.helper, this.directionalLight.camHelper);
+		/// #endif
+
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',
 			// fogFarColor: '#f5f5f5',

@@ -47,7 +47,7 @@ export async function loadTexture(key) {
 	let loadedTexture = store.loadedAssets.textures.get(key);
 	if (!loadedTexture) {
 		loadedTexture = await loader.loadAsync(path);
-		loadedTexture.encoding = sRGBEncoding;
+		// loadedTexture.encoding = sRGBEncoding;
 		store.loadedAssets.textures.set(key, loadedTexture);
 	}
 	return loadedTexture;
@@ -164,6 +164,12 @@ export async function loadModel(key) {
 			store.loadedAssets.models.set(key, loadedModel);
 		}
 	}
+	loadedModel.traverse((child) => {
+		if (child.isMesh) {
+			child.castShadow = true;
+			child.receiveShadow = true;
+		}
+	});
 
 	return loadedModel.clone(true);
 }
