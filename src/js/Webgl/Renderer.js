@@ -78,7 +78,7 @@ export default class Renderer {
 		});
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = PCFSoftShadowMap;
-		this.renderer.shadowMap.autoUpdate = false;
+		this.renderer.shadowMap.autoUpdate = true;
 
 		const { width, height, dpr } = store.resolution;
 
