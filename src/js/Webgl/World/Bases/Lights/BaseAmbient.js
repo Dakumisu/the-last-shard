@@ -8,7 +8,7 @@ const debug = {
 import { AmbientLight } from 'three';
 
 export default class BaseAmbient {
-	constructor({ color = '#fff', intensity = 2.5, label = 'noname' } = {}) {
+	constructor({ color = '#fff', intensity = 1.5, label = 'noname' } = {}) {
 		this.light = new AmbientLight(color, intensity);
 		this.light.name = label;
 
