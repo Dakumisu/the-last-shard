@@ -44,9 +44,9 @@ export default class LaserTower extends BaseCollider {
 
 		this.type = asset.asset.split('LaserTower').pop().toLowerCase();
 		this.maxDistance = asset.params.distance;
-		this.timeDuration = asset.params.duration || 30;
 
-		if (this.type === 'start') this.timerDuration = asset.params.timerDuration || 3000000;
+		if (this.type === 'start') this.timerDuration = (asset.params.timerDuration || 30) * 1000;
+		console.log(asset.params.timerDuration, this.timerDuration);
 		if (this.type !== 'end') this.laserGroup = new Group();
 
 		this.isActivated = false;

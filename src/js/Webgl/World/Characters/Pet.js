@@ -48,7 +48,6 @@ const TMP_DIR = new Vector3();
 const OFFSET = new Vector3();
 
 let previousAnim = null;
-let isTeleporting = false;
 
 export class Pet extends BaseEntity {
 	static STATES = {
@@ -74,6 +73,7 @@ export class Pet extends BaseEntity {
 		this.isTooFar = false;
 		this.isFeeding = false;
 		this.speed = 1;
+		this.isTeleporting = false;
 
 		this.base.group = new Group();
 
@@ -135,6 +135,7 @@ export class Pet extends BaseEntity {
 
 	listeners() {
 		signal.on('dialog:start', () => {
+			if (this.isTooFar) this.speak().teleport(true);
 			this.state = Pet.STATES.SPEAKING;
 		});
 		signal.on('dialog:complete', () => {
@@ -148,10 +149,8 @@ export class Pet extends BaseEntity {
 		const d = this.getDistanceToPlayer();
 		this.isTooFar = d >= 10;
 
-		if (this.isTooFar && !isTeleporting && this.state !== Pet.STATES.FEEDING) {
-			isTeleporting = true;
+		if (this.isTooFar && this.state !== Pet.STATES.FEEDING) {
 			await this.teleport();
-			isTeleporting = false;
 		}
 
 		if (this.isTooFar) return;
@@ -256,8 +255,11 @@ export class Pet extends BaseEntity {
 		return this;
 	}
 
-	async teleport() {
-		await this.hide();
+	async teleport(force = false) {
+		if (this.isTeleporting) return;
+		this.isTeleporting = true;
+
+		if (!force) await this.hide();
 
 		const playerPos = this.player.getPosition();
 		const playerQt = this.player.getQuaternion();
@@ -270,15 +272,9 @@ export class Pet extends BaseEntity {
 
 		await this.show();
 
+		this.isTeleporting = false;
+
 		return this;
-	}
-
-	getPosition() {
-		return this.base.group.position;
-	}
-
-	getFocusPosition() {
-		return this.focusPos;
 	}
 
 	feedOn(target = null) {
@@ -297,6 +293,14 @@ export class Pet extends BaseEntity {
 	feedOff() {
 		this.state = Pet.STATES.FOLLOW;
 		this.isFeeding = false;
+	}
+
+	getPosition() {
+		return this.base.group.position;
+	}
+
+	getFocusPosition() {
+		return this.focusPos;
 	}
 
 	dampPosition(dt, factor) {

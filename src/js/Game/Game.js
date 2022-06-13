@@ -19,7 +19,7 @@ class Game {
 	async init() {
 		this.keyboard = new Keyboard();
 		this.control = new Control();
-		this.dialog = new Dialog();
+		// this.dialog = new Dialog();
 
 		initialized = true;
 	}
@@ -34,8 +34,6 @@ class Game {
 
 	update() {
 		if (!initialized) return;
-
-		this.dialog.update();
 	}
 
 	destroy() {

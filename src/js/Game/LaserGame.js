@@ -32,6 +32,8 @@ export default class LaserGame {
 		this.id = id;
 		this.pet = getPet();
 
+		signal.on('dialog:open', () => this.reset());
+
 		this.init();
 	}
 

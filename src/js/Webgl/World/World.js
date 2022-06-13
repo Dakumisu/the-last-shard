@@ -18,6 +18,7 @@ import assetsMap from '@utils/manifest.js';
 import { initPet } from './Characters/Pet.js';
 import SoundController from '@js/Sound/Controller.js';
 import DialogCamera from '@webgl/Camera/Cameras/DialogCamera.js';
+import Dialog from '@game/Dialog.js';
 
 let initialized = false;
 export default class World {
@@ -52,6 +53,7 @@ export default class World {
 	async init() {
 		this.player = initPlayer();
 		this.pet = initPet();
+		this.dialog = new Dialog();
 		this.dialogCamera = new DialogCamera();
 
 		this.soundController = new SoundController();
@@ -99,6 +101,7 @@ export default class World {
 		Timer.update();
 		baseUniforms.uTime.value = et;
 
+		if (this.dialog) this.dialog.update(et, dt);
 		if (this.sceneController) this.sceneController.update(et, dt);
 		if (this.soundController) this.soundController.update();
 		// if (this.sky) this.sky.update(et, dt);

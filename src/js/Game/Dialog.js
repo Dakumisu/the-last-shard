@@ -2,9 +2,11 @@ import signal from 'philbin-packages/signal';
 import { wait, throttle } from 'philbin-packages/async';
 import { tryCatch } from 'philbin-packages/misc';
 
-import dialog from '@json/dialog.json?json';
 import { store } from '@tools/Store';
+
 import { getGame } from './Game';
+
+import dialog from '@json/dialog.json?json';
 
 let pool = [];
 let length = 0;
@@ -56,11 +58,10 @@ export default class Dialog {
 
 		signal.emit('postpro:transition-in', 500);
 		await wait(500);
+		store.game.player.canMove = store.game.player.canInteract = false;
 		signal.emit('dialog:start');
 		signal.emit('camera:switch', 'dialog');
 		signal.emit('postpro:transition-out');
-
-		store.game.player.canMove = store.game.player.canInteract = false;
 
 		const dialogPool = [];
 		dialog.forEach((line) => {
