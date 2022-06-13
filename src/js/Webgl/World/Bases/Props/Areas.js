@@ -38,6 +38,9 @@ export default class Areas {
 			);
 			mesh.scale.setScalar(area.size);
 			mesh.position.copy(area.pos);
+
+			mesh.visible = false;
+
 			this.scene.instance.add(mesh);
 		});
 		/// #endif

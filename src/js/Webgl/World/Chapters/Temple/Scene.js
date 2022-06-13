@@ -50,6 +50,7 @@ export default class TempleScene extends BaseScene {
 			// fogFarColor: '#f5f5f5',
 			fogNearColor: '#9e9fc8',
 			fogFarColor: '#3e2e77',
+
 			fogNear: 30,
 			fogFar: 50,
 			fogNoiseSpeed: 0.00225,

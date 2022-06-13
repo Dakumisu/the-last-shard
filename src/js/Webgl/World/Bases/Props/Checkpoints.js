@@ -61,6 +61,6 @@ class Checkpoint {
 		this.mesh.position.copy(this.pos);
 		this.mesh.quaternion.copy(this.qt);
 
-		// this.mesh.visible = false;
+		this.mesh.visible = false;
 	}
 }
