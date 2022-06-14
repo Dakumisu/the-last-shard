@@ -583,7 +583,7 @@ class Player extends BaseEntity {
 		await wait(delay);
 		playerVelocity.y = 13;
 		this.state.isJumping = false;
-		signal.emit('sound:play', 'jump');
+		// signal.emit('sound:play', 'jump');
 	}
 
 	checkPlayerPosition(dt) {
@@ -666,7 +666,6 @@ class Player extends BaseEntity {
 
 	updateSounds() {
 		if (
-			this.state.isMoving &&
 			// this.state.isOnGround &&
 			player.realSpeed > 1 &&
 			player.realSpeed < 10 &&
@@ -674,7 +673,7 @@ class Player extends BaseEntity {
 			// &&
 			// !this.state.isFalling
 		) {
-			if (this.state.isOnGrass) {
+			if (this.state.isOnGrass && this.state.isMoving) {
 				signal.emit('sound:play', 'footsteps-grass', {
 					rate: map(player.realSpeed, 0, 7, 0.5, 1),
 				});
@@ -685,7 +684,12 @@ class Player extends BaseEntity {
 				});
 				signal.emit('sound:stop', 'footsteps-grass', { fadeDuration: 100 });
 			}
-		} else if (this.state.isFalling && this.state.isOnGround && this.state.hasJumped)
+		} else if (
+			this.state.isFalling &&
+			this.state.isOnGround &&
+			this.state.hasJumped &&
+			!this.state.isJumping
+		)
 			signal.emit('sound:play', 'fall');
 		else {
 			if (this.state.isOnGrass) signal.emit('sound:stop', 'footsteps-grass');
