@@ -36,7 +36,7 @@ export default class SoundController {
 			this.add('laser-activate'),
 			this.add('checkpoint'),
 			this.add('timer', { loop: true }),
-			this.add('footsteps-grass', { loop: true }),
+			this.add('footsteps-grass', { loop: true, volume: 0.5 }),
 			this.add('footsteps-ground', { loop: true }),
 			this.add('fall'),
 			this.add('jump'),
@@ -72,9 +72,11 @@ export default class SoundController {
 
 		if (!sound) return;
 
-		if (params.pos) sound.howl.pos(params.pos.x, params.pos.y, params.pos.z);
+		const pos = params.pos || sound.params.pos;
+		if (pos) sound.howl.pos(pos.x, pos.y, pos.z);
 
 		if (params.rate) sound.howl.rate(params.rate || 1);
+
 		if (!params.replay && sound.howl.playing()) return;
 
 		sound.howl.volume(params.volume || sound.params.volume || 1);

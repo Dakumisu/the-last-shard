@@ -675,12 +675,12 @@ class Player extends BaseEntity {
 		) {
 			if (this.state.isOnGrass) {
 				signal.emit('sound:play', 'footsteps-grass', {
-					rate: map(player.realSpeed, 0, 7, 0.5, 2),
+					rate: map(player.realSpeed, 0, 7, 0.5, 1),
 				});
 				signal.emit('sound:stop', 'footsteps-ground', { fadeDuration: 100 });
 			} else {
 				signal.emit('sound:play', 'footsteps-ground', {
-					rate: map(player.realSpeed, 0, 7, 0.5, 2),
+					rate: map(player.realSpeed, 0, 7, 0.5, 1),
 				});
 				signal.emit('sound:stop', 'footsteps-grass', { fadeDuration: 100 });
 			}
