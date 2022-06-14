@@ -11,7 +11,7 @@ export default class Device {
 		this.checkDevice();
 		this.checkBrowser();
 		this.setHtmlStyle();
-		this.getRootStyle();
+		// this.getRootStyle();
 
 		document.addEventListener('visibilitychange', this.checkVisibility.bind(this));
 	}
@@ -55,35 +55,35 @@ export default class Device {
 		html.style.setProperty('--vp-width', `${store.resolution.width}px`);
 	}
 
-	getRootStyle() {
-		const styleSheets = document.styleSheets[0].cssRules;
-		const rootStyleName = [];
-		const rootStyle = {};
+	// getRootStyle() {
+	// 	const styleSheets = document.styleSheets[0].cssRules;
+	// 	const rootStyleName = [];
+	// 	const rootStyle = {};
 
-		for (const key in styleSheets) {
-			if (styleSheets[key].selectorText === ':root') {
-				if (styleSheets[key].style.length) {
-					for (let i = 0; i < styleSheets[key].style.length; i++) {
-						const name = styleSheets[key].style[i];
+	// 	for (const key in styleSheets) {
+	// 		if (styleSheets[key].selectorText === ':root') {
+	// 			if (styleSheets[key].style.length) {
+	// 				for (let i = 0; i < styleSheets[key].style.length; i++) {
+	// 					const name = styleSheets[key].style[i];
 
-						if (name.startsWith('--') && !name.startsWith('--tp')) {
-							rootStyleName.push(name);
-						}
-					}
-				}
-			}
-		}
+	// 					if (name.startsWith('--') && !name.startsWith('--tp')) {
+	// 						rootStyleName.push(name);
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
 
-		for (let i = 0; i < rootStyleName.length; i++) {
-			if (getComputedStyle(html).getPropertyValue(rootStyleName[i])) {
-				rootStyle[rootStyleName[i]] = getComputedStyle(html).getPropertyValue(
-					rootStyleName[i],
-				);
-			}
-		}
+	// 	for (let i = 0; i < rootStyleName.length; i++) {
+	// 		if (getComputedStyle(html).getPropertyValue(rootStyleName[i])) {
+	// 			rootStyle[rootStyleName[i]] = getComputedStyle(html).getPropertyValue(
+	// 				rootStyleName[i],
+	// 			);
+	// 		}
+	// 	}
 
-		store.style = rootStyle;
-	}
+	// 	store.style = rootStyle;
+	// }
 
 	checkVisibility() {
 		signal.emit('dom:visibility', !document.hidden);
