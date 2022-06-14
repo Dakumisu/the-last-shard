@@ -299,8 +299,6 @@ export default class Cinematrix extends PersCamera {
 	update(et, dt) {
 		if (!this.isActive && !this.initialized) return;
 
-		// TODO: add normals to the cam OR look at (one or more)
-
 		if (this.isPlaying) {
 			if (!this.path) return;
 

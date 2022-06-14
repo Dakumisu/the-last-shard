@@ -126,14 +126,13 @@ export class Pet extends BaseEntity {
 		});
 
 		this.base.auraGeom = new IcosahedronGeometry(0.75, 3);
-
 		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
-
-		this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
 		this.base.group.add(this.base.model.scene, this.base.auraMesh);
+
+		this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
 
 		this.initPhysics();
 

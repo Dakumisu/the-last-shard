@@ -206,11 +206,13 @@ export default class BaseScene {
 		await this.loadTerrainSplatting();
 		await this.loadSounds();
 		this.setTerrainSplattingData();
-		await loadTexture('asset_gradient');
-		await loadTexture('grassPattern');
-		await loadTexture('grassDiffuse');
-		await loadTexture('grassAlpha');
-		await loadTexture('noiseTexture');
+		await Promise.all([
+			loadTexture('asset_gradient'),
+			loadTexture('grassPattern'),
+			loadTexture('grassDiffuse'),
+			loadTexture('grassAlpha'),
+			loadTexture('noiseTexture'),
+		]);
 	}
 
 	async init() {

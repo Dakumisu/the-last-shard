@@ -11,9 +11,14 @@ export default class FragmentMaterial extends BaseToonMaterial {
 			transparent: true,
 			uniforms: {
 				uAlpha: { value: 1 },
+				uNoise: { value: getNoiseTexture() },
 			},
 		});
 
 		hotShaders.use(this);
 	}
+}
+
+function getNoiseTexture() {
+	return store.loadedAssets.textures.get('noiseTexture');
 }
