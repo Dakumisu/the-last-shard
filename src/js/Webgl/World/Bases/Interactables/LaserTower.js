@@ -1,13 +1,15 @@
 import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
 import anime from 'animejs';
-import { Mesh, Ray, Vector3 } from 'three';
+import { Color, Mesh, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
 import Timer from '@game/Timer';
 import signal from 'philbin-packages/signal';
 import { clamp, lerp, map } from 'philbin-packages/maths';
 import { throttle, wait } from 'philbin-packages/async';
+import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
+import LaserSphereMaterial from '@webgl/Materials/LaserSphereMaterial/LaserSphereMaterial';
 
 const params = {
 	ringRotationOffset: {
@@ -99,7 +101,9 @@ export default class LaserTower extends BaseCollider {
 		this.sphereGroup.position.copy(this.rings[0].position);
 		this.base.mesh.add(this.sphereGroup);
 
-		this.sphere = new Mesh(LaserGame.sphereGeometry, LaserGame.sphereMaterial);
+		this.sphereMaterial = new LaserSphereMaterial();
+
+		this.sphere = new Mesh(LaserGame.sphereGeometry, this.sphereMaterial);
 		this.sphereGroup.add(this.sphere);
 
 		this.sphereWorldPos = new Vector3(
@@ -117,7 +121,7 @@ export default class LaserTower extends BaseCollider {
 			this.innerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialInner);
 			this.outerLaser = new Mesh(this.game.laserGeometry, this.game.laserMaterialOuter);
 
-			this.laserGroup.scale.set(1, 1, this.maxDistance);
+			this.laserGroup.scale.set(1, 1, 0);
 			this.laserGroup.add(this.innerLaser, this.outerLaser);
 			this.laserGroup.visible = false;
 			this.sphere.add(this.laserGroup);
@@ -129,31 +133,47 @@ export default class LaserTower extends BaseCollider {
 		this.initialized = true;
 	}
 
-	activate() {
-		this.isActivated = true;
-
-		this.needsUpdate = true;
-
-		signal.emit('sound:play', 'laser-activate', { pos: this.base.mesh.position, replay: true });
-
+	activate = async () => {
 		// const laserGroupWorldPos = new Vector3();
 		// this.laserGroup.getWorldPosition(laserGroupWorldPos);
 		if (this.type === 'start') {
+			this.game.pet.feedOn(this.sphereWorldPos);
+
+			anime({
+				targets: this.sphereMaterial.uniforms.uTransition,
+				value: 1,
+				duration: 500,
+				easing: 'easeOutQuad',
+			});
+
+			await wait(500);
+
 			signal.emit('sound:play', 'laser', {
 				pos: this.base.mesh.position,
 				replay: true,
 			});
 			this.timer.start();
-			this.game.pet.feedOn(this.sphereWorldPos);
 		} else if (this.type === 'end') this.game.endEvent();
+
+		this.isActivated = true;
+		signal.emit('sound:play', 'laser-activate', { pos: this.base.mesh.position, replay: true });
+
+		this.laserGroup.scale.z = this.maxDistance;
 
 		if (this.laserGroup) this.laserGroup.visible = true;
 
 		if (this.nextTower && !this.nextTower.isActivated) this.nextTower.activateBy(this);
-	}
+	};
 
 	desactivate = () => {
 		this.isActivated = false;
+
+		anime({
+			targets: this.sphereMaterial.uniforms.uTransition,
+			value: 0,
+			duration: 500,
+			easing: 'easeOutQuad',
+		});
 
 		signal.emit('sound:play', 'laser-activate', {
 			pos: this.base.mesh.position,
@@ -172,8 +192,8 @@ export default class LaserTower extends BaseCollider {
 			this.laserGroup.scale.z = this.maxDistance;
 		}
 
-		if (this.nextTower && this.nextTower.isActivated) {
-			this.nextTower.desactivateBy(this);
+		if (this.nextTower) {
+			this.nextTower.isActivated && this.nextTower.desactivateBy(this);
 			this.nextTower = null;
 		}
 	};
@@ -183,6 +203,8 @@ export default class LaserTower extends BaseCollider {
 
 		laserTower.nextTower = this;
 		this.previousTower = laserTower;
+
+		this.needsUpdate = true;
 
 		this.activate();
 	}
