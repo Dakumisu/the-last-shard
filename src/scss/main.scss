@@ -82,6 +82,7 @@ section.canvas-container {
 	height: 100vh;
 	// pointer-events: none;
 
+
 	canvas.sketch {
 		width: 100% !important;
 		height: 100% !important;
@@ -440,7 +441,7 @@ section.canvas-container {
 		height: 100%;
 		width: 100%;
 		position: absolute;
-		opacity: 0;
+		// opacity: 0;
 
 		.map-indicator-wrapper {
 			position: absolute;

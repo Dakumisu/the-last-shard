@@ -34,6 +34,7 @@ export default class BaseObject {
 			group,
 		};
 
+		this.autoUpdate = false;
 		this.initialized = false;
 
 		if (this.base.isInteractable) {
@@ -110,7 +111,7 @@ export default class BaseObject {
 				this.base.mesh.matrixAutoUpdate = true;
 			},
 			complete: () => {
-				this.base.mesh.matrixAutoUpdate = false;
+				this.base.mesh.matrixAutoUpdate = this.autoUpdate;
 				this.base.mesh.updateMatrix();
 			},
 		});
@@ -128,7 +129,7 @@ export default class BaseObject {
 				this.base.mesh.matrixAutoUpdate = true;
 			},
 			complete: () => {
-				this.base.mesh.matrixAutoUpdate = false;
+				this.base.mesh.matrixAutoUpdate = this.autoUpdate;
 				this.base.mesh.updateMatrix();
 			},
 		});

@@ -41,6 +41,14 @@ const store = {
 			canMove: true,
 			canInteract: true,
 		},
+
+		fragmentsCollected: 0,
+
+		levelsComplete: {
+			Tuto: false,
+			FloatingIsland: false,
+			Faille: false,
+		},
 	},
 };
 

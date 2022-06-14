@@ -12,12 +12,21 @@ export default class FragmentMaterial extends BaseToonMaterial {
 			uniforms: {
 				uAlpha: { value: 1 },
 				uNoise: { value: getNoiseTexture() },
+				uMap: { value: getGradientTexture() },
 			},
 		});
 
 		hotShaders.use(this);
 	}
 }
+
+const getGradientTexture = () => {
+	const gradient = store.loadedAssets.textures.get('asset_gradient');
+	gradient.flipY = false;
+	gradient.needsUpdate = true;
+
+	return gradient;
+};
 
 function getNoiseTexture() {
 	return store.loadedAssets.textures.get('noiseTexture');
