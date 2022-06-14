@@ -36,13 +36,16 @@ export default class SoundController {
 			this.add('laser-activate'),
 			this.add('checkpoint'),
 			this.add('timer', { loop: true }),
-			this.add('footsteps-grass', { loop: true, volume: 0.5 }),
-			this.add('footsteps-ground', { loop: true }),
+			this.add('footsteps-grass', { loop: true, volume: 1 }),
+			this.add('footsteps-ground', { loop: true, volume: 1 }),
 			this.add('fall'),
 			this.add('jump'),
 			this.add('pet-tp'),
 			this.add('win-laser'),
 		]);
+
+		// this.play('footsteps-grass', { volume: 0 });
+		// this.play('footsteps-ground', { volume: 0 });
 	}
 
 	async add(key, params = {}) {

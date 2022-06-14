@@ -669,6 +669,7 @@ class Player extends BaseEntity {
 			this.state.isMoving &&
 			// this.state.isOnGround &&
 			player.realSpeed > 1 &&
+			player.realSpeed < 10 &&
 			!this.state.hasJumped
 			// &&
 			// !this.state.isFalling
@@ -680,7 +681,7 @@ class Player extends BaseEntity {
 				signal.emit('sound:stop', 'footsteps-ground', { fadeDuration: 100 });
 			} else {
 				signal.emit('sound:play', 'footsteps-ground', {
-					rate: map(player.realSpeed, 0, 7, 0.5, 1),
+					rate: map(player.realSpeed, 0, 7, 0.7, 1.3),
 				});
 				signal.emit('sound:stop', 'footsteps-grass', { fadeDuration: 100 });
 			}
