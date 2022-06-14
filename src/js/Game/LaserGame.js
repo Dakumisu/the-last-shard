@@ -16,11 +16,10 @@ import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material
 export default class LaserGame {
 	static laserMaterialInner;
 	static laserMaterialOuter;
-	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 16, 1, true)
+	static laserGeometry = new CylinderGeometry(0.1, 0.1, 1, 8, 32, true)
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
 		.translate(0, 0, 0.5);
-	static sphereMaterial = new BaseBasicMaterial({ color: 0xffffff });
 	static sphereGeometry = new IcosahedronGeometry(0.2, 3);
 	/**
 	 *

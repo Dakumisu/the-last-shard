@@ -37,7 +37,6 @@ export default class SandboxScene extends BaseScene {
 		this.baseAmbient = new BaseAmbient({ color: '#fff', label: 'Ambient' });
 		this.directionalLight = new BaseDirectionalLight({
 			color: '#fff',
-			intensity: 5,
 			label: 'DirectionalLight',
 			minBox: this.minBox,
 			maxBox: this.maxBox,
@@ -104,7 +103,7 @@ export default class SandboxScene extends BaseScene {
 			scene: this,
 			params: {
 				// color: '#82ad46',
-				color: '#8277ff',
+				color: '#9b92ff',
 				color2: '#31d7ff',
 				count: 500,
 				halfBoxSize: 20,
@@ -129,7 +128,7 @@ export default class SandboxScene extends BaseScene {
 			params: {
 				// color: '#f0f0f0',
 				color: '#8277ff',
-				count: 2000,
+				count: 2500,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),

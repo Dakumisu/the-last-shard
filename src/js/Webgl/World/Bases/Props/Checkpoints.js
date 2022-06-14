@@ -3,6 +3,8 @@ import { Color, Mesh, SphereGeometry, Vector3 } from 'three';
 import signal from 'philbin-packages/signal';
 import { Quaternion } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
+import CheckpointMaterial from '@webgl/Materials/CheckpointMaterial/CheckpointMaterial';
+import anime from 'animejs';
 
 const radius = 2;
 const tVec3 = new Vector3();
@@ -22,6 +24,7 @@ export default class Checkpoints {
 		});
 
 		this.currentCheckpoint = this.list[0];
+		this.currentCheckpoint.material.uniforms.uTransition.value = 1;
 
 		this.isInside = false;
 		this.initialized = true;
@@ -36,7 +39,21 @@ export default class Checkpoints {
 
 				if (inRange && cp !== this.currentCheckpoint) {
 					this.isInside = true;
+					anime({
+						targets: this.currentCheckpoint.material.uniforms.uTransition,
+						value: 0,
+						duration: 500,
+						easing: 'easeInOutQuad',
+					});
+
 					this.currentCheckpoint = cp;
+
+					anime({
+						targets: this.currentCheckpoint.material.uniforms.uTransition,
+						value: 1,
+						duration: 500,
+						easing: 'easeInOutQuad',
+					});
 
 					/// #if DEBUG
 					console.log('👊 Checkpoint reached');
@@ -51,16 +68,22 @@ export default class Checkpoints {
 }
 
 class Checkpoint {
-	static geometry = new SphereGeometry(radius, 16, 16);
-	static material = new BaseBasicMaterial({ color: new Color('red'), wireframe: true });
+	static geometry = new SphereGeometry(1, 16, 16);
 	constructor({ pos, qt }) {
 		this.pos = pos;
 		this.qt = qt;
 
-		this.mesh = new Mesh(Checkpoint.geometry, Checkpoint.material);
+		this.material = new CheckpointMaterial({
+			uniforms: {
+				uColor1: { value: new Color(0x000000) },
+				uColor2: { value: new Color(0xffffff) },
+				uTransition: { value: 0 },
+			},
+			transparent: true,
+		});
+
+		this.mesh = new Mesh(Checkpoint.geometry, this.material);
 		this.mesh.position.copy(this.pos);
 		this.mesh.quaternion.copy(this.qt);
-
-		this.mesh.visible = false;
 	}
 }

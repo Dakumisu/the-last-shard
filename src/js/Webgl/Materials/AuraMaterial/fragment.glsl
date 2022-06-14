@@ -1,16 +1,20 @@
-uniform float uTimeIntensity;
-uniform sampler2D uTexture;
-
-varying float vNoise;
-varying vec2 vUv;
-varying vec3 vPos;
-varying vec3 vEye;
-
+uniform float uIntensity;
+uniform float uRadius;
 uniform vec3 diffuse;
+uniform vec3 uColor;
+
 uniform float opacity;
+uniform float b;
+uniform float p;
+uniform float s;
+
+varying vec3 vPos;
+
 #ifndef FLAT_SHADED
 varying vec3 vNormal;
 #endif
+varying vec3 vPositionNormal;
+
 #include <common>
 #include <dithering_pars_fragment>
 #include <color_pars_fragment>
@@ -51,53 +55,17 @@ void main() {
 	#include <envmap_fragment>
 	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
 
-// Global
-	float time = -uTime * uTimeIntensity;
-	float noiseFactor = 1.5;
-	float globalNoise = 0.7;
-
-  // Uv repeat with noise
-	vec2 uv = vUv;
-
-	uv += uv;
-
-	float noiseUvHigh = (cnoise(uv * noiseFactor + time));
-
-	uv = fract(uv + noiseUvHigh * globalNoise + time);
-
-  // Pos repeat with noise
-	vec3 pos = vPos;
-
-	pos.xz += uv;
-
-	float noisePosHigh = (cnoise(pos.xz * noiseFactor + time));
-
-	pos = fract(pos + noisePosHigh * globalNoise + time);
-
-  // Inner
-	vec3 innerColor = vec3(0.5, 0.5, 1.0);
-
-  // Outside
-	vec3 outsideColor = vec3(1.0, 0.5, 1.0);
-
-  // Fresnel
-	float a = (1.0 - -min(dot(vEye, normalize(vNormal)), 0.0));
-	a += pow(a, 10.);
-
-  // Alpha
-	float aStart = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, uv.x);
-	float aEnd = 1.0 - smoothstep(noisePosHigh * noiseUvHigh, 1.0, 1.0 - uv.x);
-	float aMix = aStart * aEnd;
-	float smoothUvStart = 1.0 - smoothstep(0., 1.0, vUv.y);
-	float smoothUvEnd = 1.0 - smoothstep(0., 1.0, 1.0 - vUv.y);
-	float smoothUvEdges = smoothUvStart * smoothUvEnd;
-
-	gl_FragColor.xyz *= vec3(outsideColor + noisePosHigh + noiseUvHigh);
-	gl_FragColor.a *= (smoothUvEdges / a);
+  	// Fresnel
+	float a = (1.0 - -min(dot(vPositionNormal, normalize(vNormal)), 0.0));
+	float test = pow(b + s * abs(dot(vNormal, vPositionNormal)), p);
 
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
+
+	gl_FragColor.a *= pow(uRadius, a) * uIntensity;
+	gl_FragColor.rgb *= pow(uRadius, a) * uColor;
+
 }

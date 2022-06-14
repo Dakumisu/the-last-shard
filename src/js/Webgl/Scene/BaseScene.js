@@ -207,6 +207,10 @@ export default class BaseScene {
 		await this.loadSounds();
 		this.setTerrainSplattingData();
 		await loadTexture('asset_gradient');
+		await loadTexture('grassPattern');
+		await loadTexture('grassDiffuse');
+		await loadTexture('grassAlpha');
+		await loadTexture('noiseTexture');
 	}
 
 	async init() {

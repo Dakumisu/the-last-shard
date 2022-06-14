@@ -1,5 +1,4 @@
 #pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d')
-#pragma glslify: smoothNoise = require('philbin-packages/glsl/noises/smooth/2d')
 #pragma glslify: map = require('philbin-packages/glsl/maths/map')
 
 uniform float uTime;
@@ -10,6 +9,7 @@ uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
 uniform sampler2D uElevationTexture;
 uniform sampler2D uGrassTexture;
+uniform sampler2D uNoiseTexture;
 uniform vec3 uMaxMapBounds;
 uniform vec3 uMinMapBounds;
 
@@ -52,6 +52,12 @@ void main() {
 	vUv = uv;
 	vNormal = normalize(normalMatrix * normal);
 
+	float heightNoise = texture2D(uNoiseTexture, scaledCoords).r * 10.;
+	float heightNoiseSmall = texture2D(uNoiseTexture, translation.xz).r * 5.;
+	pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
+
+	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time * 1.5);
+
 	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	pos *= scaleFromTexture;
@@ -70,12 +76,6 @@ void main() {
 	translation.x -= trailIntensity * trailDirection.x * 0.25;
 	pos.y *= 1. - trailIntensity;
 	translation.z -= trailIntensity * trailDirection.y * 0.25;
-
-	// float heightNoise = cnoise(translation.xz * 0.4);
-	// float heightNoiseSmall = cnoise(translation.xz * 0.2);
-	// translation.y += (abs(heightNoise) + abs(heightNoiseSmall)) * 0.25;
-
-	vNoiseMouvement = cnoise(translation.xz * uNoiseMouvementIntensity + time * 1.5);
 
 	if(instancedPos.y > 0.) {
 		translation.xz += vNoiseMouvement * uDisplacement;

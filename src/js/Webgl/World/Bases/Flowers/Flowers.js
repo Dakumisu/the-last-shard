@@ -37,7 +37,6 @@ export default class Flowers {
 	 */
 
 	constructor(scene, params = {}) {
-		console.log(scene);
 		this.scene = scene;
 		this.params = params;
 

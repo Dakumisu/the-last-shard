@@ -72,7 +72,7 @@ export default class BaseFog {
 		this.scene.background = this.params.background;
 
 		/// #if DEBUG
-		// this.devtools();
+		this.devtools();
 		/// #endif
 	}
 

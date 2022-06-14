@@ -19,6 +19,8 @@ import {
 	MeshNormalMaterial,
 	sRGBEncoding,
 	Euler,
+	CylinderBufferGeometry,
+	AdditiveBlending,
 } from 'three';
 import { MeshBVH } from 'three-mesh-bvh';
 
@@ -31,6 +33,7 @@ import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
+import AuraMaterial from '@webgl/Materials/AuraMaterial/AuraMaterial';
 import AnimationController from '@webgl/Animation/Controller';
 import BaseEntity from '../Bases/BaseEntity';
 import { wait } from 'philbin-packages/async';
@@ -328,7 +331,8 @@ class Player extends BaseEntity {
 	}
 
 	async setBodyMesh() {
-		this.base.geometry = new CapsuleGeometry(0.5, 0.5, 10, 20);
+		this.base.geometry = new CapsuleGeometry(0.5, 0.5, 8, 64);
+		this.base.auraGeom = this.base.geometry.clone();
 		this.base.geometry.translate(0, -0.75, 0);
 
 		this.base.capsuleInfo = {
@@ -345,9 +349,23 @@ class Player extends BaseEntity {
 
 		this.base.material = new PlayerMaterial({
 			map: texture,
+			uniforms: {
+				uColor: { value: new Color(0xffffff) },
+			},
 		});
 
-		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		this.base.auraMaterial = new AuraMaterial({
+			transparent: true,
+			blending: AdditiveBlending,
+			depthWrite: false,
+			uniforms: {
+				uColor: { value: new Color(0x31d7ff) },
+				uIntensity: { value: 0.4 },
+				uRadius: { value: 0.005 },
+			},
+		});
+
+		this.base.mesh = new Mesh(this.base.geometry);
 		this.base.mesh.visible = false;
 
 		this.scene.add(this.base.mesh);
@@ -369,7 +387,11 @@ class Player extends BaseEntity {
 		this.base.model.scene.rotateY(PI);
 		this.base.model.scene.translateOnAxis(params.upVector, -0.9);
 
-		this.base.group.add(this.base.model.scene);
+		this.base.auraGeom.translate(0, -0.25, 0);
+		this.base.auraGeom.scale(2.5, 2.5, 2.5);
+		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
+
+		this.base.group.add(this.base.model.scene, this.base.auraMesh);
 		this.scene.add(this.base.group);
 	}
 

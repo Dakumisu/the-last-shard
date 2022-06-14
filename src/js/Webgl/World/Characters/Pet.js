@@ -1,4 +1,6 @@
 import {
+	AdditiveBlending,
+	Color,
 	Euler,
 	Group,
 	IcosahedronGeometry,
@@ -16,6 +18,7 @@ import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
 import AnimationController from '@webgl/Animation/Controller';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
+import AuraMaterial from '@webgl/Materials/AuraMaterial/AuraMaterial';
 import { getWebgl } from '@webgl/Webgl';
 import BaseEntity from '../Bases/BaseEntity';
 import { getPlayer } from './Player';
@@ -111,14 +114,26 @@ export class Pet extends BaseEntity {
 			if (child.isMesh) child.material = this.base.material;
 		});
 
-		this.base.model = m;
-		this.base.model.scene.rotateY(PI);
-		this.base.group.add(this.base.model.scene);
+		this.base.auraMaterial = new AuraMaterial({
+			transparent: true,
+			blending: AdditiveBlending,
+			depthWrite: false,
+			uniforms: {
+				uColor: { value: new Color(0xc1f376) },
+				uIntensity: { value: 0.4 },
+				uRadius: { value: 0.005 },
+			},
+		});
+
+		this.base.auraGeom = new IcosahedronGeometry(0.75, 3);
+
+		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
 
 		this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
 
-		this.base.geometry = new IcosahedronGeometry(0.1, 3);
-		this.base.mesh = new Mesh(this.base.geometry);
+		this.base.model = m;
+		this.base.model.scene.rotateY(PI);
+		this.base.group.add(this.base.model.scene, this.base.auraMesh);
 
 		this.initPhysics();
 
