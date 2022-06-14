@@ -1,7 +1,6 @@
 import signal from 'philbin-packages/signal';
 
 import Device from '@tools/Device';
-import Keyboard from '@tools/Keyboard';
 import Mouse from '@tools/Mouse';
 import PerformanceMonitor from '@tools/PerformanceMonitor';
 import Raf from '@tools/Raf';
@@ -10,8 +9,6 @@ import Size from '@tools/Size';
 
 import CameraController from './Camera/Controller';
 import MainCamera from './Camera/Cameras/MainCamera';
-
-import SoundController from '@js/Sound/Controller';
 
 import Renderer from './Renderer';
 import MainScene from './Scene/MainScene';
@@ -55,7 +52,7 @@ class Webgl {
 		this.init();
 	}
 
-	async init() {
+	init() {
 		this.cameraController = new CameraController();
 		this.camera = new MainCamera();
 
@@ -135,8 +132,6 @@ class Webgl {
 		if (this.world) this.world.update(this.raf.elapsed, this.raf.delta);
 		if (this.renderer) this.renderer.render();
 		if (this.camera) this.camera.update(this.raf.elapsed, this.raf.delta);
-
-		if (this.soundController) this.soundController.update();
 	}
 
 	resize() {
@@ -144,6 +139,7 @@ class Webgl {
 
 		if (this.renderer) this.renderer.resize();
 		if (this.camera) this.camera.resize();
+		if (this.cameraController) this.cameraController.resize();
 		if (this.world) this.world.resize();
 		if (this.device) this.device.resize();
 	}

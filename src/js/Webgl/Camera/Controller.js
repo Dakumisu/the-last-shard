@@ -104,4 +104,8 @@ export default class CameraController {
 			/// #endif
 		}
 	}
+
+	resize() {
+		this.currentCamera?.resize();
+	}
 }

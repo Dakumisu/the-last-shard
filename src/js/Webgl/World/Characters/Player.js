@@ -36,7 +36,7 @@ import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
 import AuraMaterial from '@webgl/Materials/AuraMaterial/AuraMaterial';
 import AnimationController from '@webgl/Animation/Controller';
 import BaseEntity from '../Bases/BaseEntity';
-import { wait } from 'philbin-packages/async';
+import { deferredPromise, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 
 const model = '/assets/model/player.glb';
@@ -162,6 +162,7 @@ class Player extends BaseEntity {
 		debug.instance = webgl.debug;
 		/// #endif
 
+		this.isLoaded = deferredPromise();
 		this.beforeInit();
 	}
 
@@ -289,7 +290,7 @@ class Player extends BaseEntity {
 
 	async init() {
 		this.setCameraPlayer();
-		this.setBodyMesh();
+		await this.setBodyMesh();
 
 		this.initPhysics({
 			lazyGeneration: false,
@@ -298,6 +299,8 @@ class Player extends BaseEntity {
 		await this.setModel();
 		this.setAnimation();
 		this.listeners();
+
+		this.isLoaded.resolve();
 
 		initialized = true;
 	}
@@ -775,10 +778,12 @@ class Player extends BaseEntity {
 
 /**
  *
- * @returns {Player}
+ * @returns {Promise<Player>}
  */
-const initPlayer = () => {
-	return new Player();
+const initPlayer = async () => {
+	const player = new Player();
+	await player.isLoaded;
+	return player;
 };
 
 /**

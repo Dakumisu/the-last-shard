@@ -19,6 +19,7 @@ import { initPet } from './Characters/Pet.js';
 import SoundController from '@js/Sound/Controller.js';
 import DialogCamera from '@webgl/Camera/Cameras/DialogCamera.js';
 import Dialog from '@game/Dialog.js';
+import { loadTexture } from '@utils/loaders/loadAssets.js';
 
 let initialized = false;
 export default class World {
@@ -51,13 +52,20 @@ export default class World {
 	/// #endif
 
 	async init() {
-		this.player = initPlayer();
-		this.pet = initPet();
+		await Promise.all([
+			loadTexture('grassPattern'),
+			loadTexture('grassDiffuse'),
+			loadTexture('grassAlpha'),
+			loadTexture('noiseTexture'),
+			loadTexture('asset_gradient'),
+		]);
+		this.player = await initPlayer();
+		this.pet = await initPet();
 		this.dialog = new Dialog();
 		this.dialogCamera = new DialogCamera();
 
 		this.soundController = new SoundController();
-		await this.soundController.isLoaded;
+		await this.soundController.init();
 
 		await this.getScenes();
 		await this.initScenes();

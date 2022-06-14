@@ -203,16 +203,11 @@ export default class BaseScene {
 		console.log('🔋 Preloading Scene :', this.label);
 		console.log(`🔋 Manifest of ${this.label}`);
 		/// #endif
+
+		await this.soundController.addAmbient(this.label);
+
 		await this.loadTerrainSplatting();
-		await this.loadSounds();
 		this.setTerrainSplattingData();
-		await Promise.all([
-			loadTexture('asset_gradient'),
-			loadTexture('grassPattern'),
-			loadTexture('grassDiffuse'),
-			loadTexture('grassAlpha'),
-			loadTexture('noiseTexture'),
-		]);
 	}
 
 	async init() {
@@ -231,10 +226,6 @@ export default class BaseScene {
 		const terrain = await loadTexture(path);
 
 		this.terrainSplatting = terrain;
-	}
-
-	async loadSounds() {
-		await this.soundController.addAmbient(this.label);
 	}
 
 	async loadManifest() {
@@ -550,7 +541,7 @@ export default class BaseScene {
 	}
 
 	update(et, dt) {
-		if (!this.initialized) return;
+		if (!this.isInitialized) return;
 
 		if (this.directionalLight && !this.shadowsBaked && et - this.currentTime > bakeDuration)
 			this.traverseForShadows();
