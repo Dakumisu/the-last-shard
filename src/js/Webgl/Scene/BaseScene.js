@@ -51,10 +51,14 @@ import { loadAudio, loadTexture } from '@utils/loaders';
 import { store } from '@tools/Store';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
+const bakeDuration = 2000;
 
 export default class BaseScene {
 	constructor({ label, manifest }) {
 		const webgl = getWebgl();
+
+		this.mainScene = webgl.mainScene.instance;
+		this.raf = webgl.raf;
 
 		this.label = label;
 		this.player = getPlayer();
@@ -71,6 +75,10 @@ export default class BaseScene {
 		this.areas = null;
 		this.portals = [];
 		this.grass = null;
+		this.lights = new Group();
+		this.baseAmbient = this.directionalLight = null;
+		this.shadowsBaked = false;
+		this.instance.add(this.lights);
 
 		this.isPreloaded = deferredPromise();
 		this.manifestLoaded = deferredPromise();
@@ -198,6 +206,10 @@ export default class BaseScene {
 		await this.loadSounds();
 		this.setTerrainSplattingData();
 		await loadTexture('asset_gradient');
+		await loadTexture('grassPattern');
+		await loadTexture('grassDiffuse');
+		await loadTexture('grassAlpha');
+		await loadTexture('noiseTexture');
 	}
 
 	async init() {
@@ -205,6 +217,8 @@ export default class BaseScene {
 		await this.manifestLoaded;
 
 		this.setRenderTarget();
+
+		this.currentTime = this.raf.elapsed;
 
 		console.log('🔋 Scene initialized :', this.label);
 	}
@@ -435,8 +449,8 @@ export default class BaseScene {
 		this.minBox.copy(boundingBox.min);
 		this.maxBox.copy(boundingBox.max);
 
-		const center = new Vector3();
-		boundingBox.getCenter(center);
+		this.boxCenter = new Vector3();
+		boundingBox.getCenter(this.boxCenter);
 
 		const camNear = 1;
 		const camWidth = this.maxBox.x + Math.abs(this.minBox.x);
@@ -451,7 +465,7 @@ export default class BaseScene {
 			this.maxBox.y + Math.abs(this.minBox.y) + camNear,
 		);
 
-		this.rtCamera.position.set(center.x, this.maxBox.y + camNear, center.z);
+		this.rtCamera.position.set(this.boxCenter.x, this.maxBox.y + camNear, this.boxCenter.z);
 
 		this.rtCamera.rotation.x = -Math.PI * 0.5;
 
@@ -519,8 +533,24 @@ export default class BaseScene {
 		/// #endif
 	}
 
+	traverseForShadows() {
+		// this.mainScene.traverse((child) => {
+		// 	if (child.isMesh && child.name !== 'player') {
+		// 		console.log(child.name);
+		// 		child.castShadow = false;
+		// 		// child.receiveShadow = false;
+		// 	}
+		// });
+		this.directionalLight.light.shadow.autoUpdate = false;
+		this.shadowsBaked = true;
+	}
+
 	update(et, dt) {
 		if (!this.initialized) return;
+
+		if (this.directionalLight && !this.shadowsBaked && et - this.currentTime > bakeDuration) {
+			this.traverseForShadows();
+		}
 
 		if (this.portals)
 			this.portals.forEach((portal) => portal.update(this.player.getPosition()));
@@ -531,7 +561,6 @@ export default class BaseScene {
 			this.interactablesBroadphase.update(this.player.getPosition());
 		if (this.collidersBroadphase) this.collidersBroadphase.update(this.player.getPosition());
 
-		// vec2 scaledCoords = vec2(map(uCharaPos.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(uCharaPos.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
 		const playerXTexture = map(
 			this.player.base.mesh.position.x,
 			this.minBox.x,

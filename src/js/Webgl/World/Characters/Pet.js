@@ -14,7 +14,7 @@ import signal from 'philbin-packages/signal';
 import { wait } from 'philbin-packages/async';
 import { dampPrecise } from 'philbin-packages/maths';
 
-import { loadModel } from '@utils/loaders/loadAssets';
+import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
 import { loadDynamicGLTF as loadGLTF } from '@utils/loaders';
 import AnimationController from '@webgl/Animation/Controller';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
@@ -27,7 +27,7 @@ import { getPlayer } from './Player';
 const debug = {
 	instance: null,
 	label: 'Pet',
-	tab: 'Player',
+	tab: 'Entity',
 };
 /// #endif
 
@@ -42,16 +42,16 @@ const params = {
 };
 
 const pet = {
-	anim: null,
+	anim: 'idle',
 };
 
 const TMP_PLAYER_POS = new Vector3();
 const TARGET_POS = new Vector3();
 const TMP_DIR = new Vector3();
 const OFFSET = new Vector3();
+const UP_VECTOR = new Vector3(0, 1, 0);
 
 let previousAnim = null;
-let isTeleporting = false;
 
 export class Pet extends BaseEntity {
 	static STATES = {
@@ -77,17 +77,19 @@ export class Pet extends BaseEntity {
 		this.isTooFar = false;
 		this.isFeeding = false;
 		this.speed = 1;
+		this.isTeleporting = false;
 
 		this.base.group = new Group();
-
-		/// #if DEBUG
-		debug.instance = webgl.debug;
-		/// #endif
 
 		this.initialized = false;
 
 		this.listeners();
 		this.init();
+
+		/// #if DEBUG
+		debug.instance = webgl.debug;
+		this.devtools();
+		/// #endif
 	}
 
 	/// #if DEBUG
@@ -97,12 +99,15 @@ export class Pet extends BaseEntity {
 
 		gui.addInput(this, 'speed');
 
-		this.initPhysicsVisualizer();
+		// this.initPhysicsVisualizer();
 	}
 	/// #endif
 
 	async init() {
-		this.base.material = new BaseBasicMaterial({ color: '#C1C2FF' });
+		const texture = await loadTexture('petTexture');
+		texture.flipY = false;
+
+		this.base.material = new BaseBasicMaterial({ map: texture });
 
 		const m = await loadGLTF(model);
 		m.scene.traverse((child) => {
@@ -124,7 +129,7 @@ export class Pet extends BaseEntity {
 
 		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
 
-		// this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
+		this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);
@@ -142,14 +147,11 @@ export class Pet extends BaseEntity {
 		this.scene.add(this.base.group);
 
 		this.initialized = true;
-
-		/// #if DEBUG
-		this.devtools();
-		/// #endif
 	}
 
 	listeners() {
 		signal.on('dialog:start', () => {
+			if (this.isTooFar) this.speak().teleport(true);
 			this.state = Pet.STATES.SPEAKING;
 		});
 		signal.on('dialog:complete', () => {
@@ -163,10 +165,8 @@ export class Pet extends BaseEntity {
 		const d = this.getDistanceToPlayer();
 		this.isTooFar = d >= 10;
 
-		if (this.isTooFar && !isTeleporting && this.state !== Pet.STATES.FEEDING) {
-			isTeleporting = true;
+		if (this.isTooFar && this.state !== Pet.STATES.FEEDING) {
 			await this.teleport();
-			isTeleporting = false;
 		}
 
 		if (this.isTooFar) return;
@@ -188,11 +188,11 @@ export class Pet extends BaseEntity {
 				break;
 		}
 
-		// this.base.animation.update(et, dt)
-		// if (previousAnim != pet.anim) {
-		// 	previousAnim = pet.anim;
-		// 	this.base.animation.switch(pet.anim)
-		// }
+		if (previousAnim != pet.anim) {
+			previousAnim = pet.anim;
+			this.base.animation.switch(pet.anim);
+		}
+		this.base.animation.update(dt);
 	}
 
 	updateState(force) {
@@ -231,7 +231,7 @@ export class Pet extends BaseEntity {
 
 		TARGET_POS.copy(playerPos).add(OFFSET);
 
-		// pet.anim = this.base.animation.get('idle')
+		pet.anim = this.base.animation.get('idle');
 
 		return this;
 	}
@@ -251,10 +251,13 @@ export class Pet extends BaseEntity {
 		this.player.getDirection(TMP_DIR);
 		TMP_DIR.negate();
 
-		TARGET_POS.copy(playerPos).add(TMP_DIR).addScalar(0.5);
-		this.focusPos.copy(TARGET_POS);
+		const playerQt = this.player.getQuaternion();
+		OFFSET.set(-1, 0, 0).applyQuaternion(playerQt);
 
-		// pet.anim = this.base.animation.get('speak')
+		TARGET_POS.copy(playerPos).add(TMP_DIR).add(OFFSET);
+		this.focusPos.copy(TARGET_POS).addScaledVector(UP_VECTOR, 0.5);
+
+		pet.anim = this.base.animation.get('speak');
 
 		return this;
 	}
@@ -271,8 +274,11 @@ export class Pet extends BaseEntity {
 		return this;
 	}
 
-	async teleport() {
-		await this.hide();
+	async teleport(force = false) {
+		if (this.isTeleporting) return;
+		this.isTeleporting = true;
+
+		if (!force) await this.hide();
 
 		const playerPos = this.player.getPosition();
 		const playerQt = this.player.getQuaternion();
@@ -285,15 +291,9 @@ export class Pet extends BaseEntity {
 
 		await this.show();
 
+		this.isTeleporting = false;
+
 		return this;
-	}
-
-	getPosition() {
-		return this.base.group.position;
-	}
-
-	getFocusPosition() {
-		return this.focusPos;
 	}
 
 	feedOn(target = null) {
@@ -312,6 +312,14 @@ export class Pet extends BaseEntity {
 	feedOff() {
 		this.state = Pet.STATES.FOLLOW;
 		this.isFeeding = false;
+	}
+
+	getPosition() {
+		return this.base.group.position;
+	}
+
+	getFocusPosition() {
+		return this.focusPos;
 	}
 
 	dampPosition(dt, factor) {

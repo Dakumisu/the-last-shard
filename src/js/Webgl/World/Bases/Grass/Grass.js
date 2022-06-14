@@ -15,6 +15,7 @@ import {
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
+	MirroredRepeatWrapping,
 	PlaneBufferGeometry,
 	Texture,
 } from 'three';
@@ -24,6 +25,7 @@ import GrassMaterial from '@webgl/Materials/Grass/GrassMaterial';
 import signal from 'philbin-packages/signal';
 import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
+import { loadTexture } from '@utils/loaders';
 
 const twigsCountList = [0, 0, 300000, 300000, 300000, 400000];
 
@@ -164,6 +166,9 @@ export default class Grass {
 	}
 
 	setGrass() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
+
 		this.base.material = new GrassMaterial({
 			side: DoubleSide,
 			uniforms: {
@@ -180,13 +185,15 @@ export default class Grass {
 				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
-				uGrass: { value: this.params.grass },
-				uDiffuse: { value: this.params.diffuse },
-				uAlpha: { value: this.params.alpha },
+				uGrass: { value: store.loadedAssets.textures.get('grassPattern') },
+				uDiffuse: { value: store.loadedAssets.textures.get('grassDiffuse') },
+				uAlpha: { value: store.loadedAssets.textures.get('grassAlpha') },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 
 		this.base.mesh = new Mesh(this.base.geometry, this.base.material);
+		this.base.mesh.receiveShadow = true;
 		// this.base.mesh.position.y = -0.2;
 		// this.base.mesh.renderOrder = 100;
 		this.base.mesh.frustumCulled = false;

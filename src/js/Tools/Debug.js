@@ -8,7 +8,7 @@ import signal from 'philbin-packages/signal';
 import { Color } from 'three';
 /// #endif
 
-let tabList = ['General', 'Player', 'Scene', 'Env', 'Stats'];
+let tabList = ['General', 'Entity', 'Scene', 'Env', 'Stats'];
 
 export default class Debug {
 	constructor() {

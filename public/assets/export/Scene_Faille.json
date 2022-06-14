@@ -3,12 +3,12 @@
   "bounds": [
     [
       -45.579338,
-      -49.856598,
+      -49.856594,
       -42.681549
     ],
     [
       62.092789,
-      24.98205,
+      24.982052,
       77.851616
     ]
   ],
@@ -32,7 +32,7 @@
   "props": [
     {
       "asset": "LevelDoorArch",
-      "uid": "LevelDoorArch.027",
+      "uid": "LevelDoorArch.013",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -40,7 +40,7 @@
       "transforms": {
         "pos": [
           -4.35603,
-          32.320415,
+          21.67721,
           -19.192507
         ],
         "scale": [
@@ -58,7 +58,7 @@
     },
     {
       "asset": "Portal",
-      "uid": "Portal.027",
+      "uid": "Portal.013",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -67,9 +67,9 @@
       },
       "transforms": {
         "pos": [
-          -29.656569,
-          52.555298,
-          -8.227497
+          -29.818718,
+          41.917198,
+          -7.197025
         ],
         "scale": [
           1.0,
@@ -78,15 +78,15 @@
         ],
         "qt": [
           0.0,
-          0.380469,
+          0.372076,
           -0.0,
-          0.924794
+          0.928202
         ]
       }
     },
     {
       "asset": "BigFloatingPlatformA",
-      "uid": "BigFloatingPlatformA.041",
+      "uid": "BigFloatingPlatformA.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -94,7 +94,7 @@
       "transforms": {
         "pos": [
           -10.556641,
-          38.776402,
+          28.133196,
           17.97868
         ],
         "scale": [
@@ -112,7 +112,7 @@
     },
     {
       "asset": "BigFloatingPlatformA",
-      "uid": "BigFloatingPlatformA.042",
+      "uid": "BigFloatingPlatformA.038",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -120,7 +120,7 @@
       "transforms": {
         "pos": [
           5.030655,
-          33.075287,
+          22.432081,
           -3.334498
         ],
         "scale": [
@@ -138,7 +138,7 @@
     },
     {
       "asset": "BigFloatingPlatformA",
-      "uid": "BigFloatingPlatformA.043",
+      "uid": "BigFloatingPlatformA.039",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -146,7 +146,7 @@
       "transforms": {
         "pos": [
           17.542847,
-          37.381313,
+          26.738108,
           -9.696644
         ],
         "scale": [
@@ -164,7 +164,7 @@
     },
     {
       "asset": "BigFloatingPlatformB",
-      "uid": "BigFloatingPlatformB.041",
+      "uid": "BigFloatingPlatformB.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -172,7 +172,7 @@
       "transforms": {
         "pos": [
           3.228043,
-          20.419384,
+          9.776178,
           16.494181
         ],
         "scale": [
@@ -190,7 +190,7 @@
     },
     {
       "asset": "BigFloatingPlatformB",
-      "uid": "BigFloatingPlatformB.042",
+      "uid": "BigFloatingPlatformB.038",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -198,7 +198,7 @@
       "transforms": {
         "pos": [
           3.227997,
-          38.770706,
+          28.127501,
           26.249466
         ],
         "scale": [
@@ -216,16 +216,16 @@
     },
     {
       "asset": "BigFloatingPlatformB",
-      "uid": "BigFloatingPlatformB.043",
+      "uid": "BigFloatingPlatformB.039",
       "type": "collider",
       "traversable": false,
       "movable": false,
       "params": {},
       "transforms": {
         "pos": [
-          5.221533,
-          33.079144,
-          -18.421938
+          3.97919,
+          22.435938,
+          -19.808918
         ],
         "scale": [
           1.0,
@@ -242,7 +242,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.201",
+      "uid": "JumpPillar.117",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -250,7 +250,7 @@
       "transforms": {
         "pos": [
           9.053024,
-          9.209679,
+          -1.433527,
           28.741892
         ],
         "scale": [
@@ -268,7 +268,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.202",
+      "uid": "JumpPillar.118",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -276,7 +276,7 @@
       "transforms": {
         "pos": [
           6.514633,
-          9.567659,
+          -1.075544,
           26.384165
         ],
         "scale": [
@@ -294,7 +294,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.203",
+      "uid": "JumpPillar.119",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -302,7 +302,7 @@
       "transforms": {
         "pos": [
           4.085876,
-          10.076996,
+          -0.56621,
           24.950382
         ],
         "scale": [
@@ -320,7 +320,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.204",
+      "uid": "JumpPillar.120",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -328,7 +328,7 @@
       "transforms": {
         "pos": [
           1.438339,
-          10.689039,
+          0.045835,
           24.414797
         ],
         "scale": [
@@ -346,7 +346,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.205",
+      "uid": "JumpPillar.121",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -354,7 +354,7 @@
       "transforms": {
         "pos": [
           -8.541321,
-          11.983301,
+          1.340097,
           25.844549
         ],
         "scale": [
@@ -372,7 +372,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.206",
+      "uid": "JumpPillar.122",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -380,7 +380,7 @@
       "transforms": {
         "pos": [
           -4.744049,
-          12.636221,
+          1.993017,
           25.616966
         ],
         "scale": [
@@ -398,7 +398,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.207",
+      "uid": "JumpPillar.123",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -406,7 +406,7 @@
       "transforms": {
         "pos": [
           -1.82547,
-          12.02944,
+          1.386236,
           25.877037
         ],
         "scale": [
@@ -424,7 +424,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.208",
+      "uid": "JumpPillar.124",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -432,7 +432,7 @@
       "transforms": {
         "pos": [
           -5.808121,
-          13.251026,
+          2.607821,
           15.146535
         ],
         "scale": [
@@ -450,7 +450,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.209",
+      "uid": "JumpPillar.125",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -458,7 +458,7 @@
       "transforms": {
         "pos": [
           12.195908,
-          16.248554,
+          5.605349,
           10.039007
         ],
         "scale": [
@@ -476,7 +476,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.043",
+      "uid": "LittleFloatingPlatformA.073",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -484,7 +484,7 @@
       "transforms": {
         "pos": [
           12.334717,
-          37.394306,
+          26.751101,
           34.442219
         ],
         "scale": [
@@ -502,7 +502,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.044",
+      "uid": "LittleFloatingPlatformA.074",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -510,7 +510,7 @@
       "transforms": {
         "pos": [
           9.832809,
-          38.244423,
+          27.601217,
           27.285429
         ],
         "scale": [
@@ -528,7 +528,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.045",
+      "uid": "LittleFloatingPlatformA.075",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -536,7 +536,7 @@
       "transforms": {
         "pos": [
           -2.19101,
-          20.721848,
+          10.078642,
           17.828444
         ],
         "scale": [
@@ -554,7 +554,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.046",
+      "uid": "LittleFloatingPlatformA.076",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -562,7 +562,7 @@
       "transforms": {
         "pos": [
           0.803991,
-          23.91194,
+          13.268736,
           4.571984
         ],
         "scale": [
@@ -580,16 +580,16 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.047",
+      "uid": "LittleFloatingPlatformA.077",
       "type": "collider",
       "traversable": false,
       "movable": false,
       "params": {},
       "transforms": {
         "pos": [
-          4.94957,
-          35.120834,
-          -11.404379
+          5.013324,
+          24.477629,
+          -12.483169
         ],
         "scale": [
           0.99999988,
@@ -598,15 +598,15 @@
         ],
         "qt": [
           0.0,
-          0.318229,
+          0.078205,
           -0.0,
-          0.948014
+          0.996937
         ]
       }
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.048",
+      "uid": "LittleFloatingPlatformA.078",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -614,7 +614,7 @@
       "transforms": {
         "pos": [
           8.268433,
-          36.389221,
+          25.746016,
           -10.197522
         ],
         "scale": [
@@ -632,7 +632,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.033",
+      "uid": "LittleFloatingPlatformB.061",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -640,7 +640,7 @@
       "transforms": {
         "pos": [
           9.882126,
-          38.046356,
+          27.403151,
           31.863848
         ],
         "scale": [
@@ -658,7 +658,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.034",
+      "uid": "LittleFloatingPlatformB.062",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -666,7 +666,7 @@
       "transforms": {
         "pos": [
           -4.168915,
-          38.21571,
+          27.572504,
           19.068827
         ],
         "scale": [
@@ -684,7 +684,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.035",
+      "uid": "LittleFloatingPlatformB.063",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -692,7 +692,7 @@
       "transforms": {
         "pos": [
           1.630707,
-          34.138218,
+          23.495012,
           -10.867998
         ],
         "scale": [
@@ -710,7 +710,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.036",
+      "uid": "LittleFloatingPlatformB.064",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -718,7 +718,7 @@
       "transforms": {
         "pos": [
           10.950333,
-          37.282562,
+          26.639357,
           -8.823046
         ],
         "scale": [
@@ -736,7 +736,7 @@
     },
     {
       "asset": "LittleFloatingPlatformC",
-      "uid": "LittleFloatingPlatformC.019",
+      "uid": "LittleFloatingPlatformC.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -744,7 +744,7 @@
       "transforms": {
         "pos": [
           -2.19101,
-          38.209534,
+          27.566328,
           23.628067
         ],
         "scale": [
@@ -762,7 +762,7 @@
     },
     {
       "asset": "LittleFloatingPlatformC",
-      "uid": "LittleFloatingPlatformC.020",
+      "uid": "LittleFloatingPlatformC.038",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -770,7 +770,7 @@
       "transforms": {
         "pos": [
           0.021576,
-          33.411583,
+          22.768377,
           -6.308749
         ],
         "scale": [
@@ -788,7 +788,7 @@
     },
     {
       "asset": "StoneStairsA",
-      "uid": "StoneStairsA.022",
+      "uid": "StoneStairsA.037",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -796,8 +796,8 @@
       "transforms": {
         "pos": [
           -10.621657,
-          27.647892,
-          -5.645376
+          17.004686,
+          -5.309548
         ],
         "scale": [
           0.99999994,
@@ -814,7 +814,7 @@
     },
     {
       "asset": "StoneStairsA",
-      "uid": "StoneStairsA.023",
+      "uid": "StoneStairsA.038",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -822,7 +822,7 @@
       "transforms": {
         "pos": [
           -7.787907,
-          32.342743,
+          21.699537,
           -19.453896
         ],
         "scale": [
@@ -840,7 +840,7 @@
     },
     {
       "asset": "StoneStairsA",
-      "uid": "StoneStairsA.024",
+      "uid": "StoneStairsA.039",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -848,7 +848,7 @@
       "transforms": {
         "pos": [
           -11.50242,
-          36.648708,
+          26.005503,
           -19.719536
         ],
         "scale": [
@@ -865,34 +865,8 @@
       }
     },
     {
-      "asset": "JumpPillar",
-      "uid": "JumpPillar.210",
-      "type": "collider",
-      "traversable": false,
-      "movable": false,
-      "params": {},
-      "transforms": {
-        "pos": [
-          9.181688,
-          15.372335,
-          13.510368
-        ],
-        "scale": [
-          0.76209378,
-          0.88905299,
-          0.76209378
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.037",
+      "uid": "LittleFloatingPlatformB.065",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -900,7 +874,7 @@
       "transforms": {
         "pos": [
           -1.855474,
-          26.855894,
+          16.21269,
           -2.575341
         ],
         "scale": [
@@ -918,7 +892,7 @@
     },
     {
       "asset": "LittleFloatingPlatformC",
-      "uid": "LittleFloatingPlatformC.021",
+      "uid": "LittleFloatingPlatformC.039",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -926,7 +900,7 @@
       "transforms": {
         "pos": [
           0.163549,
-          25.363113,
+          14.719908,
           -0.259254
         ],
         "scale": [
@@ -944,7 +918,7 @@
     },
     {
       "asset": "BigMountain",
-      "uid": "BigMountain.003",
+      "uid": "BigMountain.013",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -952,7 +926,7 @@
       "transforms": {
         "pos": [
           5.152042,
-          39.207226,
+          28.56402,
           -5.751382
         ],
         "scale": [
@@ -970,7 +944,7 @@
     },
     {
       "asset": "LevelDoor",
-      "uid": "LevelDoor.027",
+      "uid": "LevelDoor.013",
       "type": "collider",
       "traversable": false,
       "movable": true,
@@ -980,7 +954,7 @@
       "transforms": {
         "pos": [
           -4.447297,
-          32.161228,
+          21.518023,
           -19.202522
         ],
         "scale": [
@@ -1000,7 +974,7 @@
   "interactables": [
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.027",
+      "uid": "LaserTowerEnd.013",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1010,7 +984,7 @@
       "transforms": {
         "pos": [
           -2.750112,
-          43.137531,
+          32.494324,
           -22.554237
         ],
         "scale": [
@@ -1028,7 +1002,7 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.027",
+      "uid": "LaserTowerStart.013",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1039,7 +1013,7 @@
       "transforms": {
         "pos": [
           16.671337,
-          38.69207,
+          28.048864,
           25.159462
         ],
         "scale": [
@@ -1057,7 +1031,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.150",
+      "uid": "LaserTowerBetween.061",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1068,7 +1042,7 @@
       "transforms": {
         "pos": [
           2.359522,
-          38.986546,
+          28.34334,
           28.572079
         ],
         "scale": [
@@ -1086,7 +1060,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.151",
+      "uid": "LaserTowerBetween.062",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1097,7 +1071,7 @@
       "transforms": {
         "pos": [
           -10.755026,
-          38.964161,
+          28.320955,
           17.620455
         ],
         "scale": [
@@ -1115,18 +1089,18 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.152",
+      "uid": "LaserTowerBetween.063",
       "type": "interactable",
       "traversable": false,
       "movable": false,
       "params": {
-        "distance": 20.0,
+        "distance": 25.0,
         "gameId": 0
       },
       "transforms": {
         "pos": [
           -7.178423,
-          32.967735,
+          22.32453,
           -4.854755
         ],
         "scale": [
@@ -1144,19 +1118,19 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.153",
+      "uid": "LaserTowerBetween.064",
       "type": "interactable",
       "traversable": false,
       "movable": false,
       "params": {
-        "distance": 20.0,
+        "distance": 22.0,
         "gameId": 0
       },
       "transforms": {
         "pos": [
-          5.888079,
-          33.263046,
-          -4.878218
+          12.041939,
+          17.928871,
+          -9.237956
         ],
         "scale": [
           1.0,
@@ -1173,7 +1147,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.154",
+      "uid": "LaserTowerBetween.065",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1183,9 +1157,9 @@
       },
       "transforms": {
         "pos": [
-          6.814835,
-          33.288933,
-          -18.516581
+          5.572492,
+          22.645727,
+          -19.903561
         ],
         "scale": [
           1.0,
@@ -1202,7 +1176,7 @@
     },
     {
       "asset": "Fragment",
-      "uid": "Fragment.027",
+      "uid": "Fragment.013",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -1210,7 +1184,7 @@
       "transforms": {
         "pos": [
           -2.632828,
-          45.340729,
+          34.697525,
           -13.616718
         ],
         "scale": [
@@ -1229,26 +1203,11 @@
   ],
   "points": [
     {
-      "type": "Spawn",
-      "uid": "Spawn.026",
-      "pos": [
-        36.134476,
-        17.545593,
-        42.648308
-      ],
-      "qt": [
-        1.0,
-        0.0,
-        -0.0,
-        0.0
-      ]
-    },
-    {
       "type": "Checkpoint",
-      "uid": "Checkpoint.163",
+      "uid": "Checkpoint.072",
       "pos": [
         16.451435,
-        40.365513,
+        29.722307,
         31.316326
       ],
       "qt": [
@@ -1260,25 +1219,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.164",
-      "pos": [
-        2.896066,
-        40.365513,
-        26.468056
-      ],
-      "qt": [
-        0.0,
-        0.0,
-        -0.0,
-        1.0
-      ]
-    },
-    {
-      "type": "Checkpoint",
-      "uid": "Checkpoint.165",
+      "uid": "Checkpoint.073",
       "pos": [
         -9.274082,
-        40.243385,
+        29.60018,
         18.25568
       ],
       "qt": [
@@ -1290,10 +1234,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.166",
+      "uid": "Checkpoint.074",
       "pos": [
         -10.906057,
-        21.049322,
+        10.406118,
         22.812237
       ],
       "qt": [
@@ -1305,10 +1249,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.167",
+      "uid": "Checkpoint.075",
       "pos": [
         10.299083,
-        25.104391,
+        14.461187,
         3.786812
       ],
       "qt": [
@@ -1320,11 +1264,11 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.168",
+      "uid": "Checkpoint.076",
       "pos": [
-        4.505363,
-        34.544701,
-        -16.773039
+        3.263019,
+        23.901495,
+        -18.160019
       ],
       "qt": [
         0.0,
@@ -1335,10 +1279,10 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.169",
+      "uid": "Checkpoint.077",
       "pos": [
         -9.860475,
-        44.583538,
+        33.940331,
         -14.026087
       ],
       "qt": [
@@ -1347,6 +1291,21 @@
         -0.0,
         1.0
       ]
+    },
+    {
+      "type": "Spawn",
+      "uid": "Spawn.012",
+      "pos": [
+        34.553394,
+        6.039186,
+        43.453503
+      ],
+      "qt": [
+        0.0,
+        0.732338,
+        -0.0,
+        0.680941
+      ]
     }
   ],
   "areas": [
@@ -1354,7 +1313,7 @@
       "zone": "Intro",
       "pos": [
         18.577063,
-        17.391598,
+        6.748392,
         40.4534
       ],
       "size": 7.333055,
@@ -1364,7 +1323,7 @@
       "zone": "Fragment",
       "pos": [
         -3.710574,
-        44.759552,
+        34.116348,
         -13.716769
       ],
       "size": 3.54521,

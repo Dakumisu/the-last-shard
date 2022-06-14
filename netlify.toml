@@ -31,6 +31,3 @@
 # this specific branch will inherit these settings.
 [context.master]
   command = "npm run build"
-
-
-GIT_LFS_ENABLED = "true"

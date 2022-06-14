@@ -29,7 +29,7 @@
   "props": [
     {
       "asset": "Stairs",
-      "uid": "Stairs.006",
+      "uid": "Stairs.002",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -55,7 +55,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.011",
+      "uid": "Coupe.003",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -81,7 +81,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.012",
+      "uid": "Coupe.004",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -107,7 +107,7 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.006",
+      "uid": "TreeA.002",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -133,7 +133,7 @@
     },
     {
       "asset": "TreeB",
-      "uid": "TreeB.006",
+      "uid": "TreeB.002",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -159,7 +159,7 @@
     },
     {
       "asset": "TreeC",
-      "uid": "TreeC.006",
+      "uid": "TreeC.002",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -185,7 +185,7 @@
     },
     {
       "asset": "Urne",
-      "uid": "Urne.006",
+      "uid": "Urne.002",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -211,7 +211,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.016",
+      "uid": "Wall.004",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -237,7 +237,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.017",
+      "uid": "Wall.005",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -263,7 +263,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.018",
+      "uid": "Wall.006",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -289,7 +289,7 @@
     },
     {
       "asset": "LevelDoorArch",
-      "uid": "LevelDoorArch.004",
+      "uid": "LevelDoorArch.005",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -315,7 +315,7 @@
     },
     {
       "asset": "LevelDoor",
-      "uid": "LevelDoor.004",
+      "uid": "LevelDoor.005",
       "type": "collider",
       "traversable": false,
       "movable": true,
@@ -345,7 +345,7 @@
   "interactables": [
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.005",
+      "uid": "LaserTowerStart.001",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -374,7 +374,7 @@
     },
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.006",
+      "uid": "LaserTowerEnd.001",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -402,7 +402,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.019",
+      "uid": "Coin.002",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -428,7 +428,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.020",
+      "uid": "Coin.003",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -454,7 +454,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.021",
+      "uid": "Coin.004",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -480,7 +480,7 @@
     },
     {
       "asset": "Coin",
-      "uid": "Coin.022",
+      "uid": "Coin.005",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -508,7 +508,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.005",
+      "uid": "Spawn.001",
       "pos": [
         -10.572475,
         2.060297,
@@ -523,7 +523,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.020",
+      "uid": "Checkpoint.004",
       "pos": [
         10.243461,
         2.060297,
@@ -538,7 +538,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.021",
+      "uid": "Checkpoint.012",
       "pos": [
         -10.563803,
         2.060297,
@@ -553,7 +553,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.022",
+      "uid": "Checkpoint.013",
       "pos": [
         61.949936,
         2.060297,
@@ -568,7 +568,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.023",
+      "uid": "Checkpoint.014",
       "pos": [
         100.7435,
         13.863754,
@@ -606,9 +606,9 @@
     {
       "zone": "Laser_1",
       "pos": [
-        -1.193255,
+        19.879372,
         0.734271,
-        32.30957
+        19.575737
       ],
       "size": 8.142216,
       "dialog": "laser"

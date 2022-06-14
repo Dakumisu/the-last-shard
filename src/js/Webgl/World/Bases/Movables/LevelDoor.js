@@ -19,9 +19,7 @@ export default class LevelDoor extends BasePhysic {
 
 		this.gameId = this.base.asset.params.gameId;
 		this.target = {};
-
-		// this.ease = getEase(easings.outSwift);
-		// console.log(this.ease);
+		this.anime = null;
 
 		this.listeners();
 	}
@@ -31,57 +29,58 @@ export default class LevelDoor extends BasePhysic {
 		this.initPhysics();
 
 		this.defaultPos = this.base.mesh.position.clone();
-		this.target.pos = this.defaultPos.add(new Vector3(0, -4.75, 0));
+		this.target.pos = new Vector3().copy(this.defaultPos).add(new Vector3(0, -4.75, 0));
 	}
 
 	listeners() {
-		signal.on(this.scene.label + ':endGame', (gameId, opts = {}) => {
-			console.log('🎮 Test :', gameId, opts);
+		signal.on(this.scene.label + ':endGame', (gameId) => {
 			if (gameId !== this.gameId) return;
-			this.trigger(opts).play();
+			this.trigger().play();
 		});
 
-		signal.on(this.scene.label + ':endGameReverse', (gameId, opts = {}) => {
+		signal.on(this.scene.label + ':endGameReverse', (gameId) => {
 			if (gameId !== this.gameId) return;
-			this.reverse(opts).play();
+			this.reverse().play();
 		});
 	}
 
-	trigger(opts = {}) {
-		const duration = opts.duration || 2000;
-		const easing = opts.easing || 'linear';
-		const delay = opts.delay || 0;
+	trigger() {
+		const duration = 2000;
+		const easing = 'linear';
+		const delay = 0;
 
-		return anime({
+		this.anime = anime({
 			targets: this.base.mesh.position,
 			duration,
 			easing,
 			delay,
 			autoplay: false,
-			...opts,
 			...this.target.pos,
 			update: () => {
 				this.base.mesh.updateMatrix();
 			},
 		});
+
+		return this.anime;
 	}
 
-	reverse(opts = {}) {
-		const duration = opts.duration || 1000;
-		const easing = opts.easing || 'spring(1, 100, 10, 0)';
-		const delay = opts.delay || 0;
+	reverse() {
+		const duration = 1500;
+		const easing = 'linear';
+		const delay = 0;
 
-		return anime({
+		this.anime = anime({
 			targets: this.base.mesh.position,
 			duration,
 			easing,
 			delay,
 			autoplay: false,
-			...opts,
 			...this.defaultPos,
 			update: () => {
 				this.base.mesh.updateMatrix();
 			},
 		});
+
+		return this.anime;
 	}
 }

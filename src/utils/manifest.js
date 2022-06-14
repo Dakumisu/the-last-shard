@@ -38,7 +38,7 @@ assetsMap.set('asset_gradient', {
 });
 
 assetsMap.set('noiseTexture', {
-	path: '/assets/image/pattern.png',
+	path: '/assets/image/noiseTexture.png',
 	data: {},
 });
 
@@ -73,6 +73,11 @@ assetsMap.set('laserTexture', {
 
 assetsMap.set('characterTexture', {
 	path: '/assets/image/character.jpg',
+	data: {},
+});
+
+assetsMap.set('petTexture', {
+	path: '/assets/image/pet.jpg',
 	data: {},
 });
 

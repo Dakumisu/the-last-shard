@@ -1,5 +1,12 @@
 import signal from 'philbin-packages/signal';
-import { NoToneMapping, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer } from 'three';
+import {
+	NoToneMapping,
+	PCFShadowMap,
+	PCFSoftShadowMap,
+	sRGBEncoding,
+	VSMShadowMap,
+	WebGLRenderer,
+} from 'three';
 
 import { getWebgl } from './Webgl';
 import PostFX from './PostFX/PostFX';
@@ -77,8 +84,8 @@ export default class Renderer {
 			autoClear: false,
 		});
 		this.renderer.shadowMap.enabled = true;
-		this.renderer.shadowMap.type = PCFSoftShadowMap;
-		this.renderer.shadowMap.autoUpdate = false;
+		this.renderer.shadowMap.autoUpdate = true;
+		this.renderer.shadowMap.type = VSMShadowMap;
 
 		const { width, height, dpr } = store.resolution;
 
@@ -88,8 +95,8 @@ export default class Renderer {
 
 		this.renderer.physicallyCorrectLights = true;
 		this.renderer.outputEncoding = sRGBEncoding;
-		this.renderer.toneMapping = NoToneMapping;
-		this.renderer.toneMappingExposure = 1;
+		// this.renderer.toneMapping = NoToneMapping;
+		// this.renderer.toneMappingExposure = 1;
 
 		store.isWebGL2 = this.renderer.capabilities.isWebGL2;
 	}

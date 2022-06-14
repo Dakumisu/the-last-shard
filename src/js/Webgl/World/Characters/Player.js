@@ -109,7 +109,7 @@ let camAxisTarget = 0;
 const debug = {
 	instance: null,
 	label: 'Player',
-	tab: 'Player',
+	tab: 'Entity',
 };
 /// #endif
 
@@ -251,7 +251,7 @@ class Player extends BaseEntity {
 		gui.addInput(this.physicsVisualizer, 'visible', { label: 'BVH' });
 
 		const axesHelper = new AxesHelper(2);
-		// axesHelper.visible = false;
+		axesHelper.visible = false;
 		this.base.group.add(axesHelper);
 
 		this.broadphaseHelper = new Mesh(
@@ -301,6 +301,8 @@ class Player extends BaseEntity {
 
 		initialized = true;
 	}
+
+	listeners() {}
 
 	setCameraPlayer() {
 		// Create OrbitCam for the player and add it to controller
@@ -369,13 +371,16 @@ class Player extends BaseEntity {
 		this.scene.add(this.base.mesh);
 	}
 
-	listeners() {}
-
 	async setModel() {
 		const m = await loadGLTF(model);
 
 		m.scene.traverse((object) => {
 			if (object.material) object.material = this.base.material;
+			// if (object.isMesh) {
+			// 	object.name = 'player';
+			// 	// object.castShadow = true;
+			// 	// object.receiveShadow = true;
+			// }
 		});
 
 		this.base.model = m;

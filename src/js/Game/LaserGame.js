@@ -20,7 +20,6 @@ export default class LaserGame {
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
 		.translate(0, 0, 0.5);
-	static sphereMaterial = new BaseBasicMaterial({ color: 0xffffff });
 	static sphereGeometry = new IcosahedronGeometry(0.2, 3);
 	/**
 	 *
@@ -31,6 +30,8 @@ export default class LaserGame {
 		this.scene = scene;
 		this.id = id;
 		this.pet = getPet();
+
+		signal.on('dialog:open', () => this.reset());
 
 		this.init();
 	}

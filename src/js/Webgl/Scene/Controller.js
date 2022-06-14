@@ -122,10 +122,6 @@ export default class SceneController {
 			signal.emit('sound:afterSwitch', label);
 			store.game.player.canMove = store.game.player.canInteract = true;
 
-			this.renderer.shadowMap.needsUpdate = true;
-
-			this.renderer.shadowMap.needsUpdate = true;
-
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;
 			/// #endif

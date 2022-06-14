@@ -19,7 +19,7 @@ export default class Mouse {
 
 		document.addEventListener('mousemove', this.getMousesPositions);
 		this.virtualScroll = new VirtualScroll({
-			el: document,
+			el: document.querySelector('.canvas-container'),
 			useKeyboard: false,
 		});
 		this.virtualScroll.on(this.onScroll);
