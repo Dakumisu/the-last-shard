@@ -68,6 +68,7 @@ export default class BaseDirectionalLight {
 		this.helper.visible = false;
 
 		this.camHelper = new CameraHelper(this.light.shadow.camera);
+		this.camHelper.visible = false;
 
 		const gui = parentFolder.addFolder({
 			title: this.light.name,

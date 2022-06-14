@@ -20,7 +20,7 @@ export default class Checkpoints {
 		points.forEach((point) => {
 			const cp = new Checkpoint(point);
 			this.list.push(cp);
-			this.scene.instance.add(cp.mesh);
+			// this.scene.instance.add(cp.mesh);
 		});
 
 		this.currentCheckpoint = this.list[0];

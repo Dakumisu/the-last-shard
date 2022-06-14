@@ -134,6 +134,7 @@ export class Pet extends BaseEntity {
 		this.base.group.add(this.base.model.scene, this.base.auraMesh);
 
 		this.base.animation = new AnimationController({ model: this.base.model, name: 'pet' });
+		console.log(this.base.animation);
 
 		this.initPhysics();
 
@@ -215,7 +216,7 @@ export class Pet extends BaseEntity {
 		this.player.getDirection(TMP_DIR);
 		TARGET_POS.copy(playerPos).add(TMP_DIR);
 
-		// pet.anim = this.base.animation.get('follow')
+		pet.anim = this.base.animation.get('follow');
 
 		return this;
 	}
