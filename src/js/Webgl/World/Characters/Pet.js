@@ -129,6 +129,7 @@ export class Pet extends BaseEntity {
 
 		this.base.auraGeom = new IcosahedronGeometry(0.75, 3);
 		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
+		this.base.auraMesh.frustumCulled = false;
 
 		this.base.model = m;
 		this.base.model.scene.rotateY(PI);

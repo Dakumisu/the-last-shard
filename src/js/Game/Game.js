@@ -3,8 +3,12 @@ import signal from 'philbin-packages/signal';
 import Keyboard from '@tools/Keyboard';
 import Control from './Control';
 import Dialog from './Dialog';
+import { getDom } from '@dom/Dom';
+import { store } from '@tools/Store';
 
 let initialized = false;
+
+let dom;
 
 class Game {
 	static instance;
@@ -21,6 +25,10 @@ class Game {
 		this.control = new Control();
 		// this.dialog = new Dialog();
 
+		dom = getDom();
+
+		this.setupSave();
+
 		initialized = true;
 	}
 
@@ -30,6 +38,24 @@ class Game {
 		signal.on('raf', () => {
 			this.update();
 		});
+	}
+
+	save(label, value) {
+		if (!label) {
+			console.error('Game save: label is required');
+			return;
+		}
+
+		localStorage.setItem(`game:${label}`, value);
+	}
+
+	getSave(label) {
+		return localStorage.getItem(`game:${label}`);
+	}
+
+	setupSave() {
+		store.game.fragmentsCollected = dom.nodes.domElements['fragment_count'].innerHTML =
+			JSON.parse(this.getSave('fragments')) || 0;
 	}
 
 	update() {
