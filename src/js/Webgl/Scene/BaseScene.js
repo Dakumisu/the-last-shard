@@ -74,6 +74,7 @@ export default class BaseScene {
 		this.checkpoints = null;
 		this.areas = null;
 		this.portals = [];
+		this.fragments = [];
 		this.grass = null;
 		this.lights = new Group();
 		this.baseAmbient = this.directionalLight = null;
@@ -340,6 +341,7 @@ export default class BaseScene {
 				});
 				await _interactable.init();
 				interactablesBp.push(_interactable);
+				this.fragments.push(_interactable);
 			} else {
 				const _interactable = new BaseObject({
 					isInteractable: true,
@@ -544,10 +546,10 @@ export default class BaseScene {
 	update(et, dt) {
 		if (!this.initialized) return;
 
-		if (this.directionalLight && !this.shadowsBaked && et - this.currentTime > bakeDuration) {
+		if (this.directionalLight && !this.shadowsBaked && et - this.currentTime > bakeDuration)
 			this.traverseForShadows();
-		}
 
+		if (this.fragments) this.fragments.forEach((fragment) => fragment.update(et, dt));
 		if (this.portals)
 			this.portals.forEach((portal) => portal.update(this.player.getPosition()));
 		if (this.checkpoints) this.checkpoints.update(et, dt);

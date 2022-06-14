@@ -12,7 +12,9 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 	add(object) {
 		if (this.currentObjects[0] && this.currentObjects[0] !== object)
 			this.remove(this.currentObjects[0]);
+
 		super.add(object);
+
 		if (object.base.isInteractable && !object.isInBroadphaseRange) {
 			// /// #if DEBUG
 			// console.log('🎮 Press F to interact');
@@ -23,6 +25,7 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 
 	remove(object) {
 		super.remove(object);
+
 		if (object.base.isInteractable && object.isInBroadphaseRange) {
 			// /// #if DEBUG
 			// console.log('🎮 Out of range to interact');
@@ -39,6 +42,7 @@ export default class InteractablesBroadphase extends BaseBroadphase {
 			let geometry =
 				object.base.mesh.geometry ||
 				object.base.mesh.children.find((child) => child.name.includes('base')).geometry;
+
 			tBox3c.makeEmpty();
 			// temporary
 			tBox3c.copy(geometry.boundingBox);
