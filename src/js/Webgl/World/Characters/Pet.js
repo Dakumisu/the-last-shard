@@ -11,7 +11,7 @@ import {
 } from 'three';
 import anime from 'animejs';
 import signal from 'philbin-packages/signal';
-import { wait } from 'philbin-packages/async';
+import { deferredPromise, wait } from 'philbin-packages/async';
 import { dampPrecise } from 'philbin-packages/maths';
 
 import { loadModel, loadTexture } from '@utils/loaders/loadAssets';
@@ -83,6 +83,8 @@ export class Pet extends BaseEntity {
 
 		this.initialized = false;
 
+		this.isLoaded = deferredPromise();
+
 		this.listeners();
 		this.init();
 
@@ -146,6 +148,8 @@ export class Pet extends BaseEntity {
 		TMP_PLAYER_POS.copy(playerPos);
 
 		this.scene.add(this.base.group);
+
+		this.isLoaded.resolve();
 
 		this.initialized = true;
 	}
@@ -356,8 +360,10 @@ export class Pet extends BaseEntity {
 	}
 }
 
-const initPet = () => {
-	return new Pet();
+const initPet = async () => {
+	const pet = new Pet();
+	await pet.isLoaded;
+	return pet;
 };
 
 const getPet = () => {

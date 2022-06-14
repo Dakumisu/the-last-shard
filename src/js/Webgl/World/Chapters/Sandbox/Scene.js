@@ -21,7 +21,7 @@ export default class SandboxScene extends BaseScene {
 	}
 
 	async preload() {
-		super.preload();
+		await super.preload();
 		this.envMapTexture = await loadCubeTexture('envMap1');
 
 		this.isPreloaded.resolve();
@@ -29,7 +29,7 @@ export default class SandboxScene extends BaseScene {
 
 	async init() {
 		await this.getCinematrix();
-		super.init();
+		await super.init();
 
 		await this.manifestLoaded;
 

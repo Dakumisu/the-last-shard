@@ -23,8 +23,6 @@ export default class MainCamera {
 	}
 
 	resize() {
-		this.cameraController.currentCamera.resize();
-
 		this.instance.aspect = store.aspect.ratio;
 		this.instance.updateProjectionMatrix();
 	}

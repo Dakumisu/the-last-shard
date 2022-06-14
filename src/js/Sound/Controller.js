@@ -27,9 +27,6 @@ export default class SoundController {
 		signal.on('sound:setParams', this.setParams);
 		signal.on('sound:beforeSwitch', this.beforeSwitch);
 		signal.on('sound:afterSwitch', this.afterSwitch);
-
-		this.isLoaded = deferredPromise();
-		this.init();
 	}
 
 	async init() {
@@ -45,7 +42,6 @@ export default class SoundController {
 			this.add('jump', { loop: false, rate: 1 }),
 			this.add('pet-tp', { loop: false, rate: 1 }),
 		]);
-		this.isLoaded.resolve();
 	}
 
 	async add(key, params) {
