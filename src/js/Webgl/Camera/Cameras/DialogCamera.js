@@ -2,10 +2,10 @@ import { getPet } from '@webgl/World/Characters/Pet';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import PersCamera from './PersCamera';
 import { Vector3 } from 'three';
+import { dampPrecise } from 'philbin-packages/maths';
+import { getWebgl } from '@webgl/Webgl';
 
 /// #if DEBUG
-import { getWebgl } from '@webgl/Webgl';
-import { dampPrecise } from 'philbin-packages/maths';
 const debug = {
 	instance: null,
 	scene: null,

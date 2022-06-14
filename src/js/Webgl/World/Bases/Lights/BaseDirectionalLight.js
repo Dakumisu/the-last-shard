@@ -1,7 +1,7 @@
-/// #if DEBUG
 import { getWebgl } from '@webgl/Webgl';
 import { CameraHelper, DirectionalLightHelper, DirectionalLight } from 'three';
 
+/// #if DEBUG
 const debug = {
 	instance: null,
 };

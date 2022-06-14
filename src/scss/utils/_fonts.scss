@@ -1,14 +1,14 @@
 @font-face {
 	font-family: 'title';
-	src: url('../../public/assets/font/title/title.woff') format('woff'),
-		url('../../public/assets/font/title/title.woff2') format('woff2');
+	src: url('/assets/font/title/title.woff') format('woff'),
+		url('/assets/font/title/title.woff2') format('woff2');
 	font-weight: lighter;
 	text-transform: uppercase;
 }
 
 @font-face {
 	font-family: 'text';
-	src: url('../../public/assets/font/text/text.woff') format('woff'),
-		url('../../public/assets/font/text/text.woff2') format('woff2');
+	src: url('/assets/font/text/text.woff') format('woff'),
+		url('/assets/font/text/text.woff2') format('woff2');
 	font-weight: lighter;
 }

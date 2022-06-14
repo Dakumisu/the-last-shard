@@ -235,7 +235,6 @@ export default class LaserTower extends BaseCollider {
 			this.rotate(key === controlsKeys.rotate[0]);
 		} else if (key === controlsKeys.interact && this.type === 'start') {
 			this.needsUpdate = true;
-			console.log('interact');
 			if (this.isActivated) this.desactivate();
 			else this.activate();
 		}
