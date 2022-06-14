@@ -68,7 +68,7 @@ export default class Checkpoints {
 }
 
 class Checkpoint {
-	static geometry = new SphereGeometry(radius, 16, 16);
+	static geometry = new SphereGeometry(1, 16, 16);
 	constructor({ pos, qt }) {
 		this.pos = pos;
 		this.qt = qt;

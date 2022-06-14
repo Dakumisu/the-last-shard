@@ -158,9 +158,6 @@ export default class LaserTower extends BaseCollider {
 			value: 1,
 			duration: 500,
 			easing: 'easeOutQuad',
-			update: () => {
-				console.log(this.sphereMaterial.uniforms.uTransition.value);
-			},
 		});
 
 		if (this.laserGroup) this.laserGroup.visible = true;
@@ -232,7 +229,7 @@ export default class LaserTower extends BaseCollider {
 			this.rotate(key === controlsKeys.rotate[0]);
 		} else if (key === controlsKeys.interact && this.type === 'start') {
 			this.needsUpdate = true;
-
+			console.log('interact');
 			if (this.isActivated) this.desactivate();
 			else this.activate();
 		}
