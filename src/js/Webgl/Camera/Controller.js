@@ -1,9 +1,8 @@
 import { getWebgl } from '../Webgl';
 import signal from 'philbin-packages/signal';
+import { store } from '@tools/Store';
 
 /// #if DEBUG
-import { CameraHelper } from 'three';
-import { store } from '@tools/Store';
 const debug = {
 	instance: null,
 	label: 'CameraController',

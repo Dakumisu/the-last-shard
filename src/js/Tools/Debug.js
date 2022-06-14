@@ -3,10 +3,7 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import * as TweakpaneRotationInputPlugin from '@0b5vr/tweakpane-plugin-rotation';
 import * as TweakpaneColorsInputPlugin from 'tweakpane-plugin-colors';
 import StatsJs from '@tools/Stats';
-/// #if DEBUG
 import signal from 'philbin-packages/signal';
-import { Color } from 'three';
-/// #endif
 
 let tabList = ['General', 'Entity', 'Scene', 'Env', 'Stats'];
 
