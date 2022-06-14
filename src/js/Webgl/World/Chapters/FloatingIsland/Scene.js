@@ -107,7 +107,7 @@ export default class FloatingIsland extends BaseScene {
 				// color: '#82ad46',
 				color: '#9b92ff',
 				color2: '#31d7ff',
-				count: 500,
+				count: 350,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},
@@ -130,7 +130,7 @@ export default class FloatingIsland extends BaseScene {
 			params: {
 				// color: '#f0f0f0',
 				color: '#8277ff',
-				count: 2500,
+				count: 2000,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),

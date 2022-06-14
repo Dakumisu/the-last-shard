@@ -18,10 +18,12 @@ import {
 	BoxBufferGeometry,
 	MeshBasicMaterial,
 	MeshNormalMaterial,
+	MirroredRepeatWrapping,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 import ParticlesMaterial from '@webgl/Materials/GrassParticles/ParticlesMaterial';
+import { store } from '@tools/Store';
 
 export default class GrassParticles {
 	constructor({ scene, params }) {
@@ -107,6 +109,9 @@ export default class GrassParticles {
 	}
 
 	setMaterial() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
+
 		this.base.material = new ParticlesMaterial({
 			depthWrite: false,
 			blending: AdditiveBlending,
@@ -119,6 +124,7 @@ export default class GrassParticles {
 				uMinMapBounds: { value: this.scene.minBox },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 	}

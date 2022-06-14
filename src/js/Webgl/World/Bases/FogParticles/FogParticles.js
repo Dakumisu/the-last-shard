@@ -17,11 +17,13 @@ import {
 	AdditiveBlending,
 	MultiplyBlending,
 	SubtractiveBlending,
+	MirroredRepeatWrapping,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 
 import FogParticlesMaterial from '@webgl/Materials/FogParticles/FogParticlesMaterial';
+import { store } from '@tools/Store';
 
 export default class FogParticles {
 	constructor({ scene, params }) {
@@ -100,6 +102,9 @@ export default class FogParticles {
 	}
 
 	async setMaterial() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
+
 		this.base.material = new FogParticlesMaterial({
 			depthWrite: false,
 			// depthTest: false,
@@ -113,6 +118,7 @@ export default class FogParticles {
 				uMinMapBounds: { value: this.scene.minBox },
 				uFogTexture: { value: this.params.fogTexture },
 				uColor: { value: new Color().set(this.params.color) },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 	}

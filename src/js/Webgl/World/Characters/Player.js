@@ -360,7 +360,7 @@ class Player extends BaseEntity {
 			depthWrite: false,
 			uniforms: {
 				uColor: { value: new Color(0x31d7ff) },
-				uIntensity: { value: 0.4 },
+				uIntensity: { value: 0.3 },
 				uRadius: { value: 0.005 },
 			},
 		});
