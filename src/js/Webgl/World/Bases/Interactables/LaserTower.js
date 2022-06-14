@@ -139,13 +139,6 @@ export default class LaserTower extends BaseCollider {
 		if (this.type === 'start') {
 			this.game.pet.feedOn(this.sphereWorldPos);
 
-			anime({
-				targets: this.sphereMaterial.uniforms.uTransition,
-				value: 1,
-				duration: 500,
-				easing: 'easeOutQuad',
-			});
-
 			await wait(500);
 
 			signal.emit('sound:play', 'laser', {
@@ -158,7 +151,17 @@ export default class LaserTower extends BaseCollider {
 		this.isActivated = true;
 		signal.emit('sound:play', 'laser-activate', { pos: this.base.mesh.position, replay: true });
 
-		this.laserGroup.scale.z = this.maxDistance;
+		if (this.laserGroup) this.laserGroup.scale.z = this.maxDistance;
+
+		anime({
+			targets: this.sphereMaterial.uniforms.uTransition,
+			value: 1,
+			duration: 500,
+			easing: 'easeOutQuad',
+			update: () => {
+				console.log(this.sphereMaterial.uniforms.uTransition.value);
+			},
+		});
 
 		if (this.laserGroup) this.laserGroup.visible = true;
 
