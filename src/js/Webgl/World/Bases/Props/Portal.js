@@ -55,6 +55,10 @@ export default class Portal extends BaseObject {
 	}
 
 	async loadAsset() {
+		await this.soundController.add('portal-ambient', {
+			loop: true,
+			pos: this.base.mesh.position,
+		});
 		await super.loadAsset();
 
 		this.base.mesh.updateWorldMatrix(true, true);

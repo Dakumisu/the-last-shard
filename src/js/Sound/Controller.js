@@ -5,7 +5,7 @@ import { deferredPromise, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 
 const params = {
-	ambiantVolume: 0.5,
+	ambiantVolume: 0.3,
 };
 
 export default class SoundController {
@@ -31,20 +31,21 @@ export default class SoundController {
 
 	async init() {
 		await Promise.all([
-			this.add('laser', { loop: true, fadeDuration: 500, rate: 1 }),
-			this.add('laser-rotate', { loop: false, rate: 1 }),
-			this.add('laser-activate', { loop: false, rate: 1 }),
-			this.add('checkpoint', { loop: false, rate: 1 }),
-			this.add('timer', { loop: true, rate: 1 }),
-			this.add('footsteps-grass', { loop: true, fadeDuration: 50, rate: 1 }),
-			this.add('footsteps-ground', { loop: true, fadeDuration: 50, rate: 1 }),
-			this.add('fall', { loop: false, rate: 1 }),
-			this.add('jump', { loop: false, rate: 1 }),
-			this.add('pet-tp', { loop: false, rate: 1 }),
+			this.add('laser', { loop: true, fadeDuration: 500 }),
+			this.add('laser-rotate'),
+			this.add('laser-activate'),
+			this.add('checkpoint'),
+			this.add('timer', { loop: true }),
+			this.add('footsteps-grass', { loop: true }),
+			this.add('footsteps-ground', { loop: true }),
+			this.add('fall'),
+			this.add('jump'),
+			this.add('pet-tp'),
+			this.add('win-laser'),
 		]);
 	}
 
-	async add(key, params) {
+	async add(key, params = {}) {
 		this.sounds[key] = {
 			howl: new Howl({
 				src: [await loadAudio(key + '-sound')],
@@ -69,8 +70,11 @@ export default class SoundController {
 	play = (key, params = {}) => {
 		const sound = this.sounds[key];
 
+		if (!sound) return;
+
 		if (params.pos) sound.howl.pos(params.pos.x, params.pos.y, params.pos.z);
-		if (params.rate) sound.howl.rate(Math.max(params.rate || 1, sound.params.rate));
+
+		if (params.rate) sound.howl.rate(params.rate || 1);
 		if (!params.replay && sound.howl.playing()) return;
 
 		sound.howl.volume(params.volume || sound.params.volume || 1);
@@ -83,13 +87,13 @@ export default class SoundController {
 
 	pause = (key) => {
 		const sound = this.sounds[key];
-		if (!sound.howl.playing()) return;
+		if (!sound || !sound.howl.playing()) return;
 
 		if (sound.params.fadeDuration)
 			sound.howl
 				.fade(sound.howl.volume(), 0, sound.params.fadeDuration)
-				.once('fade', () => this.sounds[key].howl.pause());
-		else sound.howl.pause();
+				.once('fade', () => this.sounds[key].howl.stop());
+		else sound.howl.stop();
 	};
 
 	setParams = (key, params) => {

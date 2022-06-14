@@ -176,6 +176,14 @@ assetsMap.set('laser-sound', {
 	path: 'assets/sound/interactions/laser.mp3',
 	data: {},
 });
+assetsMap.set('portal-ambient-sound', {
+	path: 'assets/sound/interactions/laser.mp3',
+	data: {},
+});
+assetsMap.set('win-laser-sound', {
+	path: 'assets/sound/interactions/checkpoint.mp3',
+	data: {},
+});
 assetsMap.set('laser-rotate-sound', {
 	path: 'assets/sound/interactions/laser-rotate.mp3',
 	data: {},
