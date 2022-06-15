@@ -49,6 +49,7 @@ import LaserTower from '../World/Bases/Interactables/LaserTower';
 
 import { loadAudio, loadTexture } from '@utils/loaders';
 import { store } from '@tools/Store';
+import Tree from '@webgl/World/Bases/Props/Tree';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 const bakeDuration = 2000;
@@ -75,6 +76,7 @@ export default class BaseScene {
 		this.checkpoints = null;
 		this.areas = null;
 		this.portals = [];
+		this.trees = [];
 		this.fragments = [];
 		this.grass = null;
 		this.lights = new Group();
@@ -274,6 +276,18 @@ export default class BaseScene {
 				});
 				await portal.init();
 				this.portals.push(portal);
+
+				return;
+			}
+
+			if (prop.asset.includes('Tree')) {
+				const tree = new Tree(this, {
+					name: this.label,
+					asset: prop,
+					group: this.props,
+				});
+				await tree.init();
+				this.trees.push(tree);
 
 				return;
 			}
@@ -559,6 +573,7 @@ export default class BaseScene {
 		if (this.fragments) this.fragments.forEach((fragment) => fragment.update(et, dt));
 		if (this.portals)
 			this.portals.forEach((portal) => portal.update(this.player.getPosition()));
+		if (this.trees) this.trees.forEach((tree) => tree.update());
 		if (this.checkpoints) this.checkpoints.update(et, dt);
 		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.update(et, dt));
 		if (this.areas) this.areas.update(et, dt);
