@@ -1,18 +1,24 @@
 {
   "Tutoriel": {
     "intro": [
-      "Maintenant que tu es réveillé, aide moi à rétablir l'équilibre de notre monde !",
-      "Marche, cours, saute, tout est possible !",
-      "Je resterai à tes côtés jusqu'à la fin."
+      "Now that you're awake, help me restore balance to our world!",
+      "Walk, run, jump, anything is possible!",
+      "I will stay by your side until the end.",
+      "Now up you go !"
     ],
     "laser_begin": [
-      "Tu vois cette tour ?",
-      "Grâce à cette tour tu vas pouvoir ouvrir la porte qui mène à la suite de notre aventure.",
-      "Utilise 'F' à proximité pour que je puisse alimenter un rayon laser.",
-      "Ensuite, tu peux utiliser 'A' et 'E' pour m'aider à tourner ce rayon"
+      "See that tower?",
+      "Thanks to this tower you will be able to open the door that leads to the next part of our adventure.",
+      "Use 'F' nearby so I can feed a laser beam.",
+      "Then you can use 'A' and 'E' to help me turn this beam",
+      "You can also use the wheel of your mouse to change its inclination.",
+      "We have to feed all the towers! Good luck!"
     ],
     "fragment": [
-      "woah la dingz"
+      "Well done! We did it!",
+      "Now retrieve this energy shard with the 'F' key!",
+      "This shard, among others, is the key to our success!",
+      "Then run to this portal so that we can discover the rest of the world!"
     ]
   },
   "Sandbox": {
@@ -27,22 +33,18 @@
   },
   "FloatingIsland": {
     "intro": [
-      "re Yo Mec",
-      "ça va? moi oe tjrs",
-      "sauve temple stp"
-    ],
-    "laser": [
-      "bip boop encores les lasers"
+      "I hope you feel ready because this level will be more complicated!",
+      "Good luck my friend !"
     ],
     "fragment": [
-      "HUH",
-      "tema la dinguerie"
+      "Hurray! Only the last one left to pick up!",
+      "Hurry up, time is ticking !"
     ]
   },
   "Faille": {
     "fragment": [
-      "Rahoe",
-      "ça commence à faire bcp là"
+      "YOU DID IT !",
+      "Let's get the world back in balance!"
     ]
   }
 }
