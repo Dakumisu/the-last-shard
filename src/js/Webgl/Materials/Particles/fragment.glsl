@@ -8,7 +8,7 @@ varying float vNoise;
 
 void main() {
 	float distanceToCenter = distance(vUv, vec2(0.5));
-	float strength = 0.005/ distanceToCenter;
+	float strength = 0.0034 / distanceToCenter;
 
 	float smoothEnd = smoothstep(0.0, 0.2, 1.0 - vLoop);
 	float smoothStart = smoothstep(0.0, 1.0, vLoop);

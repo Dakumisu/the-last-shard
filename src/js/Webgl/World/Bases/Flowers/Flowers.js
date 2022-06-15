@@ -15,6 +15,7 @@ import {
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
+	MirroredRepeatWrapping,
 	Texture,
 } from 'three';
 
@@ -169,6 +170,8 @@ export default class Flowers {
 	}
 
 	setGrass() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
 		this.base.material = new FlowerMaterial({
 			transparent: true,
 			uniforms: {
@@ -186,6 +189,7 @@ export default class Flowers {
 				uTexture: { value: this.texture },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 

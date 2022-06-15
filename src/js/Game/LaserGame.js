@@ -20,7 +20,7 @@ export default class LaserGame {
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
 		.translate(0, 0, 0.5);
-	static sphereGeometry = new IcosahedronGeometry(0.2, 3);
+	static sphereGeometry = new IcosahedronGeometry(0.2, 4);
 	/**
 	 *
 	 * @param {{scene: BaseScene, id: number}} param0

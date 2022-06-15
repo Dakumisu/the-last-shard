@@ -1,10 +1,22 @@
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
-import { Color, Mesh, SphereGeometry, Vector3 } from 'three';
+import {
+	AdditiveBlending,
+	BoxGeometry,
+	Color,
+	CylinderGeometry,
+	DoubleSide,
+	Group,
+	Mesh,
+	SphereGeometry,
+	Vector3,
+} from 'three';
 import signal from 'philbin-packages/signal';
 import { Quaternion } from 'three';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import CheckpointMaterial from '@webgl/Materials/CheckpointMaterial/CheckpointMaterial';
 import anime from 'animejs';
+import CheckpointMaterialInner from '@webgl/Materials/CheckpointMaterialInner/CheckpointMaterialInner';
+import { loadTexture } from '@utils/loaders';
 
 const radius = 2;
 const tVec3 = new Vector3();
@@ -20,7 +32,7 @@ export default class Checkpoints {
 		points.forEach((point) => {
 			const cp = new Checkpoint(point);
 			this.list.push(cp);
-			// this.scene.instance.add(cp.mesh);
+			this.scene.instance.add(cp.mesh);
 		});
 
 		this.currentCheckpoint = this.list[0];
@@ -68,22 +80,42 @@ export default class Checkpoints {
 }
 
 class Checkpoint {
-	static geometry = new SphereGeometry(1, 16, 16);
+	static geometry = new CylinderGeometry(0.75, 0.75, 0.45, 64, 64, true);
 	constructor({ pos, qt }) {
 		this.pos = pos;
 		this.qt = qt;
 
-		this.material = new CheckpointMaterial({
+		// this.material = new CheckpointMaterial({
+		// 	transparent: true,
+		// 	blending: AdditiveBlending,
+		// 	depthWrite: false,
+		// 	side: DoubleSide,
+		// 	uniforms: {
+		// 		uColor1: { value: new Color(0x000000) },
+		// 		uColor2: { value: new Color(0xffffff) },
+		// 		uTransition: { value: 0 },
+		// 	},
+		// });
+		this.material = new CheckpointMaterialInner({
+			transparent: true,
+			blending: AdditiveBlending,
+			side: DoubleSide,
 			uniforms: {
-				uColor1: { value: new Color(0x000000) },
-				uColor2: { value: new Color(0xffffff) },
+				uColor1: { value: new Color(0x31d7ff) },
+				uColor2: { value: new Color(0x5f0892) },
 				uTransition: { value: 0 },
 			},
-			transparent: true,
 		});
 
+		// this.mesh = new Mesh(Checkpoint.geometry, this.material);
 		this.mesh = new Mesh(Checkpoint.geometry, this.material);
+		// this.mesh.scale.set(0.9, 0.9, 0.9);
+
+		// this.group = new Group();
+		// this.group.add(this.mesh);
+
 		this.mesh.position.copy(this.pos);
-		this.mesh.quaternion.copy(this.qt);
+		this.mesh.position.y -= 1.3;
+		// this.mesh.quaternion.copy(this.qt);
 	}
 }
