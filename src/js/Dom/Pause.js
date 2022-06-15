@@ -35,14 +35,19 @@ export class Pause {
 		if (alreadyInitialized) return;
 
 		dom.nodes.domElements.button_resume.addEventListener('click', (e) => {
+			dom.nodes.domElements.button_resume.blur();
+
 			this.hide(dom.nodes.domElements.pause_container);
 
 			store.game.isPaused = false;
-			store.game.player.canMove = store.game.player.canInteract = true;
+			if (store.game.currentCamera === 'player')
+				store.game.player.canMove = store.game.player.canInteract = true;
 
 			signal.emit('game:resume');
 		});
 		dom.nodes.domElements.button_back.addEventListener('click', (e) => {
+			dom.nodes.domElements.button_back.blur();
+
 			this.hide(dom.nodes.domElements.pause_container);
 
 			signal.emit('pause:back');
