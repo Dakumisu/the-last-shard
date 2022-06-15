@@ -1,16 +1,17 @@
 import { loadAudio } from '@utils/loaders';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import { Howl, Howler } from 'howler';
-import { deferredPromise, wait } from 'philbin-packages/async';
+import { debounce, deferredPromise, throttle, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 
 const params = {
-	ambiantVolume: 0.3,
+	// ambiantVolume: 0.3,
+	ambiantVolume: 0,
 };
 
 export default class SoundController {
 	constructor() {
-		Howler.volume(0.5);
+		Howler.volume(0.7);
 		/**
 		 * @type {Object.<string, {howl: Howl, params: Object}>}
 		 */
@@ -34,14 +35,27 @@ export default class SoundController {
 			this.add('laser', { loop: true, fadeDuration: 500 }),
 			this.add('laser-rotate'),
 			this.add('laser-activate'),
+			this.add('laser-desactivate'),
 			this.add('checkpoint'),
 			this.add('timer', { loop: true }),
-			this.add('footsteps-grass', { loop: true, volume: 1 }),
-			this.add('footsteps-ground', { loop: true, volume: 1 }),
-			this.add('fall'),
+			this.add('footsteps-grass', { loop: true }),
+			this.add('footsteps-ground', { loop: true }),
+			this.add('fall-grass'),
+			this.add('fall-ground'),
 			this.add('jump'),
 			this.add('pet-tp'),
-			this.add('win-laser'),
+			this.add('pet-happy', {
+				sprite: {
+					0: [0, 1171],
+					1: [1171, 1012],
+					2: [2183, 1449],
+					3: [3632, 1484],
+					4: [5116, 1417],
+				},
+			}),
+			this.add('pet-ideas'),
+			this.add('success'),
+			this.add('fragment-interact'),
 		]);
 
 		// this.play('footsteps-grass', { volume: 0 });
@@ -56,6 +70,7 @@ export default class SoundController {
 				loop: params.loop,
 				rate: params.rate,
 				volume: params.volume,
+				sprite: params.sprite ? params.sprite : undefined,
 			}),
 			params,
 		};
@@ -86,8 +101,10 @@ export default class SoundController {
 
 		if (sound.params.fadeDuration)
 			sound.howl.fade(sound.howl.volume(), 1, sound.params.fadeDuration);
+		console.log('sound:play', key);
 
-		sound.howl.play();
+		if (params.spriteId >= 0) sound.howl.play(params.spriteId + '');
+		else sound.howl.play();
 	};
 
 	pause = (key) => {

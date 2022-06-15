@@ -7,6 +7,7 @@ import { store } from '@tools/Store';
 import { getGame } from './Game';
 
 import dialog from '@json/dialog.json?json';
+import { MathUtils } from 'three';
 
 let pool = [];
 let length = 0;
@@ -93,6 +94,7 @@ export default class Dialog {
 	}, 500);
 
 	speak({ line = '' }) {
+		signal.emit('sound:play', 'pet-happy', { spriteId: MathUtils.randInt(0, 4) });
 		console.log('[line]', line);
 	}
 

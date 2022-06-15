@@ -690,7 +690,9 @@ class Player extends BaseEntity {
 			this.state.hasJumped &&
 			!this.state.isJumping
 		)
-			signal.emit('sound:play', 'fall');
+			this.state.isOnGrass
+				? signal.emit('sound:play', 'fall-grass')
+				: signal.emit('sound:play', 'fall-ground');
 		else {
 			if (this.state.isOnGrass) signal.emit('sound:stop', 'footsteps-grass');
 			else signal.emit('sound:stop', 'footsteps-ground');
