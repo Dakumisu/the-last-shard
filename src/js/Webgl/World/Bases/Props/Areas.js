@@ -65,7 +65,7 @@ export default class Areas {
 
 		if (area.sounds) {
 			area.sounds.split(',').forEach((sound) => {
-				signal.emit('sound:play', sound);
+				// signal.emit('sound:play', sound, { pos: area.pos });
 			});
 		}
 
@@ -85,7 +85,7 @@ export default class Areas {
 		if (area.sounds) {
 			area.sounds.split(',').forEach((sound) => {
 				console.log('🔔 Area sound:', sound);
-				signal.emit('sound:stop', sound);
+				// signal.emit('sound:stop', sound);
 			});
 		}
 

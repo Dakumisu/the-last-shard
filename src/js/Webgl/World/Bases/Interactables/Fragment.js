@@ -38,11 +38,6 @@ export default class Fragment extends BaseCollider {
 
 	async init() {
 		await super.init();
-		await this.soundController.add('fragment-ambient', {
-			loop: true,
-			pos: this.base.mesh.position,
-			fadeDuration: 500,
-		});
 
 		this.material = new FragmentMaterial({
 			transparent: true,

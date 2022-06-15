@@ -36,6 +36,13 @@ export default class SoundController {
 			this.add('laser-rotate'),
 			this.add('laser-activate'),
 			this.add('laser-desactivate'),
+			this.add('portal-ambient', {
+				loop: true,
+			}),
+			this.add('fragment-ambient', {
+				loop: true,
+				fadeDuration: 500,
+			}),
 			this.add('checkpoint'),
 			this.add('timer', { loop: true }),
 			this.add('footsteps-grass', { loop: true }),

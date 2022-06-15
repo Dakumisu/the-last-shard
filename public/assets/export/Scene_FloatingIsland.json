@@ -1294,7 +1294,8 @@
         -15.354609
       ],
       "size": 5.061461,
-      "dialog": "fragment"
+      "dialog": "fragment",
+      "sounds": "fragment-ambient"
     },
     {
       "zone": "Laser",
@@ -1314,7 +1315,8 @@
         -6.12583
       ],
       "size": -8.111204,
-      "dialog": false
+      "dialog": false,
+      "sounds": "portal-ambient"
     },
     {
       "zone": "Portal_Begin",
@@ -1324,7 +1326,8 @@
         5.840823
       ],
       "size": -8.111204,
-      "dialog": false
+      "dialog": false,
+      "sounds": "portal-ambient"
     }
   ],
   "curves": [
