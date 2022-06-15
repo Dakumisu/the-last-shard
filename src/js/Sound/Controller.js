@@ -20,6 +20,7 @@ export default class SoundController {
 		 * @type {Object.<string, Howl>}
 		 */
 		this.ambients = {};
+		this.currentAmbient = null;
 
 		this.player = getPlayer();
 
@@ -133,14 +134,23 @@ export default class SoundController {
 				.fade(this.sounds[key].howl.volume(), 0, 500)
 				.once('fade', () => this.sounds[key].howl.stop());
 
-		this.ambients[sceneName]
-			.fade(params.ambiantVolume, 0, 500)
-			.once('fade', () => this.ambients[sceneName].stop());
+		this.fadeOutAmbient(sceneName);
 	};
 
 	afterSwitch = (sceneName) => {
-		this.ambients[sceneName].fade(0, params.ambiantVolume, 500).play();
+		this.fadeInAmbient(sceneName);
+		this.currentAmbient = sceneName;
 	};
+
+	fadeOutAmbient(sceneName) {
+		this.ambients[sceneName]
+			.fade(params.ambiantVolume, 0, 500)
+			.once('fade', () => this.ambients[sceneName].stop());
+	}
+
+	fadeInAmbient(sceneName) {
+		this.ambients[sceneName].fade(0, params.ambiantVolume, 500).play();
+	}
 
 	update() {
 		if (this.player?.base.mesh.position) {
