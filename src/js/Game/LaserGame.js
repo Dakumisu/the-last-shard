@@ -81,6 +81,23 @@ export default class LaserGame {
 	}
 
 	update(et, dt) {
-		this.laserTowers.forEach((laserTower) => laserTower.update(et, dt));
+		let nearestTower = null;
+		let nearestTowerDistance = Infinity;
+		this.laserTowers.forEach((laserTower) => {
+			if (
+				laserTower.base.mesh.position.distanceTo(this.scene.player.base.mesh.position) <
+					nearestTowerDistance &&
+				laserTower.isActivated
+			) {
+				nearestTower = laserTower;
+				nearestTowerDistance = laserTower.base.mesh.position.distanceTo(
+					this.scene.player.base.mesh.position,
+				);
+			}
+			laserTower.update(et, dt);
+		});
+
+		if (nearestTower)
+			signal.emit('sound:setParams', 'laser', { pos: nearestTower.base.mesh.position });
 	}
 }
