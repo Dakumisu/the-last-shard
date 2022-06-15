@@ -61,6 +61,12 @@ export default class HomeCamera extends PersCamera {
 		dummy_distance = 0;
 	}
 
+	reset() {
+		dummy_distance = 4;
+		this.needUpdate = true;
+		this.started = false;
+	}
+
 	update(et, dt) {
 		if (!this.initialized) return;
 		if (!this.needUpdate) return;

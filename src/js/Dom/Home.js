@@ -26,6 +26,9 @@ export class Home {
 		signal.emit('view:change', 'home');
 		signal.emit('sound: down', store.game.currentScene);
 
+		webgl.world.homeCamera.reset();
+		signal.emit('camera:switch', 'home');
+
 		this.show(dom.nodes.domElements.home_container);
 
 		this.events();
