@@ -61,7 +61,7 @@ void main() {
 
 	float heightNoise = texture2D(uNoiseTexture, scaledCoords).r * 100.;
 	float heightNoiseSmall = texture2D(uNoiseTexture, scaledCoords).r * 50.;
-	pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.016;
+	pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.017;
 
 	vFade = elevation;
 
@@ -72,7 +72,7 @@ void main() {
 	// float scaleFromTexture = 1. - texture2D(uGrassTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	// pos *= scaleFromTexture;
-	translation.xz += pos.xz * 0.75;
+	translation.xz += pos.xz;
 	translation.y += pos.y * 0.35;
 
 	// Apply height map

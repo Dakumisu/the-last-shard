@@ -81,6 +81,10 @@ assetsMap.set('petTexture', {
 	data: {},
 });
 
+assetsMap.set('plasmaTexture', {
+	path: '/assets/image/plasma.jpeg',
+	data: {},
+});
 assetsMap.set('portalTexture', {
 	path: '/assets/image/portalTexture.png',
 	data: {},
