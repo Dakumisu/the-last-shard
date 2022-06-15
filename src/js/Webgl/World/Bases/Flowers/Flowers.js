@@ -129,7 +129,7 @@ export default class Flowers {
 		for (let i = 0; i < count; i++) {
 			const x = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
 			const z = MathUtils.randFloat(-this.params.halfBoxSize, this.params.halfBoxSize);
-			const scale = MathUtils.randFloat(0.4, 0.5);
+			const scale = MathUtils.randFloat(0.45, 0.55);
 
 			const rX = 0;
 			const rY = Math.PI * Math.random() * 2;

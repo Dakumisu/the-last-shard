@@ -58,14 +58,14 @@ export default class TutorielScene extends BaseScene {
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',
 			// fogFarColor: '#f5f5f5',
-			fogNearColor: '#6050cf',
+			fogNearColor: '#3e2e77',
 			fogFarColor: '#3e2e77',
 			fogNear: 30,
 			fogFar: 50,
 			fogNoiseSpeed: 0.00225,
 			fogNoiseFreq: 0.25,
-			fogHeightPropagation: 4,
-			fogHeightDensity: 0.5,
+			fogHeightPropagation: 2.5,
+			fogHeightDensity: 1.0,
 			background: await this.envMapTexture,
 		});
 
@@ -81,9 +81,6 @@ export default class TutorielScene extends BaseScene {
 			// color2: '#8277ff',
 			halfBoxSize: 20,
 			scale: 1,
-			grass: await loadTexture('grassPattern'),
-			diffuse: await loadTexture('grassDiffuse'),
-			alpha: await loadTexture('grassAlpha'),
 			positionsTexture: this.terrainSplatting,
 		});
 
@@ -118,7 +115,7 @@ export default class TutorielScene extends BaseScene {
 				// color: '#82ad46',
 				color: '#31d7ff',
 				color2: '#8277ff',
-				count: 2000,
+				count: 1000,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},
@@ -129,7 +126,7 @@ export default class TutorielScene extends BaseScene {
 			params: {
 				// color: '#f0f0f0',
 				color: '#8277ff',
-				count: 2500,
+				count: 2000,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),

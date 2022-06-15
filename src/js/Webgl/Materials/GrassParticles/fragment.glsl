@@ -9,7 +9,7 @@ varying float vRandomColor;
 
 void main() {
 	float distanceToCenter = distance(vUv, vec2(0.5));
-	float strength = 0.0017 / distanceToCenter;
+	float strength = 0.005 / distanceToCenter;
 
 	float smoothEnd = smoothstep(0.0, 0.5, 1.0 - vLoop);
 	float smoothStart = smoothstep(0.0, 0.5, vLoop);
