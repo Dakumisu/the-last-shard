@@ -44,6 +44,8 @@ const store = {
 			canInteract: true,
 		},
 
+		currentScene: null,
+
 		fragmentsCollected: 0,
 
 		levelsComplete: {

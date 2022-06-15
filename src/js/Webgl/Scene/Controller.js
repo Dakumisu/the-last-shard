@@ -116,11 +116,14 @@ export default class SceneController {
 			/// #endif
 			this.currentScene.addTo(this.mainScene.instance);
 
+			store.game.currentScene = this.currentScene;
 			await wait(500);
 			signal.emit('postpro:transition-out');
 			signal.emit('scene:complete');
 			signal.emit('sound:afterSwitch', label);
-			store.game.player.canMove = store.game.player.canInteract = true;
+
+			if (!store.game.isPaused)
+				store.game.player.canMove = store.game.player.canInteract = true;
 
 			/// #if DEBUG
 			this.currentScene.gui.hidden = false;

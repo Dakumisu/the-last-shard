@@ -13,29 +13,36 @@ export class Context {
 	}
 
 	setup() {
-		this.texts = dom.nodes.domElements.context;
+		signal.on('preloader:complete', () => this.start());
 	}
 
 	async start() {
+		this.texts = dom.nodes.domElements.context;
+
 		signal.emit('view:change', 'context');
 
-		await wait(1000);
-		this.show(this.texts[0]);
-		await wait(4000);
-		this.hide(this.texts[0]);
+		this.show(dom.nodes.domElements.context_container);
+
+		// await wait(1000);
+		// this.show(this.texts[0]);
+		// await wait(4000);
+		// this.hide(this.texts[0]);
 		await wait(500);
-		this.show(this.texts[1]);
-		await wait(7500);
-		this.hide(this.texts[1]);
+		// this.show(this.texts[1]);
+		// await wait(7500);
+		// this.hide(this.texts[1]);
+		// await wait(1000);
 
 		signal.emit('context:complete');
+
+		this.hide(dom.nodes.domElements.context_container);
 	}
 
-	show(text) {
-		text.classList.add('visible');
+	show(node) {
+		node.classList.add('visible');
 	}
 
-	hide(text) {
-		text.classList.remove('visible');
+	hide(node) {
+		node.classList.remove('visible');
 	}
 }
