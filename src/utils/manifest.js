@@ -38,7 +38,7 @@ assetsMap.set('asset_gradient', {
 });
 
 assetsMap.set('noiseTexture', {
-	path: '/assets/image/noiseTexture.png',
+	path: '/assets/image/crystal.jpeg',
 	data: {},
 });
 
@@ -93,6 +93,17 @@ assetsMap.set('portalTexture2', {
 	path: '/assets/image/portalTexture2.png',
 	data: {},
 });
+
+assetsMap.set('shardTexture', {
+	path: '/assets/image/crystal.jpeg',
+	data: {},
+});
+
+assetsMap.set('shardTexture2', {
+	path: '/assets/image/crystal2.jpeg',
+	data: {},
+});
+
 assetsMap.set('portalTextureMask', {
 	path: '/assets/image/portalMask.jpg',
 	data: {},

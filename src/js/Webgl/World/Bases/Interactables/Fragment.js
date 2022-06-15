@@ -4,9 +4,11 @@ import { store } from '@tools/Store';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import FragmentMaterial from '@webgl/Materials/Fragment/FragmentMaterial';
 import { dampPrecise } from 'philbin-packages/maths';
-import { DoubleSide, Vector3 } from 'three';
+import { AdditiveBlending, Color, DoubleSide, IcosahedronGeometry, Mesh, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import signal from 'philbin-packages/signal';
+import { loadTexture } from '@utils/loaders';
+import AuraMaterial from '@webgl/Materials/AuraMaterial/AuraMaterial';
 
 const params = {
 	speed: 1,
@@ -24,7 +26,6 @@ export default class Fragment extends BaseCollider {
 		this.base.group = group;
 		this.autoUpdate = true;
 
-		this.material = new FragmentMaterial();
 		this.alpha = 1;
 		this.isCollected = false;
 
@@ -42,11 +43,37 @@ export default class Fragment extends BaseCollider {
 			fadeDuration: 500,
 		});
 
+		this.material = new FragmentMaterial({
+			uniforms: {
+				uAlpha: { value: 1 },
+				uShard: { value: await loadTexture('shardTexture') },
+				uShard2: { value: await loadTexture('shardTexture2') },
+				uMask: { value: await loadTexture('portalTextureMask') },
+			},
+		});
+
 		this.base.mesh.traverse((obj) => {
 			if (obj.material) {
 				obj.material = this.material;
 			}
 		});
+
+		this.base.auraMaterial = new AuraMaterial({
+			transparent: true,
+			blending: AdditiveBlending,
+			depthWrite: false,
+			uniforms: {
+				uColor: { value: new Color(0x31d7ff) },
+				uIntensity: { value: 0.45 },
+				uRadius: { value: 0.05 },
+			},
+		});
+
+		this.base.auraGeom = new IcosahedronGeometry(1.5, 3);
+		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
+		this.base.auraMesh.frustumCulled = false;
+
+		this.base.mesh.add(this.base.auraMesh);
 
 		this.defaultPosY = this.base.asset.transforms.pos[1];
 		this.TARGET_POS_Y = this.defaultPosY;
