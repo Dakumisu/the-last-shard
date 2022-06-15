@@ -40,15 +40,21 @@ export class Home {
 		if (alreadyInitialized) return;
 
 		dom.nodes.domElements.button_start.addEventListener('click', (e) => {
+			dom.nodes.domElements.button_start.blur();
+
 			webgl.world.homeCamera.start();
 
 			store.game.isPaused = false;
 			store.game.player.canMove = store.game.player.canInteract = true;
 			this.hide(dom.nodes.domElements.home_container);
 			signal.emit('home:quit');
+
+			signal.emit('dialog:open', { scene: store.game.currentScene, sequence: 'intro' });
 		});
 
 		dom.nodes.domElements.button_quit.addEventListener('click', (e) => {
+			dom.nodes.domElements.button_quit.blur();
+
 			console.log('bye');
 			webgl.destroy();
 		});

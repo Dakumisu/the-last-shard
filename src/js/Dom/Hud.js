@@ -39,6 +39,8 @@ export class Hud {
 		if (alreadyInitialized) return;
 
 		dom.nodes.domElements.button_sound.addEventListener('click', (e) => {
+			dom.nodes.domElements.button_sound.blur();
+
 			let active = dom.nodes.domElements.button_sound.classList.contains('active');
 			console.log(active);
 
@@ -52,10 +54,14 @@ export class Hud {
 		});
 
 		dom.nodes.domElements.button_fullscreen.addEventListener('click', (e) => {
+			dom.nodes.domElements.button_fullscreen.blur();
+
 			document.body.requestFullscreen();
 		});
 
 		dom.nodes.domElements.button_pause.addEventListener('click', (e) => {
+			dom.nodes.domElements.button_pause.blur();
+
 			this.hide(dom.nodes.domElements.hud_container);
 			dom.nodes.domElements.hud_buttons.forEach((button) => {
 				this.hide(button);

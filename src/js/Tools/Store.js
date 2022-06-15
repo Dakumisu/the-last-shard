@@ -45,6 +45,7 @@ const store = {
 		},
 
 		currentScene: null,
+		currentCamera: null,
 
 		fragmentsCollected: 0,
 

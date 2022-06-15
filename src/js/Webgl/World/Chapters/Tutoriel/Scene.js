@@ -58,14 +58,14 @@ export default class TutorielScene extends BaseScene {
 		this.fog = new BaseFog({
 			// fogNearColor: '#d4d4d4',
 			// fogFarColor: '#f5f5f5',
-			fogNearColor: '#6050cf',
+			fogNearColor: '#3e2e77',
 			fogFarColor: '#3e2e77',
 			fogNear: 30,
 			fogFar: 50,
 			fogNoiseSpeed: 0.00225,
 			fogNoiseFreq: 0.25,
-			fogHeightPropagation: 4,
-			fogHeightDensity: 0.5,
+			fogHeightPropagation: 2.5,
+			fogHeightDensity: 1.0,
 			background: await this.envMapTexture,
 		});
 
