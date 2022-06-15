@@ -1,12 +1,15 @@
 {
   "Tutoriel": {
     "intro": [
-      "Yo Mec",
-      "ça va? moi oe",
-      "sauve foret stp"
+      "Maintenant que tu es réveillé, aide moi à rétablir l'équilibre de notre monde !",
+      "Marche, cours, saute, tout est possible !",
+      "Je resterai à tes côtés jusqu'à la fin."
     ],
     "laser_begin": [
-      "bip boop les lasers"
+      "Tu vois cette tour ?",
+      "Grâce à cette tour tu vas pouvoir ouvrir la porte qui mène à la suite de notre aventure.",
+      "Utilise 'F' à proximité pour que je puisse alimenter un rayon laser.",
+      "Ensuite, tu peux utiliser 'A' et 'E' pour m'aider à tourner ce rayon"
     ],
     "fragment": [
       "woah la dingz"
