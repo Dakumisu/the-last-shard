@@ -33,12 +33,16 @@ assetsMap.set('envMap2', {
 });
 
 assetsMap.set('asset_gradient', {
-	path: '/assets/image/gradients/gradient.png',
+	path: '/assets/image/gradients/gradient.jpg',
 	data: {},
 });
 
 assetsMap.set('noiseTexture', {
 	path: '/assets/image/noiseTexture.png',
+	data: {},
+});
+assetsMap.set('noiseTexture2', {
+	path: '/assets/image/noise.jpeg',
 	data: {},
 });
 
@@ -81,6 +85,10 @@ assetsMap.set('petTexture', {
 	data: {},
 });
 
+assetsMap.set('plasmaTexture', {
+	path: '/assets/image/plasma.jpeg',
+	data: {},
+});
 assetsMap.set('portalTexture', {
 	path: '/assets/image/portalTexture.png',
 	data: {},
@@ -89,6 +97,17 @@ assetsMap.set('portalTexture2', {
 	path: '/assets/image/portalTexture2.png',
 	data: {},
 });
+
+assetsMap.set('shardTexture', {
+	path: '/assets/image/crystal.jpeg',
+	data: {},
+});
+
+assetsMap.set('shardTexture2', {
+	path: '/assets/image/crystal2.jpeg',
+	data: {},
+});
+
 assetsMap.set('portalTextureMask', {
 	path: '/assets/image/portalMask.jpg',
 	data: {},
@@ -176,12 +195,24 @@ assetsMap.set('laser-sound', {
 	path: 'assets/sound/interactions/laser.mp3',
 	data: {},
 });
+assetsMap.set('portal-ambient-sound', {
+	path: 'assets/sound/ambient/portal-ambient.mp3',
+	data: {},
+});
+assetsMap.set('success-sound', {
+	path: 'assets/sound/interactions/success.mp3',
+	data: {},
+});
 assetsMap.set('laser-rotate-sound', {
 	path: 'assets/sound/interactions/laser-rotate.mp3',
 	data: {},
 });
 assetsMap.set('laser-activate-sound', {
 	path: 'assets/sound/interactions/laser-activate.mp3',
+	data: {},
+});
+assetsMap.set('laser-desactivate-sound', {
+	path: 'assets/sound/interactions/laser-desactivate.mp3',
 	data: {},
 });
 assetsMap.set('checkpoint-sound', {
@@ -200,16 +231,37 @@ assetsMap.set('footsteps-grass-sound', {
 	path: 'assets/sound/characters/footsteps-grass.mp3',
 	data: {},
 });
-assetsMap.set('fall-sound', {
-	path: 'assets/sound/characters/fall.mp3',
+assetsMap.set('fall-grass-sound', {
+	path: 'assets/sound/characters/fall-grass.mp3',
 	data: {},
 });
-assetsMap.set('jump-sound', {
-	path: 'assets/sound/characters/jump.mp3',
+assetsMap.set('fall-ground-sound', {
+	path: 'assets/sound/characters/fall-ground.mp3',
 	data: {},
 });
 assetsMap.set('pet-tp-sound', {
 	path: 'assets/sound/characters/pet-tp.mp3',
+	data: {},
+});
+assetsMap.set('pet-happy-sound', {
+	path: 'assets/sound/characters/pet-happy.mp3',
+	data: {},
+});
+assetsMap.set('pet-ideas-sound', {
+	path: 'assets/sound/characters/pet-ideas.mp3',
+	data: {},
+});
+assetsMap.set('fragment-ambient-sound', {
+	path: 'assets/sound/ambient/fragment-ambient.mp3',
+	data: {},
+});
+assetsMap.set('fragment-interact-sound', {
+	path: 'assets/sound/interactions/fragment-interact.mp3',
+	data: {},
+});
+
+assetsMap.set('cinematrix-1-sound', {
+	path: 'assets/sound/ambient/cinematrix-1.mp3',
 	data: {},
 });
 

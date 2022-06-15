@@ -20,7 +20,7 @@ export default class LaserGame {
 		.rotateZ(Math.PI * 0.5)
 		.rotateY(Math.PI * 0.5)
 		.translate(0, 0, 0.5);
-	static sphereGeometry = new IcosahedronGeometry(0.2, 3);
+	static sphereGeometry = new IcosahedronGeometry(0.2, 4);
 	/**
 	 *
 	 * @param {{scene: BaseScene, id: number}} param0
@@ -38,6 +38,7 @@ export default class LaserGame {
 
 	endEvent() {
 		signal.emit(this.scene.label + ':endGame', this.id);
+		signal.emit('sound:play', 'success');
 		console.log(this.scene.label + ':endGame', '🕹 Game ended');
 	}
 
@@ -80,6 +81,23 @@ export default class LaserGame {
 	}
 
 	update(et, dt) {
-		this.laserTowers.forEach((laserTower) => laserTower.update(et, dt));
+		let nearestTower = null;
+		let nearestTowerDistance = Infinity;
+		this.laserTowers.forEach((laserTower) => {
+			if (
+				laserTower.base.mesh.position.distanceTo(this.scene.player.base.mesh.position) <
+					nearestTowerDistance &&
+				laserTower.isActivated
+			) {
+				nearestTower = laserTower;
+				nearestTowerDistance = laserTower.base.mesh.position.distanceTo(
+					this.scene.player.base.mesh.position,
+				);
+			}
+			laserTower.update(et, dt);
+		});
+
+		if (nearestTower)
+			signal.emit('sound:setParams', 'laser', { pos: nearestTower.base.mesh.position });
 	}
 }

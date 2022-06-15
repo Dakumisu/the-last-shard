@@ -3,8 +3,10 @@
 uniform float uTime;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
+uniform vec3 uCamPos;
 uniform sampler2D uElevationTexture;
 uniform sampler2D uPositionTexture;
+uniform sampler2D uNoiseTexture;
 uniform vec3 uMaxMapBounds;
 uniform vec3 uMinMapBounds;
 
@@ -54,12 +56,12 @@ void main() {
 
 	vec3 translation = vec3(0.);
 
-	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
+	translation.xz = uCamPos.xz - mod(aPositions.xz + uCamPos.xz, boxSize) + uHalfBoxSize;
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
-	float fade = 1.0 - smoothstep(0., 1., (0.075 * distance(uCharaPos.xz, translation.xz)));
+	float fade = 1.0 - smoothstep(0., 1., (0.075 * distance(uCamPos.xz, translation.xz)));
 
 	vFadePos = fade;
 	vUv = uv;
@@ -74,6 +76,10 @@ void main() {
 	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
 
 	vFade = elevation;
+
+	// float heightNoise = texture2D(uNoiseTexture, scaledCoords).r * 100.;
+	// float heightNoiseSmall = texture2D(uNoiseTexture, scaledCoords).r * 50.;
+	// pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.025;
 
 	// float scaleFromTexture = 1. - texture2D(uPositionTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
 	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
@@ -95,7 +101,7 @@ void main() {
 	float loop = mod(time * 1.5 * aScale * maxDuration, maxDuration) / maxDuration;
 	vLoop = loop;
 
-	translation.y += 0.4;
+	translation.y += 0.5;
 
 	vec4 mv = modelViewMatrix * vec4(translation, 1.0);
 

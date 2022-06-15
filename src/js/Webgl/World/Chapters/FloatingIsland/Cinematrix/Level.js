@@ -12,11 +12,12 @@ const params = {
 };
 
 export class Level {
-	constructor(datas) {
+	constructor(scene, datas = {}) {
 		this.datas = datas;
+		this.scene = scene;
 
-		this.label = `${this.datas.scene}_${this.datas.name}`;
-		this.controller = new Cinematrix(this.label, { useNormals: true });
+		this.label = `${this.scene.label.toLowerCase()}_${this.datas.name}`;
+		this.controller = new Cinematrix(this.label);
 
 		this.isComplete = false;
 
@@ -25,11 +26,11 @@ export class Level {
 	}
 
 	async setup() {
-		// this.initTargets();
+		this.initTargets();
 
 		await this.controller.setupPath(this.datas.curve);
 
-		// this.controller.setTargets(this.targets);
+		this.controller.setTargets(this.targets);
 		this.controller.setSpeed(params.speed);
 		this.controller.setDelay(params.delay);
 
@@ -42,15 +43,22 @@ export class Level {
 		targets.push({
 			focus: 'player',
 			pos: getPlayer().base.mesh.position,
-			ratio: 0.5,
+			ratio: 0.25,
 			speed: 0.5,
 		});
 
 		targets.push({
-			focus: 'center',
-			pos: new Vector3(),
+			focus: 'door',
+			pos: this.scene.focusList.door,
 			ratio: 0.5,
 			speed: 1,
+		});
+
+		targets.push({
+			focus: 'fragment',
+			pos: this.scene.focusList.fragment,
+			ratio: 0.25,
+			speed: 0.75,
 		});
 
 		this.targets = targets;

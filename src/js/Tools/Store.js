@@ -24,14 +24,16 @@ const store = {
 	browser: null,
 	views: null,
 
-	quality: 5,
-	isWebGL2: true,
-
 	manifest: [],
 	loadedAssets: {
 		models: new Map(),
 		audios: new Map(),
 		textures: new Map(),
+	},
+
+	webgl: {
+		isWebGL2: true,
+		quality: 5,
 	},
 
 	game: {

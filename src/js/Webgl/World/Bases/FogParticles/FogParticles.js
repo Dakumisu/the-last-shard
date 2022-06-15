@@ -17,11 +17,13 @@ import {
 	AdditiveBlending,
 	MultiplyBlending,
 	SubtractiveBlending,
+	MirroredRepeatWrapping,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 
 import FogParticlesMaterial from '@webgl/Materials/FogParticles/FogParticlesMaterial';
+import { store } from '@tools/Store';
 
 export default class FogParticles {
 	constructor({ scene, params }) {
@@ -31,6 +33,7 @@ export default class FogParticles {
 
 		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
+		this.camera = webgl.camera.instance;
 
 		this.geometry = null;
 		this.base = {
@@ -100,6 +103,9 @@ export default class FogParticles {
 	}
 
 	async setMaterial() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
+
 		this.base.material = new FogParticlesMaterial({
 			depthWrite: false,
 			// depthTest: false,
@@ -107,12 +113,14 @@ export default class FogParticles {
 			uniforms: {
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uCamPos: { value: this.camera.position },
 				uElevationTexture: { value: this.scene.depthTexture },
-				uPositionTexture: { value: this.params.positionsTexture },
+				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
 				uFogTexture: { value: this.params.fogTexture },
 				uColor: { value: new Color().set(this.params.color) },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 	}

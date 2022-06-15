@@ -17,7 +17,16 @@ function beziersPath(blenderBeziers, { closed = false, uid = '' } = {}) {
 		// Seulement ça ne représente pas la courbe, mais seulement les points de control
 		// On build la courbe en lui donnant un 1er point et celui qui suit, avec un de leur control
 		const startPoint = blenderBeziers[i];
-		const endPoint = blenderBeziers[(i + 1) % l];
+
+		let endPoint;
+		if (closed) {
+			endPoint = blenderBeziers[(i + 1) % l];
+		} else {
+			if (blenderBeziers[i + 1] === undefined) continue;
+
+			endPoint = blenderBeziers[i + 1];
+		}
+		console.log(startPoint, endPoint);
 
 		curve.add(
 			new CubicBezierCurve3(

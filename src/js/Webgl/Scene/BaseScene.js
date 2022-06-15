@@ -49,6 +49,7 @@ import LaserTower from '../World/Bases/Interactables/LaserTower';
 
 import { loadAudio, loadTexture } from '@utils/loaders';
 import { store } from '@tools/Store';
+import Tree from '@webgl/World/Bases/Props/Tree';
 
 const textureSize = [0, 0, 128, 256, 512, 1024];
 const bakeDuration = 2000;
@@ -68,12 +69,14 @@ export default class BaseScene {
 		this.instance = new Group();
 
 		this.manifest = manifest || {};
+		this.focusList = {};
 		this.props = new Group();
 		this.interactables = new Group();
 		this.curves = new Group();
 		this.checkpoints = null;
 		this.areas = null;
 		this.portals = [];
+		this.trees = [];
 		this.fragments = [];
 		this.grass = null;
 		this.lights = new Group();
@@ -231,6 +234,7 @@ export default class BaseScene {
 	async loadManifest() {
 		await this.isPreloaded;
 
+		await this._parseFocus(this.manifest.focus);
 		await this._loadBase();
 		await this._loadProps(this.manifest.props);
 		await this._loadInteractables(this.manifest.interactables);
@@ -239,6 +243,18 @@ export default class BaseScene {
 		await this._loadAreas(this.manifest.areas);
 
 		this.manifestLoaded.resolve();
+	}
+
+	async _parseFocus(focus) {
+		if (!focus) return;
+
+		this.focusList.portal = focus.portal
+			? new Vector3().fromArray(focus.portal)
+			: new Vector3();
+		this.focusList.fragment = focus.fragment
+			? new Vector3().fromArray(focus.fragment)
+			: new Vector3();
+		this.focusList.door = focus.door ? new Vector3().fromArray(focus.door) : new Vector3();
 	}
 
 	async _loadBase() {
@@ -264,6 +280,18 @@ export default class BaseScene {
 				});
 				await portal.init();
 				this.portals.push(portal);
+
+				return;
+			}
+
+			if (prop.asset.includes('Tree')) {
+				const tree = new Tree(this, {
+					name: this.label,
+					asset: prop,
+					group: this.props,
+				});
+				await tree.init();
+				this.trees.push(tree);
 
 				return;
 			}
@@ -374,8 +402,8 @@ export default class BaseScene {
 
 				if (!this.cinematrixClasses[name]) return;
 
-				const Cinematrix = this.cinematrixClasses[name];
-				new Cinematrix({ scene: this.label.toLowerCase(), name: name, curve: _curve });
+				const CinematrixCam = this.cinematrixClasses[name];
+				new CinematrixCam(this, { name: name, curve: _curve });
 			}
 		});
 
@@ -422,8 +450,9 @@ export default class BaseScene {
 			const pos = new Vector3().fromArray(area.pos);
 			const size = area.size;
 			const dialog = area.dialog;
+			const sounds = area.sounds;
 
-			areasList.push({ pos, zone, size, dialog });
+			areasList.push({ pos, zone, size, dialog, sounds });
 		});
 
 		this.areas = new Areas({ areas: areasList, scene: this });
@@ -549,6 +578,7 @@ export default class BaseScene {
 		if (this.fragments) this.fragments.forEach((fragment) => fragment.update(et, dt));
 		if (this.portals)
 			this.portals.forEach((portal) => portal.update(this.player.getPosition()));
+		if (this.trees) this.trees.forEach((tree) => tree.update());
 		if (this.checkpoints) this.checkpoints.update(et, dt);
 		if (this.laserGames) this.laserGames.forEach((laserGame) => laserGame.update(et, dt));
 		if (this.areas) this.areas.update(et, dt);

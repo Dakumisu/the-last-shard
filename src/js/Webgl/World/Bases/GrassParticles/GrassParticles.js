@@ -18,10 +18,12 @@ import {
 	BoxBufferGeometry,
 	MeshBasicMaterial,
 	MeshNormalMaterial,
+	MirroredRepeatWrapping,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 import ParticlesMaterial from '@webgl/Materials/GrassParticles/ParticlesMaterial';
+import { store } from '@tools/Store';
 
 export default class GrassParticles {
 	constructor({ scene, params }) {
@@ -31,6 +33,7 @@ export default class GrassParticles {
 
 		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
+		this.camera = webgl.camera.instance;
 
 		this.geometry = null;
 		this.base = {
@@ -107,18 +110,23 @@ export default class GrassParticles {
 	}
 
 	setMaterial() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
+
 		this.base.material = new ParticlesMaterial({
 			depthWrite: false,
 			blending: AdditiveBlending,
 			uniforms: {
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uCamPos: { value: this.camera.position },
 				uElevationTexture: { value: this.scene.depthTexture },
-				uPositionTexture: { value: this.params.positionsTexture },
+				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 	}

@@ -1,7 +1,7 @@
 import { controlsKeys } from '@game/Control';
 import LaserGame from '@game/LaserGame';
 import anime from 'animejs';
-import { Color, Mesh, Ray, Vector3 } from 'three';
+import { Color, Mesh, MirroredRepeatWrapping, Ray, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
 import { Group } from 'three';
 import Timer from '@game/Timer';
@@ -10,6 +10,8 @@ import { clamp, lerp, map } from 'philbin-packages/maths';
 import { throttle, wait } from 'philbin-packages/async';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import LaserSphereMaterial from '@webgl/Materials/LaserSphereMaterial/LaserSphereMaterial';
+import { store } from '@tools/Store';
+import { loadTexture } from '@utils/loaders';
 
 const params = {
 	ringRotationOffset: {
@@ -103,9 +105,11 @@ export default class LaserTower extends BaseCollider {
 
 		this.sphereMaterial = new LaserSphereMaterial({
 			uniforms: {
-				uColor1: { value: new Color(0x000000) },
-				uColor2: { value: new Color(0xffffff) },
+				uColor1: { value: new Color(0x000832) },
+				uColor2: { value: new Color(0x31d7ff) },
 				uTransition: { value: 0 },
+				uTexture: { value: await loadTexture('portalTextureMask') },
+				uTexture2: { value: await loadTexture('plasmaTexture') },
 			},
 		});
 
@@ -162,8 +166,8 @@ export default class LaserTower extends BaseCollider {
 		anime({
 			targets: this.sphereMaterial.uniforms.uTransition,
 			value: 1,
-			duration: 500,
-			easing: 'easeOutQuad',
+			duration: 350,
+			easing: 'easeOutSine',
 		});
 
 		if (this.laserGroup) this.laserGroup.visible = true;
@@ -177,8 +181,8 @@ export default class LaserTower extends BaseCollider {
 		anime({
 			targets: this.sphereMaterial.uniforms.uTransition,
 			value: 0,
-			duration: 500,
-			easing: 'easeOutQuad',
+			duration: 350,
+			easing: 'easeOutSine',
 		});
 
 		signal.emit('sound:play', 'laser-activate', {
@@ -241,8 +245,7 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	rotate(reversed) {
-		signal.emit('sound:play', 'laser-rotate', { replay: true });
-
+		this.playSound();
 		this.needsUpdate = true;
 
 		if (this.animation && !this.animation.paused) this.animation.pause();
@@ -263,6 +266,10 @@ export default class LaserTower extends BaseCollider {
 			easing: 'easeOutQuad',
 		});
 	}
+
+	playSound = throttle(() => {
+		signal.emit('sound:play', 'laser-rotate', { replay: true });
+	}, 100);
 
 	tilt = async (e) => {
 		if (
@@ -287,7 +294,7 @@ export default class LaserTower extends BaseCollider {
 
 		this.tiltYTarget -= e.y * this.laserRotationOffsetX;
 		this.tiltYTarget = clamp(this.tiltYTarget, -Math.PI * 0.25, Math.PI * 0.25);
-		signal.emit('sound:play', 'laser-rotate', { replay: true });
+		this.playSound();
 	};
 
 	update = (et, dt) => {
@@ -322,7 +329,7 @@ export default class LaserTower extends BaseCollider {
 			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.sphereWorldPos);
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
-			if (rayNextDistance <= 0.2 && !nextLaserTower.isActivated && this.isActivated) {
+			if (rayNextDistance <= 0.25 && !nextLaserTower.isActivated && this.isActivated) {
 				if (this.animation && !this.animation.paused) this.animation.pause();
 				if (this.laserGroup) {
 					this.laserGroup.scale.z = distanceFromCurrent;
@@ -331,7 +338,7 @@ export default class LaserTower extends BaseCollider {
 				this.preventScroll = true;
 				nextLaserTower.activateBy(this);
 				this.needsUpdate = false;
-			} else if (nextLaserTower.isActivated && rayNextDistance >= 0.2)
+			} else if (nextLaserTower.isActivated && rayNextDistance >= 0.25)
 				nextLaserTower.desactivateBy(this);
 		});
 	};

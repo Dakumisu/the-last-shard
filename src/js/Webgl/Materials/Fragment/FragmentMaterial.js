@@ -5,16 +5,8 @@ import { store } from '@tools/Store';
 import hotShaders from './hotShaders';
 
 export default class FragmentMaterial extends BaseToonMaterial {
-	constructor() {
-		super({
-			side: DoubleSide,
-			transparent: true,
-			uniforms: {
-				uAlpha: { value: 1 },
-				uNoise: { value: getNoiseTexture() },
-				uMap: { value: getGradientTexture() },
-			},
-		});
+	constructor(params) {
+		super(params);
 
 		hotShaders.use(this);
 	}
@@ -27,7 +19,3 @@ const getGradientTexture = () => {
 
 	return gradient;
 };
-
-function getNoiseTexture() {
-	return store.loadedAssets.textures.get('noiseTexture');
-}

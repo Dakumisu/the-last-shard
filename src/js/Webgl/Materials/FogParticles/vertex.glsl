@@ -3,13 +3,13 @@
 uniform float uTime;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
+uniform vec3 uCamPos;
 uniform sampler2D uElevationTexture;
-uniform sampler2D uPositionTexture;
+uniform sampler2D uGrassTexture;
 uniform vec3 uMaxMapBounds;
 uniform vec3 uMinMapBounds;
 
 attribute float aScale;
-attribute float aOffset;
 attribute vec3 aPositions;
 
 varying vec2 vUv;
@@ -54,12 +54,12 @@ void main() {
 
 	vec3 translation = vec3(0.);
 
-	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
+	translation.xz = uCamPos.xz - mod(aPositions.xz + uCamPos.xz, boxSize) + uHalfBoxSize;
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
-	float fade = 1.0 - smoothstep(0., 1., (0.05 * distance(uCharaPos, translation)));
+	float fade = 1.0 - smoothstep(0., 1., (0.05 * distance(uCamPos, translation)));
 
 	vFadePos = fade;
 	vUv = uv;
@@ -74,6 +74,10 @@ void main() {
 	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
 
 	vFade = elevation;
+
+	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
+	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	pos *= scaleFromTexture;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);

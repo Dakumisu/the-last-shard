@@ -35,7 +35,7 @@ export default class Curve {
 		const _geometry = new BufferGeometry().setFromPoints(_points);
 		const _curve = new Line(_geometry, material);
 
-		this.group.add(_curve);
+		// this.group.add(_curve);
 	}
 
 	async init() {

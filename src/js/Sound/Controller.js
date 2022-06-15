@@ -1,16 +1,16 @@
 import { loadAudio } from '@utils/loaders';
 import { getPlayer } from '@webgl/World/Characters/Player';
 import { Howl, Howler } from 'howler';
-import { deferredPromise, wait } from 'philbin-packages/async';
 import signal from 'philbin-packages/signal';
 
 const params = {
-	ambiantVolume: 0.5,
+	ambiantVolume: 0.1,
+	// ambiantVolume: 0,
 };
 
 export default class SoundController {
 	constructor() {
-		Howler.volume(0.5);
+		Howler.volume(0.7);
 		/**
 		 * @type {Object.<string, {howl: Howl, params: Object}>}
 		 */
@@ -19,6 +19,7 @@ export default class SoundController {
 		 * @type {Object.<string, Howl>}
 		 */
 		this.ambients = {};
+		this.currentAmbient = null;
 
 		this.player = getPlayer();
 
@@ -31,20 +32,46 @@ export default class SoundController {
 
 	async init() {
 		await Promise.all([
-			this.add('laser', { loop: true, fadeDuration: 500, rate: 1 }),
-			this.add('laser-rotate', { loop: false, rate: 1 }),
-			this.add('laser-activate', { loop: false, rate: 1 }),
-			this.add('checkpoint', { loop: false, rate: 1 }),
-			this.add('timer', { loop: true, rate: 1 }),
-			this.add('footsteps-grass', { loop: true, fadeDuration: 50, rate: 1 }),
-			this.add('footsteps-ground', { loop: true, fadeDuration: 50, rate: 1 }),
-			this.add('fall', { loop: false, rate: 1 }),
-			this.add('jump', { loop: false, rate: 1 }),
-			this.add('pet-tp', { loop: false, rate: 1 }),
+			this.add('laser', { loop: true, fadeDuration: 500 }),
+			this.add('laser-rotate'),
+			this.add('laser-activate'),
+			this.add('laser-desactivate'),
+			this.add('portal-ambient', {
+				loop: true,
+			}),
+			this.add('fragment-ambient', {
+				loop: true,
+				fadeDuration: 500,
+			}),
+			this.add('checkpoint'),
+			this.add('timer', { loop: true }),
+			this.add('footsteps-grass', { loop: true }),
+			this.add('footsteps-ground', { loop: true }),
+			this.add('fall-grass'),
+			this.add('fall-ground'),
+			this.add('pet-tp'),
+			this.add('pet-happy', {
+				sprite: {
+					0: [0, 1171],
+					1: [1171, 1012],
+					2: [2183, 1449],
+					3: [3632, 1484],
+					4: [5116, 1417],
+				},
+			}),
+			this.add('pet-ideas'),
+			this.add('success'),
+			this.add('fragment-interact'),
+			this.add('cinematrix-1', {
+				fadeDuration: 500,
+			}),
 		]);
+
+		// this.play('footsteps-grass', { volume: 0 });
+		// this.play('footsteps-ground', { volume: 0 });
 	}
 
-	async add(key, params) {
+	async add(key, params = {}) {
 		this.sounds[key] = {
 			howl: new Howl({
 				src: [await loadAudio(key + '-sound')],
@@ -52,6 +79,7 @@ export default class SoundController {
 				loop: params.loop,
 				rate: params.rate,
 				volume: params.volume,
+				sprite: params.sprite ? params.sprite : undefined,
 			}),
 			params,
 		};
@@ -69,8 +97,13 @@ export default class SoundController {
 	play = (key, params = {}) => {
 		const sound = this.sounds[key];
 
-		if (params.pos) sound.howl.pos(params.pos.x, params.pos.y, params.pos.z);
-		if (params.rate) sound.howl.rate(Math.max(params.rate || 1, sound.params.rate));
+		if (!sound) return;
+
+		const pos = params.pos || sound.params.pos;
+		if (pos) sound.howl.pos(pos.x, pos.y, pos.z);
+
+		if (params.rate) sound.howl.rate(params.rate || 1);
+
 		if (!params.replay && sound.howl.playing()) return;
 
 		sound.howl.volume(params.volume || sound.params.volume || 1);
@@ -78,18 +111,19 @@ export default class SoundController {
 		if (sound.params.fadeDuration)
 			sound.howl.fade(sound.howl.volume(), 1, sound.params.fadeDuration);
 
-		sound.howl.play();
+		if (params.spriteId >= 0) sound.howl.play(params.spriteId + '');
+		else sound.howl.play();
 	};
 
 	pause = (key) => {
 		const sound = this.sounds[key];
-		if (!sound.howl.playing()) return;
+		if (!sound || !sound.howl.playing()) return;
 
 		if (sound.params.fadeDuration)
 			sound.howl
 				.fade(sound.howl.volume(), 0, sound.params.fadeDuration)
-				.once('fade', () => this.sounds[key].howl.pause());
-		else sound.howl.pause();
+				.once('fade', () => this.sounds[key].howl.stop());
+		else sound.howl.stop();
 	};
 
 	setParams = (key, params) => {
@@ -98,6 +132,7 @@ export default class SoundController {
 
 		if (params.volume) sound.howl.volume(params.volume);
 		if (params.rate) sound.howl.rate(params.rate);
+		if (params.pos) sound.howl.pos(params.pos.x, params.pos.y, params.pos.z);
 	};
 
 	beforeSwitch = (sceneName) => {
@@ -106,14 +141,23 @@ export default class SoundController {
 				.fade(this.sounds[key].howl.volume(), 0, 500)
 				.once('fade', () => this.sounds[key].howl.stop());
 
-		this.ambients[sceneName]
-			.fade(params.ambiantVolume, 0, 500)
-			.once('fade', () => this.ambients[sceneName].stop());
+		this.fadeOutAmbient(sceneName);
 	};
 
 	afterSwitch = (sceneName) => {
-		this.ambients[sceneName].fade(0, params.ambiantVolume, 500).play();
+		this.fadeInAmbient(sceneName);
+		this.currentAmbient = sceneName;
 	};
+
+	fadeOutAmbient(sceneName) {
+		this.ambients[sceneName]
+			.fade(params.ambiantVolume, 0, 500)
+			.once('fade', () => this.ambients[sceneName].stop());
+	}
+
+	fadeInAmbient(sceneName) {
+		this.ambients[sceneName].fade(0, params.ambiantVolume, 500).play();
+	}
 
 	update() {
 		if (this.player?.base.mesh.position) {

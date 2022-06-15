@@ -16,8 +16,6 @@
     "Stairs",
     "Coupe",
     "TreeA",
-    "TreeB",
-    "TreeC",
     "Urne",
     "Wall",
     "LaserTowerStart",
@@ -29,7 +27,7 @@
   "props": [
     {
       "asset": "Stairs",
-      "uid": "Stairs.003",
+      "uid": "Stairs.006",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -55,7 +53,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.005",
+      "uid": "Coupe.011",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -81,7 +79,7 @@
     },
     {
       "asset": "Coupe",
-      "uid": "Coupe.006",
+      "uid": "Coupe.012",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -107,7 +105,7 @@
     },
     {
       "asset": "TreeA",
-      "uid": "TreeA.003",
+      "uid": "TreeA.006",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -132,60 +130,8 @@
       }
     },
     {
-      "asset": "TreeB",
-      "uid": "TreeB.003",
-      "type": "collider",
-      "traversable": false,
-      "movable": false,
-      "params": {},
-      "transforms": {
-        "pos": [
-          9.632267,
-          0.0,
-          -0.0
-        ],
-        "scale": [
-          1.0,
-          1.0,
-          1.0
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
-      "asset": "TreeC",
-      "uid": "TreeC.003",
-      "type": "collider",
-      "traversable": false,
-      "movable": false,
-      "params": {},
-      "transforms": {
-        "pos": [
-          7.574594,
-          0.0,
-          -8.962122
-        ],
-        "scale": [
-          1.0,
-          1.0,
-          1.0
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
       "asset": "Urne",
-      "uid": "Urne.003",
+      "uid": "Urne.006",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -211,7 +157,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.007",
+      "uid": "Wall.016",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -237,7 +183,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.008",
+      "uid": "Wall.017",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -263,7 +209,7 @@
     },
     {
       "asset": "Wall",
-      "uid": "Wall.009",
+      "uid": "Wall.018",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -289,7 +235,7 @@
     },
     {
       "asset": "LevelDoorArch",
-      "uid": "LevelDoorArch.003",
+      "uid": "LevelDoorArch.006",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -315,7 +261,7 @@
     },
     {
       "asset": "LevelDoor",
-      "uid": "LevelDoor.003",
+      "uid": "LevelDoor.006",
       "type": "collider",
       "traversable": false,
       "movable": true,
@@ -345,7 +291,7 @@
   "interactables": [
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.002",
+      "uid": "LaserTowerStart.005",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -374,7 +320,7 @@
     },
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.003",
+      "uid": "LaserTowerEnd.006",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -402,7 +348,7 @@
     },
     {
       "asset": "Fragment",
-      "uid": "Fragment.009",
+      "uid": "Fragment.021",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -428,7 +374,7 @@
     },
     {
       "asset": "Fragment",
-      "uid": "Fragment.010",
+      "uid": "Fragment.022",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -454,7 +400,7 @@
     },
     {
       "asset": "Fragment",
-      "uid": "Fragment.011",
+      "uid": "Fragment.023",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -480,7 +426,7 @@
     },
     {
       "asset": "Fragment",
-      "uid": "Fragment.012",
+      "uid": "Fragment.024",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -508,7 +454,7 @@
   "points": [
     {
       "type": "Spawn",
-      "uid": "Spawn.002",
+      "uid": "Spawn.005",
       "pos": [
         -10.160334,
         2.060297,
@@ -523,7 +469,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.008",
+      "uid": "Checkpoint.020",
       "pos": [
         10.243461,
         2.060297,
@@ -538,7 +484,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.009",
+      "uid": "Checkpoint.021",
       "pos": [
         -10.563803,
         2.060297,
@@ -553,7 +499,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.010",
+      "uid": "Checkpoint.022",
       "pos": [
         61.949936,
         2.060297,
@@ -568,7 +514,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.011",
+      "uid": "Checkpoint.023",
       "pos": [
         100.7435,
         13.863754,
@@ -601,7 +547,8 @@
         5.025411
       ],
       "size": 18.204206,
-      "dialog": false
+      "dialog": false,
+      "sounds": "fragment-ambient"
     },
     {
       "zone": "Laser_1",
@@ -611,7 +558,8 @@
         35.631027
       ],
       "size": 8.142216,
-      "dialog": "laser"
+      "dialog": "laser",
+      "sounds": "portal-ambient"
     }
   ],
   "curves": [

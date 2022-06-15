@@ -28,7 +28,7 @@ export default class Areas {
 	}
 
 	initAreas() {
-		const { zone, pos, size } = this.areas;
+		// const { zone, pos, size, } = this.areas;
 
 		/// #if DEBUG
 		this.areas.forEach((area) => {
@@ -63,18 +63,31 @@ export default class Areas {
 		const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
 		signal.emit('area:enter', name);
 
-		if (!area.dialog) return;
+		if (area.sounds) {
+			area.sounds.split(',').forEach((sound) => {
+				// signal.emit('sound:play', sound, { pos: area.pos });
+			});
+		}
 
-		signal.emit('dialog:open', { scene: this.scene.label, sequence: area.dialog });
-		area.dialog = false;
+		if (area.dialog) {
+			signal.emit('dialog:open', { scene: this.scene.label, sequence: area.dialog });
+			area.dialog = false;
+		}
 
 		return;
 	}
 
-	leave() {
+	leave(area) {
 		/// #if DEBUG
 		console.log('👊 Area leave');
 		/// #endif
+
+		if (area.sounds) {
+			area.sounds.split(',').forEach((sound) => {
+				console.log('🔔 Area sound:', sound);
+				// signal.emit('sound:stop', sound);
+			});
+		}
 
 		const name = `${this.scene.label.toLowerCase()}_${this.currentArea.zone}`;
 		signal.emit('area:leave', name);
@@ -95,7 +108,7 @@ export default class Areas {
 				this.currentArea.size;
 			if (inRange && this.isInside) return;
 
-			this.leave();
+			this.leave(this.currentArea);
 		} else {
 			// check if the player enter in an area
 			this.areas.forEach((area) => {

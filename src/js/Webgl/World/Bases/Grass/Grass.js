@@ -27,7 +27,7 @@ import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 import { loadTexture } from '@utils/loaders';
 
-const twigsCountList = [0, 0, 300000, 300000, 300000, 400000];
+const twigsCountList = [0, 0, 100000, 200000, 300000, 400000];
 
 export default class Grass {
 	/**
@@ -41,6 +41,7 @@ export default class Grass {
 
 		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
+		this.camera = webgl.camera.instance;
 
 		this.base = {
 			geometry: null,
@@ -73,7 +74,7 @@ export default class Grass {
 		this.initGeometry(twigsCountList[5]);
 		this.setGrass();
 
-		this.count = twigsCountList[store.quality];
+		this.count = twigsCountList[store.webgl.quality];
 		this.updateCount(this.count);
 
 		/// #if DEBUG
@@ -179,6 +180,7 @@ export default class Grass {
 				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uCamPos: { value: this.camera.position },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
 				uElevationTexture: { value: this.scene.depthTexture },

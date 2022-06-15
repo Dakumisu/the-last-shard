@@ -122,7 +122,7 @@ export class Pet extends BaseEntity {
 			depthWrite: false,
 			uniforms: {
 				uColor: { value: new Color(0xc1f376) },
-				uIntensity: { value: 0.4 },
+				uIntensity: { value: 0.3 },
 				uRadius: { value: 0.005 },
 			},
 		});
@@ -219,7 +219,7 @@ export class Pet extends BaseEntity {
 		this.player.getDirection(TMP_DIR);
 		TARGET_POS.copy(playerPos).add(TMP_DIR);
 
-		// pet.anim = this.base.animation.get('follow')
+		pet.anim = this.base.animation.get('follow');
 
 		return this;
 	}
@@ -291,7 +291,7 @@ export class Pet extends BaseEntity {
 		TMP_PLAYER_POS.copy(playerPos);
 		this.base.group.position.copy(TARGET_POS);
 
-		signal.emit('sound:play', 'pet-tp');
+		signal.emit(':play', 'pet-tp');
 
 		await this.show();
 

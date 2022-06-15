@@ -15,6 +15,7 @@ import {
 	InterleavedBufferAttribute,
 	MathUtils,
 	Mesh,
+	MirroredRepeatWrapping,
 	Texture,
 } from 'three';
 
@@ -42,6 +43,7 @@ export default class Flowers {
 
 		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
+		this.camera = webgl.camera.instance;
 
 		this.base = {
 			geometry: null,
@@ -87,7 +89,7 @@ export default class Flowers {
 		this.initGeometry(twigsCountList[5]);
 		this.setGrass();
 
-		this.count = twigsCountList[store.quality];
+		this.count = twigsCountList[store.webgl.quality];
 		this.updateCount(this.count);
 
 		/// #if DEBUG
@@ -168,6 +170,8 @@ export default class Flowers {
 	}
 
 	setGrass() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
 		this.base.material = new FlowerMaterial({
 			transparent: true,
 			uniforms: {
@@ -178,6 +182,7 @@ export default class Flowers {
 				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
 				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uCamPos: { value: this.camera.position },
 				uElevationTexture: { value: this.scene.depthTexture },
 				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
@@ -185,6 +190,7 @@ export default class Flowers {
 				uTexture: { value: this.texture },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 

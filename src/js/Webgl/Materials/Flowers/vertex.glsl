@@ -8,8 +8,10 @@ uniform float uDisplacement;
 uniform float uNoiseMouvementIntensity;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
+uniform vec3 uCamPos;
 uniform sampler2D uElevationTexture;
 uniform sampler2D uGrassTexture;
+uniform sampler2D uNoiseTexture;
 uniform vec3 uMaxMapBounds;
 uniform vec3 uMinMapBounds;
 
@@ -41,33 +43,39 @@ void main() {
 
 	vec3 translation = pos;
 
-	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
+	translation.xz = uCamPos.xz - mod(aPositions.xz + uCamPos.xz, boxSize) + uHalfBoxSize;
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
-	float fade = 1.0 - smoothstep(0., 1., (0.085 * distance(uCharaPos.xz, translation.xz)));
+	float fade = 1.0 - smoothstep(0., 1., (0.085 * distance(uCamPos.xz, translation.xz)));
 
 	vFadePos = fade;
 
 	// Scale down out of range grass
-	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * 0.5, distance(uCharaPos.xz, translation.xz));
-	translation.y *= scaleFromRange;
+	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * 0.5, distance(uCamPos.xz, translation.xz));
+	pos *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds
 	vec2 scaledCoords = vec2(map(translation.x, uMinMapBounds.x, uMaxMapBounds.x, 0., 1.), map(translation.z, uMaxMapBounds.z, uMinMapBounds.z, .0, 1.));
 	float elevation = texture2D(uElevationTexture, scaledCoords.xy).r;
 
+	float heightNoise = texture2D(uNoiseTexture, scaledCoords).r * 100.;
+	float heightNoiseSmall = texture2D(uNoiseTexture, scaledCoords).r * 50.;
+	pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.017;
+
 	vFade = elevation;
 
-	if(elevation >= 1.) {
-		translation = vec3(0.);
-	}
+	// if(elevation >= 1.) {
+	// 	translation = vec3(0.);
+	// }
 
-	// float scaleFromTexture = 1. - texture2D(uGrassTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
-	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	// pos *= scaleFromTexture;
+	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
+	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	pos *= scaleFromTexture;
+
 	translation.xz += pos.xz;
+	translation.y += pos.y * 0.35;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);

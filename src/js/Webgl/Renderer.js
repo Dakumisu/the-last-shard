@@ -98,7 +98,7 @@ export default class Renderer {
 		// this.renderer.toneMapping = NoToneMapping;
 		// this.renderer.toneMappingExposure = 1;
 
-		store.isWebGL2 = this.renderer.capabilities.isWebGL2;
+		store.webgl.isWebGL2 = this.renderer.capabilities.isWebGL2;
 	}
 
 	setPostProcess() {
