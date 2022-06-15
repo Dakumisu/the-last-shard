@@ -601,7 +601,8 @@
         5.025411
       ],
       "size": 18.204206,
-      "dialog": false
+      "dialog": false,
+      "sounds": "fragment-ambient"
     },
     {
       "zone": "Laser_1",
@@ -611,7 +612,8 @@
         35.631027
       ],
       "size": 8.142216,
-      "dialog": "laser"
+      "dialog": "laser",
+      "sounds": "portal-ambient"
     }
   ],
   "curves": [

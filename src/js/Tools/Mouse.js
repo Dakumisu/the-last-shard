@@ -21,6 +21,7 @@ export default class Mouse {
 		this.virtualScroll = new VirtualScroll({
 			el: document.querySelector('.canvas-container'),
 			useKeyboard: false,
+			passive: true,
 		});
 		this.virtualScroll.on(this.onScroll);
 	}

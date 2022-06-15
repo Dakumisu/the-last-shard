@@ -10,6 +10,7 @@ import { clamp, lerp, map } from 'philbin-packages/maths';
 import { throttle, wait } from 'philbin-packages/async';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import LaserSphereMaterial from '@webgl/Materials/LaserSphereMaterial/LaserSphereMaterial';
+import { store } from '@tools/Store';
 
 const params = {
 	ringRotationOffset: {
@@ -146,6 +147,7 @@ export default class LaserTower extends BaseCollider {
 			this.game.pet.feedOn(this.sphereWorldPos);
 
 			await wait(500);
+			if (!store.game.player.canInteract) return;
 
 			signal.emit('sound:play', 'laser', {
 				pos: this.base.mesh.position,

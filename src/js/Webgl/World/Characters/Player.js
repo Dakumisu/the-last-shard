@@ -29,7 +29,7 @@ import { getWebgl } from '@webgl/Webgl';
 
 import { store } from '@tools/Store';
 import { loadDynamicGLTF as loadGLTF, loadTexture } from '@utils/loaders';
-import { clamp, dampPrecise, rDampPrecise } from 'philbin-packages/maths';
+import { clamp, dampPrecise, map, rDampPrecise } from 'philbin-packages/maths';
 
 import OrbitCamera from '@webgl/Camera/Cameras/OrbitCamera';
 import PlayerMaterial from '@webgl/Materials/Player/PlayerMaterial';
@@ -583,7 +583,7 @@ class Player extends BaseEntity {
 		await wait(delay);
 		playerVelocity.y = 13;
 		this.state.isJumping = false;
-		signal.emit('sound:play', 'jump');
+		// signal.emit('sound:play', 'jump');
 	}
 
 	checkPlayerPosition(dt) {
@@ -666,20 +666,33 @@ class Player extends BaseEntity {
 
 	updateSounds() {
 		if (
-			this.state.isMoving &&
-			this.state.isOnGround &&
+			// this.state.isOnGround &&
 			player.realSpeed > 1 &&
-			!this.state.isFalling
+			player.realSpeed < 10 &&
+			!this.state.hasJumped
+			// &&
+			// !this.state.isFalling
 		) {
-			if (this.state.isOnGrass) {
-				signal.emit('sound:play', 'footsteps-grass', { rate: player.realSpeed * 0.3 });
-				signal.emit('sound:stop', 'footsteps-ground');
+			if (this.state.isOnGrass && this.state.isMoving) {
+				signal.emit('sound:play', 'footsteps-grass', {
+					rate: map(player.realSpeed, 0, 7, 0.5, 1),
+				});
+				signal.emit('sound:stop', 'footsteps-ground', { fadeDuration: 100 });
 			} else {
-				signal.emit('sound:play', 'footsteps-ground', { rate: player.realSpeed * 0.35 });
-				signal.emit('sound:stop', 'footsteps-grass');
+				signal.emit('sound:play', 'footsteps-ground', {
+					rate: map(player.realSpeed, 0, 7, 0.7, 1.3),
+				});
+				signal.emit('sound:stop', 'footsteps-grass', { fadeDuration: 100 });
 			}
-		} else if (this.state.isFalling && this.state.isOnGround && this.state.hasJumped)
-			signal.emit('sound:play', 'fall');
+		} else if (
+			this.state.isFalling &&
+			this.state.isOnGround &&
+			this.state.hasJumped &&
+			!this.state.isJumping
+		)
+			this.state.isOnGrass
+				? signal.emit('sound:play', 'fall-grass')
+				: signal.emit('sound:play', 'fall-ground');
 		else {
 			if (this.state.isOnGrass) signal.emit('sound:stop', 'footsteps-grass');
 			else signal.emit('sound:stop', 'footsteps-ground');
@@ -716,6 +729,8 @@ class Player extends BaseEntity {
 		this.base.camera.orbit.sphericalTarget.setTheta(this.base.mesh.rotation.y || 0);
 
 		await wait(200);
+
+		signal.emit('sound:play', 'fall');
 
 		this.state.isDead = false;
 		signal.emit('postpro:transition-out');

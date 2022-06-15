@@ -6,6 +6,7 @@ import FragmentMaterial from '@webgl/Materials/Fragment/FragmentMaterial';
 import { dampPrecise } from 'philbin-packages/maths';
 import { DoubleSide, Vector3 } from 'three';
 import BaseCollider from '../BaseCollider';
+import signal from 'philbin-packages/signal';
 
 const params = {
 	speed: 1,
@@ -35,6 +36,11 @@ export default class Fragment extends BaseCollider {
 
 	async init() {
 		await super.init();
+		await this.soundController.add('fragment-ambient', {
+			loop: true,
+			pos: this.base.mesh.position,
+			fadeDuration: 500,
+		});
 
 		this.base.mesh.traverse((obj) => {
 			if (obj.material) {
@@ -51,6 +57,8 @@ export default class Fragment extends BaseCollider {
 	interact(key) {
 		if (!this.isInBroadphaseRange) return;
 		if (this.isCollected) return;
+
+		signal.emit('sound:play', 'fragment-interact', {});
 
 		this.isCollected = true;
 		store.game.fragmentsCollected++;

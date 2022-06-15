@@ -432,8 +432,9 @@ export default class BaseScene {
 			const pos = new Vector3().fromArray(area.pos);
 			const size = area.size;
 			const dialog = area.dialog;
+			const sounds = area.sounds;
 
-			areasList.push({ pos, zone, size, dialog });
+			areasList.push({ pos, zone, size, dialog, sounds });
 		});
 
 		this.areas = new Areas({ areas: areasList, scene: this });
