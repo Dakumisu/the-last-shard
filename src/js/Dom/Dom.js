@@ -4,6 +4,9 @@ import AnchorLink from './Components/link/AnchorLink';
 import Nodes from './Nodes';
 import Views from './Views';
 
+import { Context } from './Context';
+import signal from 'philbin-packages/signal';
+
 let initialized = false;
 
 class Dom {
@@ -16,6 +19,7 @@ class Dom {
 		Dom.instance = this;
 
 		this.init();
+		this.listeners();
 	}
 
 	init() {
@@ -23,8 +27,14 @@ class Dom {
 		this.views = new Views();
 	}
 
-	event() {
-		if (!initialized) return;
+	listeners() {
+		signal.on('dom:complete', async () => {
+			this.context = new Context();
+			await this.context.start();
+			// this.home = new Home();
+			// this.game = new Game();
+			// this.menu = new Menu();
+		});
 	}
 
 	destroy() {

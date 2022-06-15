@@ -26,7 +26,6 @@ function beziersPath(blenderBeziers, { closed = false, uid = '' } = {}) {
 
 			endPoint = blenderBeziers[i + 1];
 		}
-		console.log(startPoint, endPoint);
 
 		curve.add(
 			new CubicBezierCurve3(

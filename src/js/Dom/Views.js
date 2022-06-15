@@ -2,7 +2,7 @@ import signal from 'philbin-packages/signal';
 
 import { store } from '@tools/Store';
 
-const defaultViewList = ['home', 'exp'];
+const defaultViewList = ['context', 'loading', 'home', 'exp', 'menu'];
 
 export default class Views {
 	constructor() {

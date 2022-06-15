@@ -224,8 +224,6 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
             print(key)
             if key.startswith('_'):
                 continue
-            # if key != 'effect':
-            #     continue
             v = obj[key]
             if (
                 not isinstance(v, str)
@@ -320,6 +318,7 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
         scale = utils.toThreeScale(utils.toNumberList(scale, 6))
 
         dialog = False
+        sounds = False
         for key in obj.keys():
             if key.startswith('_'):
                 continue
@@ -335,13 +334,23 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
                 ):
                     continue
 
-                break
+            elif (key == 'sounds'):
+                sounds = obj[key]
+
+                if (
+                    not isinstance(sounds, str)
+                    and not isinstance(sounds, float)
+                    and not isinstance(sounds, int)
+                    and not isinstance(sounds, bool)
+                ):
+                    continue
 
         areaData = {
             'zone': zone,
             'pos': pos,
             'size': scale[0],
-            'dialog': dialog
+            'dialog': dialog,
+            'sounds': sounds
         }
 
         data['areas'].append(areaData)
