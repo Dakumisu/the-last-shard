@@ -77,6 +77,16 @@ a {
 	color: var(--primary-color);
 }
 
+p,
+span {
+	// text-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 4px #fff, 0 0 3px #000000, 0 0 10px #000000,
+	// 	0 0 10px #000000, 0 0 5px #000000, 0 0 35px #000000;
+}
+
+span.important {
+	color: var(--pink);
+}
+
 section.canvas-container {
 	position: relative;
 	width: 100vw;

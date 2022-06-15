@@ -24,15 +24,15 @@ export class Context {
 
 		this.show(dom.nodes.domElements.context_container);
 
-		await wait(1000);
-		this.show(this.texts[0]);
-		await wait(4000);
-		this.hide(this.texts[0]);
+		// await wait(1000);
+		// this.show(this.texts[0]);
+		// await wait(4000);
+		// this.hide(this.texts[0]);
 		await wait(500);
-		this.show(this.texts[1]);
-		await wait(7500);
-		this.hide(this.texts[1]);
-		await wait(1000);
+		// this.show(this.texts[1]);
+		// await wait(7500);
+		// this.hide(this.texts[1]);
+		// await wait(1000);
 
 		this.hide(dom.nodes.domElements.context_container);
 		this.show(dom.nodes.domElements.canvas);

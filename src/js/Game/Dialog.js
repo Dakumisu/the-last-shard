@@ -8,6 +8,7 @@ import { getGame } from './Game';
 
 import dialog from '@json/dialog.json?json';
 import { MathUtils } from 'three';
+import { getDom } from '@dom/Dom';
 
 let pool = [];
 let length = 0;
@@ -21,8 +22,11 @@ let dummyKeyboard = {
 	space: false,
 };
 
+let dom;
+
 export default class Dialog {
 	constructor() {
+		dom = getDom();
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
 
@@ -98,6 +102,7 @@ export default class Dialog {
 	speak({ line = '' }) {
 		signal.emit('sound:play', 'pet-happy', { spriteId: this.spriteId % 4 });
 		this.spriteId++;
+		dom.nodes.domElements.dialog.innerHTML = line;
 		console.log('[line]', line);
 	}
 
