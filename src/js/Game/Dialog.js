@@ -28,6 +28,8 @@ export default class Dialog {
 
 		this.dialog = dialog;
 
+		this.spriteId = 0;
+
 		this.listeners();
 	}
 
@@ -94,7 +96,8 @@ export default class Dialog {
 	}, 500);
 
 	speak({ line = '' }) {
-		signal.emit('sound:play', 'pet-happy', { spriteId: MathUtils.randInt(0, 4) });
+		signal.emit('sound:play', 'pet-happy', { spriteId: this.spriteId % 4 });
+		this.spriteId++;
 		console.log('[line]', line);
 	}
 

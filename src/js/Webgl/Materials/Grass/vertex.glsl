@@ -7,6 +7,7 @@ uniform float uDisplacement;
 uniform float uNoiseMouvementIntensity;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
+uniform vec3 uCamPos;
 uniform sampler2D uElevationTexture;
 uniform sampler2D uGrassTexture;
 uniform sampler2D uNoiseTexture;
@@ -35,13 +36,13 @@ void main() {
 
 	vec3 translation = vec3(pos.x, 0., pos.z);
 
-	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
+	translation.xz = uCamPos.xz - mod(aPositions.xz + uCamPos.xz, boxSize) + uHalfBoxSize;
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
 	// Scale down out of range grass
-	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCharaPos.xz, translation.xz));
+	float scaleFromRange = smoothstep(uHalfBoxSize, uHalfBoxSize - uHalfBoxSize * .5, distance(uCamPos.xz, translation.xz));
 	pos *= scaleFromRange;
 
 	// Map position to the elevation texture coordinates using the map bounds

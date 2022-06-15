@@ -115,7 +115,8 @@ export default class Particles {
 			blending: AdditiveBlending,
 			uniforms: {
 				uHalfBoxSize: { value: this.params.halfBoxSize },
-				uCharaPos: { value: this.camera.position },
+				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uCamPos: { value: this.camera.position },
 				uElevationTexture: { value: this.scene.depthTexture },
 				uPositionTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },

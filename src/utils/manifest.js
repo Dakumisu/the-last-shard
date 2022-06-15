@@ -38,7 +38,7 @@ assetsMap.set('asset_gradient', {
 });
 
 assetsMap.set('noiseTexture', {
-	path: '/assets/image/noiseTexture.png',
+	path: '/assets/image/crystal.jpeg',
 	data: {},
 });
 
@@ -93,6 +93,17 @@ assetsMap.set('portalTexture2', {
 	path: '/assets/image/portalTexture2.png',
 	data: {},
 });
+
+assetsMap.set('shardTexture', {
+	path: '/assets/image/crystal.jpeg',
+	data: {},
+});
+
+assetsMap.set('shardTexture2', {
+	path: '/assets/image/crystal2.jpeg',
+	data: {},
+});
+
 assetsMap.set('portalTextureMask', {
 	path: '/assets/image/portalMask.jpg',
 	data: {},
@@ -224,10 +235,6 @@ assetsMap.set('fall-ground-sound', {
 	path: 'assets/sound/characters/fall-ground.mp3',
 	data: {},
 });
-assetsMap.set('jump-sound', {
-	path: 'assets/sound/characters/jump.mp3',
-	data: {},
-});
 assetsMap.set('pet-tp-sound', {
 	path: 'assets/sound/characters/pet-tp.mp3',
 	data: {},
@@ -246,6 +253,11 @@ assetsMap.set('fragment-ambient-sound', {
 });
 assetsMap.set('fragment-interact-sound', {
 	path: 'assets/sound/interactions/fragment-interact.mp3',
+	data: {},
+});
+
+assetsMap.set('cinematrix-1-sound', {
+	path: 'assets/sound/ambient/cinematrix-1.mp3',
 	data: {},
 });
 
