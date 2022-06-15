@@ -18,7 +18,7 @@ import anime from 'animejs';
 import CheckpointMaterialInner from '@webgl/Materials/CheckpointMaterialInner/CheckpointMaterialInner';
 import { loadTexture } from '@utils/loaders';
 
-const radius = 2;
+const radius = 0.75;
 const tVec3 = new Vector3();
 const tQuat = new Quaternion();
 

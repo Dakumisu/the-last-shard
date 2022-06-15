@@ -79,7 +79,7 @@ void main() {
 
 	vec4 finalRender = mix(r1, r2 * 5., uTransition);
 
-	gl_FragColor *= r2;
+	gl_FragColor *= finalRender;
 
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>

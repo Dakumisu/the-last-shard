@@ -3,6 +3,7 @@
 uniform float uTime;
 uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
+uniform vec3 uCamPos;
 uniform sampler2D uElevationTexture;
 uniform sampler2D uPositionTexture;
 uniform sampler2D uNoiseTexture;
@@ -53,12 +54,12 @@ void main() {
 
 	vec3 translation = vec3(0.);
 
-	translation.xz = uCharaPos.xz - mod(aPositions.xz + uCharaPos.xz, boxSize) + uHalfBoxSize;
+	translation.xz = uCamPos.xz - mod(aPositions.xz + uCamPos.xz, boxSize) + uHalfBoxSize;
 
 	translation.x = clamp(translation.x, uMinMapBounds.x, uMaxMapBounds.x);
 	translation.z = clamp(translation.z, uMinMapBounds.z, uMaxMapBounds.z);
 
-	float fade = 1.0 - smoothstep(0., 1., (0.05 * distance(uCharaPos.xz, translation.xz)));
+	float fade = 1.0 - smoothstep(0., 1., (0.05 * distance(uCamPos.xz, translation.xz)));
 
 	vFadePos = fade;
 	vUv = uv;
