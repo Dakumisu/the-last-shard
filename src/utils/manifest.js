@@ -33,7 +33,7 @@ assetsMap.set('envMap2', {
 });
 
 assetsMap.set('asset_gradient', {
-	path: '/assets/image/gradients/gradient.png',
+	path: '/assets/image/gradients/gradient.jpg',
 	data: {},
 });
 
