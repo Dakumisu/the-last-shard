@@ -59,13 +59,12 @@ void main() {
 	float a = (1.0 - -min(dot(vPositionNormal, normalize(vNormal)), 0.0));
 	float test = pow(b + s * abs(dot(vNormal, vPositionNormal)), p);
 
+	gl_FragColor.a *= pow(uRadius, a) * uIntensity;
+	gl_FragColor.rgb *= pow(uRadius, a) * uColor;
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
-
-	gl_FragColor.a *= pow(uRadius, a) * uIntensity;
-	gl_FragColor.rgb *= pow(uRadius, a) * uColor;
 
 }

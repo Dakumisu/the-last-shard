@@ -3,10 +3,11 @@ vec2 rotate(vec2 uv, float rotation, vec2 mid) {
 }
 
 uniform float uTime;
-uniform float uAlpha;
+uniform float uProgress;
 uniform sampler2D uShard;
 uniform sampler2D uShard2;
 uniform sampler2D uMask;
+uniform sampler2D uNoise;
 
 varying vec3 vNormal;
 varying vec3 vEye;
@@ -31,9 +32,20 @@ void main() {
 	// vec3 render = shard * shard2;
 	vec3 render = mix(shard, shard2, a);
 
+	float alphaT = 1.0;
+	float alphaF = 0.;
+
+	float noise = texture2D(uNoise, vUv).g;
+
+	float temp = uProgress;
+	temp += ((10.0 * noise - 9.) * 0.02);
+
+	float distanceFromCenter = length(vUv - 0.5);
+	temp = smoothstep(temp - 0.05, temp, distanceFromCenter);
+
+	vec4 finalRender = mix(vec4(render + a * 0.5, 1.0), vec4((render + a) * 300., 0.), temp);
+
 	// gl_FragColor = shard;
 	// gl_FragColor = shard2;
-	gl_FragColor.rgb = render + a * 0.5;
-	gl_FragColor.a = 1.0;
-	// gl_FragColor.a += a;
+	gl_FragColor = finalRender;
 }
