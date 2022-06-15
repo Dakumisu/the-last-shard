@@ -289,6 +289,7 @@ export default class Cinematrix extends PersCamera {
 
 			prevFocus = currentFocus;
 			currentFocus = target.focus;
+			console.log(currentFocus);
 			if (currentFocus !== prevFocus) {
 				this.updateTarget(i);
 				if (dummySpeed !== target.speed) this.setSpeed(target.speed);

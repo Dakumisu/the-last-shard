@@ -248,9 +248,13 @@ export default class BaseScene {
 	async _parseFocus(focus) {
 		if (!focus) return;
 
-		this.focusList.portal = new Vector3().fromArray(focus.portal) || new Vector3();
-		this.focusList.fragment = new Vector3().fromArray(focus.fragment) || new Vector3();
-		this.focusList.door = new Vector3().fromArray(focus.door) || new Vector3();
+		this.focusList.portal = focus.portal
+			? new Vector3().fromArray(focus.portal)
+			: new Vector3();
+		this.focusList.fragment = focus.fragment
+			? new Vector3().fromArray(focus.fragment)
+			: new Vector3();
+		this.focusList.door = focus.door ? new Vector3().fromArray(focus.door) : new Vector3();
 	}
 
 	async _loadBase() {

@@ -56,11 +56,11 @@ void main() {
 	float heightNoiseSmall = texture2D(uNoiseTexture, scaledCoords).r * 50.;
 	pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.017;
 
-	// float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
-	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	// pos *= scaleFromTexture;
+	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
+	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	pos *= scaleFromTexture;
 
-	// translation.y += pos.y;
+	translation.y += pos.y;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);
