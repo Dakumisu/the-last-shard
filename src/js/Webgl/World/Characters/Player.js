@@ -722,7 +722,11 @@ class Player extends BaseEntity {
 		speed = 0;
 		playerVelocity.set(0, 0, 0);
 
-		this.base.mesh.position.copy(this.checkpoint.pos);
+		this.base.mesh.position.set(
+			this.checkpoint.pos.x,
+			this.checkpoint.pos.y + 1,
+			this.checkpoint.pos.z,
+		);
 		this.base.mesh.rotation.setFromQuaternion(this.checkpoint.qt);
 
 		this.base.camera.orbit.targetOffset.copy(this.base.mesh.position || this.checkpoint.pos);
@@ -784,7 +788,7 @@ class Player extends BaseEntity {
 	}
 
 	setStartPosition(cp) {
-		this.base.mesh.position.copy(cp.pos);
+		this.base.mesh.position.set(cp.pos.x, cp.pos.y + 1, cp.pos.z);
 		this.base.mesh.rotation.setFromQuaternion(cp.qt);
 
 		this.setCheckpoint(cp);

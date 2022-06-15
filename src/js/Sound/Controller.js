@@ -5,8 +5,8 @@ import { debounce, deferredPromise, throttle, wait } from 'philbin-packages/asyn
 import signal from 'philbin-packages/signal';
 
 const params = {
-	// ambiantVolume: 0.3,
-	ambiantVolume: 0,
+	ambiantVolume: 0.3,
+	// ambiantVolume: 0,
 };
 
 export default class SoundController {
@@ -42,7 +42,6 @@ export default class SoundController {
 			this.add('footsteps-ground', { loop: true }),
 			this.add('fall-grass'),
 			this.add('fall-ground'),
-			this.add('jump'),
 			this.add('pet-tp'),
 			this.add('pet-happy', {
 				sprite: {
@@ -56,6 +55,9 @@ export default class SoundController {
 			this.add('pet-ideas'),
 			this.add('success'),
 			this.add('fragment-interact'),
+			this.add('cinematrix-1', {
+				fadeDuration: 500,
+			}),
 		]);
 
 		// this.play('footsteps-grass', { volume: 0 });
