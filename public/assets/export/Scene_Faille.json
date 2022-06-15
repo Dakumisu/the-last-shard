@@ -28,13 +28,21 @@
     "BigMountain",
     "RockWallB",
     "RockWallA",
+    "RockA",
+    "RockE",
+    "RockD",
+    "RockC",
+    "RockB",
+    "TreeD",
+    "TreeC",
+    "TreeB",
     "Fragment",
     "LevelDoor"
   ],
   "props": [
     {
       "asset": "LevelDoorArch",
-      "uid": "LevelDoorArch.002",
+      "uid": "LevelDoorArch.009",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -60,7 +68,7 @@
     },
     {
       "asset": "Portal",
-      "uid": "Portal.002",
+      "uid": "Portal.017",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -88,7 +96,7 @@
     },
     {
       "asset": "BigFloatingPlatformA",
-      "uid": "BigFloatingPlatformA.002",
+      "uid": "BigFloatingPlatformA.025",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -114,7 +122,7 @@
     },
     {
       "asset": "BigFloatingPlatformA",
-      "uid": "BigFloatingPlatformA.003",
+      "uid": "BigFloatingPlatformA.026",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -140,7 +148,7 @@
     },
     {
       "asset": "BigFloatingPlatformA",
-      "uid": "BigFloatingPlatformA.004",
+      "uid": "BigFloatingPlatformA.027",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -166,7 +174,7 @@
     },
     {
       "asset": "BigFloatingPlatformB",
-      "uid": "BigFloatingPlatformB.002",
+      "uid": "BigFloatingPlatformB.025",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -192,7 +200,7 @@
     },
     {
       "asset": "BigFloatingPlatformB",
-      "uid": "BigFloatingPlatformB.003",
+      "uid": "BigFloatingPlatformB.026",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -218,7 +226,7 @@
     },
     {
       "asset": "BigFloatingPlatformB",
-      "uid": "BigFloatingPlatformB.004",
+      "uid": "BigFloatingPlatformB.027",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -244,7 +252,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.008",
+      "uid": "JumpPillar.083",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -270,7 +278,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.009",
+      "uid": "JumpPillar.084",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -296,7 +304,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.010",
+      "uid": "JumpPillar.085",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -322,7 +330,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.011",
+      "uid": "JumpPillar.086",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -348,7 +356,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.012",
+      "uid": "JumpPillar.087",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -374,7 +382,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.013",
+      "uid": "JumpPillar.088",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -400,7 +408,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.014",
+      "uid": "JumpPillar.089",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -426,33 +434,7 @@
     },
     {
       "asset": "JumpPillar",
-      "uid": "JumpPillar.015",
-      "type": "collider",
-      "traversable": false,
-      "movable": false,
-      "params": {},
-      "transforms": {
-        "pos": [
-          -5.808121,
-          2.607821,
-          15.146535
-        ],
-        "scale": [
-          0.76209378,
-          0.88905299,
-          0.76209378
-        ],
-        "qt": [
-          0.0,
-          0.0,
-          -0.0,
-          1.0
-        ]
-      }
-    },
-    {
-      "asset": "JumpPillar",
-      "uid": "JumpPillar.016",
+      "uid": "JumpPillar.090",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -478,7 +460,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.007",
+      "uid": "LittleFloatingPlatformA.049",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -504,7 +486,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.008",
+      "uid": "LittleFloatingPlatformA.050",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -530,7 +512,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.009",
+      "uid": "LittleFloatingPlatformA.051",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -556,7 +538,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.010",
+      "uid": "LittleFloatingPlatformA.052",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -582,7 +564,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.011",
+      "uid": "LittleFloatingPlatformA.053",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -608,7 +590,7 @@
     },
     {
       "asset": "LittleFloatingPlatformA",
-      "uid": "LittleFloatingPlatformA.012",
+      "uid": "LittleFloatingPlatformA.054",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -634,7 +616,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.003",
+      "uid": "LittleFloatingPlatformB.041",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -660,7 +642,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.006",
+      "uid": "LittleFloatingPlatformB.042",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -686,7 +668,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.007",
+      "uid": "LittleFloatingPlatformB.043",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -712,7 +694,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.008",
+      "uid": "LittleFloatingPlatformB.044",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -738,7 +720,7 @@
     },
     {
       "asset": "LittleFloatingPlatformC",
-      "uid": "LittleFloatingPlatformC.003",
+      "uid": "LittleFloatingPlatformC.025",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -764,7 +746,7 @@
     },
     {
       "asset": "LittleFloatingPlatformC",
-      "uid": "LittleFloatingPlatformC.004",
+      "uid": "LittleFloatingPlatformC.026",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -790,7 +772,7 @@
     },
     {
       "asset": "StoneStairsA",
-      "uid": "StoneStairsA.004",
+      "uid": "StoneStairsA.025",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -816,7 +798,7 @@
     },
     {
       "asset": "StoneStairsA",
-      "uid": "StoneStairsA.005",
+      "uid": "StoneStairsA.026",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -842,7 +824,7 @@
     },
     {
       "asset": "StoneStairsA",
-      "uid": "StoneStairsA.006",
+      "uid": "StoneStairsA.027",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -868,7 +850,7 @@
     },
     {
       "asset": "LittleFloatingPlatformB",
-      "uid": "LittleFloatingPlatformB.009",
+      "uid": "LittleFloatingPlatformB.045",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -894,7 +876,7 @@
     },
     {
       "asset": "LittleFloatingPlatformC",
-      "uid": "LittleFloatingPlatformC.005",
+      "uid": "LittleFloatingPlatformC.027",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -920,7 +902,7 @@
     },
     {
       "asset": "BigMountain",
-      "uid": "BigMountain.002",
+      "uid": "BigMountain.009",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -946,7 +928,7 @@
     },
     {
       "asset": "Portal",
-      "uid": "Portal.003",
+      "uid": "Portal.018",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -974,7 +956,7 @@
     },
     {
       "asset": "RockWallB",
-      "uid": "RockWallB.004",
+      "uid": "RockWallB.025",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -1000,7 +982,7 @@
     },
     {
       "asset": "RockWallA",
-      "uid": "RockWallA.003",
+      "uid": "RockWallA.017",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -1026,7 +1008,7 @@
     },
     {
       "asset": "RockWallB",
-      "uid": "RockWallB.005",
+      "uid": "RockWallB.026",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -1052,7 +1034,7 @@
     },
     {
       "asset": "RockWallB",
-      "uid": "RockWallB.006",
+      "uid": "RockWallB.027",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -1078,7 +1060,7 @@
     },
     {
       "asset": "RockWallA",
-      "uid": "RockWallA.004",
+      "uid": "RockWallA.018",
       "type": "collider",
       "traversable": false,
       "movable": false,
@@ -1103,8 +1085,840 @@
       }
     },
     {
+      "asset": "RockA",
+      "uid": "RockA.049",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          34.156685,
+          3.785177,
+          36.322617
+        ],
+        "scale": [
+          2.50100851,
+          2.50100899,
+          2.50100851
+        ],
+        "qt": [
+          -0.002412,
+          0.703802,
+          -0.017947,
+          0.710166
+        ]
+      }
+    },
+    {
+      "asset": "RockE",
+      "uid": "RockE.041",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          17.146397,
+          4.841763,
+          45.225502
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          0.99999994
+        ],
+        "qt": [
+          0.094285,
+          -0.003946,
+          0.041625,
+          0.994667
+        ]
+      }
+    },
+    {
+      "asset": "RockD",
+      "uid": "RockD.049",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          12.639954,
+          3.773453,
+          44.118279
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.043592,
+          -0.003394,
+          0.077547,
+          0.99603
+        ]
+      }
+    },
+    {
+      "asset": "RockC",
+      "uid": "RockC.025",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          24.845497,
+          5.32275,
+          45.252205
+        ],
+        "scale": [
+          1.7808435,
+          1.78084314,
+          1.78084326
+        ],
+        "qt": [
+          0.009809,
+          -0.620087,
+          -0.014068,
+          0.784346
+        ]
+      }
+    },
+    {
+      "asset": "RockB",
+      "uid": "RockB.033",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          21.452812,
+          4.110902,
+          50.301872
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.087808,
+          0.956353,
+          0.072077,
+          0.269229
+        ]
+      }
+    },
+    {
+      "asset": "RockA",
+      "uid": "RockA.050",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          17.193665,
+          5.291317,
+          35.82357
+        ],
+        "scale": [
+          1.21392202,
+          1.2139219,
+          1.21392214
+        ],
+        "qt": [
+          0.05768,
+          -0.639469,
+          -0.033172,
+          0.765932
+        ]
+      }
+    },
+    {
+      "asset": "TreeD",
+      "uid": "TreeD.009",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          21.210503,
+          4.990222,
+          37.978245
+        ],
+        "scale": [
+          1.87150049,
+          1.87150061,
+          1.87150061
+        ],
+        "qt": [
+          0.034601,
+          -0.080187,
+          -0.038954,
+          0.995417
+        ]
+      }
+    },
+    {
+      "asset": "TreeC",
+      "uid": "TreeC.025",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          17.640205,
+          4.204737,
+          45.134342
+        ],
+        "scale": [
+          1.46484005,
+          1.46484017,
+          1.46484017
+        ],
+        "qt": [
+          0.035612,
+          0.531939,
+          0.078378,
+          0.842395
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.017",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          19.574966,
+          28.307999,
+          29.686426
+        ],
+        "scale": [
+          1.4127444,
+          1.41274452,
+          1.41274428
+        ],
+        "qt": [
+          0.073378,
+          0.91356,
+          0.005214,
+          0.399997
+        ]
+      }
+    },
+    {
+      "asset": "TreeB",
+      "uid": "TreeB.018",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -18.351589,
+          37.106377,
+          -33.396084
+        ],
+        "scale": [
+          1.84246993,
+          1.84247005,
+          1.84246981
+        ],
+        "qt": [
+          0.046924,
+          -0.055094,
+          -0.008841,
+          0.997339
+        ]
+      }
+    },
+    {
+      "asset": "TreeC",
+      "uid": "TreeC.026",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -29.310228,
+          38.356869,
+          -18.480654
+        ],
+        "scale": [
+          1.65431023,
+          1.65431035,
+          1.65431046
+        ],
+        "qt": [
+          0.011971,
+          0.562947,
+          0.082346,
+          0.822293
+        ]
+      }
+    },
+    {
+      "asset": "TreeC",
+      "uid": "TreeC.027",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          22.718891,
+          28.002537,
+          -2.34675
+        ],
+        "scale": [
+          1.31466019,
+          1.31466007,
+          1.31466031
+        ],
+        "qt": [
+          0.027861,
+          -0.670786,
+          -0.073753,
+          0.737449
+        ]
+      }
+    },
+    {
+      "asset": "RockE",
+      "uid": "RockE.042",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          13.001101,
+          4.288483,
+          22.911486
+        ],
+        "scale": [
+          1.4943676,
+          1.49436724,
+          1.49436736
+        ],
+        "qt": [
+          -0.00257,
+          0.549926,
+          0.105839,
+          0.828476
+        ]
+      }
+    },
+    {
+      "asset": "RockB",
+      "uid": "RockB.034",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          7.684696,
+          3.300905,
+          21.351934
+        ],
+        "scale": [
+          1.56231046,
+          1.56231034,
+          1.56231022
+        ],
+        "qt": [
+          0.051864,
+          0.84222,
+          -0.076559,
+          0.531144
+        ]
+      }
+    },
+    {
+      "asset": "RockA",
+      "uid": "RockA.051",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -16.93943,
+          9.727104,
+          21.882252
+        ],
+        "scale": [
+          1.21392202,
+          1.2139219,
+          1.21392214
+        ],
+        "qt": [
+          0.035168,
+          0.359817,
+          0.024137,
+          0.932048
+        ]
+      }
+    },
+    {
+      "asset": "RockD",
+      "uid": "RockD.050",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -14.848365,
+          9.745651,
+          16.002365
+        ],
+        "scale": [
+          1.05221236,
+          1.05221224,
+          1.05221212
+        ],
+        "qt": [
+          -0.017554,
+          -0.804455,
+          0.094978,
+          0.586109
+        ]
+      }
+    },
+    {
+      "asset": "RockC",
+      "uid": "RockC.026",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          18.282694,
+          28.468121,
+          32.750301
+        ],
+        "scale": [
+          1.34972703,
+          1.34972692,
+          1.34972715
+        ],
+        "qt": [
+          -0.023763,
+          0.981633,
+          0.033326,
+          0.186338
+        ]
+      }
+    },
+    {
+      "asset": "RockE",
+      "uid": "RockE.043",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          20.672401,
+          28.111778,
+          -7.917817
+        ],
+        "scale": [
+          1.49436772,
+          1.49436736,
+          1.49436736
+        ],
+        "qt": [
+          -0.150637,
+          0.150518,
+          -0.082525,
+          0.973572
+        ]
+      }
+    },
+    {
+      "asset": "RockB",
+      "uid": "RockB.035",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          24.274204,
+          28.389318,
+          16.797285
+        ],
+        "scale": [
+          1.36153245,
+          1.36153257,
+          1.36153245
+        ],
+        "qt": [
+          -0.10293,
+          -0.655848,
+          0.048069,
+          0.746297
+        ]
+      }
+    },
+    {
+      "asset": "RockE",
+      "uid": "RockE.044",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          18.038109,
+          28.270748,
+          7.90875
+        ],
+        "scale": [
+          2.28645253,
+          2.28645229,
+          2.28645253
+        ],
+        "qt": [
+          0.075364,
+          0.980315,
+          0.074356,
+          0.166653
+        ]
+      }
+    },
+    {
+      "asset": "RockA",
+      "uid": "RockA.052",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          17.193665,
+          28.38522,
+          19.782064
+        ],
+        "scale": [
+          1.80200827,
+          1.80200803,
+          1.80200863
+        ],
+        "qt": [
+          0.041779,
+          0.889548,
+          -0.092715,
+          0.44538
+        ]
+      }
+    },
+    {
+      "asset": "RockD",
+      "uid": "RockD.051",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          15.656657,
+          13.472128,
+          3.143186
+        ],
+        "scale": [
+          1.63601816,
+          1.63601816,
+          1.63601804
+        ],
+        "qt": [
+          -0.067719,
+          -0.901245,
+          0.038357,
+          0.426263
+        ]
+      }
+    },
+    {
+      "asset": "RockD",
+      "uid": "RockD.052",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          11.423433,
+          17.841114,
+          -2.744231
+        ],
+        "scale": [
+          1.66095352,
+          1.66095316,
+          1.66095328
+        ],
+        "qt": [
+          0.025084,
+          0.827936,
+          -0.017228,
+          0.559997
+        ]
+      }
+    },
+    {
+      "asset": "RockB",
+      "uid": "RockB.036",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          14.431579,
+          11.668902,
+          18.00831
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.087808,
+          0.956353,
+          0.072077,
+          0.269229
+        ]
+      }
+    },
+    {
+      "asset": "RockA",
+      "uid": "RockA.053",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -3.557203,
+          32.933491,
+          -26.158569
+        ],
+        "scale": [
+          1.21392214,
+          1.2139219,
+          1.21392214
+        ],
+        "qt": [
+          -0.04267,
+          -0.638335,
+          0.050481,
+          0.766915
+        ]
+      }
+    },
+    {
+      "asset": "RockD",
+      "uid": "RockD.053",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -10.05392,
+          33.13361,
+          -23.100464
+        ],
+        "scale": [
+          0.99999994,
+          1.0,
+          1.0
+        ],
+        "qt": [
+          0.078463,
+          0.995728,
+          -0.041919,
+          0.024744
+        ]
+      }
+    },
+    {
+      "asset": "RockA",
+      "uid": "RockA.054",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -12.408301,
+          14.162392,
+          2.723849
+        ],
+        "scale": [
+          1.06065536,
+          1.06065547,
+          1.06065583
+        ],
+        "qt": [
+          0.040873,
+          0.951219,
+          -0.012199,
+          0.305553
+        ]
+      }
+    },
+    {
+      "asset": "RockC",
+      "uid": "RockC.027",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -21.478668,
+          37.054386,
+          -3.820029
+        ],
+        "scale": [
+          3.82881045,
+          3.82880902,
+          3.82880974
+        ],
+        "qt": [
+          0.016557,
+          -0.979192,
+          -0.004471,
+          0.202211
+        ]
+      }
+    },
+    {
+      "asset": "RockE",
+      "uid": "RockE.045",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -26.33526,
+          37.265903,
+          -25.091387
+        ],
+        "scale": [
+          3.59380102,
+          3.59380126,
+          3.59380078
+        ],
+        "qt": [
+          0.093893,
+          0.009452,
+          0.182123,
+          0.978737
+        ]
+      }
+    },
+    {
+      "asset": "RockD",
+      "uid": "RockD.054",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -14.477302,
+          37.731354,
+          -40.455368
+        ],
+        "scale": [
+          2.57491374,
+          2.5749135,
+          2.5749135
+        ],
+        "qt": [
+          0.026979,
+          0.580449,
+          0.073792,
+          0.810497
+        ]
+      }
+    },
+    {
+      "asset": "JumpPillar",
+      "uid": "JumpPillar.091",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -5.808121,
+          2.607821,
+          16.15218
+        ],
+        "scale": [
+          0.76209378,
+          0.88905299,
+          0.76209378
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "asset": "JumpPillar",
+      "uid": "JumpPillar.092",
+      "type": "collider",
+      "traversable": false,
+      "movable": false,
+      "params": {},
+      "transforms": {
+        "pos": [
+          -7.670179,
+          2.886622,
+          20.257118
+        ],
+        "scale": [
+          0.76209378,
+          0.88905299,
+          0.76209378
+        ],
+        "qt": [
+          0.0,
+          0.0,
+          -0.0,
+          1.0
+        ]
+      }
+    },
+    {
       "asset": "LevelDoor",
-      "uid": "LevelDoor.002",
+      "uid": "LevelDoor.009",
       "type": "collider",
       "traversable": false,
       "movable": true,
@@ -1134,7 +1948,7 @@
   "interactables": [
     {
       "asset": "LaserTowerEnd",
-      "uid": "LaserTowerEnd.002",
+      "uid": "LaserTowerEnd.009",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1162,7 +1976,7 @@
     },
     {
       "asset": "LaserTowerStart",
-      "uid": "LaserTowerStart.002",
+      "uid": "LaserTowerStart.009",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1173,7 +1987,7 @@
       "transforms": {
         "pos": [
           16.671337,
-          28.048864,
+          28.539127,
           25.159462
         ],
         "scale": [
@@ -1191,7 +2005,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.001",
+      "uid": "LaserTowerBetween.041",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1220,7 +2034,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.003",
+      "uid": "LaserTowerBetween.042",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1249,7 +2063,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.004",
+      "uid": "LaserTowerBetween.043",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1278,7 +2092,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.006",
+      "uid": "LaserTowerBetween.044",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1307,7 +2121,7 @@
     },
     {
       "asset": "LaserTowerBetween",
-      "uid": "LaserTowerBetween.010",
+      "uid": "LaserTowerBetween.045",
       "type": "interactable",
       "traversable": false,
       "movable": false,
@@ -1336,7 +2150,7 @@
     },
     {
       "asset": "Fragment",
-      "uid": "Fragment.002",
+      "uid": "Fragment.009",
       "type": "interactable",
       "traversable": true,
       "movable": false,
@@ -1364,7 +2178,7 @@
   "points": [
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.001",
+      "uid": "Checkpoint.048",
       "pos": [
         16.321913,
         28.700661,
@@ -1379,7 +2193,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.002",
+      "uid": "Checkpoint.049",
       "pos": [
         -9.274082,
         28.427174,
@@ -1394,7 +2208,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.003",
+      "uid": "Checkpoint.050",
       "pos": [
         -10.906057,
         9.91093,
@@ -1409,7 +2223,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.004",
+      "uid": "Checkpoint.051",
       "pos": [
         10.299083,
         13.960659,
@@ -1424,7 +2238,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.008",
+      "uid": "Checkpoint.052",
       "pos": [
         3.263019,
         22.833654,
@@ -1439,7 +2253,7 @@
     },
     {
       "type": "Checkpoint",
-      "uid": "Checkpoint.009",
+      "uid": "Checkpoint.053",
       "pos": [
         -9.860475,
         33.686199,
@@ -1454,7 +2268,7 @@
     },
     {
       "type": "Spawn",
-      "uid": "Spawn.001",
+      "uid": "Spawn.008",
       "pos": [
         32.853233,
         4.557612,

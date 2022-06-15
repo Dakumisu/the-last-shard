@@ -329,7 +329,7 @@ class Player extends BaseEntity {
 			},
 			'player',
 		);
-		this.cameraController.add(playerOrbitCam, true);
+		this.cameraController.add(playerOrbitCam);
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
@@ -363,8 +363,8 @@ class Player extends BaseEntity {
 			depthWrite: false,
 			uniforms: {
 				uColor: { value: new Color(0x31d7ff) },
-				uIntensity: { value: 0.3 },
-				uRadius: { value: 0.005 },
+				uIntensity: { value: 0.45 },
+				uRadius: { value: 0.0005 },
 			},
 		});
 

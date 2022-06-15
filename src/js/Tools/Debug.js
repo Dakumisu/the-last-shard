@@ -15,7 +15,7 @@ export default class Debug {
 		this.gui.registerPlugin(TweakpaneRotationInputPlugin); // https://www.npmjs.com/package/@0b5vr/tweakpane-plugin-rotation
 		this.gui.registerPlugin(TweakpaneColorsInputPlugin); // https://www.npmjs.com/package/tweakpane-plugin-colors
 
-		// this.stats = new StatsJs();
+		this.stats = new StatsJs();
 
 		this.debugFolders = {};
 		this.tabs = {};

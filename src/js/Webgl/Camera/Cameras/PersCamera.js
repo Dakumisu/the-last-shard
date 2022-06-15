@@ -35,9 +35,9 @@ export default class PersCamera {
 	}
 	/// #endif
 
-	init() {
+	init(autoSwitch = false) {
 		this.setPerspectiveCamera();
-		this.cameraController.add(this);
+		this.cameraController.add(this, autoSwitch);
 
 		this.initialized.resolve();
 	}
