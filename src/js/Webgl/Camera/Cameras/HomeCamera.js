@@ -19,8 +19,8 @@ const debug = {
 const TEMP_POS = new Vector3();
 const DUMMY_POS = new Vector3();
 
-let distance = 6;
-let dummy_distance = 6;
+let distance = 0;
+let dummy_distance = 4;
 
 export default class HomeCamera extends PersCamera {
 	constructor() {

@@ -43,6 +43,7 @@ html {
 }
 
 body {
+	background-color: black;
 	overflow: hidden;
 	color: var(--primary-color);
 	// text-shadow: 0 0 0.625rem var(--primary-color), 0 0 1.25rem var(--primary-color),
@@ -80,16 +81,19 @@ section.canvas-container {
 	position: relative;
 	width: 100vw;
 	height: 100vh;
-	// pointer-events: none;
 
-	canvas.sketch {
-		width: 100% !important;
-		height: 100% !important;
-		position: fixed;
-		top: 0;
-		left: 0;
-		opacity: 1;
-		z-index: -1;
+	canvas {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.5s $ease_out-swift;
+
+		&.sketch {
+			width: 100% !important;
+			height: 100% !important;
+			position: fixed;
+			top: 0;
+			left: 0;
+		}
 	}
 }
 
@@ -100,7 +104,6 @@ section.canvas-container {
 }
 
 .loading-container {
-	background-color: black;
 	height: 100vh;
 	width: 100vw;
 	position: fixed;
@@ -163,7 +166,6 @@ section.canvas-container {
 }
 
 .context-container {
-	background-color: black;
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
@@ -174,16 +176,16 @@ section.canvas-container {
 	z-index: 5;
 	opacity: 0;
 	pointer-events: none;
+	transition: opacity 0.5s $ease_out-swift;
 
 	p {
 		position: absolute;
 		opacity: 0;
 		transition: opacity 1s $ease_out-swift;
 
-		// &.visible {
-		// 	opacity: 1;
-		// 	transition: opacity 1s $ease_out-swift;
-		// }
+		& b {
+			color: var(--pink);
+		}
 	}
 }
 
@@ -738,11 +740,21 @@ section.canvas-container {
 		transform: translate(-50%, -50%) rotate(-360deg);
 	}
 }
+
 @keyframes loading {
-	from {
+	0% {
 		clip-path: inset(0 100% 0 0);
 	}
-	to {
-		clip-path: inset(0 0% 0 0);
+	30% {
+		clip-path: inset(0 0 0 0);
+	}
+	60% {
+		clip-path: inset(0 0 0 100%);
+	}
+	61% {
+		clip-path: inset(0 100% 0 0);
+	}
+	100% {
+		clip-path: inset(0 100% 0 0);
 	}
 }

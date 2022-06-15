@@ -18,13 +18,14 @@ export class Preloader {
 
 	async start() {
 		signal.emit('view:change', 'preloader');
-		this.show();
-		await wait(500);
-		// await wait(6000);
+		signal.emit('sound: down', store.game.currentScene);
 
-		signal.emit('preloader:complete');
+		this.show();
+		await wait(6000);
 
 		this.hide();
+
+		signal.emit('preloader:complete');
 	}
 
 	show() {

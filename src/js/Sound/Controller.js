@@ -29,6 +29,8 @@ export default class SoundController {
 		signal.on('sound:setParams', this.setParams);
 		signal.on('sound:beforeSwitch', this.beforeSwitch);
 		signal.on('sound:afterSwitch', this.afterSwitch);
+		signal.on('sound:down', this.soundDown);
+		signal.on('sound:up', this.soundUp);
 	}
 
 	async init() {
@@ -135,6 +137,20 @@ export default class SoundController {
 				.once('fade', () => this.sounds[key].howl.stop());
 
 		this.fadeOutAmbient(sceneName);
+	};
+
+	soundDown = (sceneName) => {
+		for (const key in this.sounds)
+			this.sounds[key].howl.fade(this.sounds[key].howl.volume(), 0.4, 500);
+
+		this.ambients[sceneName].fade(params.ambiantVolume, params.ambiantVolume - 0.15, 500);
+	};
+
+	soundUp = (sceneName) => {
+		for (const key in this.sounds)
+			this.sounds[key].howl.fade(this.sounds[key].howl.volume(), 1, 500);
+
+		this.ambients[sceneName].fade(params.ambiantVolume, params.ambiantVolume, 500);
 	};
 
 	afterSwitch = (sceneName) => {

@@ -6,6 +6,8 @@ import { getWebgl } from '@webgl/Webgl';
 let dom;
 let webgl;
 
+let alreadyInitialized = false;
+
 export class Home {
 	constructor() {
 		dom = getDom();
@@ -15,18 +17,25 @@ export class Home {
 
 	setup() {
 		signal.on('context:complete', () => this.start());
+		signal.on('pause:back', () => this.start());
 	}
 
 	start() {
 		webgl = getWebgl();
 
 		signal.emit('view:change', 'home');
+		signal.emit('sound: down', store.game.currentScene);
 
 		this.show(dom.nodes.domElements.home_container);
+
 		this.events();
+
+		alreadyInitialized = true;
 	}
 
 	events() {
+		if (alreadyInitialized) return;
+
 		dom.nodes.domElements.button_start.addEventListener('click', (e) => {
 			webgl.world.homeCamera.start();
 

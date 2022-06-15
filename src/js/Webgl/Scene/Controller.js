@@ -116,7 +116,7 @@ export default class SceneController {
 			/// #endif
 			this.currentScene.addTo(this.mainScene.instance);
 
-			store.game.currentScene = this.currentScene;
+			store.game.currentScene = this.currentScene.label;
 			await wait(500);
 			signal.emit('postpro:transition-out');
 			signal.emit('scene:complete');

@@ -6,6 +6,8 @@ import { getWebgl } from '@webgl/Webgl';
 let dom;
 let webgl;
 
+let alreadyInitialized = false;
+
 export class Hud {
 	constructor() {
 		dom = getDom();
@@ -15,31 +17,37 @@ export class Hud {
 
 	setup() {
 		signal.on('home:quit', () => this.start());
-		signal.on('menu:quit', () => this.start());
+		signal.on('game:resume', () => this.start());
 	}
 
 	start() {
 		webgl = getWebgl();
 
 		signal.emit('view:change', 'game');
+		signal.emit('sound: up', store.game.currentScene);
 
 		this.show(dom.nodes.domElements.hud_container);
 		dom.nodes.domElements.hud_buttons.forEach((button) => {
 			this.show(button);
 		});
+
 		this.events();
+		alreadyInitialized = true;
 	}
 
 	events() {
+		if (alreadyInitialized) return;
+
 		dom.nodes.domElements.button_sound.addEventListener('click', (e) => {
 			let active = dom.nodes.domElements.button_sound.classList.contains('active');
+			console.log(active);
 
 			if (active) {
 				dom.nodes.domElements.button_sound.classList.remove('active');
-				signal.emit('sound:beforeSwitch', store.game.currentScene.label);
+				signal.emit('sound:beforeSwitch', store.game.currentScene);
 			} else {
 				dom.nodes.domElements.button_sound.classList.add('active');
-				signal.emit('sound:afterSwitch', store.game.currentScene.label);
+				signal.emit('sound:afterSwitch', store.game.currentScene);
 			}
 		});
 
