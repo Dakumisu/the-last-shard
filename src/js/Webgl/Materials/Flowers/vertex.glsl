@@ -70,9 +70,9 @@ void main() {
 	// 	translation = vec3(0.);
 	// }
 
-	// float scaleFromTexture = 1. - texture2D(uGrassTexture, vec2(scaledCoords.x, 1. - scaledCoords.y)).r;
-	// scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	// pos *= scaleFromTexture;
+	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
+	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
+	pos *= scaleFromTexture;
 
 	translation.xz += pos.xz;
 	translation.y += pos.y * 0.35;

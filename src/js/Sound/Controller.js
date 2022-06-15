@@ -4,7 +4,7 @@ import { Howl, Howler } from 'howler';
 import signal from 'philbin-packages/signal';
 
 const params = {
-	ambiantVolume: 0.2,
+	ambiantVolume: 0.1,
 	// ambiantVolume: 0,
 };
 

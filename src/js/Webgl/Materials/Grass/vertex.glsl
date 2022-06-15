@@ -53,13 +53,13 @@ void main() {
 	vUv = uv;
 	vNormal = normalize(normalMatrix * normal);
 
-	float heightNoise = texture2D(uNoiseTexture, scaledCoords).r * 100.;
-	float heightNoiseSmall = texture2D(uNoiseTexture, scaledCoords).r * 50.;
-	pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.017;
-
 	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
 	pos *= scaleFromTexture;
+
+	float heightNoise = texture2D(uNoiseTexture, scaledCoords).r * 100.;
+	float heightNoiseSmall = texture2D(uNoiseTexture, scaledCoords).r * 50.;
+	pos *= (abs(heightNoise) + abs(heightNoiseSmall)) * 0.017;
 
 	// Apply height map
 	float translationOffset = map(elevation, 1., 0., uMinMapBounds.y, uMaxMapBounds.y);

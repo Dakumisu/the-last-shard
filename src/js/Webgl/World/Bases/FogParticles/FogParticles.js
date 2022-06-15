@@ -115,7 +115,7 @@ export default class FogParticles {
 				uCharaPos: { value: this.scene.player.base.mesh.position },
 				uCamPos: { value: this.camera.position },
 				uElevationTexture: { value: this.scene.depthTexture },
-				uPositionTexture: { value: this.params.positionsTexture },
+				uGrassTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },
 				uMinMapBounds: { value: this.scene.minBox },
 				uFogTexture: { value: this.params.fogTexture },
