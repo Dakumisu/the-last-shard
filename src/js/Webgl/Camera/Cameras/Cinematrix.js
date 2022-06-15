@@ -40,6 +40,7 @@ export default class Cinematrix extends PersCamera {
 		const webgl = getWebgl();
 		const game = getGame();
 		this.keyPressed = game.control.keyPressed;
+		this.soundController = webgl.world.soundController;
 
 		this.isActive = false;
 		this.isPlaying = false;
@@ -130,7 +131,10 @@ export default class Cinematrix extends PersCamera {
 		this.isPlaying = true;
 		this.onPause = false;
 
-		console.log('Cinematrix play');
+		signal.emit('sound:play', 'cinematrix-1');
+		this.soundController.fadeOutAmbient(this.soundController.currentAmbient);
+
+		// console.log('Cinematrix play');
 	}
 
 	stop() {
@@ -144,7 +148,10 @@ export default class Cinematrix extends PersCamera {
 	pause() {
 		this.onPause = true;
 
-		console.log('Cinematrix pause');
+		signal.emit('sound:stop', 'cinematrix-1');
+		this.soundController.fadeInAmbient(this.soundController.currentAmbient);
+
+		// console.log('Cinematrix pause');
 	}
 
 	reset() {
@@ -171,18 +178,20 @@ export default class Cinematrix extends PersCamera {
 
 		this.enter();
 
-		console.log('Cinematrix reset');
+		// console.log('Cinematrix reset');
 	}
 
 	enter() {
 		this.isActive = true;
-		console.log('Cinematrix enter');
+		// console.log('Cinematrix enter');
 
 		return this;
 	}
 
 	exit() {
 		this.isActive = false;
+		signal.emit('sound:stop', 'cinematrix-1');
+		this.soundController.fadeInAmbient(this.soundController.currentAmbient);
 
 		signal.emit('cinematrix:exit', this.label);
 

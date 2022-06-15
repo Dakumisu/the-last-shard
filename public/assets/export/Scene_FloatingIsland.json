@@ -1264,8 +1264,9 @@
         36.257099,
         -15.354609
       ],
-      "size": 4.052036,
-      "dialog": "fragment"
+      "size": 10.052036,
+      "dialog": "fragment",
+      "sounds": "fragment-ambient"
     },
     {
       "zone": "Laser",

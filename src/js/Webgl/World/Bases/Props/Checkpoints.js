@@ -18,7 +18,7 @@ import anime from 'animejs';
 import CheckpointMaterialInner from '@webgl/Materials/CheckpointMaterialInner/CheckpointMaterialInner';
 import { loadTexture } from '@utils/loaders';
 
-const radius = 2;
+const radius = 1;
 const tVec3 = new Vector3();
 const tQuat = new Quaternion();
 
@@ -115,7 +115,7 @@ class Checkpoint {
 		// this.group.add(this.mesh);
 
 		this.mesh.position.copy(this.pos);
-		this.mesh.position.y -= 1.3;
+		// this.mesh.position.y -= 1.3;
 		// this.mesh.quaternion.copy(this.qt);
 	}
 }
