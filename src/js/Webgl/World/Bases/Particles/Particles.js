@@ -18,10 +18,12 @@ import {
 	BoxBufferGeometry,
 	MeshBasicMaterial,
 	MeshNormalMaterial,
+	MirroredRepeatWrapping,
 } from 'three';
 
 import { getWebgl } from '@webgl/Webgl';
 import ParticlesMaterial from '@webgl/Materials/Particles/ParticlesMaterial';
+import { store } from '@tools/Store';
 
 export default class Particles {
 	constructor({ scene, params }) {
@@ -105,6 +107,9 @@ export default class Particles {
 	}
 
 	setMaterial() {
+		const noiseTexture = store.loadedAssets.textures.get('noiseTexture');
+		noiseTexture.wrapS = noiseTexture.wrapT = MirroredRepeatWrapping;
+
 		this.base.material = new ParticlesMaterial({
 			depthWrite: false,
 			blending: AdditiveBlending,
@@ -117,6 +122,7 @@ export default class Particles {
 				uMinMapBounds: { value: this.scene.minBox },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
+				uNoiseTexture: { value: noiseTexture },
 			},
 		});
 	}

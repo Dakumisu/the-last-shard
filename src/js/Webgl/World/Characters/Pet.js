@@ -122,7 +122,7 @@ export class Pet extends BaseEntity {
 			depthWrite: false,
 			uniforms: {
 				uColor: { value: new Color(0xc1f376) },
-				uIntensity: { value: 0.4 },
+				uIntensity: { value: 0.3 },
 				uRadius: { value: 0.005 },
 			},
 		});
@@ -193,11 +193,11 @@ export class Pet extends BaseEntity {
 				break;
 		}
 
-		if (previousAnim != pet.anim) {
-			previousAnim = pet.anim;
-			this.base.animation.switch(pet.anim);
-		}
-		this.base.animation.update(dt);
+		// if (previousAnim != pet.anim) {
+		// 	previousAnim = pet.anim;
+		// 	this.base.animation.switch(pet.anim);
+		// }
+		// this.base.animation.update(dt);
 	}
 
 	updateState(force) {
@@ -236,7 +236,7 @@ export class Pet extends BaseEntity {
 
 		TARGET_POS.copy(playerPos).add(OFFSET);
 
-		pet.anim = this.base.animation.get('idle');
+		// pet.anim = this.base.animation.get('idle');
 
 		return this;
 	}
@@ -262,7 +262,7 @@ export class Pet extends BaseEntity {
 		TARGET_POS.copy(playerPos).add(TMP_DIR).add(OFFSET);
 		this.focusPos.copy(TARGET_POS).addScaledVector(UP_VECTOR, 0.5);
 
-		pet.anim = this.base.animation.get('speak');
+		// pet.anim = this.base.animation.get('speak');
 
 		return this;
 	}

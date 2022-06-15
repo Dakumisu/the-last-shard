@@ -1247,6 +1247,17 @@
       "dialog": "intro"
     },
     {
+      "zone": "Portal",
+      "pos": [
+        -25.454,
+        34.304,
+        -7.9382
+      ],
+      "size": 20.333055,
+      "dialog": false,
+      "sounds": "portal-ambient"
+    },
+    {
       "zone": "Fragment",
       "pos": [
         6.568684,

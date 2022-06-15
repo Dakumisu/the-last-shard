@@ -9,7 +9,7 @@ import anime from 'animejs';
 import { BaseShaderMaterial } from '@webgl/Materials/BaseMaterials/shader/material';
 import ObjectMaterial from '@webgl/Materials/Objects/ObjectMaterial';
 import { store } from '@tools/Store';
-import { throttle } from 'philbin-packages/async';
+import { getWebgl } from '@webgl/Webgl';
 
 export default class BaseObject {
 	/**
@@ -33,6 +33,9 @@ export default class BaseObject {
 			asset,
 			group,
 		};
+
+		const webgl = getWebgl();
+		this.soundController = webgl.world.soundController;
 
 		this.autoUpdate = false;
 		this.initialized = false;

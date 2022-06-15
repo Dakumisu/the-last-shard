@@ -1,19 +1,18 @@
-vec2 rotate(vec2 uv, float rotation, vec2 mid) {
-	return vec2(cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x, cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y);
-}
-
+uniform float opacity;
 uniform float uTransition;
 uniform vec3 uColor1;
 uniform vec3 uColor2;
-uniform sampler2D uTexture;
-uniform sampler2D uTexture2;
+uniform vec3 diffuse;
 
+varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vEye;
-varying vec2 vUv;
+varying vec3 vPos;
 
-uniform vec3 diffuse;
-uniform float opacity;
+float random(vec2 st) {
+	return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
 #ifndef FLAT_SHADED
 #endif
 #include <common>
@@ -53,30 +52,34 @@ void main() {
 	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
 	vec3 outgoingLight = reflectedLight.indirectDiffuse;
 	#include <envmap_fragment>
-	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
-
-	vec2 uv = vUv;
-	uv += uv;
-	uv = fract(uv + uTime * 0.0005);
-
-	vec4 textMask = texture2D(uTexture, uv);
-
-	vec2 rotatedUv = rotate(uv, uTime * 0.001 + (textMask.r), vec2(0.5));
-	vec3 text1 = texture2D(uTexture2, rotatedUv).rgb;
-	vec3 text2 = texture2D(uTexture, rotatedUv).rgb;
-
-	// text1 *= uColor1;
 
 	// Fresnel
 	float a = (1.0 - -min(dot(vEye, normalize(vNormal)), 0.0));
 
-	// vec3 render = vec3(1.0 - a) * uColor2;
-	vec3 render = uColor2 * 0.2 * vec3(a);
-	vec3 render2 = (text2 / vec3(text1.b) * 0.5) + a;
+	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
 
-	vec3 finalRender = mix(render, render2, uTransition);
+	vec2 uv = vUv;
+	uv = fract(uv - uTime * 0.00015);
+	float tNoise = cnoise(vUv * 10. + uTime * 0.00015);
 
-	gl_FragColor.rgb *= finalRender;
+	float oT = mod(uv.y * 5. + tNoise * 0.25, 1.0);
+
+	float outline = (step(0.75, oT));
+
+	float smoothTop = smoothstep(-0.25, 0., vPos.y);
+	float smoothBottom = 1.0 - smoothstep(-0.2, 0.35, vPos.y);
+
+	float smoothUv = 1.0 - smoothstep(0.5, .8, vPos.z);
+
+	float render = smoothTop * smoothBottom * outline * tNoise * smoothUv * 6.;
+	float render2 = smoothTop * smoothBottom * outline * tNoise * smoothUv * 12.;
+
+	vec4 r1 = vec4(render) * vec4(uColor1, 1.0);
+	vec4 r2 = vec4(render2) * vec4(uColor2, 1.0) * 0.75;
+
+	vec4 finalRender = mix(r1, r2 * 5., uTransition);
+
+	gl_FragColor *= r2;
 
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>

@@ -5,6 +5,7 @@ uniform float uHalfBoxSize;
 uniform vec3 uCharaPos;
 uniform sampler2D uElevationTexture;
 uniform sampler2D uPositionTexture;
+uniform sampler2D uNoiseTexture;
 uniform vec3 uMaxMapBounds;
 uniform vec3 uMinMapBounds;
 
