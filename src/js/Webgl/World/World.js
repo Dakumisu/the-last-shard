@@ -20,6 +20,7 @@ import SoundController from '@js/Sound/Controller.js';
 import DialogCamera from '@webgl/Camera/Cameras/DialogCamera.js';
 import Dialog from '@game/Dialog.js';
 import { loadTexture } from '@utils/loaders/loadAssets.js';
+import HomeCamera from '@webgl/Camera/Cameras/HomeCamera.js';
 
 let initialized = false;
 export default class World {
@@ -63,6 +64,7 @@ export default class World {
 		this.pet = await initPet();
 		this.dialog = new Dialog();
 		this.dialogCamera = new DialogCamera();
+		this.homeCamera = new HomeCamera();
 
 		this.soundController = new SoundController();
 		await this.soundController.init();

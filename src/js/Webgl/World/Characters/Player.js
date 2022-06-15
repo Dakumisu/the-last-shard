@@ -329,7 +329,7 @@ class Player extends BaseEntity {
 			},
 			'player',
 		);
-		this.cameraController.add(playerOrbitCam, true);
+		this.cameraController.add(playerOrbitCam);
 		this.base.camera = this.cameraController.get('player').camObject;
 	}
 
