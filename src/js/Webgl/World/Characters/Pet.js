@@ -309,7 +309,7 @@ export class Pet extends BaseEntity {
 		if (this.isFeeding) return;
 
 		this.isFeeding = true;
-		TARGET_POS.copy(target).setY(target.y - 0.3);
+		TARGET_POS.copy(target).setY(target.y - 1.21);
 		this.state = Pet.STATES.FEEDING;
 	}
 
