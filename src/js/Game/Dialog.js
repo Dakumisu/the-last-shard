@@ -28,7 +28,7 @@ export default class Dialog {
 
 		this.dialog = dialog;
 
-		this.spriteId = 0;
+		this.spriteId = MathUtils.randInt(0, 4);
 
 		this.listeners();
 	}

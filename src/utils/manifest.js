@@ -192,7 +192,7 @@ assetsMap.set('laser-sound', {
 	data: {},
 });
 assetsMap.set('portal-ambient-sound', {
-	path: 'assets/sound/interactions/portal.mp3',
+	path: 'assets/sound/ambient/portal-ambient.mp3',
 	data: {},
 });
 assetsMap.set('success-sound', {

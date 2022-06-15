@@ -5,7 +5,7 @@ import { debounce, deferredPromise, throttle, wait } from 'philbin-packages/asyn
 import signal from 'philbin-packages/signal';
 
 const params = {
-	ambiantVolume: 0.3,
+	ambiantVolume: 0.2,
 	// ambiantVolume: 0,
 };
 
@@ -126,6 +126,7 @@ export default class SoundController {
 
 		if (params.volume) sound.howl.volume(params.volume);
 		if (params.rate) sound.howl.rate(params.rate);
+		if (params.pos) sound.howl.pos(params.pos.x, params.pos.y, params.pos.z);
 	};
 
 	beforeSwitch = (sceneName) => {

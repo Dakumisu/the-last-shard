@@ -329,7 +329,7 @@ export default class LaserTower extends BaseCollider {
 			const rayNextDistance = this.ray.distanceToPoint(nextLaserTower.sphereWorldPos);
 
 			// If the current tower is activated, activate the next one, if not, desactivate it
-			if (rayNextDistance <= 0.2 && !nextLaserTower.isActivated && this.isActivated) {
+			if (rayNextDistance <= 0.25 && !nextLaserTower.isActivated && this.isActivated) {
 				if (this.animation && !this.animation.paused) this.animation.pause();
 				if (this.laserGroup) {
 					this.laserGroup.scale.z = distanceFromCurrent;
@@ -338,7 +338,7 @@ export default class LaserTower extends BaseCollider {
 				this.preventScroll = true;
 				nextLaserTower.activateBy(this);
 				this.needsUpdate = false;
-			} else if (nextLaserTower.isActivated && rayNextDistance >= 0.2)
+			} else if (nextLaserTower.isActivated && rayNextDistance >= 0.25)
 				nextLaserTower.desactivateBy(this);
 		});
 	};
