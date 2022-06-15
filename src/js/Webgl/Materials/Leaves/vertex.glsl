@@ -1,3 +1,6 @@
+
+#pragma glslify: cnoise = require('philbin-packages/glsl/noises/classic/2d');
+
 #define TOON
 varying vec3 vViewPosition;
 varying vec3 vPositionW;
@@ -48,6 +51,15 @@ void main() {
 	#include <shadowmap_vertex>
 	#include <fog_vertex>
 
+	// position.y += 0.1;
+
+	float noise = cnoise(position.xy * 20. + uTime * 0.0006);
+
+	vec3 newPos = position + noise * 0.1;
+
 	vPositionW = vec3(vec4(transformed, 1.0) * modelMatrix);
 	vNormalW = normalize(vec3(vec4(normal, 0.0) * modelMatrix));
+
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+
 }

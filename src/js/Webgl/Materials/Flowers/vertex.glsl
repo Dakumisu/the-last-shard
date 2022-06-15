@@ -72,7 +72,7 @@ void main() {
 
 	float scaleFromTexture = 1. - texture2D(uGrassTexture, scaledCoords).g;
 	scaleFromTexture = smoothstep(1., .5, scaleFromTexture);
-	pos.y *= scaleFromTexture;
+	pos *= scaleFromTexture;
 
 	translation.xz += pos.xz;
 	translation.y += pos.y * 0.35;

@@ -81,9 +81,6 @@ export default class TutorielScene extends BaseScene {
 			// color2: '#8277ff',
 			halfBoxSize: 20,
 			scale: 1,
-			grass: await loadTexture('grassPattern'),
-			diffuse: await loadTexture('grassDiffuse'),
-			alpha: await loadTexture('grassAlpha'),
 			positionsTexture: this.terrainSplatting,
 		});
 
@@ -118,7 +115,7 @@ export default class TutorielScene extends BaseScene {
 				// color: '#82ad46',
 				color: '#31d7ff',
 				color2: '#8277ff',
-				count: 2000,
+				count: 1000,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 			},
@@ -129,7 +126,7 @@ export default class TutorielScene extends BaseScene {
 			params: {
 				// color: '#f0f0f0',
 				color: '#8277ff',
-				count: 2500,
+				count: 2000,
 				halfBoxSize: 20,
 				positionsTexture: this.terrainSplatting,
 				fogTexture: await loadTexture('fogTexture'),
