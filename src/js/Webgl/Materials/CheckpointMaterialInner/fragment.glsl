@@ -77,7 +77,7 @@ void main() {
 	vec4 r1 = vec4(render) * vec4(uColor1, 1.0);
 	vec4 r2 = vec4(render2) * vec4(uColor2, 1.0) * 0.75;
 
-	vec4 finalRender = mix(r1, r2 * 5., uTransition);
+	vec4 finalRender = mix(r2, r1 * 5., uTransition);
 
 	gl_FragColor *= finalRender;
 

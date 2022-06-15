@@ -95,7 +95,7 @@ export default class World {
 			this.sceneController.add(_scene);
 		});
 
-		const currentLevel = localStorage.getItem('game:level') || 'Sandbox';
+		const currentLevel = localStorage.getItem('game:level') || 'Tutoriel';
 		this.sceneController.switch(currentLevel);
 	}
 
