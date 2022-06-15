@@ -26,7 +26,8 @@ export default class Fragment extends BaseCollider {
 		this.base.group = group;
 		this.autoUpdate = true;
 
-		this.alpha = 1;
+		this.progress = 1;
+		this.intensity = 0.5;
 		this.isCollected = false;
 
 		dom = getDom();
@@ -44,11 +45,13 @@ export default class Fragment extends BaseCollider {
 		});
 
 		this.material = new FragmentMaterial({
+			transparent: true,
 			uniforms: {
-				uAlpha: { value: 1 },
+				uProgress: { value: this.progress },
 				uShard: { value: await loadTexture('shardTexture') },
 				uShard2: { value: await loadTexture('shardTexture2') },
 				uMask: { value: await loadTexture('portalTextureMask') },
+				uNoise: { value: await loadTexture('noiseTexture2') },
 			},
 		});
 
@@ -64,14 +67,14 @@ export default class Fragment extends BaseCollider {
 			depthWrite: false,
 			uniforms: {
 				uColor: { value: new Color(0x31d7ff) },
-				uIntensity: { value: 0.45 },
-				uRadius: { value: 0.05 },
+				uIntensity: { value: this.intensity },
+				uRadius: { value: 0.005 },
 			},
 		});
 
 		this.base.auraGeom = new IcosahedronGeometry(1.5, 3);
 		this.base.auraMesh = new Mesh(this.base.auraGeom, this.base.auraMaterial);
-		this.base.auraMesh.frustumCulled = false;
+		// this.base.auraMesh.frustumCulled = false;
 
 		this.base.mesh.add(this.base.auraMesh);
 
@@ -92,7 +95,8 @@ export default class Fragment extends BaseCollider {
 		dom.nodes.domElements['fragment_count'].innerHTML = `${store.game.fragmentsCollected}`;
 		game.save('fragments', store.game.fragmentsCollected);
 
-		this.alpha = 0;
+		this.progress = 0;
+		this.intensity = 4;
 
 		console.log('interact with fragment');
 	}
@@ -137,10 +141,22 @@ export default class Fragment extends BaseCollider {
 
 		this.float(et).dampPosition(dt, 0.1);
 
-		this.material.uniforms.uAlpha.value = dampPrecise(
-			this.material.uniforms.uAlpha.value,
-			this.alpha,
-			0.2,
+		this.material.uniforms.uProgress.value = dampPrecise(
+			this.material.uniforms.uProgress.value,
+			this.progress,
+			0.029,
+			dt,
+		);
+		this.base.auraMaterial.uniforms.uIntensity.value = dampPrecise(
+			this.base.auraMaterial.uniforms.uIntensity.value,
+			this.intensity,
+			0.029,
+			dt,
+		);
+		this.base.auraMaterial.opacity = dampPrecise(
+			this.base.auraMaterial.opacity,
+			this.progress,
+			0.029,
 			dt,
 		);
 	}
