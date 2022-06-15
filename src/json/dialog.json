@@ -4,19 +4,20 @@
       "Now that you're awake, help me restore balance to our world!",
       "Walk, run, jump, anything is possible!",
       "I will stay by your side until the end.",
-      "Now up you go !"
+      "<span class='important'>Now up you go !</span>"
     ],
     "laser_begin": [
       "See that tower?",
       "Thanks to this tower you will be able to open the door that leads to the next part of our adventure.",
-      "Use 'F' nearby so I can feed a laser beam.",
-      "Then you can use 'A' and 'E' to help me turn this beam",
+      "Use <span class='important'>'F'</span> nearby so I can feed a laser beam.",
+      "Then you can use <span class='important'>'A'</span> and <span class='important'>'E'</span> to help me turn this beam",
       "You can also use the wheel of your mouse to change its inclination.",
-      "We have to feed all the towers! Good luck!"
+      "We have to feed all the towers!",
+      "<span class='important'>Good luck!</span>"
     ],
     "fragment": [
       "Well done! We did it!",
-      "Now retrieve this energy shard with the 'F' key!",
+      "Now retrieve this energy shard with the <span class='important'>'F'</span> key!",
       "This shard, among others, is the key to our success!",
       "Then run to this portal so that we can discover the rest of the world!"
     ]
@@ -43,7 +44,7 @@
   },
   "Faille": {
     "fragment": [
-      "YOU DID IT !",
+      "<span class='important'>YOU DID IT !</span>",
       "Let's get the world back in balance!"
     ]
   }

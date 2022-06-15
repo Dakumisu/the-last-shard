@@ -100,7 +100,7 @@ export default class CameraController {
 			this.currentCamera.resize();
 
 			/// #if DEBUG
-			this.currentCamera.gui.expanded = true;
+			// this.currentCamera.gui.expanded = true;
 			/// #endif
 		}
 	}

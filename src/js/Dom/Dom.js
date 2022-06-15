@@ -4,6 +4,14 @@ import AnchorLink from './Components/link/AnchorLink';
 import Nodes from './Nodes';
 import Views from './Views';
 
+import signal from 'philbin-packages/signal';
+import { Context } from './Context';
+import { Preloader } from './Preloader';
+import { Home } from './Home';
+import { store } from '@tools/Store';
+import { Hud } from './Hud';
+import { Pause } from './Pause';
+
 let initialized = false;
 
 class Dom {
@@ -16,16 +24,24 @@ class Dom {
 		Dom.instance = this;
 
 		this.init();
+		this.listeners();
 	}
 
 	init() {
+		store.game.player.canMove = store.game.player.canInteract = false;
+		store.game.isPaused = true;
+
 		this.nodes = new Nodes();
 		this.views = new Views();
+
+		this.preLoader = new Preloader();
+		this.context = new Context();
+		this.home = new Home();
+		this.hud = new Hud();
+		this.pause = new Pause();
 	}
 
-	event() {
-		if (!initialized) return;
-	}
+	listeners() {}
 
 	destroy() {
 		this.nodes.destroy();

@@ -4,7 +4,7 @@ a.lineHoverEffect {
 	position: relative;
 	pointer-events: all;
 	margin: 0;
-	color: var(--secondary-color);
+	color: var(--primary-color);
 
 	span {
 		mix-blend-mode: difference;
@@ -16,16 +16,16 @@ a.lineHoverEffect {
 			height: 1px;
 			bottom: 0;
 			left: 0;
-			background: var(--secondary-color);
+			background: var(--primary-color);
 			transform: scaleX(1);
 			transform-origin: bottom left;
-			transition: transform .75s $ease_in-out-smooth;
+			transition: transform 0.75s $ease_in-out-smooth;
 		}
 	}
 
 	&:hover span::after {
 		transform-origin: bottom right;
 		transform: scaleX(0);
-		transition: transform .75s $ease_in-out-smooth;
+		transition: transform 0.75s $ease_in-out-smooth;
 	}
 }

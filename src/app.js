@@ -9,7 +9,7 @@ import { loadManifest } from '@utils/manifest';
 
 const dom = initDom();
 
-signal.once('dom:complete', async () => {
+signal.on('dom:complete', async () => {
 	await loadManifest();
 	const game = initGame();
 	const webgl = initWebgl(dom.nodes.domElements.canvas);

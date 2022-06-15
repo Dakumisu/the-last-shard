@@ -1970,7 +1970,8 @@
         -27.533962
       ],
       "size": 7.947405,
-      "dialog": "fragment"
+      "dialog": "fragment",
+      "sounds": "fragment-ambient"
     },
     {
       "zone": "Spawn",
@@ -1980,7 +1981,8 @@
         30.494923
       ],
       "size": 9.352384,
-      "dialog": false
+      "dialog": false,
+      "sounds": "portal-ambient"
     },
     {
       "zone": "Laser",
@@ -1990,7 +1992,8 @@
         29.836216
       ],
       "size": 6.367365,
-      "dialog": "laser_begin"
+      "dialog": "laser_begin",
+      "sounds": false
     },
     {
       "zone": "End",
@@ -2000,7 +2003,8 @@
         -18.685068
       ],
       "size": 3.868116,
-      "dialog": false
+      "dialog": false,
+      "sounds": false
     },
     {
       "zone": "Portal",
@@ -2010,7 +2014,8 @@
         -44.346909
       ],
       "size": 8.455427,
-      "dialog": false
+      "dialog": false,
+      "sounds": "portal-ambient"
     }
   ],
   "curves": [
