@@ -95,6 +95,7 @@ export default class CameraController {
 			if (this.currentCamera) this.currentCamera.gui.expanded = false;
 			/// #endif
 
+			store.game.currentCamera = label;
 			store.game.player.canMove = store.game.player.canInteract = label === 'player';
 			this.currentCamera = this.get(label);
 			this.currentCamera.resize();

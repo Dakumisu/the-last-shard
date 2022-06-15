@@ -21,7 +21,7 @@ export class Preloader {
 		signal.emit('sound: down', store.game.currentScene);
 
 		this.show();
-		await wait(60);
+		await wait(5000);
 
 		this.hide();
 
