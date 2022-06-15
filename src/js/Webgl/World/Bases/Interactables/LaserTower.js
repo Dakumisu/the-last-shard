@@ -10,7 +10,6 @@ import { clamp, lerp, map } from 'philbin-packages/maths';
 import { throttle, wait } from 'philbin-packages/async';
 import { BaseBasicMaterial } from '@webgl/Materials/BaseMaterials/basic/material';
 import LaserSphereMaterial from '@webgl/Materials/LaserSphereMaterial/LaserSphereMaterial';
-import { store } from '@tools/Store';
 
 const params = {
 	ringRotationOffset: {
@@ -147,7 +146,6 @@ export default class LaserTower extends BaseCollider {
 			this.game.pet.feedOn(this.sphereWorldPos);
 
 			await wait(500);
-			if (!store.game.player.canInteract) return;
 
 			signal.emit('sound:play', 'laser', {
 				pos: this.base.mesh.position,
@@ -243,8 +241,7 @@ export default class LaserTower extends BaseCollider {
 	}
 
 	rotate(reversed) {
-		signal.emit('sound:play', 'laser-rotate', { replay: true });
-
+		this.playSound();
 		this.needsUpdate = true;
 
 		if (this.animation && !this.animation.paused) this.animation.pause();
@@ -265,6 +262,10 @@ export default class LaserTower extends BaseCollider {
 			easing: 'easeOutQuad',
 		});
 	}
+
+	playSound = throttle(() => {
+		signal.emit('sound:play', 'laser-rotate', { replay: true });
+	}, 100);
 
 	tilt = async (e) => {
 		if (
@@ -289,7 +290,7 @@ export default class LaserTower extends BaseCollider {
 
 		this.tiltYTarget -= e.y * this.laserRotationOffsetX;
 		this.tiltYTarget = clamp(this.tiltYTarget, -Math.PI * 0.25, Math.PI * 0.25);
-		signal.emit('sound:play', 'laser-rotate', { replay: true });
+		this.playSound();
 	};
 
 	update = (et, dt) => {

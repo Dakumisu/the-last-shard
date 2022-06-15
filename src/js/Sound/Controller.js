@@ -101,7 +101,6 @@ export default class SoundController {
 
 		if (sound.params.fadeDuration)
 			sound.howl.fade(sound.howl.volume(), 1, sound.params.fadeDuration);
-		console.log('sound:play', key);
 
 		if (params.spriteId >= 0) sound.howl.play(params.spriteId + '');
 		else sound.howl.play();
