@@ -115,6 +115,7 @@ class Checkpoint {
 		// this.group.add(this.mesh);
 
 		this.mesh.position.copy(this.pos);
+		this.pos.y += 1.45;
 		// this.mesh.position.y -= 1.3;
 		// this.mesh.quaternion.copy(this.qt);
 	}

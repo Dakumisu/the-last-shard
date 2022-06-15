@@ -724,7 +724,7 @@ class Player extends BaseEntity {
 
 		this.base.mesh.position.set(
 			this.checkpoint.pos.x,
-			this.checkpoint.pos.y + 1,
+			this.checkpoint.pos.y,
 			this.checkpoint.pos.z,
 		);
 		this.base.mesh.rotation.setFromQuaternion(this.checkpoint.qt);
@@ -788,7 +788,7 @@ class Player extends BaseEntity {
 	}
 
 	setStartPosition(cp) {
-		this.base.mesh.position.set(cp.pos.x, cp.pos.y + 1, cp.pos.z);
+		this.base.mesh.position.set(cp.pos.x, cp.pos.y, cp.pos.z);
 		this.base.mesh.rotation.setFromQuaternion(cp.qt);
 
 		this.setCheckpoint(cp);

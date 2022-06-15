@@ -27,7 +27,7 @@ import { deferredPromise } from 'philbin-packages/async';
 import { store } from '@tools/Store';
 import { loadTexture } from '@utils/loaders';
 
-const twigsCountList = [0, 0, 300000, 300000, 300000, 400000];
+const twigsCountList = [0, 0, 100000, 200000, 300000, 400000];
 
 export default class Grass {
 	/**
@@ -57,7 +57,6 @@ export default class Grass {
 
 		signal.on('quality', (quality) => {
 			this.count = twigsCountList[quality];
-			store.webgl.grass.count = this.count;
 			this.updateCount(this.count);
 		});
 
