@@ -68,6 +68,7 @@ export default class BaseScene {
 		this.instance = new Group();
 
 		this.manifest = manifest || {};
+		this.focusList = {};
 		this.props = new Group();
 		this.interactables = new Group();
 		this.curves = new Group();
@@ -231,6 +232,7 @@ export default class BaseScene {
 	async loadManifest() {
 		await this.isPreloaded;
 
+		await this._parseFocus(this.manifest.focus);
 		await this._loadBase();
 		await this._loadProps(this.manifest.props);
 		await this._loadInteractables(this.manifest.interactables);
@@ -239,6 +241,14 @@ export default class BaseScene {
 		await this._loadAreas(this.manifest.areas);
 
 		this.manifestLoaded.resolve();
+	}
+
+	async _parseFocus(focus) {
+		if (!focus) return;
+
+		this.focusList.portal = new Vector3().fromArray(focus.portal) || new Vector3();
+		this.focusList.fragment = new Vector3().fromArray(focus.fragment) || new Vector3();
+		this.focusList.door = new Vector3().fromArray(focus.door) || new Vector3();
 	}
 
 	async _loadBase() {
@@ -374,8 +384,8 @@ export default class BaseScene {
 
 				if (!this.cinematrixClasses[name]) return;
 
-				const Cinematrix = this.cinematrixClasses[name];
-				new Cinematrix({ scene: this.label.toLowerCase(), name: name, curve: _curve });
+				const CinematrixCam = this.cinematrixClasses[name];
+				new CinematrixCam(this, { name: name, curve: _curve });
 			}
 		});
 

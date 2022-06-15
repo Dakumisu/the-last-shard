@@ -31,6 +31,7 @@ export default class FogParticles {
 
 		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
+		this.camera = webgl.camera.instance;
 
 		this.geometry = null;
 		this.base = {
@@ -106,7 +107,7 @@ export default class FogParticles {
 			blending: AdditiveBlending,
 			uniforms: {
 				uHalfBoxSize: { value: this.params.halfBoxSize },
-				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uCharaPos: { value: this.camera.position },
 				uElevationTexture: { value: this.scene.depthTexture },
 				uPositionTexture: { value: this.params.positionsTexture },
 				uMaxMapBounds: { value: this.scene.maxBox },

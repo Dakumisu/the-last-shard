@@ -1,4 +1,17 @@
 {
+  "Tutoriel": {
+    "intro": [
+      "Yo Mec",
+      "ça va? moi oe",
+      "sauve foret stp"
+    ],
+    "laser_begin": [
+      "bip boop les lasers"
+    ],
+    "fragment": [
+      "woah la dingz"
+    ]
+  },
   "Sandbox": {
     "intro": [
       "Yo Mec",
@@ -7,16 +20,6 @@
     ],
     "laser": [
       "bip boop les lasers"
-    ]
-  },
-  "Temple": {
-    "intro": [
-      "re Yo Mec",
-      "ça va? moi oe tjrs",
-      "sauve temple stp"
-    ],
-    "laser": [
-      "bip boop encores les lasers"
     ]
   },
   "FloatingIsland": {

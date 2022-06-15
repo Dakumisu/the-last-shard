@@ -235,6 +235,11 @@ def exportEntities(objs, traversableObjs, movableEntities, data, keepProps=False
             ):
                 continue
             # Do not exports hard ops properties
+            if key == 'focus':
+                if 'focus' not in data:
+                    data['focus'] = {}
+                data['focus'][v] = pos
+                continue
             params[key] = v
 
         print('------------', obj.name)

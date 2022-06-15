@@ -66,7 +66,7 @@ const debug = {
 
 export default class PerfomanceMonitor {
 	constructor() {
-		store.quality = this.quality = DEFAULT_QUALITY;
+		store.webgl.quality = this.quality = DEFAULT_QUALITY;
 
 		this.qualityStr = qualityList[this.quality];
 		this.fps = 0;
@@ -229,7 +229,7 @@ export default class PerfomanceMonitor {
 		this.qualityStr = qualityList[this.quality];
 
 		if (prevQuality != this.quality) {
-			store.quality = this.quality;
+			store.webgl.quality = this.quality;
 			signal.emit('quality', this.quality);
 		}
 

@@ -117,7 +117,7 @@ export default class Cinematrix extends PersCamera {
 
 		const { name, instance, params } = this.curve;
 
-		const _points = instance.getPoints(1000);
+		const _points = instance.getPoints(750);
 		this.path = _points;
 		this.length = _points.length;
 
@@ -267,7 +267,7 @@ export default class Cinematrix extends PersCamera {
 		return this;
 	}
 
-	getTangent(a, b, dt) {
+	getTangent(a, b) {
 		dummyTangent.subVectors(a, b).normalize();
 
 		nextDummyTarget.copy(tmpPos.copy(this.instance.position).sub(dummyTangent));
@@ -296,6 +296,41 @@ export default class Cinematrix extends PersCamera {
 		});
 	}
 
+	dampPosition(dt) {
+		this.instance.position.x = dampPrecise(this.instance.position.x, dummyPos.x, 0.1, dt, 0.01);
+		this.instance.position.y = dampPrecise(this.instance.position.y, dummyPos.y, 0.1, dt, 0.01);
+		this.instance.position.z = dampPrecise(this.instance.position.z, dummyPos.z, 0.1, dt, 0.01);
+	}
+
+	dampTarget(dt) {
+		dummyTarget.x = dampPrecise(
+			dummyTarget.x,
+			nextDummyTarget.x,
+			// this.useNormals ? 0.05 : 0.01,
+			0.01,
+			dt,
+			0.001,
+		);
+		dummyTarget.y = dampPrecise(
+			dummyTarget.y,
+			nextDummyTarget.y,
+			// this.useNormals ? 0.05 : 0.01,
+			0.01,
+			dt,
+			0.001,
+		);
+		dummyTarget.z = dampPrecise(
+			dummyTarget.z,
+			nextDummyTarget.z,
+			// this.useNormals ? 0.05 : 0.01,
+			0.01,
+			dt,
+			0.001,
+		);
+
+		this.instance.lookAt(dummyTarget);
+	}
+
 	update(et, dt) {
 		if (!this.isActive && !this.initialized) return;
 
@@ -320,58 +355,15 @@ export default class Cinematrix extends PersCamera {
 
 				dummyPos.set(_point.x, _point.y, _point.z);
 
-				if (!this.useNormals) {
-					this.updatePath(_len, _index, dt);
+				if (this.useNormals) {
+					if (_points[_index + 10]) this.getTangent(_point, _points[_index + 10]);
 				} else {
-					if (_points[_index + 1]) this.getTangent(_point, _points[_index + 1], dt);
+					this.updatePath(_len, _index, dt);
 				}
 			}
 
-			this.instance.position.x = dampPrecise(
-				this.instance.position.x,
-				dummyPos.x,
-				0.1,
-				dt,
-				0.01,
-			);
-			this.instance.position.y = dampPrecise(
-				this.instance.position.y,
-				dummyPos.y,
-				0.1,
-				dt,
-				0.01,
-			);
-			this.instance.position.z = dampPrecise(
-				this.instance.position.z,
-				dummyPos.z,
-				0.1,
-				dt,
-				0.01,
-			);
-
-			dummyTarget.x = dampPrecise(
-				dummyTarget.x,
-				nextDummyTarget.x,
-				this.useNormals ? 0.05 : 0.01,
-				dt,
-				0.001,
-			);
-			dummyTarget.y = dampPrecise(
-				dummyTarget.y,
-				nextDummyTarget.y,
-				this.useNormals ? 0.05 : 0.01,
-				dt,
-				0.001,
-			);
-			dummyTarget.z = dampPrecise(
-				dummyTarget.z,
-				nextDummyTarget.z,
-				this.useNormals ? 0.05 : 0.01,
-				dt,
-				0.001,
-			);
-
-			this.instance.lookAt(dummyTarget);
+			this.dampPosition(dt);
+			this.dampTarget(dt);
 		}
 
 		if (dummyFov !== this.instance.fov) {

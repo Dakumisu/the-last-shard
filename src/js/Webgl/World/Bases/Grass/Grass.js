@@ -41,6 +41,7 @@ export default class Grass {
 
 		const webgl = getWebgl();
 		this.renderer = webgl.renderer.renderer;
+		this.camera = webgl.camera.instance;
 
 		this.base = {
 			geometry: null,
@@ -56,6 +57,7 @@ export default class Grass {
 
 		signal.on('quality', (quality) => {
 			this.count = twigsCountList[quality];
+			store.webgl.grass.count = this.count;
 			this.updateCount(this.count);
 		});
 
@@ -73,7 +75,7 @@ export default class Grass {
 		this.initGeometry(twigsCountList[5]);
 		this.setGrass();
 
-		this.count = twigsCountList[store.quality];
+		this.count = twigsCountList[store.webgl.quality];
 		this.updateCount(this.count);
 
 		/// #if DEBUG
@@ -178,7 +180,7 @@ export default class Grass {
 				uNoiseMouvementIntensity: { value: 0.15 },
 				uNoiseElevationIntensity: { value: 0.75 },
 				uHalfBoxSize: { value: this.params.halfBoxSize },
-				uCharaPos: { value: this.scene.player.base.mesh.position },
+				uCharaPos: { value: this.camera.position },
 				uColor: { value: new Color().set(this.params.color) },
 				uColor2: { value: new Color().set(this.params.color2) },
 				uElevationTexture: { value: this.scene.depthTexture },

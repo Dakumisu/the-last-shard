@@ -12,10 +12,11 @@ const params = {
 };
 
 export class Intro {
-	constructor(datas) {
+	constructor(scene, datas = {}) {
 		this.datas = datas;
+		this.scene = scene;
 
-		this.label = `${this.datas.scene}_${this.datas.name}`;
+		this.label = `${this.scene.label.toLowerCase()}_${this.datas.name}`;
 		this.controller = new Cinematrix(this.label);
 
 		this.isComplete = false;
