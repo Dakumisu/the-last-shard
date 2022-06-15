@@ -121,9 +121,9 @@ export class Pet extends BaseEntity {
 			blending: AdditiveBlending,
 			depthWrite: false,
 			uniforms: {
-				uColor: { value: new Color(0xc1f376) },
-				uIntensity: { value: 0.3 },
-				uRadius: { value: 0.005 },
+				uColor: { value: new Color(0xe9983d) },
+				uIntensity: { value: 0.35 },
+				uRadius: { value: 0.0005 },
 			},
 		});
 
