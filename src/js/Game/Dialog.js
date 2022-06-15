@@ -63,6 +63,8 @@ export default class Dialog {
 
 		if (!dialog) return;
 
+		dom.nodes.domElements.dialog.innerHTML = '';
+
 		signal.emit('postpro:transition-in', 500);
 		await wait(500);
 		store.game.player.canMove = store.game.player.canInteract = false;
@@ -111,6 +113,7 @@ export default class Dialog {
 
 		signal.emit('postpro:transition-in', 500);
 		await wait(500);
+		dom.nodes.domElements.dialog.innerHTML = '';
 		store.game.player.canMove = store.game.player.canInteract = true;
 		signal.emit('dialog:complete');
 		signal.emit('camera:switch', 'player');
