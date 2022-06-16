@@ -10,6 +10,7 @@ export default class LeavesMaterial extends BaseToonMaterial {
 		super({
 			side: DoubleSide,
 			transparent: true,
+			depthWrite: false,
 			uniforms: {
 				uMap: { value: getGradientTexture() },
 			},
