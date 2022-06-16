@@ -67,6 +67,7 @@ export class Level {
 	}
 
 	async play(label) {
+		console.log(label, this.label);
 		if (label !== this.label) return;
 		if (this.isComplete) return;
 

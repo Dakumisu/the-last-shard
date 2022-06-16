@@ -48,7 +48,6 @@ export default class Tree extends BaseObject {
 
 		this.base.material = LeavesMaterial.use();
 
-		console.log(this.base.mesh);
 		this.base.mesh.traverse((child) => {
 			if (child.name.includes('leaves')) {
 				this.leaves = child;
